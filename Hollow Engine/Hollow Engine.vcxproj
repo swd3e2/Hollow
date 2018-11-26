@@ -19,17 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Hollow Engine\Core\ECS\Memory\Allocators\IAllocator.h" />
-    <ClInclude Include="Hollow Engine\Core\ECS\Memory\Allocators\PoolAllocator.h" />
-    <ClInclude Include="Hollow Engine\Core\ECS\Memory\Allocators\StackAllocator.h" />
-    <ClInclude Include="Hollow Engine\Core\ECS\Memory\Utils\PointerMath.h" />
-    <ClInclude Include="Hollow Engine\Core\ECS\Platform.h" />
+    <ClInclude Include="Engine\Core\ECS\Memory\Allocators\IAllocator.h" />
+    <ClInclude Include="Engine\Core\ECS\Memory\Allocators\PoolAllocator.h" />
+    <ClInclude Include="Engine\Core\ECS\Memory\Allocators\StackAllocator.h" />
+    <ClInclude Include="Engine\Core\ECS\Memory\Utils\PointerMath.h" />
+    <ClInclude Include="Engine\Core\ECS\Platform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\ECS\Memory\MemoryChunkAllocator.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Hollow Engine\Core\ECS\Memory\Allocators\IAllocator.cpp" />
-    <ClCompile Include="Hollow Engine\Core\ECS\Memory\Allocators\PoolAllocator.cpp" />
-    <ClCompile Include="Hollow Engine\Core\ECS\Memory\Allocators\StackAllocator.cpp" />
+    <ClCompile Include="Engine\Core\ECS\Memory\Allocators\IAllocator.cpp" />
+    <ClCompile Include="Engine\Core\ECS\Memory\Allocators\PoolAllocator.cpp" />
+    <ClCompile Include="Engine\Core\ECS\Memory\Allocators\StackAllocator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

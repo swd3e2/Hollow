@@ -1,4 +1,6 @@
 x64
 .vs
+Debug
+Hollow Engine/Debug
 Hollow Engine/x64
 !.gitignore
