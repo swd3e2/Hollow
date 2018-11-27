@@ -1,6 +1,6 @@
 #include "IAllocator.h"
 
-namespace ECS { namespace Memory { namespace Allocator { 
+namespace ECS { namespace Memory { namespace Allocators { 
 
 	IAllocator::IAllocator(const std::size_t memSize, const void* mem): 
 		m_MemorySize(memSize),

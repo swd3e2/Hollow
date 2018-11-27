@@ -30,6 +30,12 @@
     <ClInclude Include="Engine\Core\ECS\Platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\Memory\MemoryManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\Utils\FamilyTypeID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -44,7 +50,16 @@
     <ClCompile Include="Engine\Core\ECS\Memory\Allocators\StackAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Memory\MemoryChunkAllocator.cpp">
+    <ClCompile Include="Engine\Core\ECS\Memory\MemoryChunkAllocator.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Memory\MemoryManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Memory\GlobalMemoryUser.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Utils\FamilyTypeID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

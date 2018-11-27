@@ -1,9 +1,7 @@
 #include "StackAllocator.h"
-#include "../../Platform.h"
 #include <assert.h>
-#include "../Utils/PointerMath.h"
 
-namespace ECS { namespace Memory { namespace Allocator { 
+namespace ECS { namespace Memory { namespace Allocators { 
 	StackAllocator::StackAllocator(std::size_t memSize, const void* mem) :
 		IAllocator(memSize, mem)
 	{}

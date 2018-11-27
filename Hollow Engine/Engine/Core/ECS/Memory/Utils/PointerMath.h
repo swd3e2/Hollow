@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Platform.h"
-namespace ECS { namespace Memory { namespace Allocator {
+namespace ECS { namespace Memory { namespace Allocators {
 
 	static inline void* AlignForward(void* address, u8 alignment)
 	{

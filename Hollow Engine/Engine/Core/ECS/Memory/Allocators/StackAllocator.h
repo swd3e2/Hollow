@@ -1,8 +1,9 @@
 #pragma once
 #include "../../Platform.h"
 #include "IAllocator.h"
+#include "../Utils/PointerMath.h"
 
-namespace ECS { namespace Memory { namespace Allocator { 
+namespace ECS { namespace Memory { namespace Allocators { 
 
 	class StackAllocator : public IAllocator {
 	private:

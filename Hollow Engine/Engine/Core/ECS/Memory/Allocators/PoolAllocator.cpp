@@ -1,8 +1,7 @@
 #include "PoolAllocator.h"
 #include <assert.h>
-#include "../Utils/PointerMath.h"
 
-namespace ECS { namespace Memory { namespace Allocator { 
+namespace ECS { namespace Memory { namespace Allocators { 
 
 	PoolAllocator::PoolAllocator(std::size_t memSize, const void* mem, std::size_t objectSize, u8 objectAlignment) :
 		IAllocator(memSize, mem),

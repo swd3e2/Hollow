@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Platform.h"
 
-namespace ECS { namespace Memory { namespace Allocator {
+namespace ECS { namespace Memory { namespace Allocators {
 
 	/* Base allocator class. */
 	class IAllocator
