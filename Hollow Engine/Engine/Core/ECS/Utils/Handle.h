@@ -4,6 +4,7 @@
 #include "../../Platform.h"
 #include <vector>
 #include <algorithm>
+#include <assert.h>
 
 namespace ECS { namespace util {
 	namespace Internal {
@@ -65,9 +66,9 @@ namespace ECS { namespace util {
 		{
 			size_t oldSize = this->m_Table.size();
 			assert(oldSize < handle_type::MAX_INDICES && "Max table capacity reached!");
-			size_t newSize = std::min(oldSize + grow, Handle::MAX_INDICES);
+			size_t newSize = std::min(oldSize + grow, handle_type::MAX_INDICES);
 			this->m_Table.resize(newSize);
-			for (typename value_type::value_type i = oldSize; i < newSize; ++i)
+			for (typename handle_type::value_type i = oldSize; i < newSize; ++i)
 				this->m_Table[i] = std::pair<typename handle_type::value_type, T*>(handle_type::MIN_VERSION, nullptr);
 		}
 
@@ -98,7 +99,7 @@ namespace ECS { namespace util {
 			this->m_Table[i].first = 1;
 			this->m_Table[i].second = rawObject;
 
-			return value_type(i, this->m_Table[i].first);
+			return handle_type(i, this->m_Table[i].first);
 		}
 
 		void ReleaseHandle(handle_type handle)
@@ -112,7 +113,7 @@ namespace ECS { namespace util {
 			return this->m_Table[handle.index].first != handle.version;
 		}
 		
-		inline handle_type operator[](typename handle_type::value_type index)
+		inline handle_type operator[](typename handle_type::value_type index) const
 		{
 			assert(index < this->m_Table.size() && "Invalid handle!");
 			return handle_type(index, this->m_Table[index].first);

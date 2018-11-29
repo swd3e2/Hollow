@@ -10,13 +10,14 @@ namespace ECS {
 
 	class EntityManager
 	{
-		using EntityHandleTable = util::HandleTable<IEntity, std::size_t>;
+		using EntityHandleTable = util::HandleTable<IEntity, EntityId>;
 
 		class IEntityContainer
 		{
+		public:
 			virtual ~IEntityContainer() {};
 
-			virtual char * GetEntityContainerTypeName() const = 0;
+			virtual const char * GetEntityContainerTypeName() const = 0;
 			virtual void DestroyEntity(IEntity * entity) = 0;
 		};
 
@@ -26,18 +27,18 @@ namespace ECS {
 			EntityContainer(const EntityContainer&) = delete;
 			EntityContainer& operator=(EntityContainer&) = delete;
 		public:
-			EntityContainer() : MemoryChunkAllocator("EntityManager")
+			EntityContainer() : Memory::MemoryChunkAllocator<T, ENTITY_T_CHUNK_SIZE>("EntityManager")
 			{}
 
 			virtual ~EntityContainer() {}
 
-			virtual const * GetEntityContainerTypeName() const override
+			virtual const char * GetEntityContainerTypeName() const override
 			{
 				static const char* ENTITY_TYPE_NAME{typeid(T).name()};
 				return ENTITY_TYPE_NAME;
 			}
 
-			virtual DestroyEntity(IEntity * entity) override
+			virtual void DestroyEntity(IEntity * entity) override
 			{
 				entity->~IEntity();
 				this->DestroyObject(entity);
@@ -45,8 +46,8 @@ namespace ECS {
 		};
 
 		std::unordered_map<std::size_t, IEntityContainer*>	m_EntityRegistry;
-		std::vector<std::size_t>							m_PendingDestroyedEntites;
-		std::size_t											m_NumPendingDestoyedEntities;
+		std::vector<std::size_t>							m_PendingDestroyedEntities;
+		std::size_t											m_NumPendingDestroyedEntities;
 
 		//ComponentManager * componentManager;
 	private:
@@ -84,16 +85,16 @@ namespace ECS {
 		~EntityManager();
 
 		template<class T, class ...ARGS>
-		size_t CreateEntity(ARGS&& ...args)
+		EntityId CreateEntity(ARGS&& ...args)
 		{
 			void* pObjectMem = GetEntityContainer<T>();
 
 			ECS::EntityId entityID = this->AqcuireEntityId((T*)pObjectMem);
 
 			((T*)pObjectMem)->m_EntityID = entityID;
-			((T*)pObjectMemory)->m_ComponentManagerInstance = this->m_ComponentManagerInstance;
+			//((T*)pObjectMemory)->m_ComponentManagerInstance = this->m_ComponentManagerInstance;
 				
-			IEntity* entity = new (pObjcetMem)T(std::forward<ARGS>(args)...);
+			IEntity* entity = new (pObjectMem)T(std::forward<ARGS>(args)...);
 			return entityID;
 		}
 
@@ -103,14 +104,14 @@ namespace ECS {
 
 			const EntityTypeId ETID = entity->GetStaticEntityTypeID();
 
-			if (this->m_NumPendingDestoyedEntities < this->m_PendingDestroyedEntites.size())
+			if (this->m_NumPendingDestroyedEntities < this->m_PendingDestroyedEntities.size())
 			{
-				this->m_PendingDestroyedEntites[this->m_NumPendingDestoyedEntities++] = entityID;
+				this->m_PendingDestroyedEntities[this->m_NumPendingDestroyedEntities++] = entityID;
 			}
 			else
 			{
-				this->m_PendingDestroyedEntites.push_back(entityID);
-				this->m_NumPendingDestoyedEntities++;
+				this->m_PendingDestroyedEntities.push_back(entityID);
+				this->m_NumPendingDestroyedEntities++;
 			}
 		}
 		
@@ -123,6 +124,8 @@ namespace ECS {
 		{
 			return this->m_EntityHandleTable[index];
 		}
+
+		void RemoveDestroyedEntities();
 	};
 
 }

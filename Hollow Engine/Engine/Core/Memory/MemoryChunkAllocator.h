@@ -4,6 +4,7 @@
 #include "GlobalMemoryUser.h"
 #include <cstddef>
 #include "../Platform.h"
+#include <assert.h>
 
 namespace ECS { namespace Memory {
 
@@ -23,25 +24,28 @@ namespace ECS { namespace Memory {
 		{
 		public: 
 			Allocators::PoolAllocator* allocator;
-			std::list<OBJECT_CLASS> objects;
-
+			std::list<OBJECT_CLASS*> objects;
+			uptr			chunkStart;
+			uptr			chunkEnd;
 			MemoryChunk(Allocators::PoolAllocator * in_allocator) : allocator(in_allocator) 
 			{
+				this->chunkStart = reinterpret_cast<uptr>(allocator->GetMemoryAddress0());
+				this->chunkEnd = this->chunkStart + perChunkMem;
 				this->objects.clear();
 			}
 		};
 
 		// Iterator class
-		class iterator : public std::iterator<std::forward_iterator_tag, OBJECT_TYPE>
+		class iterator : public std::iterator<std::forward_iterator_tag, OBJECT_CLASS>
 		{
-			typename MemoryChunks::iterator	m_CurrentChunk;
-			typename MemoryChunks::iterator	m_End;
+			typename std::list<MemoryChunk*>::iterator	m_CurrentChunk;
+			typename std::list<MemoryChunk*>::iterator	m_End;
 
-			typename ObjectList::iterator	m_CurrentObject;
+			typename std::list<OBJECT_CLASS*>::iterator	m_CurrentObject;
 
 		public:
 
-			iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end) :
+			iterator(typename std::list<MemoryChunk*>::iterator begin, typename std::list<MemoryChunk*>::iterator end) :
 				m_CurrentChunk(begin),
 				m_End(end)
 			{
@@ -78,8 +82,8 @@ namespace ECS { namespace Memory {
 				return *this;
 			}
 
-			inline OBJECT_TYPE& operator*() const { return *m_CurrentObject; }
-			inline OBJECT_TYPE* operator->() const { return *m_CurrentObject; }
+			inline OBJECT_CLASS& operator*() const { return *m_CurrentObject; }
+			inline OBJECT_CLASS* operator->() const { return *m_CurrentObject; }
 
 			inline bool operator==(iterator& other) {
 				return ((this->m_CurrentChunk == other.m_CurrentChunk) && (this->m_CurrentObject == other.m_CurrentObject));
@@ -107,11 +111,12 @@ namespace ECS { namespace Memory {
 			{
 				for (auto obj : chunk->objects)
 					((OBJECT_CLASS*)obj)->~OBJECT_CLASS();
+
 				
 				chunk->objects.clear();
 
-				Free((void*)chunk)->allocator->GetMemoryAddress0();
-				delete chunk->allocator();
+				Free((void*)chunk->allocator->GetMemoryAddress0());
+				delete chunk->allocator;
 
 				delete chunk;
 				chunk = nullptr;
@@ -151,6 +156,28 @@ namespace ECS { namespace Memory {
 			}
 			return slot;
 		}
+
+		void DestroyObject(void* object)
+		{
+			uptr adr = reinterpret_cast<uptr>(object);
+
+			for (auto chunk : this->memoryChunks)
+			{
+				if (chunk->chunkStart <= adr && adr < chunk->chunkEnd)
+				{
+					// note: no need to call d'tor since it was called already by 'delete'
+
+					chunk->objects.remove((OBJECT_CLASS*)object);
+					chunk->allocator->free(object);
+					return;
+				}
+			}
+
+			assert(false && "Failed to delete object. Memory corruption?!");
+		}
+
+		inline iterator begin() { return iterator(this->memoryChunks.begin(), this->memoryChunks.end()); }
+		inline iterator end() { return iterator(this->memoryChunks.end(), this->memoryChunks.end()); }
 	};
 
 }}
