@@ -1,7 +1,7 @@
 #include "Engine/Core/ECS/Utils/FamilyTypeID.h"
 #include <iostream>
-#include "Engine/Core/ECS/Memory/Allocators/PoolAllocator.h"
-#include "Engine/Core/ECS/Memory/Allocators/StackAllocator.h"
+#include "Engine/Core/Memory/Allocators/PoolAllocator.h"
+#include "Engine/Core/Memory/Allocators/StackAllocator.h"
 #define NOMINMAX
 #include <windows.h>
 #include "Engine/Core/ECS/IEntity.h"

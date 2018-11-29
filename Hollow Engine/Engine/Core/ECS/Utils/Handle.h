@@ -1,7 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <limits>
-#include "../Platform.h"
+#include "../../Platform.h"
 #include <vector>
 #include <algorithm>
 
@@ -11,36 +11,39 @@ namespace ECS { namespace util {
 		template<typename handle_value_type, size_t version_bits, size_t index_bits>
 		union Handle
 		{
-			static_assert(sizeof(handle_value_type) * CHAR_BIT >= (version_bits + index_bits), "Invalid handle layout. More bits used than base value type can hold!");
+			using value_type = handle_value_type;
+
+
+			static_assert(sizeof(value_type) * CHAR_BIT >= (version_bits + index_bits), "Invalid handle layout. More bits used than base value type can hold!");
 
 			static constexpr size_t NUM_VERSION_BITS{version_bits};
 			static constexpr size_t NUM_INDEX_BITS{index_bits};
 
-			static constexpr handle_value_type MIN_VERSION{0};
-			static constexpr handle_value_type MAX_VERSION{ ( 1U << NUM_VERSION_BITS ) - 2U };
-			static constexpr handle_value_type MAX_INDICES{ (1U << NUM_INDEX_BITS) - 2U };
+			static constexpr value_type MIN_VERSION{0};
+			static constexpr value_type MAX_VERSION{ ( 1U << NUM_VERSION_BITS ) - 2U };
+			static constexpr value_type MAX_INDICES{ (1U << NUM_INDEX_BITS) - 2U };
 
-			static constexpr handle_value_type INVALID_HANDLE{std::numeric_limits<handle_value_type>::max()};
+			static constexpr value_type INVALID_HANDLE{std::numeric_limits<value_type>::max()};
 		private:
-			handle_value_type value;
+			value_type value;
 		public:
 			struct 
 			{
-				handle_value_type index		: NUM_INDEX_BITS;
-				handle_value_type version	: NUM_VERSION_BITS;
+				value_type index		: NUM_INDEX_BITS;
+				value_type version	: NUM_VERSION_BITS;
 			};
 			Handle() {}
 
-			Handle(handle_value_type value) :
+			Handle(value_type value) :
 				value(value)
 			{}
 
-			Handle(handle_value_type value, handle_value_type index) :
+			Handle(value_type value, value_type index) :
 				index(index),
 				version(version)
 			{}
 
-			inline operator handle_value_type() const { return value; }
+			inline operator value_type() const { return value; }
 		};
 	}
 

@@ -16,6 +16,8 @@ namespace ECS { namespace Memory {
 
 		const char* m_AllocatorTag;
 
+	public:
+
 		// Memory chunk allocator class
 		class MemoryChunk 
 		{
@@ -28,6 +30,66 @@ namespace ECS { namespace Memory {
 				this->objects.clear();
 			}
 		};
+
+		// Iterator class
+		class iterator : public std::iterator<std::forward_iterator_tag, OBJECT_TYPE>
+		{
+			typename MemoryChunks::iterator	m_CurrentChunk;
+			typename MemoryChunks::iterator	m_End;
+
+			typename ObjectList::iterator	m_CurrentObject;
+
+		public:
+
+			iterator(typename MemoryChunks::iterator begin, typename MemoryChunks::iterator end) :
+				m_CurrentChunk(begin),
+				m_End(end)
+			{
+				if (begin != end)
+				{
+					assert((*m_CurrentChunk) != nullptr);
+					m_CurrentObject = (*m_CurrentChunk)->objects.begin();
+				}
+				else
+				{
+					m_CurrentObject = (*std::prev(m_End))->objects.end();
+				}
+			}
+
+
+			inline iterator& operator++()
+			{
+				// move to next object in current chunk
+				m_CurrentObject++;
+
+				// if we reached end of list, move to next chunk
+				if (m_CurrentObject == (*m_CurrentChunk)->objects.end())
+				{
+					m_CurrentChunk++;
+
+					if (m_CurrentChunk != m_End)
+					{
+						// set object iterator to begin of next chunk list
+						assert((*m_CurrentChunk) != nullptr);
+						m_CurrentObject = (*m_CurrentChunk)->objects.begin();
+					}
+				}
+
+				return *this;
+			}
+
+			inline OBJECT_TYPE& operator*() const { return *m_CurrentObject; }
+			inline OBJECT_TYPE* operator->() const { return *m_CurrentObject; }
+
+			inline bool operator==(iterator& other) {
+				return ((this->m_CurrentChunk == other.m_CurrentChunk) && (this->m_CurrentObject == other.m_CurrentObject));
+			}
+			inline bool operator!=(iterator& other)
+			{
+				return ((this->m_CurrentChunk != other.m_CurrentChunk) && (this->m_CurrentObject != other.m_CurrentObject));
+			}
+
+		}; // ComponentContainer::iterator
 
 	protected:
 		std::list<MemoryChunk*> memoryChunks;
