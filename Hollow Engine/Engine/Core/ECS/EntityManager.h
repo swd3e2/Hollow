@@ -1,11 +1,20 @@
 #pragma once
+
+#ifndef __ENTITY_MANAGER_H__
+#define __ENTITY_MANAGER_H__
+
 #include "Utils/Handle.h"
 #include "IEntity.h"
 #include "../Memory/MemoryChunkAllocator.h"
 #include <unordered_map>
-
+#include "ComponentManager.h"
+#include <typeinfo>
 #define ENTITY_T_CHUNK_SIZE					512
+#pragma warning(push)
 
+// warning C4291: 'void *operator new(::size_t,void *) throw()': no matching operator delete found; memory will not be freed if initialization throws an exception
+// note we are using custom memory allocator no need for delete
+#pragma warning(disable: 4291)
 namespace ECS {
 
 	class EntityManager
@@ -49,7 +58,7 @@ namespace ECS {
 		std::vector<std::size_t>							m_PendingDestroyedEntities;
 		std::size_t											m_NumPendingDestroyedEntities;
 
-		//ComponentManager * componentManager;
+		ComponentManager * componentManager;
 	private:
 		EntityManager(const EntityManager&) = delete;
 		EntityManager& operator=(EntityManager&) = delete;
@@ -69,9 +78,7 @@ namespace ECS {
 				this->m_EntityRegistry[EID] = ec;
 			}
 			else
-			{
 				ec = (EntityContainer<T>*)it->second;
-			}
 
 			assert(ec != nullptr);
 			return ec;
@@ -80,22 +87,25 @@ namespace ECS {
 		EntityId AqcuireEntityId(IEntity* entity);
 		void ReleaseEntityId(EntityId id);
 	public:
-		EntityManager();
-		//EntityManager(ComponentManager* componentManagerInstance);
+		EntityManager(ComponentManager* componentManagerInstance);
 		~EntityManager();
 
 		template<class T, class ...ARGS>
 		EntityId CreateEntity(ARGS&& ...args)
 		{
-			void* pObjectMem = GetEntityContainer<T>();
+			// aqcuire memory for new entity object of type T
+			void* pObjectMemory = GetEntityContainer<T>()->CreateObject();
 
-			ECS::EntityId entityID = this->AqcuireEntityId((T*)pObjectMem);
+			ECS::EntityId entityId = this->AqcuireEntityId((T*)pObjectMemory);
 
-			((T*)pObjectMem)->m_EntityID = entityID;
-			//((T*)pObjectMemory)->m_ComponentManagerInstance = this->m_ComponentManagerInstance;
-				
-			IEntity* entity = new (pObjectMem)T(std::forward<ARGS>(args)...);
-			return entityID;
+		
+
+			// create entity inplace
+			IEntity* entity = new (pObjectMemory)T(std::forward<ARGS>(args)...);
+			entity->m_EntityID = entityId;
+			entity->m_ComponentManagerInstance = this->componentManager;
+
+			return entityId;
 		}
 
 		void DestroyEntity(EntityId entityID)
@@ -129,3 +139,7 @@ namespace ECS {
 	};
 
 }
+
+#pragma warning(pop)
+
+#endif

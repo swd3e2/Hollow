@@ -1,8 +1,13 @@
 #pragma once
+
+#ifndef __I_ENTITY_H__
+#define __I_ENTITY_H__
+
 #include "../Platform.h"
 #include "Utils/Handle.h"
 
 namespace ECS {
+	class ComponentManager;
 
 	using EntityTypeId = TypeID;
 	using EntityId = util::Handle64;
@@ -13,7 +18,7 @@ namespace ECS {
 		friend class EntityManager;
 	private:
 		// set on create; in EntityManager
-		//ComponentManager*	m_ComponentManagerInstance;
+		ComponentManager*	m_ComponentManagerInstance;
 	protected:
 		// set on create; in EntityManager
 		EntityId				m_EntityID;
@@ -26,19 +31,19 @@ namespace ECS {
 		template<class T>
 		T* GetComponent() const
 		{
-			//return this->m_ComponentManagerInstance->GetComponent<T>(this->m_EntityID);
+			return this->m_ComponentManagerInstance->GetComponent<T>(this->m_EntityID);
 		}
 
 		template<class T, class ...P>
 		T* AddComponent(P&&... param)
 		{
-			//return this->m_ComponentManagerInstance->AddComponent<T>(this->m_EntityID, std::forward<P>(param)...);
+			return this->m_ComponentManagerInstance->AddComponent<T>(this->m_EntityID, std::forward<P>(param)...);
 		}
 
 		template<class T>
 		void RemoveComponent()
 		{
-			//this->m_ComponentManagerInstance->RemoveComponent<T>(this->m_EntityID);
+			this->m_ComponentManagerInstance->RemoveComponent<T>(this->m_EntityID);
 		}
 
 		// COMPARE ENTITIES
@@ -62,3 +67,5 @@ namespace ECS {
 	};
 
 }
+
+#endif // __I_ENTITY_H__

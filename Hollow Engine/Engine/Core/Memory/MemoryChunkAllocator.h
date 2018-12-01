@@ -133,7 +133,7 @@ namespace ECS { namespace Memory {
 				if (chunk->objects.size() > MAX_OBJECTS)
 					continue;
 
-				slot = chunk->allocate(sizeof(OBJECT_CLASS), alignof(OBJECT_CLASS));
+				slot = chunk->allocator->allocate(sizeof(OBJECT_CLASS), alignof(OBJECT_CLASS));
 				if (slot != nullptr)
 				{
 					chunk->objects.push_back((OBJECT_CLASS*)slot);

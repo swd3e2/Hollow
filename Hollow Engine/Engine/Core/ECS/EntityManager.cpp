@@ -2,10 +2,10 @@
 
 namespace ECS
 {
-	EntityManager::EntityManager() :
+	EntityManager::EntityManager(ComponentManager* componentManagerInstance) :
 		m_PendingDestroyedEntities(1024),
-		m_NumPendingDestroyedEntities(0)
-		//m_ComponentManagerInstance(componentManagerInstance)
+		m_NumPendingDestroyedEntities(0),
+		componentManager(componentManagerInstance)
 	{
 	}
 

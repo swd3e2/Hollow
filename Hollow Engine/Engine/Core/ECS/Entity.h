@@ -10,9 +10,9 @@ namespace ECS {
 		void operator delete(void*) = delete;
 		void operator delete[](void*) = delete;
 	public:
-		static const std::size_t STATIC_ENTITY_TYPE_ID;
+		static const EntityTypeId STATIC_ENTITY_TYPE_ID;
 	public:
-		virtual const std::size_t GetStaticEntityTypeID() const override { return STATIC_ENTITY_TYPE_ID; };
+		virtual const EntityTypeId GetStaticEntityTypeID() const override { return STATIC_ENTITY_TYPE_ID; };
 
 		Entity() {}
 
@@ -20,6 +20,6 @@ namespace ECS {
 	};
 
 	template<class T>
-	const std::size_t Entity<T>::STATIC_ENTITY_TYPE_ID = util::Internal::FamilyTypeID<IEntity>::Get<T>();
+	const EntityTypeId Entity<T>::STATIC_ENTITY_TYPE_ID = util::Internal::FamilyTypeID<IEntity>::Get<T>();
 
 }

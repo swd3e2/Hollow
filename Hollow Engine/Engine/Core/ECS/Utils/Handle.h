@@ -39,7 +39,7 @@ namespace ECS { namespace util {
 				value(value)
 			{}
 
-			Handle(value_type value, value_type index) :
+			Handle(value_type index, value_type version) :
 				index(index),
 				version(version)
 			{}

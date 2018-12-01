@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\ECS\Component.h" />
+    <ClInclude Include="Engine\Core\ECS\ComponentManager.h" />
     <ClInclude Include="Engine\Core\ECS\Entity.h" />
     <ClInclude Include="Engine\Core\ECS\EntityManager.h" />
     <ClInclude Include="Engine\Core\ECS\IEntity.h" />
@@ -30,9 +32,13 @@
     <ClInclude Include="Engine\Core\Memory\Utils\PointerMath.h" />
     <ClInclude Include="Engine\Core\Platform.h" />
     <ClInclude Include="Engine\Core\ECS\Utils\Handle.h" />
+    <ClInclude Include="Test\AllocatorsTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\ECS\ComponentManager.cpp" />
     <ClCompile Include="Engine\Core\ECS\EntityManager.cpp" />
+    <ClCompile Include="Engine\Core\ECS\IComponent.cpp" />
+    <ClCompile Include="Engine\Core\ECS\IComponent.h" />
     <ClCompile Include="Engine\Core\ECS\IEntity.cpp" />
     <ClCompile Include="Engine\Core\Memory\GlobalMemoryUser.h" />
     <ClCompile Include="Engine\Core\Memory\MemoryChunkAllocator.h" />
