@@ -1,8 +1,8 @@
 #pragma once
 #define NOMINMAX
 #include <windows.h>
-#include "../Engine/Core/Memory/Allocators/PoolAllocator.h"
-#include "../Engine/Core/Memory/Allocators/StackAllocator.h"
+#include "../Engine/Memory/Allocators/PoolAllocator.h"
+#include "../Engine/Memory/Allocators/StackAllocator.h"
 
 void AllocatorsTest()
 {

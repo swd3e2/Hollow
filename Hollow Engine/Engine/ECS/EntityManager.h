@@ -98,10 +98,9 @@ namespace ECS {
 
 			ECS::EntityId entityId = this->AqcuireEntityId((T*)pObjectMemory);
 
-		
-
 			// create entity inplace
 			IEntity* entity = new (pObjectMemory)T(std::forward<ARGS>(args)...);
+
 			entity->m_EntityID = entityId;
 			entity->m_ComponentManagerInstance = this->componentManager;
 

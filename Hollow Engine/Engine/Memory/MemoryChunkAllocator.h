@@ -16,9 +16,7 @@ namespace ECS { namespace Memory {
 		static const std::size_t perChunkMem = (sizeof(OBJECT_CLASS) + alignof(OBJECT_CLASS)) * MAX_OBJECTS;
 
 		const char* m_AllocatorTag;
-
 	public:
-
 		// Memory chunk allocator class
 		class MemoryChunk 
 		{
@@ -55,9 +53,7 @@ namespace ECS { namespace Memory {
 					m_CurrentObject = (*m_CurrentChunk)->objects.begin();
 				}
 				else
-				{
 					m_CurrentObject = (*std::prev(m_End))->objects.end();
-				}
 			}
 
 
