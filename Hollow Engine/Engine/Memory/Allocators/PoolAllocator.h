@@ -42,13 +42,16 @@ namespace Hollow { namespace Core { namespace Memory {
 		void clear() override
 		{
 			unsigned short adjustment = GetAdjustment(this->m_MemoryFirstAddress, this->objectAlignment);
-			unsigned int objectsCount = floor(this->m_MemorySize - adjustment / this->objectSize);
-
+			
+			unsigned int objectsCount = floor((this->m_MemorySize - adjustment) / this->objectSize);
+			
+			this->freeList += adjustment;
+			
 			void** p = this->freeList;
 
-			for (unsigned int i = 0; i < objectsCount - 1; i++)
+ 			for (unsigned int i = 0; i < objectsCount - 1; i++)
 			{
-				*p = (void*)((unsigned int)p + this->objectSize);
+				*p = (void*)(reinterpret_cast<unsigned int>(p) + this->objectSize);
 				p = (void**)*p;
 			}
 		}
