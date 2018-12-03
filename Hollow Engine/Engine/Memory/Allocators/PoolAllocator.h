@@ -18,7 +18,7 @@ namespace Hollow { namespace Core { namespace Memory {
 		unsigned int objectAlignment;
 	public:
 		PoolAllocator(void* pMem, unsigned int size, unsigned int objectSize, unsigned int objectAlignment) :
-			objectSize(objectSize), objectAlignment(objectAlignment), freeList(&pMem),
+			objectSize(objectSize), objectAlignment(objectAlignment), freeList((void**)pMem),
 			BaseAllocator(pMem, size)
 		{
 			this->clear();
