@@ -1,24 +1,61 @@
-#ifndef __LINEAR_ALLOC_H__
-#define __LINEAR_ALLOC_H__
+#pragma once
 
-#include "IAllocator.h"
-#include <assert.h>
+#ifndef __LINEAR_ALLOCATOR__
+#define __LINEAR_ALLOCATOR__
+#include "BaseAllocator.h"
+#include "PointerMathUtils.h"
 
-namespace ECS { namespace Memory { namespace Allocators {
+namespace Hollow { namespace Core { namespace Memory {
 
-	class LinearAllocator : public IAllocator
+	// Class LinearAlloctor
+	class LinearAllocator : public BaseAllocator
 	{
 	public:
+		LinearAllocator(void* pMem, unsigned int size) :
+			BaseAllocator(pMem, size)
+		{}
+		
+		~LinearAllocator()
+		{
+			this->clear();
+		}
 
-		LinearAllocator(size_t memSize, const void* mem);
+		void* allocate(unsigned int size, unsigned int alignment) override
+		{
+			assert(size < this->m_MemorySize);
 
-		virtual ~LinearAllocator();
+			union
+			{
+				uintptr_t asUIntPtr;
+				void* asVoidPtr;
+			};
 
-		virtual void* allocate(size_t size, u8 alignment) override;
-		virtual void free(void* p) override;
-		virtual void clear() override;
+			asVoidPtr = (void*)this->m_MemoryFirstAddress;
+			asUIntPtr += this->m_MemoryUsed;
 
-	}; 
+			unsigned char adjustment = GetAdjustment(asVoidPtr, alignment);
+
+			// Out of memory
+			if (this->m_MemoryUsed + size + adjustment > this->m_MemorySize)
+				return nullptr;
+			
+			this->m_MemoryUsed += size + adjustment;
+			this->m_Allocations++;
+
+			return asVoidPtr;
+		}
+
+		void free(void* pMemory) override
+		{
+			assert(false);
+		}
+
+		void clear() override
+		{
+			this->m_MemoryUsed = 0;
+			this->m_Allocations = 0;
+		}
+	};
 
 }}}
 

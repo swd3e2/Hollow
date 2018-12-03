@@ -1,24 +1,59 @@
 #pragma once
-#include "../../Platform.h"
-#include "IAllocator.h"
-#include "../Utils/PointerMath.h"
 
-namespace ECS { namespace Memory { namespace Allocators { 
+#ifndef __POOL_ALLOCATOR__
+#define __POOL_ALLOCATOR__
+#include "BaseAllocator.h"
+#include "PointerMathUtils.h"
+#include <cmath>
 
-	class PoolAllocator : public IAllocator
+namespace Hollow { namespace Core { namespace Memory {
+
+	// Class PoolAlloctor
+	class PoolAllocator : public BaseAllocator
 	{
 	private:
-		const std::size_t	OBJECT_SIZE;
-		const u8	   OBJECT_ALIGNMENT;
-
 		void** freeList;
+
+		unsigned int objectSize;
+		unsigned int objectAlignment;
 	public:
-		PoolAllocator(std::size_t memSize, const void* mem, std::size_t objectSize, u8 objectAlignment);
+		PoolAllocator(void* pMem, unsigned int size, unsigned int objectSize, unsigned int objectAlignment) :
+			objectSize(objectSize), objectAlignment(objectAlignment), freeList(&pMem),
+			BaseAllocator(pMem, size)
+		{
+			this->clear();
+		}
 
-		virtual ~PoolAllocator();
+		~PoolAllocator()
+		{
+			this->clear();
+		}
 
-		virtual void* allocate(std::size_t size, u8 alignment) override;
-		virtual void free(void * mem) override;
-		virtual void clear() override;
+		void* allocate(unsigned int size, unsigned int alignment) override
+		{
+			return (void*)this->m_MemoryFirstAddress;
+		}
+
+		void free(void* pMemory) override
+		{
+
+		}
+
+		void clear() override
+		{
+			unsigned short adjustment = GetAdjustment(this->m_MemoryFirstAddress, this->objectAlignment);
+			unsigned int objectsCount = floor(this->m_MemorySize - adjustment / this->objectSize);
+
+			void** p = this->freeList;
+
+			for (unsigned int i = 0; i < objectsCount - 1; i++)
+			{
+				*p = (void*)((unsigned int)p + this->objectSize);
+				p = (void**)*p;
+			}
+		}
 	};
+
 }}}
+
+#endif

@@ -19,47 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\ECS\Component.h" />
-    <ClInclude Include="Engine\ECS\ComponentManager.h" />
-    <ClInclude Include="Engine\ECS\Entity.h" />
-    <ClInclude Include="Engine\ECS\EntityManager.h" />
-    <ClInclude Include="Engine\ECS\IEntity.h" />
-    <ClInclude Include="Engine\ECS\ISystem.h" />
-    <ClInclude Include="Engine\ECS\System.h" />
-    <ClInclude Include="Engine\ECS\SystemManager.h" />
-    <ClInclude Include="Engine\Memory\Allocators\IAllocator.h" />
+    <ClInclude Include="Engine\Memory\Allocators\BaseAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\LinearAllocator.h" />
+    <ClInclude Include="Engine\Memory\Allocators\PointerMathUtils.h" />
     <ClInclude Include="Engine\Memory\Allocators\PoolAllocator.h" />
-    <ClInclude Include="Engine\Memory\Allocators\StackAllocator.h" />
-    <ClInclude Include="Engine\Memory\MemoryManager.h" />
-    <ClInclude Include="Engine\ECS\Utils\FamilyTypeID.h" />
-    <ClInclude Include="Engine\Memory\Utils\PointerMath.h" />
-    <ClInclude Include="Engine\Platform.h" />
-    <ClInclude Include="Engine\ECS\Utils\Handle.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Test\AllocatorsTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\ECS\ComponentManager.cpp" />
-    <ClCompile Include="Engine\ECS\EntityManager.cpp" />
-    <ClCompile Include="Engine\ECS\IComponent.cpp" />
-    <ClCompile Include="Engine\ECS\IComponent.h" />
-    <ClCompile Include="Engine\ECS\IEntity.cpp" />
-    <ClCompile Include="Engine\ECS\ISystem.cpp" />
-    <ClCompile Include="Engine\ECS\SystemManager.cpp" />
-    <ClCompile Include="Engine\Memory\Allocators\LinearAllocator.cpp" />
-    <ClCompile Include="Engine\Memory\GlobalMemoryUser.h" />
-    <ClCompile Include="Engine\Memory\MemoryChunkAllocator.h" />
-    <ClCompile Include="Engine\Memory\MemoryManager.cpp" />
-    <ClCompile Include="Engine\ECS\Utils\FamilyTypeID.cpp" />
     <ClCompile Include="Engine\Window\Window.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Engine\Memory\Allocators\IAllocator.cpp" />
-    <ClCompile Include="Engine\Memory\Allocators\PoolAllocator.cpp" />
-    <ClCompile Include="Engine\Memory\Allocators\StackAllocator.cpp" />
-    <ClCompile Include="Test\ManagersTest.cpp" />
-    <ClCompile Include="Test\ManagersTest.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
