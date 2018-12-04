@@ -63,9 +63,9 @@ namespace Hollow { namespace Core { namespace Memory {
 			
 			void** p = this->freeList;
 
- 			for (unsigned int i = 0; i < objectsCount - 1; i++)
+ 			for (unsigned int i = 0; i < objectsCount - 1; i++) 
 			{
-				*p = (void*)(reinterpret_cast<unsigned int>(p) + this->objectSize);
+				*p = (void*)(reinterpret_cast<uintptr_t>(p) + this->objectSize);
 				p = (void**)*p;
 			}
 		}

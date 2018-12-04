@@ -23,6 +23,7 @@
     <ClInclude Include="Engine\Memory\Allocators\LinearAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\PointerMathUtils.h" />
     <ClInclude Include="Engine\Memory\Allocators\PoolAllocator.h" />
+    <ClInclude Include="Engine\Memory\Allocators\StackAllocator.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\Engine.h" />
   </ItemGroup>
