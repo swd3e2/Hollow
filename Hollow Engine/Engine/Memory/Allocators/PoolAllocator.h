@@ -31,18 +31,32 @@ namespace Hollow { namespace Core { namespace Memory {
 
 		void* allocate(unsigned int size, unsigned int alignment) override
 		{
-			return (void*)this->m_MemoryFirstAddress;
+			if (this->m_MemoryUsed + this->objectSize > this->m_MemorySize) {
+				return nullptr;
+			}
+
+			void* p = this->freeList;
+
+			this->freeList = (void**)*this->freeList;
+
+			this->m_MemoryUsed += this->objectSize;
+			this->m_Allocations++;
+			return p;
 		}
 
 		void free(void* pMemory) override
 		{
+			*(void**)pMemory = this->freeList;
 
+			this->freeList = (void**)pMemory;
+
+			this->m_MemoryUsed -= this->objectSize;
+			this->m_Allocations--;
 		}
 
 		void clear() override
 		{
 			unsigned short adjustment = GetAdjustment(this->m_MemoryFirstAddress, this->objectAlignment);
-			
 			unsigned int objectsCount = floor((this->m_MemorySize - adjustment) / this->objectSize);
 			
 			this->freeList += adjustment;
