@@ -7,43 +7,50 @@
 
 namespace Hollow { namespace Core { namespace Memory {
 
-	// Allocators base class describing the allocator interface. 
-	class LinearAllocator : public BaseAllocator
+	// Class StackAllocator
+	class StackAllocator : public BaseAllocator
 	{
 		struct AllocatorHeader {
-			unsigned int size;
+			unsigned char alignment;
 		};
 
 	public:
-		LinearAllocator(void* pMem, unsigned int size) :
+		StackAllocator(void* pMem, unsigned int size) :
 			BaseAllocator(pMem, size)
 		{}
 
-		virtual ~LinearAllocator() 
+		virtual ~StackAllocator()
 		{
 			this->clear();
 		}
 
 		virtual void* allocate(unsigned int size, unsigned int alignment)
 		{
-			if (this->m_MemoryUsed + size > this->m_MemorySize) 
+			void* p = (void*)(reinterpret_cast<uintptr_t>(this->m_MemoryFirstAddress) + this->m_MemoryUsed);
+
+			unsigned char adjustment = GetAdjustmentWithHeader(p, alignment, sizeof(AllocatorHeader));
+
+			if (this->m_MemoryUsed + size + adjustment > this->m_MemorySize)
 			{
 				return nullptr;
 			}
-			unsigned char adjustment = GetAdjustmentWithHeader();
 
-			void* p = (void*)(reinterpret_cast<uintptr_t>(this->m_MemoryFirstAddress) + this->m_MemoryUsed + size);
+			((AllocatorHeader*)p)->alignment = adjustment;
+
+			p = (void*)(reinterpret_cast<uintptr_t>(p) + sizeof(AllocatorHeader));
 
 			this->m_Allocations++;
-			this->m_MemoryUsed += size;
+			this->m_MemoryUsed += size + adjustment;
 
 			return p;
 		}
 
-		virtual void free(void* pMmem)
+		virtual void free(void* pMem)
 		{
+			unsigned char adjustment = ((AllocatorHeader*)(reinterpret_cast<uintptr_t>(pMem) - sizeof(AllocatorHeader)))->alignment;
+			
 			this->m_Allocations--;
-			this->m_MemoryUsed;
+			this->m_MemoryUsed -= reinterpret_cast<uintptr_t>(this->m_MemoryFirstAddress) + this->m_MemoryUsed - reinterpret_cast<uintptr_t>(pMem) + adjustment;
 		}
 
 		virtual void clear()

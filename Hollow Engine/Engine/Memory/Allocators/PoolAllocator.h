@@ -2,8 +2,10 @@
 
 #ifndef __POOL_ALLOCATOR__
 #define __POOL_ALLOCATOR__
+
 #include "BaseAllocator.h"
 #include "PointerMathUtils.h"
+
 #include <cmath>
 
 namespace Hollow { namespace Core { namespace Memory {

@@ -24,16 +24,9 @@ namespace Hollow { namespace Core { namespace Memory {
 		{
 			assert(size < this->m_MemorySize);
 
-			union
-			{
-				uintptr_t asUIntPtr;
-				void* asVoidPtr;
-			};
+			void* p = (void*)(reinterpret_cast<unsigned int>(this->m_MemoryFirstAddress) + this->m_MemoryUsed);
 
-			asVoidPtr = (void*)this->m_MemoryFirstAddress;
-			asUIntPtr += this->m_MemoryUsed;
-
-			unsigned char adjustment = GetAdjustment(asVoidPtr, alignment);
+			unsigned char adjustment = GetAdjustment(p, alignment);
 
 			// Out of memory
 			if (this->m_MemoryUsed + size + adjustment > this->m_MemorySize)
@@ -42,7 +35,7 @@ namespace Hollow { namespace Core { namespace Memory {
 			this->m_MemoryUsed += size + adjustment;
 			this->m_Allocations++;
 
-			return asVoidPtr;
+			return p;
 		}
 
 		void free(void* pMemory) override

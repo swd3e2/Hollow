@@ -29,15 +29,19 @@ namespace Hollow { namespace Core { namespace Memory {
 	static inline unsigned char GetAdjustmentWithHeader(const void* address, unsigned char alignment, unsigned char headerSize)
 	{
 		unsigned char adjustment = GetAdjustment(address, alignment);
+		unsigned char neededSpace = headerSize;
 
-		if (adjustment < headerSize) {
-			headerSize -= adjustment;
+		if (adjustment < neededSpace)
+		{
+			neededSpace -= adjustment;
 
-			adjustment += alignment * (headerSize / alignment);
-			if (headerSize % adjustment > 0)
-				adjustment += alignment;
+			//Increase adjustment to fit header 
+			adjustment += alignment * (neededSpace / alignment);
+
+			if (neededSpace % alignment > 0) adjustment += alignment;
 		}
-		return alignment;
+
+		return adjustment;
 	}
 
 }}}
