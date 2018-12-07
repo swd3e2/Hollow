@@ -5,19 +5,48 @@
 #include "Engine/Memory/Allocators/PoolAllocator.h"
 #include "Engine/Memory/Allocators/StackAllocator.h"
 #include "Engine/Memory/MemoryChunk.h"
+#include "Engine/ECS/FamilyTypeID.h"
+#include "Engine/Memory/MemoryChunkManager.h"
 
-struct MyComponent
-{
-	float x, y, z;
-	char rotation;
-};
+namespace Hollow {
+	namespace Core {
+		namespace Utils {
+			class MyComponent
+			{
+			public:
+				float x, y, z;
+				char rotation;
+			};
+} } }
+
+using namespace Hollow::Core::Utils;
+
 void Test(MyComponent* component);
 void LinearTest();
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	Hollow::Core::Memory::MemoryChunk<MyComponent> chunk;
+	Hollow::Core::Memory::MemoryChunkManager<MyComponent, 512> manager("something");
+	MyComponent* component;
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
+	component = (MyComponent*)manager.CreateObject();
+	Test(component);
 
 	return 0;
 }
