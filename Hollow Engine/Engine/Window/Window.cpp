@@ -1,9 +1,6 @@
-#pragma once
 #define NOMINMAX
-#include "windows.h"
 #include "Window.h"
-#include <string>
-#include <iostream>
+
 
 HWND Window::hWnd = nullptr;
 

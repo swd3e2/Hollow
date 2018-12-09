@@ -2,10 +2,17 @@
 
 
 
-namespace Hollow { namespace Core { namespace Utils {
-	class MyComponent;
+namespace Hollow { 
+	class IEntity;
+	class IComponent;
 
-	unsigned int FamilyTypeID<MyComponent>::count = 0;
+	namespace Core { namespace Utils {
 
-	template class FamilyTypeID<MyComponent>;
-}}}
+		unsigned int FamilyTypeID<IEntity>::count = 0;
+		unsigned int FamilyTypeID<IComponent>::count = 0;
+
+		template class FamilyTypeID<IEntity>;
+		template class FamilyTypeID<IComponent>;
+
+	}}
+}

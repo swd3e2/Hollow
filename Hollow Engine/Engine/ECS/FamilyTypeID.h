@@ -13,6 +13,11 @@ namespace Hollow { namespace Core { namespace Utils {
 			static const unsigned int STATIC_TYPE_ID { count++ };
 			return STATIC_TYPE_ID;
 		}
+
+		static unsigned int Get()
+		{
+			return count;
+		}
 	};
 
 }}}

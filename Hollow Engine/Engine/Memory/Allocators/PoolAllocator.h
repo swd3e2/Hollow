@@ -5,7 +5,6 @@
 
 #include "BaseAllocator.h"
 #include "PointerMathUtils.h"
-
 #include <cmath>
 
 namespace Hollow { namespace Core { namespace Memory {
@@ -38,11 +37,13 @@ namespace Hollow { namespace Core { namespace Memory {
 			}
 
 			void* p = this->freeList;
-
+			
 			this->freeList = (void**)*this->freeList;
 
 			this->m_MemoryUsed += this->objectSize;
 			this->m_Allocations++;
+
+
 			return p;
 		}
 
@@ -59,7 +60,7 @@ namespace Hollow { namespace Core { namespace Memory {
 		void clear() override
 		{
 			unsigned short adjustment = GetAdjustment(this->m_MemoryFirstAddress, this->objectAlignment);
-			unsigned int objectsCount = floor((this->m_MemorySize - adjustment) / this->objectSize);
+			unsigned int objectsCount = (unsigned int)floor((this->m_MemorySize - adjustment) / this->objectSize);
 			
 			this->freeList += adjustment;
 			

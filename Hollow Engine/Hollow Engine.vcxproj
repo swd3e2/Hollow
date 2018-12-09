@@ -19,23 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Console.h" />
+    <ClInclude Include="Engine\ECS\ComponentManager.h" />
+    <ClInclude Include="Engine\ECS\Components\Component.h" />
     <ClInclude Include="Engine\ECS\Entities\Entity.h" />
+    <ClInclude Include="Engine\ECS\Entities\IEntity.h" />
+    <ClInclude Include="Engine\ECS\EntityManager.h" />
     <ClInclude Include="Engine\ECS\FamilyTypeID.h" />
     <ClInclude Include="Engine\Memory\Allocators\BaseAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\LinearAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\PointerMathUtils.h" />
     <ClInclude Include="Engine\Memory\Allocators\PoolAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\StackAllocator.h" />
-    <ClInclude Include="Engine\Memory\MemoryChunk.h" />
     <ClInclude Include="Engine\Memory\MemoryChunkManager.h" />
     <ClInclude Include="Engine\Memory\MemoryUser.h" />
     <ClInclude Include="Engine\Memory\StackMemoryManager.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\ECS\Components\IComponent.h" />
+    <ClInclude Include="Engine\Log.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\ComponentManager.cpp" />
     <ClCompile Include="Engine\ECS\FamilTypeID.cpp" />
+    <ClCompile Include="Engine\Memory\StackMemoryManager.cpp" />
     <ClCompile Include="Engine\Window\Window.cpp" />
+    <ClCompile Include="Engine\Log.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -96,6 +105,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,6 +114,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\include\spdlog</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

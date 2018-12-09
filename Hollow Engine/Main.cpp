@@ -4,20 +4,33 @@
 #include "Engine/Memory/Allocators/LinearAllocator.h"
 #include "Engine/Memory/Allocators/PoolAllocator.h"
 #include "Engine/Memory/Allocators/StackAllocator.h"
-#include "Engine/Memory/MemoryChunk.h"
 #include "Engine/ECS/FamilyTypeID.h"
 #include "Engine/Memory/MemoryChunkManager.h"
+#include "Engine/ECS/EntityManager.h"
+#include "Engine/ECS/Entities/Entity.h"
+#include "Engine/Console.h"
+#include "Engine/Log.h"
+#include "Engine/ECS/ComponentManager.h"
+#include "Engine/ECS/Components/Component.h"
+
+class GameObject : public Hollow::Entity<GameObject>
+{
+public:
+	GameObject() {}
+};
+void MemoryChunkManagerTest();
+void EntityManagerTest();
 
 namespace Hollow {
 	namespace Core {
 		namespace Utils {
-			class MyComponent
+			class MyComponent : public Component<MyComponent>
 			{
 			public:
 				float x, y, z;
 				char rotation;
 			};
-} } }
+}}}
 
 using namespace Hollow::Core::Utils;
 
@@ -27,26 +40,11 @@ void LinearTest();
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	Hollow::Core::Memory::MemoryChunkManager<MyComponent, 512> manager("something");
-	MyComponent* component;
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
-	component = (MyComponent*)manager.CreateObject();
-	Test(component);
+	Hollow::Console::RedirectIOToConsole();
+	Hollow::Log::Init();
+	EntityManagerTest();
+	Engine engine(hInst, pArgs);
+	engine.Run();
 
 	return 0;
 }
@@ -137,6 +135,33 @@ void StackTest()
 	comp2->y = 200000;
 	comp2->z = 300000;
 	ZeroMemory(pMem, 2 * sizeof(MyComponent));
+}
+
+void MemoryChunkManagerTest()
+{
+	
+}
+
+void EntityManagerTest()
+{
+	Hollow::ComponentManager cmanager;
+	Hollow::EntityManager manager(&cmanager);
+	GameObject* o;
+	o = manager.CreateEntity<GameObject>();
+	o->AddComponent<MyComponent>();
+	MyComponent* comp = cmanager.GetComponent<MyComponent>(o->GetEntityID());
+	ZeroMemory(o, sizeof(GameObject));
+	o = manager.CreateEntity<GameObject>();
+	ZeroMemory(o, sizeof(GameObject));
+	o = manager.CreateEntity<GameObject>();
+	ZeroMemory(o, sizeof(GameObject));
+	o = manager.CreateEntity<GameObject>();
+	o = manager.CreateEntity<GameObject>();
+	o = manager.CreateEntity<GameObject>();
+	o = manager.CreateEntity<GameObject>();
+	o = manager.CreateEntity<GameObject>();
+	o = manager.CreateEntity<GameObject>();
+	o = manager.CreateEntity<GameObject>();
 }
 
 void Test(MyComponent* component)
