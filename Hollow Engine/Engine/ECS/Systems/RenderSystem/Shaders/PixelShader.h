@@ -18,7 +18,7 @@ namespace Hollow {
 	class PixelShader : IShader
 	{
 	public:
-		void Init(ID3D11Device * device, std::wstring filename)
+		PixelShader(ID3D11Device * device, std::wstring filename)
 		{
 			HRESULT hr = CompileShader(filename.c_str(), "PSMain", "ps_5_0", pixelShaderBlob.GetAddressOf());
 

@@ -27,6 +27,7 @@ namespace Hollow {
 	{
 		return this->projectionMatrix;
 	}
+
 	XMMATRIX Camera::GetViewMatrixCopy()
 	{
 		return this->viewMatrix;

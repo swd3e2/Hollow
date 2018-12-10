@@ -3,6 +3,7 @@
 #pragma once
 #include <wrl\client.h>
 #include <d3d11.h>
+#include "../../../../Log.h"
 
 namespace Hollow {
 
@@ -10,12 +11,17 @@ namespace Hollow {
 	class IndexBuffer
 	{
 	public:
+		IndexBuffer(ID3D11Device * device, T * data, UINT numIndices)
+		{
+			Init(device, data, numIndices);
+		}
 		T * BufferData() { return m_Data; }
 
 		const UINT BufferSize() const { return m_numIndices; }
 
 		void Init(ID3D11Device * device, T * data, UINT numIndicies)
 		{
+			HRESULT hr = S_OK;
 			if (m_pIndexBuffer.Get() != nullptr)
 			{
 				m_pIndexBuffer.Reset();
@@ -35,11 +41,15 @@ namespace Hollow {
 			indexBufferData.SysMemPitch = 0;
 			indexBufferData.SysMemSlicePitch = 0;
 
-			device->CreateBuffer(
+			hr = device->CreateBuffer(
 				&indexBufferDesc,
 				&indexBufferData,
 				m_pIndexBuffer.GetAddressOf()
 			);
+			if (hr != S_OK)
+			{
+				Hollow::Log::GetCoreLogger()->error("IndexBuffer: Cant create buffer!");
+			}
 		}
 
 		ID3D11Buffer * Get() { return m_pIndexBuffer.Get(); }

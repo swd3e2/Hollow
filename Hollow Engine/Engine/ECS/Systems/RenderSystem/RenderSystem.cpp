@@ -12,7 +12,7 @@ namespace Hollow {
 
 		this->camera = new Camera();
 		this->camera->SetProjectionValues(85.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
-		this->camera->SetPosition(3.0f, 5.0f, -5.0f);
+		this->camera->SetPosition(3.0f, 2.0f, -5.0f);
 
 		this->CreateSwapChain();
 		this->InitDevices();
@@ -21,6 +21,45 @@ namespace Hollow {
 		this->DefineBlending();
 
 		constantBuffer.Init(m_Device.Get(), m_DeviceContext.Get());
+
+		D3D11_INPUT_ELEMENT_DESC bxlayout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,							   0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,	 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+		UINT numElements = ARRAYSIZE(bxlayout);
+
+		vertexShader = new VertexShader(m_Device.Get(), L"Engine/ECS/Systems/RenderSystem/Shaders/vs.hlsl", bxlayout, numElements);
+		pixelShader = new PixelShader(m_Device.Get(), L"Engine/ECS/Systems/RenderSystem/Shaders/ps.hlsl");
+
+		std::vector<SimpleVertex> * vertices = new std::vector<SimpleVertex>;
+		vertices->push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices->push_back({ XMFLOAT4(1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+		vertices->push_back({ XMFLOAT4(1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices->push_back({ XMFLOAT4(-1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
+
+		vertices->push_back({ XMFLOAT4(-1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) });
+		vertices->push_back({ XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices->push_back({ XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+		vertices->push_back({ XMFLOAT4(1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) });
+
+		unsigned int * indices = new unsigned int[36]{
+				2, 1, 0,
+				2, 0, 3,
+				2, 5, 1,
+				5, 7, 1,
+				4, 2, 3,
+				4, 5, 2,
+				4, 3, 0,
+				4, 0, 6,
+				1, 6, 0,
+				1, 7, 6,
+				5, 6, 7,
+				5, 4, 6
+		};
+
+		vertexBuffer = new VertexBuffer<SimpleVertex>(m_Device.Get(), vertices->data(), vertices->size());
+		indexBuffer = new IndexBuffer<unsigned int>(m_Device.Get(), indices, 36);
 	}
 
 	void RenderSystem::PreUpdate(float_t dt) 
@@ -34,8 +73,18 @@ namespace Hollow {
 		float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 		m_DeviceContext->ClearRenderTargetView(renderTarget->GetMainRenderTaget(), ClearColor);
 		m_DeviceContext->ClearDepthStencilView(depthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
 		m_DeviceContext->OMSetRenderTargets(1, renderTarget->GetAddressOfMainRenderTaget(), depthStencil->GetDepthStencilView());
+		m_DeviceContext->RSSetState(m_RasterizerState.Get());
+
+		m_DeviceContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
+		m_DeviceContext->IASetInputLayout(vertexShader->GetInputLayout());
+		m_DeviceContext->VSSetShader(vertexShader->GetShader(), NULL, 0);
+		m_DeviceContext->PSSetShader(pixelShader->GetShader(), NULL, 0);
+
+		UINT offset = 0;
+		m_DeviceContext->IASetVertexBuffers(0, 1, vertexBuffer->GetAddressOf(), vertexBuffer->StridePtr(), &offset);
+		m_DeviceContext->IASetIndexBuffer(indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+		m_DeviceContext->DrawIndexed(36, 0, 0);
 		m_pSwapChain->Present(1, 0);
 	}
 

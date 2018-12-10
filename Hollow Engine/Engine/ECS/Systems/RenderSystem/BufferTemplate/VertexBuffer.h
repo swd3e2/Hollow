@@ -4,6 +4,7 @@
 #include <wrl\client.h>
 #include <d3d11.h>
 #include <memory>
+#include "../../../../Log.h"
 
 namespace Hollow {
 
@@ -17,7 +18,11 @@ namespace Hollow {
 		std::unique_ptr<UINT> stride;
 		UINT bufferSize = 0;
 	public:
-		VertexBuffer() {}
+		VertexBuffer(ID3D11Device * device, T * data, UINT numVertices) 
+		{
+			Init(device, data, numVertices);
+		}
+
 		ID3D11Buffer * Get() { return buffer.Get(); }
 		ID3D11Buffer ** GetAddressOf() { return buffer.GetAddressOf(); }
 		UINT BufferSize() const { return bufferSize; }
@@ -26,8 +31,10 @@ namespace Hollow {
 		const UINT * StridePtr() const { return stride.get(); }
 		T * m_data;
 
-		HRESULT Init(ID3D11Device * device, T * data, UINT numVertices)
+		void Init(ID3D11Device * device, T * data, UINT numVertices)
 		{
+			HRESULT hr = S_OK;
+
 			if (buffer.Get() != nullptr)
 			{
 				buffer.Reset();
@@ -51,11 +58,16 @@ namespace Hollow {
 			vertexBufferData.SysMemPitch = 0;
 			vertexBufferData.SysMemSlicePitch = 0;
 
-			return device->CreateBuffer(
+			hr = device->CreateBuffer(
 				&vertexBufferDesc,
 				&vertexBufferData,
 				buffer.GetAddressOf()
 			);
+
+			if (hr != S_OK)
+			{
+				Hollow::Log::GetCoreLogger()->error("IndexBuffer: Cant create buffer!");
+			}
 		}
 	};
 

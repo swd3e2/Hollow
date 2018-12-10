@@ -12,7 +12,7 @@ namespace Hollow {
 	class VertexShader : IShader
 	{
 	public:
-		void Init(ID3D11Device * device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC * layoutDescription, UINT numElements)
+		VertexShader(ID3D11Device * device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC * layoutDescription, UINT numElements)
 		{
 			HRESULT hr = CompileShader(filename.c_str(), "VSMain", "vs_5_0", m_VertexShaderBlob.GetAddressOf());
 

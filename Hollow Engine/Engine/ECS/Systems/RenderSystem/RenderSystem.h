@@ -13,6 +13,11 @@
 #include "DepthStencil.h"
 #include "Camera.h"
 #include "BufferTemplate/ConstantBuffer.h"
+#include "Shaders/VertexShader.h"
+#include "Shaders/PixelShader.h"
+#include "BufferTemplate/IndexBuffer.h"
+#include "BufferTemplate/VertexBuffer.h"
+
 namespace Hollow {
 
 	struct ConstantBufferStruct
@@ -21,7 +26,11 @@ namespace Hollow {
 		DirectX::XMMATRIX mView;
 		DirectX::XMMATRIX mProjection;
 	};
-
+	struct SimpleVertex
+	{
+		DirectX::XMFLOAT4 Pos;
+		DirectX::XMFLOAT4 Color;
+	};
 	class RenderSystem : System<RenderSystem>
 	{
 	private:
@@ -44,6 +53,11 @@ namespace Hollow {
 		Microsoft::WRL::ComPtr<ID3D11SamplerState>			m_SampleStateClamp;
 		Microsoft::WRL::ComPtr<ID3D11BlendState>			Transparency;
 
+		VertexBuffer<SimpleVertex>*							vertexBuffer;
+		IndexBuffer<unsigned int>*							indexBuffer;
+
+		VertexShader*										vertexShader;
+		PixelShader*										pixelShader;
 		RenderTarget*										renderTarget;
 		DepthStencil*										depthStencil;
 		Camera*												camera;
