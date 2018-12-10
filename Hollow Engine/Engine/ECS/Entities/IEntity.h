@@ -26,7 +26,7 @@ namespace Hollow {
 		template<class T>
 		T* GetComponent() const
 		{
-			return this->m_ComponentManagerInstance->GetComponent<T>(this->m_EntityID);
+			return this->componentManager->GetComponent<T>(this->m_EntityID);
 		}
 
 		template<class T, class ...P>
