@@ -2,7 +2,7 @@
 
 #ifndef __ENTITY_MANAGER__
 #define __ENTITY_MANAGER__
-#include "../Memory/MemoryChunkManager.h"
+#include "Memory/MemoryChunkManager.h"
 #include "Entities/IEntity.h"
 #include "ComponentManager.h"
 #include <unordered_map>
@@ -109,6 +109,27 @@ namespace Hollow {
 			Hollow::Log::GetCoreLogger()->info("EntityManager: created entity with id {}, typeID {}, pointer {}", id, E::STATIC_ENTITY_TYPE_ID, entityMemory);
 
 			return (E*)entityMemory;
+		}
+
+		template<class E>
+		void DestroyEntity(EntityID entityId)
+		{
+			EntityContainer<E>* container = this->GetEntityContainer<E>();
+			IEntity* entityMemory = nullptr;
+
+			for (auto it : m_EntityRegistry)
+			{
+				if (it.first == entityId)
+				{
+					entityMemory = (IEntity*)it.second;
+					it.second = nullptr;
+					break;
+				}
+			}
+			if (entityMemory != nullptr) {
+				this->m_ComponentManagerInstance->RemoveAllComponents(entityMemory->GetEntityID());
+				container->DestroyEntity(entityMemory);
+			}
 		}
 
 	};

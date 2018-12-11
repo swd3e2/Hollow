@@ -39,79 +39,76 @@
     <ClInclude Include="Engine\Memory\StackMemoryManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\FamilyTypeID.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ECS\Entities\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Memory\MemoryUser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Memory\MemoryChunkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\EntityManager.h">
+    <ClInclude Include="Engine\Components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\ComponentManager.h">
+    <ClInclude Include="Engine\Components\IComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Entities\IEntity.h">
+    <ClInclude Include="Engine\Entities\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Console.h">
+    <ClInclude Include="Engine\Entities\IEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Components\IComponent.h">
+    <ClInclude Include="Engine\Systems\RenderSystem\DepthStencil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Log.h">
+    <ClInclude Include="Engine\Systems\RenderSystem\RenderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Components\Component.h">
+    <ClInclude Include="Engine\Systems\RenderSystem\RenderTarget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Timer.h">
+    <ClInclude Include="Engine\Systems\ISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\ISystem.h">
+    <ClInclude Include="Engine\Systems\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\System.h">
+    <ClInclude Include="Engine\ComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\SystemManager.h">
+    <ClInclude Include="Engine\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\RenderSystem.h">
+    <ClInclude Include="Engine\Utils\FamilyTypeID.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\RenderTarget.h">
+    <ClInclude Include="Engine\Common\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\DepthStencil.h">
+    <ClInclude Include="Engine\Utils\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Camera.h">
+    <ClInclude Include="Engine\Graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\BufferTemplate\IndexBuffer.h">
+    <ClInclude Include="Engine\Graphics\BufferTemplate\ConstantBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\BufferTemplate\VertexBuffer.h">
+    <ClInclude Include="Engine\Graphics\BufferTemplate\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\BufferTemplate\ConstantBuffer.h">
+    <ClInclude Include="Engine\Graphics\BufferTemplate\VertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Shaders\IShader.h">
+    <ClInclude Include="Engine\Graphics\Shaders\IShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Shaders\VertexShader.h">
+    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Shaders\PixelShader.h">
+    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Common\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -122,25 +119,25 @@
     <ClCompile Include="Engine\Window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\ECS\FamilTypeID.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Memory\StackMemoryManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\ECS\ComponentManager.cpp">
+    <ClCompile Include="Engine\Systems\RenderSystem\RenderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Timer.cpp">
+    <ClCompile Include="Engine\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\ECS\Systems\RenderSystem\Camera.cpp">
+    <ClCompile Include="Engine\Utils\FamilTypeID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\ECS\Systems\RenderSystem\RenderSystem.cpp">
+    <ClCompile Include="Engine\Common\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Common\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

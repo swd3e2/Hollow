@@ -4,10 +4,10 @@
 #define __COMPONENT_MANAGER__
 
 #include "Components/IComponent.h"
-#include "../Memory/MemoryChunkManager.h"
-#include "FamilyTypeID.h"
+#include "Memory/MemoryChunkManager.h"
+#include "Utils/FamilyTypeID.h"
 #include "EntityManager.h"
-#include "../Log.h"
+#include "Common/Log.h"
 #include <unordered_map>
 #include <assert.h>
 

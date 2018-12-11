@@ -3,7 +3,7 @@
 #pragma once
 #include <wrl\client.h>
 #include <d3d11.h>
-#include "../../../../Log.h"
+#include "Engine/Common/Log.h"
 
 namespace Hollow {
 

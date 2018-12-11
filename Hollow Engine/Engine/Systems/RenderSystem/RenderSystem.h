@@ -8,15 +8,15 @@
 #include <directXMath.h>
 #include <wrl/client.h>
 
-#include "../../../Log.h"
+#include "Engine/Common/Log.h"
 #include "RenderTarget.h"
 #include "DepthStencil.h"
-#include "Camera.h"
-#include "BufferTemplate/ConstantBuffer.h"
-#include "Shaders/VertexShader.h"
-#include "Shaders/PixelShader.h"
-#include "BufferTemplate/IndexBuffer.h"
-#include "BufferTemplate/VertexBuffer.h"
+#include "Engine/Graphics/Camera.h"
+#include "Engine/Graphics/BufferTemplate/ConstantBuffer.h"
+#include "Engine/Graphics/Shaders/VertexShader.h"
+#include "Engine/Graphics/Shaders/PixelShader.h"
+#include "Engine/Graphics/BufferTemplate/IndexBuffer.h"
+#include "Engine/Graphics/BufferTemplate/VertexBuffer.h"
 
 namespace Hollow {
 

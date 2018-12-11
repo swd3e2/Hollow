@@ -2,7 +2,7 @@
 
 #ifndef __SYSTEM__
 #define __SYSTEM__
-#include "../FamilyTypeID.h"
+#include "../Utils/FamilyTypeID.h"
 #include "ISystem.h"
 
 namespace Hollow {

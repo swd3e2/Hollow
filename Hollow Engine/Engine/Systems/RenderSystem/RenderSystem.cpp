@@ -29,8 +29,8 @@ namespace Hollow {
 		};
 		UINT numElements = ARRAYSIZE(bxlayout);
 
-		vertexShader = new VertexShader(m_Device.Get(), L"Engine/ECS/Systems/RenderSystem/Shaders/vs.hlsl", bxlayout, numElements);
-		pixelShader = new PixelShader(m_Device.Get(), L"Engine/ECS/Systems/RenderSystem/Shaders/ps.hlsl");
+		vertexShader = new VertexShader(m_Device.Get(), L"Engine/Resources/Shaders/vs.hlsl", bxlayout, numElements);
+		pixelShader = new PixelShader(m_Device.Get(), L"Engine/Resources/Shaders/ps.hlsl");
 
 		std::vector<SimpleVertex> * vertices = new std::vector<SimpleVertex>;
 		vertices->push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });

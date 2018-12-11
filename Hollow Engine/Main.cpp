@@ -1,6 +1,6 @@
 #include "Engine/Engine.h"
-#include "Engine/Console.h"
-#include "Engine/Log.h"
+#include "Engine/Utils/Console.h"
+#include "Engine/Common/Log.h"
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)

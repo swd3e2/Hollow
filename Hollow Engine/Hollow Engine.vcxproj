@@ -19,26 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Console.h" />
-    <ClInclude Include="Engine\ECS\ComponentManager.h" />
-    <ClInclude Include="Engine\ECS\Components\Component.h" />
-    <ClInclude Include="Engine\ECS\Entities\Entity.h" />
-    <ClInclude Include="Engine\ECS\Entities\IEntity.h" />
-    <ClInclude Include="Engine\ECS\EntityManager.h" />
-    <ClInclude Include="Engine\ECS\FamilyTypeID.h" />
-    <ClInclude Include="Engine\ECS\SystemManager.h" />
-    <ClInclude Include="Engine\ECS\Systems\ISystem.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\BufferTemplate\ConstantBuffer.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\BufferTemplate\IndexBuffer.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\BufferTemplate\VertexBuffer.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Camera.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\DepthStencil.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\RenderSystem.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\RenderTarget.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Shaders\IShader.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Shaders\PixelShader.h" />
-    <ClInclude Include="Engine\ECS\Systems\RenderSystem\Shaders\VertexShader.h" />
-    <ClInclude Include="Engine\ECS\Systems\System.h" />
+    <ClInclude Include="Engine\Utils\Console.h" />
+    <ClInclude Include="Engine\ComponentManager.h" />
+    <ClInclude Include="Engine\Components\Component.h" />
+    <ClInclude Include="Engine\Entities\Entity.h" />
+    <ClInclude Include="Engine\Entities\IEntity.h" />
+    <ClInclude Include="Engine\EntityManager.h" />
+    <ClInclude Include="Engine\Utils\FamilyTypeID.h" />
+    <ClInclude Include="Engine\Systems\ISystem.h" />
+    <ClInclude Include="Engine\Graphics\BufferTemplate\ConstantBuffer.h" />
+    <ClInclude Include="Engine\Graphics\BufferTemplate\IndexBuffer.h" />
+    <ClInclude Include="Engine\Graphics\BufferTemplate\VertexBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Camera.h" />
+    <ClInclude Include="Engine\Systems\RenderSystem\DepthStencil.h" />
+    <ClInclude Include="Engine\Systems\RenderSystem\RenderSystem.h" />
+    <ClInclude Include="Engine\Systems\RenderSystem\RenderTarget.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\IShader.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h" />
+    <ClInclude Include="Engine\Systems\System.h" />
     <ClInclude Include="Engine\Memory\Allocators\BaseAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\LinearAllocator.h" />
     <ClInclude Include="Engine\Memory\Allocators\PointerMathUtils.h" />
@@ -49,20 +48,20 @@
     <ClInclude Include="Engine\Memory\StackMemoryManager.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\ECS\Components\IComponent.h" />
-    <ClInclude Include="Engine\Log.h" />
-    <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Engine\Components\IComponent.h" />
+    <ClInclude Include="Engine\Common\Log.h" />
+    <ClInclude Include="Engine\Common\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\ECS\ComponentManager.cpp" />
-    <ClCompile Include="Engine\ECS\FamilTypeID.cpp" />
-    <ClCompile Include="Engine\ECS\Systems\RenderSystem\Camera.cpp" />
-    <ClCompile Include="Engine\ECS\Systems\RenderSystem\RenderSystem.cpp" />
+    <ClCompile Include="Engine\ComponentManager.cpp" />
+    <ClCompile Include="Engine\Utils\FamilTypeID.cpp" />
+    <ClCompile Include="Engine\Graphics\Camera.cpp" />
+    <ClCompile Include="Engine\Systems\RenderSystem\RenderSystem.cpp" />
     <ClCompile Include="Engine\Memory\StackMemoryManager.cpp" />
     <ClCompile Include="Engine\Window\Window.cpp" />
-    <ClCompile Include="Engine\Log.cpp" />
+    <ClCompile Include="Engine\Common\Log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Engine\Common\Timer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -122,7 +121,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)vendor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>

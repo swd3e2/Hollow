@@ -5,7 +5,7 @@
 
 #include <d3d11.h>
 #include <wrl/client.h>
-#include "../../../Log.h"
+#include "../../Common/Log.h"
 
 namespace Hollow {
 	

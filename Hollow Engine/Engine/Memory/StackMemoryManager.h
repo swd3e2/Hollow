@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 #include "Allocators/StackAllocator.h"
-#include "../Log.h"
+#include "../Common/Log.h"
 
 #define DEFAULT_STACK_MEMORY_MANAGER_SIZE 134217728 // 128 mb
 

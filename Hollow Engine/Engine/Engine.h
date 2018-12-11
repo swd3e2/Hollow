@@ -1,9 +1,9 @@
 #pragma once
 #include "Window/Window.h"
-#include "Timer.h"
-#include "Engine/ECS/ComponentManager.h"
-#include "Engine/ECS/EntityManager.h"
-#include "ECS/Systems/RenderSystem/RenderSystem.h"
+#include "Common/Timer.h"
+#include "Engine/ComponentManager.h"
+#include "Engine/EntityManager.h"
+#include "Systems/RenderSystem/RenderSystem.h"
 
 class Engine
 {
