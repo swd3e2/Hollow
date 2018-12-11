@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Components\MeshComponent.h" />
+    <ClInclude Include="Engine\Components\PositionComponent.h" />
+    <ClInclude Include="Engine\Graphics\SimpleVertex.h" />
     <ClInclude Include="Engine\Utils\Console.h" />
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\Components\Component.h" />
@@ -51,6 +54,7 @@
     <ClInclude Include="Engine\Components\IComponent.h" />
     <ClInclude Include="Engine\Common\Log.h" />
     <ClInclude Include="Engine\Common\Timer.h" />
+    <ClInclude Include="Engine\Entities\GameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\ComponentManager.cpp" />

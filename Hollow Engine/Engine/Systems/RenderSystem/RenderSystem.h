@@ -17,6 +17,11 @@
 #include "Engine/Graphics/Shaders/PixelShader.h"
 #include "Engine/Graphics/BufferTemplate/IndexBuffer.h"
 #include "Engine/Graphics/BufferTemplate/VertexBuffer.h"
+#include "Engine/Graphics/SimpleVertex.h"
+#include "Engine/Entities/GameObject.h"
+#include "Engine/Components/MeshComponent.h"
+#include "Engine/Components/PositionComponent.h"
+#include "Engine/ComponentManager.h"
 
 namespace Hollow {
 
@@ -26,11 +31,7 @@ namespace Hollow {
 		DirectX::XMMATRIX mView;
 		DirectX::XMMATRIX mProjection;
 	};
-	struct SimpleVertex
-	{
-		DirectX::XMFLOAT4 Pos;
-		DirectX::XMFLOAT4 Color;
-	};
+	
 	class RenderSystem : System<RenderSystem>
 	{
 	private:
@@ -71,11 +72,14 @@ namespace Hollow {
 		void DefineBlending();
 	public:
 		RenderSystem(HWND * hwnd, int height, int width);
+
 		virtual void PreUpdate(float_t dt) override;
 
-		virtual void Update(float_t dt) override;
+		virtual void Update(float_t dt, Hollow::GameObject * object);
 
 		virtual void PostUpdate(float_t dt) override;
+
+		inline ID3D11Device * GetDevice() { return this->m_Device.Get(); }
 	};
 
 }

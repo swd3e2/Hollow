@@ -1,8 +1,8 @@
-#pragma once
-
 #ifndef __COMPONENT__
 #define __COMPONENT__
-#include "../FamilyTypeID.h"
+#pragma once
+
+#include "Engine/Utils/FamilyTypeID.h"
 #include "IComponent.h"
 
 namespace Hollow {

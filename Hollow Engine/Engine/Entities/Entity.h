@@ -2,7 +2,7 @@
 
 #ifndef __ENTITY__
 #define __ENTITY__
-#include "../FamilyTypeID.h"
+#include "Engine/Utils/FamilyTypeID.h"
 #include "IEntity.h"
 
 namespace Hollow {

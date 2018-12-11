@@ -117,18 +117,18 @@ namespace Hollow {
 			EntityContainer<E>* container = this->GetEntityContainer<E>();
 			IEntity* entityMemory = nullptr;
 
-			for (auto it : m_EntityRegistry)
+			for (int i = 0; i < this->entityTable.size(); i++)
 			{
-				if (it.first == entityId)
+				if (this->entityTable[i].first == entityId)
 				{
-					entityMemory = (IEntity*)it.second;
-					it.second = nullptr;
+					entityMemory = (IEntity*)this->entityTable[i].second;
+					Hollow::Log::GetCoreLogger()->info("EntityManager: destroyed entity with id {}, typeID {}, pointer {}", entityMemory->GetEntityID(), E::STATIC_ENTITY_TYPE_ID, (void*)entityMemory);
+
+					this->m_ComponentManager->RemoveAllComponents(entityMemory->GetEntityID());
+					container->DestroyEntity(entityMemory);
+					this->entityTable[i] = {entityId, nullptr};
 					break;
 				}
-			}
-			if (entityMemory != nullptr) {
-				this->m_ComponentManagerInstance->RemoveAllComponents(entityMemory->GetEntityID());
-				container->DestroyEntity(entityMemory);
 			}
 		}
 

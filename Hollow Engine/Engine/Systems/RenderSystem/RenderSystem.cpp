@@ -31,41 +31,9 @@ namespace Hollow {
 
 		vertexShader = new VertexShader(m_Device.Get(), L"Engine/Resources/Shaders/vs.hlsl", bxlayout, numElements);
 		pixelShader = new PixelShader(m_Device.Get(), L"Engine/Resources/Shaders/ps.hlsl");
-
-		std::vector<SimpleVertex> * vertices = new std::vector<SimpleVertex>;
-		vertices->push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
-		vertices->push_back({ XMFLOAT4(1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
-		vertices->push_back({ XMFLOAT4(1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
-		vertices->push_back({ XMFLOAT4(-1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
-
-		vertices->push_back({ XMFLOAT4(-1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) });
-		vertices->push_back({ XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
-		vertices->push_back({ XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
-		vertices->push_back({ XMFLOAT4(1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) });
-
-		unsigned int * indices = new unsigned int[36]{
-				2, 1, 0,
-				2, 0, 3,
-				2, 5, 1,
-				5, 7, 1,
-				4, 2, 3,
-				4, 5, 2,
-				4, 3, 0,
-				4, 0, 6,
-				1, 6, 0,
-				1, 7, 6,
-				5, 6, 7,
-				5, 4, 6
-		};
-
-		vertexBuffer = new VertexBuffer<SimpleVertex>(m_Device.Get(), vertices->data(), vertices->size());
-		indexBuffer = new IndexBuffer<unsigned int>(m_Device.Get(), indices, 36);
 	}
 
 	void RenderSystem::PreUpdate(float_t dt) 
-	{}
-
-	void RenderSystem::Update(float_t dt) 
 	{
 		camera->Update();
 		UpdateWVP();
@@ -80,16 +48,23 @@ namespace Hollow {
 		m_DeviceContext->IASetInputLayout(vertexShader->GetInputLayout());
 		m_DeviceContext->VSSetShader(vertexShader->GetShader(), NULL, 0);
 		m_DeviceContext->PSSetShader(pixelShader->GetShader(), NULL, 0);
+	}
 
+	void RenderSystem::Update(float_t dt, Hollow::GameObject * object)
+	{
+		MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
+		PositionComponent * posComponent = object->GetComponent<PositionComponent>();
+		
 		UINT offset = 0;
-		m_DeviceContext->IASetVertexBuffers(0, 1, vertexBuffer->GetAddressOf(), vertexBuffer->StridePtr(), &offset);
-		m_DeviceContext->IASetIndexBuffer(indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+		m_DeviceContext->IASetVertexBuffers(0, 1, meshComponent->vBuffer.GetAddressOf(), meshComponent->vBuffer.StridePtr(), &offset);
+		m_DeviceContext->IASetIndexBuffer(meshComponent->iBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		m_DeviceContext->DrawIndexed(36, 0, 0);
-		m_pSwapChain->Present(1, 0);
 	}
 
 	void RenderSystem::PostUpdate(float_t dt) 
-	{}
+	{
+		m_pSwapChain->Present(1, 0);
+	}
 
 	void RenderSystem::InitDevices()
 	{
