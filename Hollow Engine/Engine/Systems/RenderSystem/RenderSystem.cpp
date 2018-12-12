@@ -36,7 +36,6 @@ namespace Hollow {
 	void RenderSystem::PreUpdate(float_t dt) 
 	{
 		camera->Update();
-		UpdateWVP();
 
 		float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 		m_DeviceContext->ClearRenderTargetView(renderTarget->GetMainRenderTaget(), ClearColor);
@@ -50,20 +49,33 @@ namespace Hollow {
 		m_DeviceContext->PSSetShader(pixelShader->GetShader(), NULL, 0);
 	}
 
-	void RenderSystem::Update(float_t dt, Hollow::GameObject * object)
+	void RenderSystem::Update(float_t dt, std::vector<Hollow::GameObject*> gameObjects)
 	{
-		MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
-		PositionComponent * posComponent = object->GetComponent<PositionComponent>();
-		
-		UINT offset = 0;
-		m_DeviceContext->IASetVertexBuffers(0, 1, meshComponent->vBuffer.GetAddressOf(), meshComponent->vBuffer.StridePtr(), &offset);
-		m_DeviceContext->IASetIndexBuffer(meshComponent->iBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		m_DeviceContext->DrawIndexed(36, 0, 0);
+		for (auto object : gameObjects) {
+			MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
+			PositionComponent * posComponent = object->GetComponent<PositionComponent>();
+
+			this->UpdateWVP(posComponent);
+
+			UINT offset = 0;
+			m_DeviceContext->IASetVertexBuffers(0, 1, meshComponent->vBuffer.GetAddressOf(), meshComponent->vBuffer.StridePtr(), &offset);
+			m_DeviceContext->IASetIndexBuffer(meshComponent->iBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+			m_DeviceContext->DrawIndexed(36, 0, 0);
+		}
 	}
 
 	void RenderSystem::PostUpdate(float_t dt) 
 	{
 		m_pSwapChain->Present(1, 0);
+	}
+
+	void RenderSystem::UpdateWVP(PositionComponent * comp)
+	{
+		constantBuffer.data.mWorld = XMMatrixTranspose(XMMatrixIdentity());
+		constantBuffer.data.mView = XMMatrixTranspose(camera->GetViewMatrix());
+		constantBuffer.data.mProjection = XMMatrixTranspose(camera->GetProjectionMatrix());
+		constantBuffer.data.transform = XMMatrixTranspose(XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z));
+		constantBuffer.Update();
 	}
 
 	void RenderSystem::InitDevices()
@@ -129,14 +141,6 @@ namespace Hollow {
 		if (hr != S_OK) {
 			Hollow::Log::GetCoreLogger()->error("RenderSystem: Cant create DeviceAndSwapChain!");
 		}
-	}
-
-	void RenderSystem::UpdateWVP()
-	{
-		constantBuffer.data.mWorld = XMMatrixTranspose(XMMatrixIdentity());
-		constantBuffer.data.mView = XMMatrixTranspose(camera->GetViewMatrix());
-		constantBuffer.data.mProjection = XMMatrixTranspose(camera->GetProjectionMatrix());
-		constantBuffer.Update();
 	}
 
 	void RenderSystem::CreateRasterizerState()

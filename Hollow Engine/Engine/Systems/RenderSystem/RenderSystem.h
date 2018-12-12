@@ -30,6 +30,7 @@ namespace Hollow {
 		DirectX::XMMATRIX mWorld;
 		DirectX::XMMATRIX mView;
 		DirectX::XMMATRIX mProjection;
+		DirectX::XMMATRIX transform;
 	};
 	
 	class RenderSystem : System<RenderSystem>
@@ -66,7 +67,7 @@ namespace Hollow {
 	private:
 		void CreateSwapChain();
 		void InitDevices();
-		void UpdateWVP();
+		void UpdateWVP(PositionComponent * comp);
 		void CreateRasterizerState();
 		void CreateSamplerDesc();
 		void DefineBlending();
@@ -75,7 +76,7 @@ namespace Hollow {
 
 		virtual void PreUpdate(float_t dt) override;
 
-		virtual void Update(float_t dt, Hollow::GameObject * object);
+		virtual void Update(float_t dt, std::vector<Hollow::GameObject*> gameObjects);
 
 		virtual void PostUpdate(float_t dt) override;
 

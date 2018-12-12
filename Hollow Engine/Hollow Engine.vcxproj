@@ -49,6 +49,7 @@
     <ClInclude Include="Engine\Memory\MemoryChunkManager.h" />
     <ClInclude Include="Engine\Memory\MemoryUser.h" />
     <ClInclude Include="Engine\Memory\StackMemoryManager.h" />
+    <ClInclude Include="Engine\Utils\ObjParser.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Components\IComponent.h" />
@@ -125,7 +126,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)vendor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)Hollow Engine\vendor\spdlog\include;$(SolutionDir)Hollow Engine\vendor\tinyObjLoader\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>

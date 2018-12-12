@@ -26,7 +26,7 @@ private:
 	Hollow::ComponentManager *		m_ComponentManager;
 	Hollow::Timer*					m_Timer;
 	Hollow::RenderSystem*           m_RenderSystem;
-	Hollow::GameObject * object;
+	std::vector<Hollow::GameObject*> gameObjects;
 private:
 	void InitScene()
 	{
@@ -61,9 +61,15 @@ private:
 			vindices.push_back(indices[i]);
 		}
 
+		Hollow::GameObject * object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
+		object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(2.0f, 1.0f, 0.0, .0f);
+		gameObjects.push_back(object);
+
 		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
 		object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(0.0f, 0.0f, 0.0, .0f);
+		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(3.0f, 4.0f, 1.0, .0f);
+		gameObjects.push_back(object);
 	}
 public:
 	Engine(HINSTANCE hInst, LPWSTR pArgs) :
@@ -81,7 +87,7 @@ public:
 		{
 			m_Timer->Tick(DELTA_TIME_STEP);
 			m_RenderSystem->PreUpdate(DELTA_TIME_STEP);
-			m_RenderSystem->Update(DELTA_TIME_STEP, object);
+			m_RenderSystem->Update(DELTA_TIME_STEP, gameObjects);
 			m_RenderSystem->PostUpdate(DELTA_TIME_STEP);
 		}
 	}

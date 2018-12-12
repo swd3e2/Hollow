@@ -3,6 +3,7 @@ cbuffer ConstantBuffer : register(b0)
     matrix World;
     matrix View;
     matrix Projection;
+    matrix transform;
 }
 
 struct PixelShaderOutput
@@ -21,7 +22,8 @@ PixelShaderOutput VSMain(VertexShaderInput input)
 {
     PixelShaderOutput vertexShaderOutput;
 
-    vertexShaderOutput.pos = mul(input.pos, World);
+    vertexShaderOutput.pos = mul(input.pos, transform);
+    vertexShaderOutput.pos = mul(vertexShaderOutput.pos, World);
     vertexShaderOutput.pos = mul(vertexShaderOutput.pos, View);
     vertexShaderOutput.pos = mul(vertexShaderOutput.pos, Projection);
     vertexShaderOutput.col = input.col;
