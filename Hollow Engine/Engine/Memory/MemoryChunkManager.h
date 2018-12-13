@@ -31,7 +31,7 @@ namespace Hollow { namespace Core { namespace Memory {
 				this->begin = (unsigned int)this->allocator->GetMemoryFirstAddress();
 				this->end = this->begin + this->allocator->GetMemorySize();
 				this->objects.clear();
-				Hollow::Log::GetCoreLogger()->debug("MemoryChunk: created, firstAddress {}", this->allocator->GetMemoryFirstAddress());
+				Hollow::Log::GetCoreLogger()->debug("MemoryChunk: created, firstAddress {} {}, last address {} {}", this->begin, this->allocator->GetMemoryFirstAddress(), this->end, (void*)(this->begin + this->allocator->GetMemorySize()));
 			}
 		};
 
@@ -137,7 +137,7 @@ namespace Hollow { namespace Core { namespace Memory {
 			unsigned int memory = (unsigned int)mem;
 			for (auto chunk : this->chunks)
 			{
-				if (chunk->begin <= memory && memory > chunk->end)
+				if (memory >= chunk->begin && memory < chunk->end)
 				{
 					chunk->allocator->free(mem);
 					chunk->objects.remove((T*)mem);

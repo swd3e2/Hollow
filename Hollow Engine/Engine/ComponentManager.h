@@ -25,7 +25,6 @@ namespace Hollow {
 	class ComponentManager
 	{
 	private:
-
 		class IComponentContainer
 		{
 		public:
@@ -40,7 +39,7 @@ namespace Hollow {
 			ComponentContainer(const ComponentContainer&) = delete;
 			ComponentContainer& operator=(ComponentContainer&) = delete;
 		public:
-			ComponentContainer() : Core::Memory::MemoryChunkManager<T, 512>("EntityManager") {}
+			ComponentContainer() : Core::Memory::MemoryChunkManager<T, 512>("ComponentManager") {}
 
 			virtual ~ComponentContainer() {}
 

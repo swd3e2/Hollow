@@ -5,6 +5,7 @@
 
 #include "BaseAllocator.h"
 #include "PointerMathUtils.h"
+#include "Engine/Common/Log.h"
 #include <cmath>
 
 namespace Hollow { namespace Core { namespace Memory {
@@ -32,6 +33,7 @@ namespace Hollow { namespace Core { namespace Memory {
 
 		void* allocate(unsigned int size, unsigned int alignment) override
 		{
+			Hollow::Log::GetCoreLogger()->debug("PoolAllocator: allocated {}", size);
 			if (this->m_MemoryUsed + this->objectSize > this->m_MemorySize) {
 				return nullptr;
 			}
@@ -52,6 +54,8 @@ namespace Hollow { namespace Core { namespace Memory {
 			*(void**)pMemory = this->freeList;
 
 			this->freeList = (void**)pMemory;
+
+			Hollow::Log::GetCoreLogger()->debug("PoolAllocator: freed memory next pointer {}", (void*)this->freeList);
 
 			this->m_MemoryUsed -= this->objectSize;
 			this->m_Allocations--;

@@ -62,14 +62,18 @@ private:
 		}
 
 		Hollow::GameObject * object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
-		object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(2.0f, 1.0f, 0.0, .0f);
+		//object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+		//object->AddComponent<Hollow::PositionComponent, float, float, float, float>(2.0f, 1.0f, 0.0, .0f);
 		gameObjects.push_back(object);
-
+		
 		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
-		object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(3.0f, 4.0f, 1.0, .0f);
+		//object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+		//object->AddComponent<Hollow::PositionComponent, float, float, float, float>(3.0f, 4.0f, 1.0, .0f);
 		gameObjects.push_back(object);
+		m_EntityManager->DestroyEntity<Hollow::GameObject>(object->GetEntityID());
+		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
+		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
+
 	}
 public:
 	Engine(HINSTANCE hInst, LPWSTR pArgs) :

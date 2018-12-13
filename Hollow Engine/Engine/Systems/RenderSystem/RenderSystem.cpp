@@ -54,7 +54,7 @@ namespace Hollow {
 		for (auto object : gameObjects) {
 			MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
 			PositionComponent * posComponent = object->GetComponent<PositionComponent>();
-
+			if (meshComponent == nullptr || posComponent == nullptr) continue;
 			this->UpdateWVP(posComponent);
 
 			UINT offset = 0;
