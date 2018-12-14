@@ -55,10 +55,15 @@ namespace Hollow {
 
 				if (token[0] == '#' || token[0] == '\0') continue;
 
-				if (token[0] == 'v') {
+				if (token[0] == 'v' && token[1] == ' ') {
+					token += 2;
+					Hollow::Log::GetCoreLogger()->info("{}", token);
+					const char *end = token + strcspn(token, " \t\r");
 
+					Hollow::Log::GetCoreLogger()->info("{}", strspn(token, " \t"));
 				}
-				Hollow::Log::GetCoreLogger()->warn("{}", token);
+
+				//Hollow::Log::GetCoreLogger()->info("{}", token);
 
 				//Hollow::Log::GetCoreLogger()->warn("{}", linebuff);
 			}
