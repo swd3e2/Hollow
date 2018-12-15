@@ -154,25 +154,35 @@ namespace Hollow {
 
 	void Camera::Update()
 	{
-		/*if (InputManager::KeyIsPressed(eKeyCodes::KEY_W) == true)
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_W) == true)
 		{
 			XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
-
 			AdjustPosition((vec_forward + vector * 1.5f) * cameraSpeed);
 		}
-		if (InputManager::KeyIsPressed(eKeyCodes::KEY_S) == true)
+		
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_S) == true)
 		{
 			XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
 			AdjustPosition((vec_backward - vector * 1.5f) * cameraSpeed);
 		}
-		if (InputManager::KeyIsPressed(eKeyCodes::KEY_A) == true)
+		
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_A) == true)
 		{
 			AdjustPosition(vec_left * cameraSpeed);
 		}
-		if (InputManager::KeyIsPressed(eKeyCodes::KEY_D) == true)
+		
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_D) == true)
 		{
 			AdjustPosition(vec_right * cameraSpeed);
-		}*/
+		}
+
+		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT))
+		{
+			AdjustRotation(InputManager::y * 0.005f, InputManager::x * 0.005f, 0.0f);
+			// @TODO: create clear method
+			InputManager::x = 0;
+			InputManager::y = 0;
+		}
 	}
 
 	XMVECTOR & Camera::getLookAtVector()
@@ -182,10 +192,7 @@ namespace Hollow {
 
 	/*bool Camera::RawMouseInput(const RawMouseEvent & arg)
 	{
-		if (InputManager::KeyIsPressed(eKeyCodes::KEY_RBUTTON))
-		{
-			AdjustRotation(arg.y * 0.001f, arg.x * 0.001f, 0.0f);
-		}
+		
 		return false;
 	}*/
 

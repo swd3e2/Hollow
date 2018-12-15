@@ -8,9 +8,9 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
 	Hollow::Console::RedirectIOToConsole();
 	Hollow::Log::Init();
-	Hollow::ObjParser::LoadObj("cube.obj");
-	system("pause");
-	/*Engine engine(hInst, pArgs);
-	engine.Run();*/
+	//Hollow::ObjParser::LoadObj("cube.obj");
+	//system("pause");
+	Engine engine(hInst, pArgs);
+	engine.Run();
 	return 0;
 }

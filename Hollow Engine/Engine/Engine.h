@@ -22,6 +22,7 @@ private:
 	static constexpr float DELTA_TIME_STEP{ 1.0f / 60.0f };
 
 	Window m_Window;
+	HWND*							m_HWND;
 	Hollow::EntityManager *			m_EntityManager;
 	Hollow::ComponentManager *		m_ComponentManager;
 	Hollow::Timer*					m_Timer;
@@ -62,27 +63,25 @@ private:
 		}
 
 		Hollow::GameObject * object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
-		//object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-		//object->AddComponent<Hollow::PositionComponent, float, float, float, float>(2.0f, 1.0f, 0.0, .0f);
+		object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(2.0f, 1.0f, 0.0, .0f);
 		gameObjects.push_back(object);
 		
 		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
-		//object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-		//object->AddComponent<Hollow::PositionComponent, float, float, float, float>(3.0f, 4.0f, 1.0, .0f);
+		object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+		object->AddComponent<Hollow::PositionComponent, float, float, float, float>(3.0f, 4.0f, 1.0, .0f);
 		gameObjects.push_back(object);
-		m_EntityManager->DestroyEntity<Hollow::GameObject>(object->GetEntityID());
-		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
-		object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
-
 	}
 public:
 	Engine(HINSTANCE hInst, LPWSTR pArgs) :
-		m_Window(hInst, pArgs, SCREEN_WIDTH, SCREEN_HEIGHT)
+		m_Window(hInst, SCREEN_WIDTH, SCREEN_HEIGHT)
 	{
+		this->m_HWND = this->m_Window.getHWND();
 		this->m_ComponentManager = new Hollow::ComponentManager();
 		this->m_EntityManager = new Hollow::EntityManager(m_ComponentManager);
 		this->m_Timer = new Hollow::Timer();
-		this->m_RenderSystem = new Hollow::RenderSystem(m_Window.getHWND(), 1600, 900);
+		this->m_RenderSystem = new Hollow::RenderSystem(this->m_HWND, 1600, 900);
+		
 		this->InitScene();
 	}
 

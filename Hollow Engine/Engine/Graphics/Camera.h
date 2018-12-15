@@ -5,6 +5,7 @@
 #include <iostream>
 #include <windows.h>
 #include "DirectXMath.h"
+#include "Engine/Input/InputManager.h"
 
 namespace Hollow {
 	using namespace DirectX;

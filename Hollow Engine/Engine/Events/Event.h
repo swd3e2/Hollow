@@ -10,7 +10,7 @@ namespace Hollow {
     {
     static const size_t STATIC_EVENT_TYPE_ID;
     public:
-        Event() : IEvent() {}
+        Event() : IEvent(STATIC_EVENT_TYPE_ID) {}
     };
 
     template<typename E>

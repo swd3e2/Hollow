@@ -20,7 +20,7 @@ namespace Hollow {
 		this->CreateSamplerDesc();
 		this->DefineBlending();
 
-		constantBuffer.Init(m_Device.Get(), m_DeviceContext.Get());
+		constantBuffer.Init(this->m_Device.Get(), this->m_DeviceContext.Get());
 
 		D3D11_INPUT_ELEMENT_DESC bxlayout[] =
 		{
@@ -29,8 +29,10 @@ namespace Hollow {
 		};
 		UINT numElements = ARRAYSIZE(bxlayout);
 
-		vertexShader = new VertexShader(m_Device.Get(), L"Engine/Resources/Shaders/vs.hlsl", bxlayout, numElements);
-		pixelShader = new PixelShader(m_Device.Get(), L"Engine/Resources/Shaders/ps.hlsl");
+		vertexShader = new VertexShader(this->m_Device.Get(), L"Engine/Resources/Shaders/vs.hlsl", bxlayout, numElements);
+		pixelShader = new PixelShader(this->m_Device.Get(), L"Engine/Resources/Shaders/ps.hlsl");
+
+		Interface::Init(this->hWnd, this->m_Device.Get(), this->m_DeviceContext.Get());
 	}
 
 	void RenderSystem::PreUpdate(float_t dt) 
@@ -62,6 +64,7 @@ namespace Hollow {
 			m_DeviceContext->IASetIndexBuffer(meshComponent->iBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 			m_DeviceContext->DrawIndexed(36, 0, 0);
 		}
+		Interface::Update();
 	}
 
 	void RenderSystem::PostUpdate(float_t dt) 

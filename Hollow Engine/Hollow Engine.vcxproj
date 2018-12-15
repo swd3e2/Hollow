@@ -13,7 +13,25 @@
   <ItemGroup>
     <ClInclude Include="Engine\Components\MeshComponent.h" />
     <ClInclude Include="Engine\Components\PositionComponent.h" />
+    <ClInclude Include="Engine\EventManager.h" />
+    <ClInclude Include="Engine\Events\Event.h" />
+    <ClInclude Include="Engine\Events\EventDelegate.h" />
+    <ClInclude Include="Engine\Events\EventDispatcher.h" />
+    <ClInclude Include="Engine\Events\IEvent.h" />
+    <ClInclude Include="Engine\Events\IEventDelegate.h" />
+    <ClInclude Include="Engine\Events\IEventDispatcher.h" />
     <ClInclude Include="Engine\Graphics\SimpleVertex.h" />
+    <ClInclude Include="Engine\ImGui\imconfig.h" />
+    <ClInclude Include="Engine\ImGui\imgui.h" />
+    <ClInclude Include="Engine\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="Engine\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="Engine\ImGui\imgui_internal.h" />
+    <ClInclude Include="Engine\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Engine\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Engine\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Engine\Input\InputManager.h" />
+    <ClInclude Include="Engine\Input\KeyCodes.h" />
+    <ClInclude Include="Engine\Systems\RenderSystem\Subsystem\Interface.h" />
     <ClInclude Include="Engine\Utils\Console.h" />
     <ClInclude Include="Engine\ComponentManager.h" />
     <ClInclude Include="Engine\Components\Component.h" />
@@ -51,6 +69,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\ComponentManager.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Engine\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Engine\Input\InputManager.cpp" />
+    <ClCompile Include="Engine\Systems\RenderSystem\Subsystem\Interface.cpp" />
     <ClCompile Include="Engine\Utils\FamilTypeID.cpp" />
     <ClCompile Include="Engine\Graphics\Camera.cpp" />
     <ClCompile Include="Engine\Systems\RenderSystem\RenderSystem.cpp" />
@@ -99,7 +124,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)Hollow Engine\vendor\spdlog\include;$(SolutionDir)Hollow Engine\vendor\tinyObjLoader</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)Hollow Engine\vendor\spdlog\include;$(SolutionDir)Hollow Engine\vendor\tinyObjLoader;$(SolutionDir)Hollow Engine\vendor\imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -113,7 +138,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)Hollow Engine\vendor\spdlog\include;$(SolutionDir)Hollow Engine\vendor\tinyObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine;$(SolutionDir)Hollow Engine\vendor\spdlog\include;$(SolutionDir)Hollow Engine\vendor\tinyObjLoader;$(SolutionDir)Hollow Engine\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

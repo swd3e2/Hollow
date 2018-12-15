@@ -22,6 +22,7 @@
 #include "Engine/Components/MeshComponent.h"
 #include "Engine/Components/PositionComponent.h"
 #include "Engine/ComponentManager.h"
+#include "Subsystem/Interface.h"
 
 namespace Hollow {
 

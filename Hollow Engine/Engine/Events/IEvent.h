@@ -10,7 +10,7 @@ namespace Hollow {
     {
     private:
         size_t m_EventTypeID;
-        long float m_TimeCreated;
+        long long m_TimeCreated;
     public:
         IEvent(size_t typeID) : m_EventTypeID(typeID) 
         {
@@ -18,8 +18,8 @@ namespace Hollow {
             m_TimeCreated = 0;
         }
 
-        virtual unsigned int GetEventTypeID() const = 0;
-        virtual unsigned int GetTimeCreated() const = 0;    
+		inline size_t GetEventTypeID() { return this->m_EventTypeID; };
+        inline long long GetTimeCreated() { return this->m_TimeCreated };
     };
 
 }
