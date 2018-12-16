@@ -13,7 +13,10 @@ namespace Hollow { namespace Core { namespace Memory {
 	public:
 		LinearAllocator(void* pMem, unsigned int size) :
 			BaseAllocator(pMem, size)
-		{}
+		{
+			this->clear();
+			Hollow::Log::GetCoreLogger()->debug("LinearAllocator: created, firstAddress {}, size {}", this->GetMemoryFirstAddress(), this->GetMemorySize());
+		}
 		
 		~LinearAllocator()
 		{
@@ -22,9 +25,7 @@ namespace Hollow { namespace Core { namespace Memory {
 
 		void* allocate(unsigned int size, unsigned int alignment) override
 		{
-			assert(size < this->m_MemorySize);
-
-			void* p = (void*)(reinterpret_cast<unsigned int>(this->m_MemoryFirstAddress) + this->m_MemoryUsed);
+			void* p = (void*)(reinterpret_cast<size_t>(this->m_MemoryFirstAddress) + this->m_MemoryUsed);
 
 			unsigned char adjustment = GetAdjustment(p, alignment);
 
@@ -34,6 +35,7 @@ namespace Hollow { namespace Core { namespace Memory {
 			
 			this->m_MemoryUsed += size + adjustment;
 			this->m_Allocations++;
+			Hollow::Log::GetCoreLogger()->debug("LinearAllocator: allocated size {}, address {}", size, p);
 
 			return p;
 		}

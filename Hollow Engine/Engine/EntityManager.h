@@ -20,7 +20,7 @@ namespace Hollow {
 			virtual ~IEntityContainer() {}
 			virtual const char* GetEntityContainerTypeName() const = 0;
 			virtual void DestroyEntity(IEntity* object) = 0;
-			virtual unsigned int GetContainerMemoryUsed() = 0;
+			virtual size_t GetContainerMemoryUsed() = 0;
 		};
 
 		template<class E>
@@ -44,7 +44,7 @@ namespace Hollow {
 				object->~IEntity();
 				this->DestroyObject(object);
 			}
-			virtual unsigned int GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
+			virtual size_t GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
 		};
 
 		template<class E>
@@ -67,7 +67,7 @@ namespace Hollow {
 
 	private:
 		std::unordered_map<EntityTypeID, IEntityContainer*> m_EntityRegistry;
-		std::vector<std::pair<unsigned int, void*>> entityTable;
+		std::vector<std::pair<EntityID, void*>> entityTable;
 	public:
 
 		EntityManager(ComponentManager * componentManager)
@@ -82,9 +82,9 @@ namespace Hollow {
 		}
 
 		// Get entity id
-		unsigned int AcquireEntityID(IEntity* entity)
+		size_t AcquireEntityID(IEntity* entity)
 		{
-			for (unsigned int i = 0; i < this->entityTable.size(); i++)
+			for (size_t i = 0; i < this->entityTable.size(); i++)
 			{
 				if (this->entityTable[i].second == nullptr)
 				{
@@ -92,6 +92,7 @@ namespace Hollow {
 					return this->entityTable[i].first;
 				}
 			}
+			return 0;
 		}
 
 		template<class E, class ...ARGS>
@@ -102,7 +103,7 @@ namespace Hollow {
 
 			IEntity* entity = new (entityMemory)E(std::forward<ARGS>(args)...);
 
-			unsigned int id = this->AcquireEntityID((E*)entityMemory);
+			size_t id = this->AcquireEntityID((E*)entityMemory);
 
 			((E*)entityMemory)->m_EntityID = id;
 			((E*)entityMemory)->componentManager = this->m_ComponentManager;
@@ -132,9 +133,9 @@ namespace Hollow {
 			}
 		}
 
-		std::vector<unsigned int> GetMemoryUsed() 
+		std::vector<size_t> GetMemoryUsed()
 		{ 
-			std::vector<unsigned int> memoryUsed;
+			std::vector<size_t> memoryUsed;
 			for (auto it : this->m_EntityRegistry)
 				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
 			return memoryUsed;

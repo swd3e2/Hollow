@@ -12,11 +12,11 @@ namespace Hollow { namespace Core { namespace Memory {
 		// Pointer to first address of allocated via malloc memory
 		const void* m_MemoryFirstAddress;
 		// Size of allocated memory
-		unsigned int m_MemoryUsed;
+		size_t m_MemoryUsed;
 		// Count of allocations made
 		unsigned int m_Allocations;
 		// Size of memory allocated
-		const unsigned int m_MemorySize;
+		const size_t m_MemorySize;
 	public:
 		BaseAllocator(void* pMem, unsigned int size) :
 			m_MemoryUsed(0), m_MemorySize(size), m_MemoryFirstAddress(pMem), m_Allocations(0)
@@ -39,8 +39,8 @@ namespace Hollow { namespace Core { namespace Memory {
 		virtual void clear() = 0;
 
 		inline void* GetMemoryFirstAddress() const { return (void*)this->m_MemoryFirstAddress; }
-		inline unsigned int GetMemoryUsed() const { return this->m_MemoryUsed; }
-		inline unsigned int GetMemorySize() const { return this->m_MemorySize; }
+		inline size_t GetMemoryUsed() const { return this->m_MemoryUsed; }
+		inline size_t GetMemorySize() const { return this->m_MemorySize; }
 	};
 
 }}}

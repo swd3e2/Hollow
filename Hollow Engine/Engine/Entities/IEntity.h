@@ -7,8 +7,8 @@ namespace Hollow {
 
 	class EntityManager;
 	class ComponentManager;
-	using EntityTypeID = unsigned int;
-	using EntityID = unsigned int;
+	using EntityTypeID = size_t;
+	using EntityID = size_t;
 
 	class IEntity
 	{
@@ -16,7 +16,7 @@ namespace Hollow {
 	private:
 		ComponentManager * componentManager;
 	protected:
-		unsigned int	m_EntityID;
+		EntityID		m_EntityID;
 		bool			m_Active;
 	public:
 		IEntity() : m_Active(true) {}

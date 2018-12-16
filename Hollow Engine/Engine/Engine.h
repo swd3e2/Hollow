@@ -31,7 +31,7 @@ private:
 	Hollow::ComponentManager *		m_ComponentManager;
 	Hollow::Timer*					m_Timer;
 	Hollow::RenderSystem*           m_RenderSystem;
-	Hollow::EventHandler			m_EventHandler;
+	Hollow::EventHandler*			m_EventHandler;
 	Hollow::MoveSystem*				m_MoveSystem;
 	Hollow::InterfaceSystem*		m_InterfaceSystem;
 	std::vector<Hollow::GameObject*> gameObjects;
@@ -65,14 +65,12 @@ private:
 				5, 4, 6
 		};
 		for (int i = 0; i < 36; i++)
-		{
 			vindices.push_back(indices[i]);
-		}
 		
 		std::default_random_engine generator;
-		std::uniform_int_distribution<int> distribution(-50, 50);
+		std::uniform_int_distribution<int> distribution(-10, 10);
 
-		for (int i = 0; i < 1024; i++) {
+		for (int i = 0; i < 10; i++) {
 			Hollow::GameObject * object = this->m_EntityManager->CreateEntity<Hollow::GameObject>();
 			object->AddComponent<Hollow::MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
 			object->AddComponent<Hollow::PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
@@ -87,6 +85,7 @@ public:
 		this->m_HWND = this->m_Window.getHWND();
 		this->m_ComponentManager = new Hollow::ComponentManager();
 		this->m_EntityManager = new Hollow::EntityManager(m_ComponentManager);
+		this->m_EventHandler = new Hollow::EventHandler();
 		this->m_Timer = new Hollow::Timer();
 		this->m_RenderSystem = new Hollow::RenderSystem(this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
 		this->m_InterfaceSystem = new Hollow::InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), this->m_EntityManager, this->m_ComponentManager);
@@ -104,6 +103,8 @@ public:
 			this->m_RenderSystem->Update(DELTA_TIME_STEP, gameObjects);
 			this->m_InterfaceSystem->Update(DELTA_TIME_STEP);
 			this->m_RenderSystem->PostUpdate(DELTA_TIME_STEP);
+
+			m_EventHandler->DispatchEvents();
 		}
 	}
 

@@ -38,7 +38,7 @@ namespace Hollow {
 
 						if (result != this->m_EventDeleagteList.end())
 						{
-							IEventDelegate* ptrMem = (IEventDelegate*)(result);
+							IEventDelegate* ptrMem = (IEventDelegate*)(*result);
 							this->m_EventDeleagteList.erase(result);
 							delete ptrMem;
 							ptrMem = nullptr;
@@ -75,17 +75,17 @@ namespace Hollow {
 		{ 
 			if (this->m_Locked == false)
 			{
-				auto result = std::find_if(this->m_EventCallbacks.begin(), this->m_EventCallbacks.end(),
+				auto result = std::find_if(this->m_EventDeleagteList.begin(), this->m_EventDeleagteList.end(),
 					[&](const IEventDelegate* other)
 					{
 						return other->operator==(eventDelegate);
 					});
 
-				if (result != this->m_EventCallbacks.end())
+				if (result != this->m_EventDeleagteList.end())
 				{
 					IEventDelegate* ptrMem = (IEventDelegate*)(*result);
 
-					this->m_EventCallbacks.erase(result);
+					this->m_EventDeleagteList.erase(result);
 
 					delete ptrMem;
 					ptrMem = nullptr;
@@ -93,18 +93,18 @@ namespace Hollow {
 			}
 			else
 			{
-				auto result = std::find_if(this->m_EventCallbacks.begin(), this->m_EventCallbacks.end(),
+				auto result = std::find_if(this->m_EventDeleagteList.begin(), this->m_EventDeleagteList.end(),
 					[&](const IEventDelegate* other)
 					{
 						return other->operator==(eventDelegate);
 					});
 
-				assert(result != this->m_EventCallbacks.end() && "");
+				assert(result != this->m_EventDeleagteList.end() && "");
 				this->m_PendingRemoveDelegates.push_back((*result));
 			}
 		}
 
-		virtual inline size_t GetEventCallbackCount() override { return this->m_EventDeleagteList.size(); };
+		virtual inline size_t GetEventCallbackCount() const override { return this->m_EventDeleagteList.size(); };
 	};
 
 }

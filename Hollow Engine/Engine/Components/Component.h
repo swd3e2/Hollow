@@ -11,17 +11,17 @@ namespace Hollow {
 	class Component : public IComponent
 	{
 	public:
-		static const unsigned int STATIC_COMPONENT_TYPE_ID;
+		static const size_t STATIC_COMPONENT_TYPE_ID;
 
 		Component() {}
 
 		virtual ~Component() {}
 
-		inline unsigned int GetStaticComponentTypeID() const { return STATIC_COMPONENT_TYPE_ID; }
+		inline size_t GetStaticComponentTypeID() const { return STATIC_COMPONENT_TYPE_ID; }
 	};
 
 	template<class T>
-	const unsigned int Component<T>::STATIC_COMPONENT_TYPE_ID = Core::Utils::FamilyTypeID<IComponent>::Get<T>();
+	const size_t Component<T>::STATIC_COMPONENT_TYPE_ID = Core::Utils::FamilyTypeID<IComponent>::Get<T>();
 }
 
 #endif

@@ -8,13 +8,14 @@ namespace Hollow {
     template<typename E>
     class Event : public IEvent
     {
-    static const size_t STATIC_EVENT_TYPE_ID;
+	public:
+		static const size_t STATIC_EVENT_TYPE_ID;
     public:
         Event() : IEvent(STATIC_EVENT_TYPE_ID) {}
     };
 
     template<typename E>
-    const size_t Event<E>::STATIC_EVENT_TYPE_ID = Utils::FamilyTypeID<E>::Get<E>();
+    const size_t Event<E>::STATIC_EVENT_TYPE_ID = Core::Utils::FamilyTypeID<IEvent>::Get<E>();
 }
 
 #endif

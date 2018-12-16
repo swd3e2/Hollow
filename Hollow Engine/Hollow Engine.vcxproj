@@ -23,6 +23,7 @@
     <ClInclude Include="Engine\Events\IEventDelegate.h" />
     <ClInclude Include="Engine\Events\IEventDispatcher.h" />
     <ClInclude Include="Engine\Events\IEventListener.h" />
+    <ClInclude Include="Engine\Events\MoveEvent.h" />
     <ClInclude Include="Engine\Graphics\SimpleVertex.h" />
     <ClInclude Include="Engine\ImGui\imconfig.h" />
     <ClInclude Include="Engine\ImGui\imgui.h" />

@@ -50,7 +50,7 @@ namespace Hollow {
 			entityManager->GetMemoryUsed();
 			ImGui::Text("Entity manager");
 
-			for (unsigned int it : entityManager->GetMemoryUsed()) {
+			for (size_t it : entityManager->GetMemoryUsed()) {
 				float result = (float)it / 1024 / 1024;
 				std::string first;
 				first += std::to_string(result).c_str();
@@ -60,7 +60,7 @@ namespace Hollow {
 				ImGui::Text("128 mb.");
 			}
 			ImGui::Text("Component manager");
-			for (unsigned int it : componentManager->GetMemoryUsed()) {
+			for (size_t it : componentManager->GetMemoryUsed()) {
 				float result = (float)it / 1024 / 1024;
 				std::string first;
 				first += std::to_string(result).c_str();

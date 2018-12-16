@@ -10,17 +10,17 @@ namespace Hollow {
 	{
 		friend ComponentManager;
 	protected:
-		unsigned int ComponentID;
-		unsigned int EntityID;
-		unsigned int HashValue;
+		size_t ComponentID;
+		size_t EntityID;
+		size_t HashValue;
 		bool enabled;
 	public:
 
 		IComponent() : enabled(true) {}
 		virtual ~IComponent() {}
 
-		inline const unsigned int GetComponentID() { return this->ComponentID; }
-		inline const unsigned int GetOwner() { return this->EntityID; }
+		inline const size_t GetComponentID() { return this->ComponentID; }
+		inline const size_t GetOwner() { return this->EntityID; }
 		inline void SetActive(bool state) { this->enabled = state; }
 		inline bool IsActive() { return this->enabled; }
 	};

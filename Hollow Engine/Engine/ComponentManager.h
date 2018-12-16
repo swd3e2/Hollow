@@ -15,11 +15,11 @@
 
 namespace Hollow {
 
-	using ComponentTypeID = unsigned int;
-	using ComponentId = unsigned int;
-	using EntityID = unsigned int;
+	using ComponentTypeID = size_t;
+	using ComponentId = size_t;
+	using EntityID = size_t;
 
-	static const unsigned int INVALID_OBJECT_ID = std::numeric_limits<unsigned int>::max();
+	static const size_t INVALID_OBJECT_ID = std::numeric_limits<size_t>::max();
 
 	class ComponentManager
 	{
@@ -30,7 +30,7 @@ namespace Hollow {
 			virtual ~IComponentContainer() {}
 			virtual const char* GetComponentContainerTypeName() const = 0;
 			virtual void DestroyComponent(IComponent* object) = 0;
-			virtual unsigned int GetContainerMemoryUsed() = 0;
+			virtual size_t GetContainerMemoryUsed() = 0;
 		};
 
 		template<class T>
@@ -55,7 +55,7 @@ namespace Hollow {
 				this->DestroyObject(object);
 			}
 
-			virtual unsigned int GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
+			virtual size_t GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
 		};
 
 		std::unordered_map<ComponentTypeID, IComponentContainer*> m_ComponentContainerRegistry;
@@ -117,7 +117,7 @@ namespace Hollow {
 
 			// create mapping from entity id its component id
 			MapEntityComponent(entityId, componentId, CTID);
-			Hollow::Log::GetCoreLogger()->info("ComponentManager: created component with id {}, typeID {}, pointer {}", componentId, T::STATIC_COMPONENT_TYPE_ID, pObjectMemory);
+			//Hollow::Log::GetCoreLogger()->info("ComponentManager: created component with id {}, typeID {}, pointer {}", componentId, T::STATIC_COMPONENT_TYPE_ID, pObjectMemory);
 
 			return (T*)(component);
 		}
@@ -192,9 +192,9 @@ namespace Hollow {
 			return GetComponentContainer<T>()->end();
 		}
 
-		std::vector<unsigned int> GetMemoryUsed()
+		std::vector<size_t> GetMemoryUsed()
 		{
-			std::vector<unsigned int> memoryUsed;
+			std::vector<size_t> memoryUsed;
 			for (auto it : this->m_ComponentContainerRegistry)
 				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
 			return memoryUsed;

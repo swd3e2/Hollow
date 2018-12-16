@@ -5,16 +5,16 @@ namespace Hollow { namespace Core { namespace Utils {
 	template<class T>
 	class FamilyTypeID
 	{
-		static unsigned int count;
+		static size_t count;
 	public:
 		template<class U>
-		static unsigned int Get()
+		static size_t Get()
 		{
-			static const unsigned int STATIC_TYPE_ID { count++ };
+			static const size_t STATIC_TYPE_ID { count++ };
 			return STATIC_TYPE_ID;
 		}
 
-		static unsigned int Get()
+		static size_t Get()
 		{
 			return count;
 		}

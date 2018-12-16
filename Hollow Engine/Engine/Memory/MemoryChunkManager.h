@@ -10,7 +10,7 @@
 
 namespace Hollow { namespace Core { namespace Memory {
 
-	template<class T, unsigned int max_ojbects>
+	template<class T, size_t max_ojbects>
 	class MemoryChunkManager : public StackMemoryManager
 	{
 	public:
@@ -18,14 +18,14 @@ namespace Hollow { namespace Core { namespace Memory {
 		{
 		public:
 			PoolAllocator * allocator;
-			unsigned int begin;
-			unsigned int end;
+			size_t begin;
+			size_t end;
 			std::list<T*> objects;
 
 			MemoryChunk(PoolAllocator * in_allocator)
 			{
 				allocator = in_allocator;
-				this->begin = (unsigned int)this->allocator->GetMemoryFirstAddress();
+				this->begin = (size_t)this->allocator->GetMemoryFirstAddress();
 				this->end = this->begin + this->allocator->GetMemorySize();
 				this->objects.clear();
 				Hollow::Log::GetCoreLogger()->debug("MemoryChunk: created, firstAddress {} {}, last address {} {}", this->begin, this->allocator->GetMemoryFirstAddress(), this->end, (void*)(this->begin + this->allocator->GetMemorySize()));
@@ -131,7 +131,7 @@ namespace Hollow { namespace Core { namespace Memory {
 
 		void DestroyObject(void* mem)
 		{
-			unsigned int memory = (unsigned int)mem;
+			size_t memory = (size_t)mem;
 			for (auto chunk : this->chunks)
 			{
 				if (memory >= chunk->begin && memory < chunk->end)
@@ -143,7 +143,7 @@ namespace Hollow { namespace Core { namespace Memory {
 			}
 		}
 
-		inline unsigned int GetMemoryUsed() { return this->m_Allocator->GetMemoryUsed(); }
+		inline size_t GetMemoryUsed() { return this->m_Allocator->GetMemoryUsed(); }
 	};
 
 }}}

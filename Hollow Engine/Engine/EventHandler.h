@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <list>
 #include "Common/Log.h"
-
+#include <new>
  #define ECS_EVENT_MEMORY_BUFFER_SIZE		4194304
 namespace Hollow {
 
@@ -31,7 +31,7 @@ namespace Hollow {
             auto it = this->m_EventDispatcherMap.find(ETID);
             if (it == this->m_EventDispatcherMap.end())
             {
-				this->m_EventDispatcherMap[ETID] = (IEventDispatcher*)new EventDispatcher<E>();
+				this->m_EventDispatcherMap[ETID] = new EventDispatcher<E>();
      			this->m_EventDispatcherMap[ETID]->AddEventCallback(eventDelegate);
             } else {
                 this->m_EventDispatcherMap[ETID]->AddEventCallback(eventDelegate);
@@ -92,7 +92,7 @@ namespace Hollow {
 	
 	
 			// allocate memory to store event data
-			void* pMem = this->m_EventMemoryAllocator->allocate(sizeof(E), alignof(E));
+			void* pMem = this->m_EventAllocator->allocate(sizeof(E), alignof(E));
 
 			// add new event to buffer and event storage
 			if (pMem != nullptr)

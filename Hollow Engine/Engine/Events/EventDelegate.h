@@ -1,6 +1,6 @@
 #ifndef __EVENT_DELEGATE_H__
 #define __EVENT_DELEGATE_H_
-#pragma once_
+#pragma once
 #include "IEvent.h"
 #include "IEventDelegate.h"
 

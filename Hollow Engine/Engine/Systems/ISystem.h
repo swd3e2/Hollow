@@ -7,7 +7,7 @@
 
 namespace Hollow {
 
-	using SystemTypeID = unsigned int;
+	using SystemTypeID = size_t;
 	static const SystemTypeID INVALID_SYSTEMID = std::numeric_limits<SystemTypeID>::max();
 
 	class ISystem

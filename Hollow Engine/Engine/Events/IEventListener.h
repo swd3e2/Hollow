@@ -18,7 +18,7 @@ namespace Hollow {
         template<class E, class C>
         inline void RegisterEventCallback(void(C::*Callback)(const E* const))
         {
-            EventDelegate* eventDelegate = new EventDelegate<C, E>(static_cast<C*>(this), Callback);
+            EventDelegate<C, E>* eventDelegate = new EventDelegate<C, E>(static_cast<C*>(this), Callback);
             m_RegisteredCallbacks.push_back(eventDelegate);
 			EventHandler::Get()->AddEventCallback<E>(eventDelegate);
         }

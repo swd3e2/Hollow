@@ -11,7 +11,7 @@ namespace Hollow {
 	class Entity : public IEntity
 	{
 	public:
-		static const unsigned int STATIC_ENTITY_TYPE_ID;
+		static const size_t STATIC_ENTITY_TYPE_ID;
 	public:
 		Entity() {}
 		~Entity() {}
@@ -19,7 +19,7 @@ namespace Hollow {
 	};
 
 	template<class E>
-	const unsigned int Entity<E>::STATIC_ENTITY_TYPE_ID = Core::Utils::FamilyTypeID<IEntity>::Get<E>();
+	const size_t Entity<E>::STATIC_ENTITY_TYPE_ID = Core::Utils::FamilyTypeID<IEntity>::Get<E>();
 }
 
 #endif

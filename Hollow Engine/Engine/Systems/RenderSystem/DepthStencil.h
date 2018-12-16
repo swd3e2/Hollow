@@ -59,10 +59,6 @@ namespace Hollow {
 			if (hr != S_OK) {
 				Hollow::Log::GetCoreLogger()->error("DepthStencil: Cant create ShaderResourceView!");
 			}
-
-			ID3D11Resource *resource;
-			m_zNear = .01f;
-			m_zFar = 10.f;
 		}
 
 		inline ID3D11DepthStencilView * GetDepthStencilView() { return m_DepthStencilView.Get(); }
