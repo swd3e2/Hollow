@@ -35,6 +35,7 @@
     <ClInclude Include="Engine\ImGui\imstb_truetype.h" />
     <ClInclude Include="Engine\Input\InputManager.h" />
     <ClInclude Include="Engine\Input\KeyCodes.h" />
+    <ClInclude Include="Engine\SystemManager.h" />
     <ClInclude Include="Engine\Systems\MoveSystem.h" />
     <ClInclude Include="Engine\Systems\InterfaceSystem\InterfaceSystem.h" />
     <ClInclude Include="Engine\Utils\Console.h" />

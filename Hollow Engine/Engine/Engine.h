@@ -30,8 +30,8 @@ private:
 	Hollow::EntityManager *			m_EntityManager;
 	Hollow::ComponentManager *		m_ComponentManager;
 	Hollow::Timer*					m_Timer;
-	Hollow::RenderSystem*           m_RenderSystem;
 	Hollow::EventHandler*			m_EventHandler;
+	Hollow::RenderSystem*           m_RenderSystem;
 	Hollow::MoveSystem*				m_MoveSystem;
 	Hollow::InterfaceSystem*		m_InterfaceSystem;
 	std::vector<Hollow::GameObject*> gameObjects;
