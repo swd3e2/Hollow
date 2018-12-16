@@ -10,6 +10,29 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Sandbox\Application.h" />
+    <ClCompile Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.cpp" />
+    <ClCompile Include="Sandbox\Systems\RenderSystem\RenderSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sandbox\Entities\GameObject.h" />
+    <ClInclude Include="Sandbox\Events\MoveEvent.h" />
+    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
+    <ClInclude Include="Sandbox\Components\MeshComponent.h" />
+    <ClInclude Include="Sandbox\Components\MoveComponent.h" />
+    <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
+    <ClInclude Include="Sandbox\Components\PositionComponent.h" />
+    <ClInclude Include="Sandbox\Systems\RenderSystem\DepthStencil.h" />
+    <ClInclude Include="Sandbox\Systems\RenderSystem\RenderSystem.h" />
+    <ClInclude Include="Sandbox\Systems\RenderSystem\RenderTarget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hollow Engine\Hollow Engine.vcxproj">
+      <Project>{7a539afc-8bb5-4385-b38b-862bb095edf6}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B3FF6361-8B4A-4680-AA13-453EF3A9DB12}</ProjectGuid>
@@ -42,7 +65,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -51,10 +81,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine\Hollow;$(SolutionDir)Sandbox;$(SolutionDir)Hollow Engine\vendor\imgui;$(SolutionDir)Hollow Engine\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HOLLOW_PLATFORM_WIDNOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Hollow Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -63,7 +96,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow Engine\Hollow;$(SolutionDir)Sandbox;$(SolutionDir)Hollow Engine\vendor\imgui;$(SolutionDir)Hollow Engine\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HOLLOW_PLATFORM_WIDNOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>Hollow Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

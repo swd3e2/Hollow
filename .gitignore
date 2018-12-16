@@ -1,5 +1,7 @@
 x64
 .vs
+bin
+bin-int
 .vscode
 Debug
 Hollow Engine/Debug
