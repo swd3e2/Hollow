@@ -48,7 +48,7 @@ namespace Hollow {
 	};
 
 	template<class T>
-	const SystemTypeID System<T>::STATIC_SYSTEM_TYPE_ID = Hollow::Core::Utils::FamilyTypeID<ISystem>::Get<System>();
+	const SystemTypeID System<T>::STATIC_SYSTEM_TYPE_ID = Core::Utils::FamilyTypeID<ISystem>::Get<System>();
 }
 
 #endif

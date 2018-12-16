@@ -11,9 +11,14 @@ namespace Hollow { namespace Core { namespace Memory {
 	protected:
 		StackMemoryManager* memoryManager;
 	public:
+		MemoryUser()
+		{
+			memoryManager = new StackMemoryManager();
+		}
+
 		void* allocate(unsigned int memSize, const char* user = nullptr)
 		{
-			this->memoryManager->allocate(memSize, user);
+			return this->memoryManager->allocate(memSize, user);
 		}
 
 		void free(void* mem)

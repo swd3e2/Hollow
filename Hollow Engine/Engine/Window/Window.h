@@ -1,7 +1,5 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
-#pragma once
-#define NOMINMAX
 #include <string>
 #include "windows.h"
 #include "Engine/Input/InputManager.h"

@@ -176,7 +176,7 @@ namespace Hollow {
 			AdjustPosition(vec_right * cameraSpeed);
 		}
 
-		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT))
+		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT))
 		{
 			AdjustRotation(InputManager::y * 0.005f, InputManager::x * 0.005f, 0.0f);
 			// @TODO: create clear method

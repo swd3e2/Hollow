@@ -1,12 +1,9 @@
-#pragma once
-
-#ifndef __STACK_MEMORY_MANAGER__
-#define __STACK_MEMORY_MANAGER__
+#ifndef __STACK_MEMORY_MANAGER_H__
+#define __STACK_MEMORY_MANAGER_H__
+#include "Allocators/StackAllocator.h"
+#include "Engine/Common/Log.h"
 #include <vector>
 #include <list>
-#include "Allocators/StackAllocator.h"
-#include "../Common/Log.h"
-
 #define DEFAULT_STACK_MEMORY_MANAGER_SIZE 134217728 // 128 mb
 
 namespace Hollow { namespace Core { namespace Memory {

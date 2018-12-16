@@ -1,6 +1,4 @@
 #pragma once
-
-
 #ifndef __MEMORY_CHUNK_MANAGER__
 #define __MEMORY_CHUNK_MANAGER__
 
@@ -16,7 +14,6 @@ namespace Hollow { namespace Core { namespace Memory {
 	class MemoryChunkManager : public StackMemoryManager
 	{
 	public:
-
 		class MemoryChunk
 		{
 		public:
@@ -145,6 +142,8 @@ namespace Hollow { namespace Core { namespace Memory {
 				}
 			}
 		}
+
+		inline unsigned int GetMemoryUsed() { return this->m_Allocator->GetMemoryUsed(); }
 	};
 
 }}}

@@ -1,9 +1,6 @@
 #ifndef __CAMERA__
 #define __CAMERA__
-
-#pragma once
 #include <iostream>
-#include <windows.h>
 #include "DirectXMath.h"
 #include "Engine/Input/InputManager.h"
 

@@ -1,8 +1,5 @@
-#pragma once
-
 #ifndef __COMPONENT_MANAGER__
 #define __COMPONENT_MANAGER__
-
 #include "Components/IComponent.h"
 #include "Memory/MemoryChunkManager.h"
 #include "Utils/FamilyTypeID.h"
@@ -10,7 +7,9 @@
 #include "Common/Log.h"
 #include <unordered_map>
 #include <assert.h>
-
+#include <limits.h>
+#undef max
+#undef min
 #define ENITY_LUT_GROW 512
 #define COMPONENT_LUT_GROW 512
 
@@ -31,6 +30,7 @@ namespace Hollow {
 			virtual ~IComponentContainer() {}
 			virtual const char* GetComponentContainerTypeName() const = 0;
 			virtual void DestroyComponent(IComponent* object) = 0;
+			virtual unsigned int GetContainerMemoryUsed() = 0;
 		};
 
 		template<class T>
@@ -54,6 +54,8 @@ namespace Hollow {
 				object->~IComponent();
 				this->DestroyObject(object);
 			}
+
+			virtual unsigned int GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
 		};
 
 		std::unordered_map<ComponentTypeID, IComponentContainer*> m_ComponentContainerRegistry;
@@ -188,6 +190,14 @@ namespace Hollow {
 		inline TComponentIterator<T> end()
 		{
 			return GetComponentContainer<T>()->end();
+		}
+
+		std::vector<unsigned int> GetMemoryUsed()
+		{
+			std::vector<unsigned int> memoryUsed;
+			for (auto it : this->m_ComponentContainerRegistry)
+				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
+			return memoryUsed;
 		}
 	};
 

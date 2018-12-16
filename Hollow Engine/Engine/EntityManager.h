@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef __ENTITY_MANAGER__
 #define __ENTITY_MANAGER__
 #include "Memory/MemoryChunkManager.h"
@@ -22,6 +20,7 @@ namespace Hollow {
 			virtual ~IEntityContainer() {}
 			virtual const char* GetEntityContainerTypeName() const = 0;
 			virtual void DestroyEntity(IEntity* object) = 0;
+			virtual unsigned int GetContainerMemoryUsed() = 0;
 		};
 
 		template<class E>
@@ -45,6 +44,7 @@ namespace Hollow {
 				object->~IEntity();
 				this->DestroyObject(object);
 			}
+			virtual unsigned int GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
 		};
 
 		template<class E>
@@ -132,6 +132,13 @@ namespace Hollow {
 			}
 		}
 
+		std::vector<unsigned int> GetMemoryUsed() 
+		{ 
+			std::vector<unsigned int> memoryUsed;
+			for (auto it : this->m_EntityRegistry)
+				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
+			return memoryUsed;
+		}
 	};
 
 }

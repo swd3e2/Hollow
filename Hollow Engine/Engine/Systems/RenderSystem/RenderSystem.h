@@ -2,7 +2,6 @@
 #define __RENDER_SYSTEM__
 #pragma once
 #include "../System.h"
-#define NOMINMAX
 #include <windows.h>
 #include <d3d11.h>
 #include <directXMath.h>
@@ -22,7 +21,6 @@
 #include "Engine/Components/MeshComponent.h"
 #include "Engine/Components/PositionComponent.h"
 #include "Engine/ComponentManager.h"
-#include "Subsystem/Interface.h"
 
 namespace Hollow {
 
@@ -77,11 +75,12 @@ namespace Hollow {
 
 		virtual void PreUpdate(float_t dt) override;
 
-		virtual void Update(float_t dt, std::vector<Hollow::GameObject*> gameObjects);
+		virtual void Update(float_t dt, std::vector<Hollow::GameObject*>& gameObjects);
 
 		virtual void PostUpdate(float_t dt) override;
 
 		inline ID3D11Device * GetDevice() { return this->m_Device.Get(); }
+		inline ID3D11DeviceContext * GetDeviceContext() { return this->m_DeviceContext.Get(); }
 	};
 
 }

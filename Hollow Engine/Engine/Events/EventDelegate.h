@@ -33,26 +33,23 @@ namespace Hollow {
 
 		virtual inline size_t GetDelegateId() const override
 		{
-			static const EventDelegateId DELEGATE_ID{ typeid(Class).hash_code() ^ typeid(Callback).hash_code() };
+			static const size_t DELEGATE_ID{ typeid(Class).hash_code() ^ typeid(Callback).hash_code() };
 			return DELEGATE_ID;
 		}
 
 
 		virtual inline uint64_t GetStaticEventTypeId() const override
 		{
-			static const u64 SEID{ EventType::STATIC_EVENT_TYPE_ID };
+			static const uint64_t SEID{ EventType::STATIC_EVENT_TYPE_ID };
 			return SEID;
 		}
 
 		virtual bool operator==(const IEventDelegate* other) const override
 		{
-			if (this->GetDelegateId() != other->GetDelegateId())
+			if (this->GetDelegateId() != other->GetDelegateId() || other == nullptr)
 				return false;
 
 			EventDelegate* delegate = (EventDelegate*)other;
-			if (other == nullptr)
-				return false;
-
 			return ((this->m_Callback == delegate->m_Callback) && (this->m_Receiver == delegate->m_Receiver));
 		}
 

@@ -1,8 +1,9 @@
+#ifndef __I_SYSTEM_H__
+#define __I_SYSTEM_H__
 #pragma once
-
-#ifndef __ISYSTEM__
-#define __ISYSTEM__
 #include <limits>
+#undef max
+#undef min
 
 namespace Hollow {
 

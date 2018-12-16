@@ -31,8 +31,6 @@ namespace Hollow {
 
 		vertexShader = new VertexShader(this->m_Device.Get(), L"Engine/Resources/Shaders/vs.hlsl", bxlayout, numElements);
 		pixelShader = new PixelShader(this->m_Device.Get(), L"Engine/Resources/Shaders/ps.hlsl");
-
-		Interface::Init(this->hWnd, this->m_Device.Get(), this->m_DeviceContext.Get());
 	}
 
 	void RenderSystem::PreUpdate(float_t dt) 
@@ -51,7 +49,7 @@ namespace Hollow {
 		m_DeviceContext->PSSetShader(pixelShader->GetShader(), NULL, 0);
 	}
 
-	void RenderSystem::Update(float_t dt, std::vector<Hollow::GameObject*> gameObjects)
+	void RenderSystem::Update(float_t dt, std::vector<Hollow::GameObject*>& gameObjects)
 	{
 		for (auto object : gameObjects) {
 			MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
@@ -64,7 +62,6 @@ namespace Hollow {
 			m_DeviceContext->IASetIndexBuffer(meshComponent->iBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 			m_DeviceContext->DrawIndexed(36, 0, 0);
 		}
-		Interface::Update();
 	}
 
 	void RenderSystem::PostUpdate(float_t dt) 

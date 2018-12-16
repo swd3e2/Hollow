@@ -1,6 +1,5 @@
 #ifndef __I_EVENT_H__
 #define __I_EVENT_H__
-#pragma once
 #include <chrono>
 #include <stdint.h>
 
@@ -18,8 +17,8 @@ namespace Hollow {
             m_TimeCreated = 0;
         }
 
-		inline size_t GetEventTypeID() { return this->m_EventTypeID; };
-        inline long long GetTimeCreated() { return this->m_TimeCreated };
+		inline size_t GetEventTypeID() { return this->m_EventTypeID; }
+        inline long long GetTimeCreated() { return this->m_TimeCreated; }
     };
 
 }

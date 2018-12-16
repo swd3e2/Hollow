@@ -38,15 +38,9 @@ namespace Hollow { namespace Core { namespace Memory {
 		// Realization depends on kind of allocator
 		virtual void clear() = 0;
 
-		void* GetMemoryFirstAddress() const
-		{
-			return (void*)this->m_MemoryFirstAddress;
-		}
-
-		unsigned int GetMemorySize() const
-		{
-			return this->m_MemorySize;
-		}
+		inline void* GetMemoryFirstAddress() const { return (void*)this->m_MemoryFirstAddress; }
+		inline unsigned int GetMemoryUsed() const { return this->m_MemoryUsed; }
+		inline unsigned int GetMemorySize() const { return this->m_MemorySize; }
 	};
 
 }}}

@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "Engine/Engine.h"
 #include "Engine/Utils/Console.h"
 #include "Engine/Common/Log.h"
