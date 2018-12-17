@@ -2,4 +2,5 @@
 	path = Hollow Engine/vendor/tinyObjLoader
 	url = https://github.com/syoyo/tinyobjloader
 [submodule "Hollow Engine/vendor/spdlog"]
-	path = Hollow Engine/vendor/spdlog	
+	path = Hollow Engine/vendor/spdlog
+	url = https://github.com/gabime/spdlog
