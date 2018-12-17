@@ -1,12 +1,12 @@
 #pragma once
-#include "ECS/Systems/System.h"
-#include "Common/Log.h"
+#include "Hollow/ECS/Systems/System.h"
+#include "Hollow/Common/Log.h"
 #include "Sandbox/Events/MoveEvent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/PositionComponent.h"
 #include "Sandbox/Components/MoveComponent.h"
-#include "Events/IEventListener.h"
-#include "ECS/EventHandler.h"
+#include "Hollow/Events/IEventListener.h"
+#include "Hollow/ECS/EventHandler.h"
 #include <vector>
 
 class MoveSystem : public Hollow::System<MoveSystem>, Hollow::IEventListener
@@ -14,7 +14,7 @@ class MoveSystem : public Hollow::System<MoveSystem>, Hollow::IEventListener
 public:
 	MoveSystem() 
 	{
-		RegisterEventCallback<MoveEvent, MoveSystem>(&MoveSystem::Kek);
+		this->RegisterEventCallback<MoveEvent, MoveSystem>(&MoveSystem::Kek);
 	}
 
 	void Kek(const MoveEvent* const e)
@@ -35,11 +35,11 @@ public:
 			}
 
 			if (posComponent->position.x > 10.0f) {
-				EventHandler::Get()->Send<MoveEvent>();
+				Hollow::EventHandler::Get()->Send<MoveEvent>();
 				moveComponent->move = true;
 			}
 			else if (posComponent->position.x < -10.0f) {
-				EventHandler::Get()->Send<MoveEvent>();
+				Hollow::EventHandler::Get()->Send<MoveEvent>();
 				moveComponent->move = false;
 			}
 		}

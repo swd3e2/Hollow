@@ -1,8 +1,8 @@
 #pragma once
-#include "ECS/Components/Component.h"
-#include "Graphics/BufferTemplate/IndexBuffer.h"
-#include "Graphics/BufferTemplate/VertexBuffer.h"
-#include "Graphics/SimpleVertex.h"
+#include "Hollow/ECS/Components/Component.h"
+#include "Hollow/Graphics/BufferTemplate/IndexBuffer.h"
+#include "Hollow/Graphics/BufferTemplate/VertexBuffer.h"
+#include "Hollow/Graphics/SimpleVertex.h"
 
 class MeshComponent : public Hollow::Component<MeshComponent>
 {

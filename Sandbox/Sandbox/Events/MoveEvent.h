@@ -1,5 +1,5 @@
 #pragma once
-#include "Events/Event.h"
+#include "Hollow/Events/Event.h"
 
 class MoveEvent : public Hollow::Event<MoveEvent>
 {

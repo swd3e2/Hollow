@@ -1,17 +1,17 @@
 #pragma once
-#include "Engine.h"
-#include "Window/Window.h"
-
+#include "Hollow/Window/Window.h"
 #include "Entities/GameObject.h"
+#include "Hollow/Graphics/SimpleVertex.h"
+#include <Hollow/Engine.h>
 #include "Components/MeshComponent.h"
-#include "Components/PositionComponent.h"
 #include "Components/MoveComponent.h"
-#include "Systems/RenderSystem/RenderSystem.h"
+#include "Components/PositionComponent.h"
 #include "Systems/InterfaceSystem/InterfaceSystem.h"
 #include "Systems/MoveSystem.h"
-#include <random>
+#include "Systems/RenderSystem/RenderSystem.h"
 #include "DirectXMath.h"
 #include "d3d11.h"
+#include <random>
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -23,9 +23,9 @@ class Application
 private:
 	static constexpr float DELTA_TIME_STEP{ 1.0f / 60.0f };
 
-	Window					m_Window;
+	Hollow::Window					m_Window;
 	HWND*					m_HWND;
-	Engine					engine;
+	Hollow::Engine					engine;
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;

@@ -4,6 +4,6 @@ bin
 bin-int
 .vscode
 Debug
-Hollow Engine/Debug
-Hollow Engine/x64
+Hollow/Debug
+Hollow/x64
 !.gitignore

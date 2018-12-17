@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS/Components/Component.h"
+#include "Hollow/ECS/Components/Component.h"
 
 class MoveComponent : public Hollow::Component<MoveComponent>
 {

@@ -1,12 +1,12 @@
 #pragma once
 #include "d3d11.h"
-#include "ImGui/imgui.h"
-#include "ImGui/imgui_impl_win32.h"
-#include "ImGui/imgui_impl_dx11.h"
-#include "Common/Log.h"
-#include "ECS/Systems/System.h"
-#include "ECS/EntityManager.h"
-#include "ECS/ComponentManager.h"
+#include "Sandbox/ImGui/imgui.h"
+#include "Sandbox/ImGui/imgui_impl_win32.h"
+#include "Sandbox/ImGui/imgui_impl_dx11.h"
+#include "Hollow/Common/Log.h"
+#include "Hollow/ECS/Systems/System.h"
+#include "Hollow/ECS/EntityManager.h"
+#include "Hollow/ECS/ComponentManager.h"
 #include <string>
 
 class InterfaceSystem : public Hollow::System<InterfaceSystem>

@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS/Components/Component.h"
+#include "Hollow/ECS/Components/Component.h"
 #include "directXMath.h"
 
 class PositionComponent : public Hollow::Component<PositionComponent>

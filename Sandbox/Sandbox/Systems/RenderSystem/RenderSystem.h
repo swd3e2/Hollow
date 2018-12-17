@@ -1,24 +1,24 @@
 #pragma once
-#include "ECS/Systems/System.h"
+#include "Hollow/ECS/Systems/System.h"
 #include <windows.h>
 #include <d3d11.h>
 #include <directXMath.h>
 #include <wrl/client.h>
 
-#include "Common/Log.h"
-#include "RenderTarget.h"
-#include "DepthStencil.h"
-#include "Graphics/Camera.h"
-#include "Graphics/BufferTemplate/ConstantBuffer.h"
-#include "Graphics/Shaders/VertexShader.h"
-#include "Graphics/Shaders/PixelShader.h"
-#include "Graphics/BufferTemplate/IndexBuffer.h"
-#include "Graphics/BufferTemplate/VertexBuffer.h"
-#include "Graphics/SimpleVertex.h"
+#include "Hollow/Common/Log.h"
+#include "Hollow/Graphics/RenderTarget.h"
+#include "Hollow/Graphics/DepthStencil.h"
+#include "Hollow/Graphics/Camera.h"
+#include "Hollow/Graphics/BufferTemplate/ConstantBuffer.h"
+#include "Hollow/Graphics/Shaders/VertexShader.h"
+#include "Hollow/Graphics/Shaders/PixelShader.h"
+#include "Hollow/Graphics/BufferTemplate/IndexBuffer.h"
+#include "Hollow/Graphics/BufferTemplate/VertexBuffer.h"
+#include "Hollow/Graphics/SimpleVertex.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/MeshComponent.h"
 #include "Sandbox/Components/PositionComponent.h"
-#include "ECS/ComponentManager.h"
+#include "Hollow/ECS/ComponentManager.h"
 
 using namespace Hollow;
 

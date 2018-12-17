@@ -27,8 +27,8 @@ RenderSystem::RenderSystem(HWND * hwnd, int width, int height) :
 	};
 	UINT numElements = ARRAYSIZE(bxlayout);
 
-	vertexShader = new VertexShader(this->m_Device.Get(), L"Engine/Resources/Shaders/vs.hlsl", bxlayout, numElements);
-	pixelShader = new PixelShader(this->m_Device.Get(), L"Engine/Resources/Shaders/ps.hlsl");
+	vertexShader = new VertexShader(this->m_Device.Get(), L"Sandbox/Resources/Shaders/vs.hlsl", bxlayout, numElements);
+	pixelShader = new PixelShader(this->m_Device.Get(), L"Sandbox/Resources/Shaders/ps.hlsl");
 }
 
 void RenderSystem::PreUpdate(float_t dt) 
