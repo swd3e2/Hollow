@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hollow\Components\MeshComponent.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\EventHandler.h" />
     <ClInclude Include="Hollow\Engine.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="Hollow\Input\KeyCodes.h" />
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
     <ClInclude Include="Hollow\Platform.h" />
+    <ClInclude Include="Hollow.h" />
     <ClInclude Include="Hollow\Utils\Console.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
     <ClInclude Include="Hollow\ECS\Components\Component.h" />
@@ -62,7 +64,10 @@
     <ClCompile Include="Hollow\ECS\EventHandler.cpp" />
     <ClCompile Include="Hollow\Engine.cpp" />
     <ClCompile Include="Hollow\Events\IEventListener.cpp" />
+    <ClCompile Include="Hollow\Graphics\DepthStencil.cpp" />
+    <ClCompile Include="Hollow\Graphics\RenderTarget.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
+    <ClCompile Include="Hollow\Utils\Console.cpp" />
     <ClCompile Include="Hollow\Utils\FamilyTypeID.cpp" />
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Memory\StackMemoryManager.cpp" />

@@ -16,7 +16,7 @@
 #include "Hollow/Graphics/BufferTemplate/VertexBuffer.h"
 #include "Hollow/Graphics/SimpleVertex.h"
 #include "Sandbox/Entities/GameObject.h"
-#include "Sandbox/Components/MeshComponent.h"
+#include "Hollow/Components/MeshComponent.h"
 #include "Sandbox/Components/PositionComponent.h"
 #include "Hollow/ECS/ComponentManager.h"
 
