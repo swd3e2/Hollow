@@ -1,6 +1,6 @@
-[submodule "Hollow Engine/vendor/tinyObjLoader"]
-	path = Hollow Engine/vendor/tinyObjLoader
-	url = https://github.com/syoyo/tinyobjloader
-[submodule "Hollow Engine/vendor/spdlog"]
-	path = Hollow Engine/vendor/spdlog
+[submodule "Hollow/vendor/spdlog"]
+	path = Hollow/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Hollow/vendor/tinyObjLoader"]
+	path = Hollow/vendor/tinyObjLoader
+	url = https://github.com/syoyo/tinyobjloader
