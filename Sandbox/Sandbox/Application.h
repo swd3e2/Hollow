@@ -13,6 +13,7 @@
 #include "DirectXMath.h"
 #include "d3d11.h"
 #include <random>
+#include "Hollow/Resources/SoundResource.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -30,12 +31,60 @@ private:
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;
+	Hollow::ResourceManager m_ResourceManager;
 	std::vector<GameObject*> gameObjects;
+	SoundResource* m_Sound;
 private:
 	void InitScene()
 	{
+		bool result;
+
+		// Initialize the sound object.
+		result = m_Sound->Initialize(*m_HWND);
+	
+
+		std::vector<SimpleVertex> vertices;
+		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
+
+		vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) });
+
+		std::vector<unsigned int> vindices;
+		unsigned int * indices = new unsigned int[36]{
+				2, 1, 0,
+				2, 0, 3,
+				2, 5, 1,
+				5, 7, 1,
+				4, 2, 3,
+				4, 5, 2,
+				4, 3, 0,
+				4, 0, 6,
+				1, 6, 0,
+				1, 7, 6,
+				5, 6, 7,
+				5, 4, 6
+		};
+		for (int i = 0; i < 36; i++)
+			vindices.push_back(indices[i]);
+
+		std::default_random_engine generator;
+		std::uniform_int_distribution<int> distribution(-10, 10);
+
+		for (int i = 0; i < 10; i++) {
+			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject>();
+			object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+			object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
+			object->AddComponent<MoveComponent>();
+			gameObjects.push_back(object);
+		}
+
 		/*GameObject* object = engine.m_EntityManager->CreateEntity<GameObject>();
-		Hollow::ResourceManager::LoadFromObj(object, "Resources/Meshes/cube.obj");*/
+		m_ResourceManager.LoadFromObj(object, "Sandbox/Resources/Meshes/cube.obj");*/
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
@@ -45,6 +94,7 @@ public:
 		this->m_RenderSystem = new RenderSystem(this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
 		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), engine.m_EntityManager, engine.m_ComponentManager);
 		this->m_MoveSystem = new MoveSystem();
+		this->m_Sound = new SoundResource();
 
 		this->InitScene();
 	}

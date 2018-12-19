@@ -4,6 +4,7 @@ bin
 bin-int
 .vscode
 Debug
+Sandbox/Sandbox/Resources/*
 Hollow/Debug
 Hollow/x64
 !.gitignore
