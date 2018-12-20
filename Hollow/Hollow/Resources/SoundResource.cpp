@@ -31,7 +31,7 @@ bool SoundResource::Initialize(HWND hwnd)
 	}
 
 	// Load a wave audio file onto a secondary buffer.
-	result = LoadWaveFile((char*)"Sandbox/Resources/Sounds/1.wav", &m_secondaryBuffer1);
+	result = LoadWaveFile((char*)"Sandbox/Resources/Sounds/2.wav", &m_secondaryBuffer1);
 	if (!result)
 	{
 		Hollow::Log::GetCoreLogger()->critical("Sound: can't open file!");
@@ -146,6 +146,7 @@ bool SoundResource::LoadWaveFile(char* filename, IDirectSoundBuffer8 ** secondar
 	unsigned char* waveData;
 	unsigned char *bufferPtr;
 	unsigned long bufferSize;
+	char buffer[256];
 	// Open the wave file in binary.
 	error = fopen_s(&filePtr, filename, "rb");
 	if (error != 0)
@@ -209,7 +210,10 @@ bool SoundResource::LoadWaveFile(char* filename, IDirectSoundBuffer8 ** secondar
 	if ((waveFileHeader.dataChunkId[0] != 'd') || (waveFileHeader.dataChunkId[1] != 'a') ||
 		(waveFileHeader.dataChunkId[2] != 't') || (waveFileHeader.dataChunkId[3] != 'a'))
 	{
-		return false;
+		
+		fread(buffer, waveFileHeader.dataSize, 1, filePtr);
+
+		//return false;
 	}
 	// Set the wave format of secondary buffer that this wave file will be loaded onto.
 	waveFormat.wFormatTag = WAVE_FORMAT_PCM;
