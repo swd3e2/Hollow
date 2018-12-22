@@ -9,6 +9,7 @@
 
 namespace Hollow {
 
+	// Entity manager
 	class HOLLOW_API EntityManager
 	{
 	private:
