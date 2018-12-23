@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Components\MeshComponent.h" />
+    <ClInclude Include="Hollow\Containers\vector.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\EventHandler.h" />
     <ClInclude Include="Hollow\Engine.h" />
