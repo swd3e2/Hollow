@@ -14,6 +14,7 @@
 #include "d3d11.h"
 #include <random>
 #include "Hollow/Resources/SoundResource.h"
+#include "Hollow/Containers/vector.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -34,9 +35,17 @@ private:
 	Hollow::ResourceManager m_ResourceManager;
 	std::vector<GameObject*> gameObjects;
 	SoundResource* m_Sound;
+	Hollow::Core::Containers::Vector<unsigned int> testContainer;
 private:
 	void InitScene()
 	{
+		testContainer.push_back(1);
+		testContainer.push_back(1);
+		testContainer.push_back(1);
+		testContainer.push_back(1);
+		testContainer.push_back(1);
+		testContainer.push_back(1);
+
 		bool result;
 
 		// Initialize the sound object.
@@ -74,9 +83,8 @@ private:
 
 		std::default_random_engine generator;
 		std::uniform_int_distribution<int> distribution(-10, 10);
-
 		for (int i = 0; i < 10; i++) {
-			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject>();
+			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject, std::string>(std::string("lel"));
 			object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
 			object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
 			object->AddComponent<MoveComponent>();

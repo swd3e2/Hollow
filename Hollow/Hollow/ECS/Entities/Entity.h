@@ -13,7 +13,7 @@ namespace Hollow {
 	public:
 		Entity() {}
 		~Entity() {}
-		virtual inline const EntityTypeID Entity<E>::GetStaticEntityTypeID() const override
+		virtual inline const EntityTypeID GetStaticEntityTypeID() const override
 		{
 			return EntityTypeID();
 		}
