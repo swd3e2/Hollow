@@ -18,7 +18,7 @@ namespace Hollow {namespace Core { namespace Containers {
 			this->data = new T[this->size];
 
 			for (int i = 0; i < this->size; i++)
-				this->data[i] = 0;
+				this->data[i] = NULL;
 		}
 
 		void push_back(T& item)
@@ -29,14 +29,9 @@ namespace Hollow {namespace Core { namespace Containers {
 		void push_back(T&& item)
 		{
 			if (this->size + 1 < this->size)
-			{
-				data[this->size++] = item;
-			}
-			else
-			{
 				this->resize(GROW);
-				data[this->size++] = item;
-			}
+				
+			data[this->size++ - 1] = item;
 		}
 
 		Vector<T> resize(size_t new_size)
@@ -56,11 +51,29 @@ namespace Hollow {namespace Core { namespace Containers {
 			return this->data[i];
 		}
 
+		
+
 		class iterator : public std::iterator<std::forward_iterator_tag, T>
 		{
+		private:
+			T* p;
+		public:
+			iterator(const iterator& it) : p(it.p) {}
+			iterator(T *p) : p(p) {}
 
+			inline iterator& operator++() 
+			{
+				++p;
+				return *this;
+			}
+			inline bool operator==(iterator& other) const { return p == other.p; };
+			inline bool operator!=(iterator& other) const { return p != other.p; };
+			inline T& operator*() const { return *p; }
+			inline T* operator->() const { return *p; }
 		};
 
+		iterator begin() { return iterator(this->data); }
+		iterator end() { return iterator(this->data + this->size - 1); }
 	};
 
 } } }

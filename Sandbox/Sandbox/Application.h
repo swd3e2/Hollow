@@ -40,11 +40,14 @@ private:
 	void InitScene()
 	{
 		testContainer.push_back(1);
-		testContainer.push_back(1);
-		testContainer.push_back(1);
-		testContainer.push_back(1);
-		testContainer.push_back(1);
-		testContainer.push_back(1);
+		testContainer.push_back(2);
+		testContainer.push_back(3);
+		testContainer.push_back(4);
+		testContainer.push_back(5);
+		testContainer.push_back(6);
+
+		for (auto& it : testContainer)
+			Hollow::Log::GetClientLogger()->info("{}", it);
 
 		bool result;
 
