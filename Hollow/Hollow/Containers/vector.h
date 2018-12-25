@@ -4,7 +4,7 @@
 #include <vector>
 #define GROW 128
 
-namespace Hollow {namespace Core { namespace Containers { 
+namespace Hollow { namespace Core { namespace Containers { 
 
 	template<class T>
 	class Vector
