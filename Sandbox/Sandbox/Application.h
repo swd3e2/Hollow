@@ -15,6 +15,7 @@
 #include <random>
 #include "Hollow/Resources/SoundResource.h"
 #include "Hollow/Containers/vector.h"
+#include <thread>
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -26,15 +27,14 @@ class Application
 private:
 	static constexpr float DELTA_TIME_STEP{ 1.0f / 60.0f };
 
-	Hollow::Window					m_Window;
+	Hollow::Window			m_Window;
 	HWND*					m_HWND;
-	Hollow::Engine					engine;
+	Hollow::Engine			engine;
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;
 	Hollow::ResourceManager m_ResourceManager;
 	std::vector<GameObject*> gameObjects;
-	SoundResource* m_Sound;
 	Hollow::Core::Containers::Vector<unsigned int> testContainer;
 private:
 	void InitScene()
@@ -52,8 +52,8 @@ private:
 		bool result;
 
 		// Initialize the sound object.
-		result = m_Sound->Initialize(*m_HWND);
-	
+		//result = m_Sound->Initialize(*m_HWND);
+		//PlaySound(TEXT("Sandbox/Resources/Sounds/2.wav"), NULL, SND_FILENAME);
 
 		std::vector<SimpleVertex> vertices;
 		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
@@ -94,8 +94,14 @@ private:
 			gameObjects.push_back(object);
 		}
 
+		engine.m_AudioEngine->PlayFromFile("Sandbox/Resources/Sounds/2.wav");
 		/*GameObject* object = engine.m_EntityManager->CreateEntity<GameObject>();
 		m_ResourceManager.LoadFromObj(object, "Sandbox/Resources/Meshes/cube.obj");*/
+	}
+
+	static void PlaySound1()
+	{
+		PlaySound(TEXT("Sandbox/Resources/Sounds/2.wav"), NULL, SND_FILENAME);
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
@@ -105,7 +111,6 @@ public:
 		this->m_RenderSystem = new RenderSystem(this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
 		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), engine.m_EntityManager, engine.m_ComponentManager);
 		this->m_MoveSystem = new MoveSystem();
-		this->m_Sound = new SoundResource();
 
 		this->InitScene();
 	}

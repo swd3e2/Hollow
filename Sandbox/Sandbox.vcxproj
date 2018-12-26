@@ -98,7 +98,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;Winmm.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>
@@ -119,7 +119,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;Winmm.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>

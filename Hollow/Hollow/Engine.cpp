@@ -7,6 +7,7 @@ namespace Hollow {
 		this->m_EntityManager = new Hollow::EntityManager(m_ComponentManager);
 		this->m_EventHandler = new Hollow::EventHandler();
 		this->m_Timer = new Hollow::Timer();
+		this->m_AudioEngine = new Hollow::AudioEngine();
 	}
 
 	Engine::~Engine()

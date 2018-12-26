@@ -31,6 +31,7 @@
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow.h" />
+    <ClInclude Include="Hollow\Resources\AudioEngine.h" />
     <ClInclude Include="Hollow\Resources\ResourceManager.h" />
     <ClInclude Include="Hollow\Utils\Console.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Hollow\Graphics\DepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\RenderTarget.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
+    <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Resources\ResourceManager.cpp" />
     <ClCompile Include="Hollow\Utils\Console.cpp" />
     <ClCompile Include="Hollow\Utils\FamilyTypeID.cpp" />

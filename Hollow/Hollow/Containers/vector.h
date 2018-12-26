@@ -10,6 +10,7 @@ namespace Hollow {namespace Core { namespace Containers {
 	class Vector
 	{
 	private:
+		std::vector<T> kek;
 		T* data;
 		size_t size;
 	public:
@@ -50,8 +51,6 @@ namespace Hollow {namespace Core { namespace Containers {
 			assert(i < this->size);
 			return this->data[i];
 		}
-
-		
 
 		class iterator : public std::iterator<std::forward_iterator_tag, T>
 		{
