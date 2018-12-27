@@ -119,7 +119,7 @@ namespace Hollow {
 		buffer.AudioBytes = dwChunkSize;  //buffer containing audio data
 		buffer.pAudioData = pDataBuffer;  //size of the audio buffer in bytes
 		buffer.Flags = XAUDIO2_END_OF_STREAM; // tell the source voice not to expect any data after this buffer
-
+		buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
 
 		if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx)))
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't create source voice!");

@@ -30,6 +30,7 @@ private:
 	Hollow::Window			m_Window;
 	HWND*					m_HWND;
 	Hollow::Engine			engine;
+
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;
@@ -50,10 +51,6 @@ private:
 			Hollow::Log::GetClientLogger()->info("{}", it);
 
 		bool result;
-
-		// Initialize the sound object.
-		//result = m_Sound->Initialize(*m_HWND);
-		//PlaySound(TEXT("Sandbox/Resources/Sounds/2.wav"), NULL, SND_FILENAME);
 
 		std::vector<SimpleVertex> vertices;
 		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
@@ -81,6 +78,7 @@ private:
 				5, 6, 7,
 				5, 4, 6
 		};
+
 		for (int i = 0; i < 36; i++)
 			vindices.push_back(indices[i]);
 

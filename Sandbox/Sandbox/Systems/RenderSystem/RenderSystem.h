@@ -5,9 +5,8 @@
 #include <directXMath.h>
 #include <wrl/client.h>
 
+#include "Hollow/Graphics/HollowRenderer.h"
 #include "Hollow/Common/Log.h"
-#include "Hollow/Graphics/RenderTarget.h"
-#include "Hollow/Graphics/DepthStencil.h"
 #include "Hollow/Graphics/Camera.h"
 #include "Hollow/Graphics/BufferTemplate/ConstantBuffer.h"
 #include "Hollow/Graphics/Shaders/VertexShader.h"
@@ -19,57 +18,34 @@
 #include "Hollow/Components/MeshComponent.h"
 #include "Sandbox/Components/PositionComponent.h"
 #include "Hollow/ECS/ComponentManager.h"
+#include "Hollow/Graphics/ConstBufferMapping.h"
 
 using namespace Hollow;
 
-struct ConstantBufferStruct
+struct WVP
 {
-	DirectX::XMMATRIX mWorld;
-	DirectX::XMMATRIX mView;
-	DirectX::XMMATRIX mProjection;
+	DirectX::XMMATRIX WVP;
+};
+
+struct Transform
+{
 	DirectX::XMMATRIX transform;
 };
-	
+
 class RenderSystem : System<RenderSystem>
 {
 private:
-	HWND * hWnd;
-	int height;
-	int width;
-	bool fullscreen = false;
-
-	D3D_DRIVER_TYPE				m_driverType = D3D_DRIVER_TYPE_HARDWARE;
-	D3D_FEATURE_LEVEL			m_featureLevel = D3D_FEATURE_LEVEL_11_1;
-	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
-
-	Microsoft::WRL::ComPtr<ID3D11Device>				m_Device;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			m_DeviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain>				m_pSwapChain;
-	Microsoft::WRL::ComPtr<ID3D11Resource>				m_depthResource;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>			m_pVertexLayout;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState>		m_RasterizerState;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>			m_SamplerStateWrap;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>			m_SampleStateClamp;
-	Microsoft::WRL::ComPtr<ID3D11BlendState>			Transparency;
-
-	VertexBuffer<SimpleVertex>*							vertexBuffer;
-	IndexBuffer<unsigned int>*							indexBuffer;
-
-	VertexShader*										vertexShader;
-	PixelShader*										pixelShader;
-	RenderTarget*										renderTarget;
-	DepthStencil*										depthStencil;
-	Camera*												camera;
-	ConstantBuffer<ConstantBufferStruct>				constantBuffer;
+	VertexShader*					vertexShader;
+	PixelShader*					pixelShader;
+	Camera*							camera;
+	ConstantBuffer<WVP>				WVPConstantBuffer;
+	ConstantBuffer<Transform>		transformConstantBuffer;
+	Core::Graphics::HollowDirectXRenderer*		m_Renderer;
 private:
-	void CreateSwapChain();
-	void InitDevices();
-	void UpdateWVP(PositionComponent * comp);
-	void CreateRasterizerState();
-	void CreateSamplerDesc();
-	void DefineBlending();
+	void UpdateTransform(PositionComponent * comp);
+	void UpdateWVP();
 public:
-	RenderSystem(HWND * hwnd, int height, int width);
+	RenderSystem(HWND * hwnd, int width, int height);
 
 	virtual void PreUpdate(float_t dt) override;
 
@@ -77,7 +53,7 @@ public:
 
 	virtual void PostUpdate(float_t dt) override;
 
-	inline ID3D11Device * GetDevice() { return this->m_Device.Get(); }
-	inline ID3D11DeviceContext * GetDeviceContext() { return this->m_DeviceContext.Get(); }
+	inline ID3D11Device * GetDevice() const { return this->m_Renderer->GetDevice(); }
+	inline ID3D11DeviceContext * GetDeviceContext() const { return this->m_Renderer->GetDeviceContext(); }
 };
 

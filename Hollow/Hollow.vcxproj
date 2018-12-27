@@ -24,11 +24,13 @@
     <ClInclude Include="Hollow\Events\IEventDispatcher.h" />
     <ClInclude Include="Hollow\Events\IEventListener.h" />
     <ClInclude Include="Hollow\Graphics\DepthStencil.h" />
+    <ClInclude Include="Hollow\Graphics\HollowRenderer.h" />
     <ClInclude Include="Hollow\Graphics\RenderTarget.h" />
     <ClInclude Include="Hollow\Graphics\SimpleVertex.h" />
     <ClInclude Include="Hollow\Input\InputManager.h" />
     <ClInclude Include="Hollow\Input\KeyCodes.h" />
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
+    <ClInclude Include="Hollow\Graphics\ConstBufferMapping.h" />
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
@@ -69,6 +71,7 @@
     <ClCompile Include="Hollow\Engine.cpp" />
     <ClCompile Include="Hollow\Events\IEventListener.cpp" />
     <ClCompile Include="Hollow\Graphics\DepthStencil.cpp" />
+    <ClCompile Include="Hollow\Graphics\HollowRenderer.cpp" />
     <ClCompile Include="Hollow\Graphics\RenderTarget.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
