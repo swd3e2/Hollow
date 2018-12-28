@@ -19,7 +19,7 @@ public:
 
 	void Kek(const MoveEvent* const e)
 	{
-		Hollow::Log::GetCoreLogger()->critical("Bounce");
+		//Hollow::Log::GetCoreLogger()->critical("Bounce");
 	}
 
 	virtual void Update(float_t dt, std::vector<GameObject*>& gameObjects)
@@ -34,11 +34,11 @@ public:
 				posComponent->position.x += 0.1f;
 			}
 
-			if (posComponent->position.x > 10.0f) {
+			if (posComponent->position.x > 350.0f) {
 				Hollow::EventHandler::Get()->Send<MoveEvent>();
 				moveComponent->move = true;
 			}
-			else if (posComponent->position.x < -10.0f) {
+			else if (posComponent->position.x < -350.0f) {
 				Hollow::EventHandler::Get()->Send<MoveEvent>();
 				moveComponent->move = false;
 			}

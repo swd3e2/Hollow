@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <new>
 #include <vector>
+#define ENTTIY_TABLE_GROW 1024
 
 namespace Hollow {
 
@@ -69,27 +70,33 @@ namespace Hollow {
 	private:
 		std::unordered_map<EntityTypeID, IEntityContainer*> m_EntityRegistry;
 		std::vector<std::pair<EntityID, void*>> entityTable;
+		size_t HandleEntityCount;
 	public:
 
 		EntityManager(ComponentManager * componentManager)
 			: m_ComponentManager(componentManager)
 		{
 			Hollow::Log::GetCoreLogger()->debug("EntityManager: created");
+			this->HandleEntityCount = 0;
 
-			for (int i = 0; i < 1024; i++)
-			{
+			for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
 				this->entityTable.push_back({ i , nullptr});
-			}
 		}
 
 		// Get entity id
 		size_t AcquireEntityID(IEntity* entity)
 		{
+			if (this->HandleEntityCount + 1 > entityTable.size()) {
+				UINT iteration = this->HandleEntityCount / ENTTIY_TABLE_GROW;
+				for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
+					this->entityTable.push_back({ i + iteration * ENTTIY_TABLE_GROW , nullptr });
+			}
 			for (size_t i = 0; i < this->entityTable.size(); i++)
 			{
 				if (this->entityTable[i].second == nullptr)
 				{
 					this->entityTable[i].second = (void*)entity;
+					this->HandleEntityCount++;
 					return this->entityTable[i].first;
 				}
 			}
@@ -108,7 +115,7 @@ namespace Hollow {
 
 			((E*)entityMemory)->m_EntityID = id;
 			((E*)entityMemory)->componentManager = this->m_ComponentManager;
-			Hollow::Log::GetCoreLogger()->info("EntityManager: created entity with id {}, typeID {}, pointer {}", id, E::STATIC_ENTITY_TYPE_ID, entityMemory);
+			//Hollow::Log::GetCoreLogger()->info("EntityManager: created entity with id {}, typeID {}, pointer {}", id, E::STATIC_ENTITY_TYPE_ID, entityMemory);
 
 			return (E*)entityMemory;
 		}
@@ -129,6 +136,7 @@ namespace Hollow {
 					this->m_ComponentManager->RemoveAllComponents(entityMemory->GetEntityID());
 					container->DestroyEntity(entityMemory);
 					this->entityTable[i] = {entityId, nullptr};
+					this->HandleEntityCount--;
 					break;
 				}
 			}

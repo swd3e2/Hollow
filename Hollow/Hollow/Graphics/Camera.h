@@ -50,7 +50,7 @@ namespace Hollow {
 		const XMVECTOR DEFAULT_BACKWARD_VECTOR = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 		const XMVECTOR DEFAULT_LEFT_VECTOR = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
 		const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-		const float cameraSpeed = 0.05f;
+		const float cameraSpeed = 0.5f;
 
 		XMVECTOR camTarget;
 		XMVECTOR vec_forward;
