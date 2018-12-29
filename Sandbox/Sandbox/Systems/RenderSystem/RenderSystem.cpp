@@ -21,6 +21,42 @@ RenderSystem::RenderSystem(HWND * hwnd, int width, int height)
 
 	vertexShader = new VertexShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/vs.hlsl", bxlayout, numElements);
 	pixelShader = new PixelShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/ps.hlsl");
+
+	std::vector<SimpleVertex> vertices;
+	vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+	vertices.push_back({ XMFLOAT4(1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+	vertices.push_back({ XMFLOAT4(1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+	vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
+
+	vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) });
+	vertices.push_back({ XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+	vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+	vertices.push_back({ XMFLOAT4(1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) });
+
+	std::vector<unsigned int> vindices;
+	unsigned int * indices = new unsigned int[36]{
+			2, 1, 0,
+			2, 0, 3,
+			2, 5, 1,
+			5, 7, 1,
+			4, 2, 3,
+			4, 5, 2,
+			4, 3, 0,
+			4, 0, 6,
+			1, 6, 0,
+			1, 7, 6,
+			5, 6, 7,
+			5, 4, 6
+	};
+
+	for (int i = 0; i < 36; i++)
+		vindices.push_back(indices[i]);
+
+	Hollow::VertexBuffer<SimpleVertex> vBuffer(m_Renderer->GetDevice(), vertices.data(), vertices.size());
+	Hollow::IndexBuffer<unsigned int> iBuffer(m_Renderer->GetDevice(), vindices.data(), vindices.size());
+
+	m_Renderer->SetVertexBuffer<SimpleVertex>(&vBuffer);
+	m_Renderer->SetIndexBuffer<unsigned int>(&iBuffer);
 }
 
 void RenderSystem::PreUpdate(float_t dt) 
@@ -39,17 +75,15 @@ void RenderSystem::PreUpdate(float_t dt)
 void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 {
 	for (auto object : gameObjects) {
-		MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
+		//MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
 		PositionComponent * posComponent = object->GetComponent<PositionComponent>();
 
-		if (meshComponent == nullptr || posComponent == nullptr) continue;
+		//if (meshComponent == nullptr || posComponent == nullptr) continue;
 
 		this->UpdateTransform(posComponent);
 		this->m_Renderer->SetContantBuffer<Transform>(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
 
-		m_Renderer->SetVertexBuffer<SimpleVertex>(&meshComponent->vBuffer);
-		m_Renderer->SetIndexBuffer<unsigned int>(&meshComponent->iBuffer);
-		m_Renderer->Draw(meshComponent->iBuffer.BufferSize());
+		m_Renderer->Draw(36);
 	}
 }
 

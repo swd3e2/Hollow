@@ -52,41 +52,11 @@ private:
 
 		bool result;
 
-		std::vector<SimpleVertex> vertices;
-		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
-		vertices.push_back({ XMFLOAT4(1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
-		vertices.push_back({ XMFLOAT4(1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
-		vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
-
-		vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) });
-		vertices.push_back({ XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
-		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
-		vertices.push_back({ XMFLOAT4(1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) });
-
-		std::vector<unsigned int> vindices;
-		unsigned int * indices = new unsigned int[36]{
-				2, 1, 0,
-				2, 0, 3,
-				2, 5, 1,
-				5, 7, 1,
-				4, 2, 3,
-				4, 5, 2,
-				4, 3, 0,
-				4, 0, 6,
-				1, 6, 0,
-				1, 7, 6,
-				5, 6, 7,
-				5, 4, 6
-		};
-
-		for (int i = 0; i < 36; i++)
-			vindices.push_back(indices[i]);
-
 		std::default_random_engine generator;
 		std::uniform_int_distribution < int > distribution(-350, 350);
-		for (int i = 0; i < 4096; i++) {
+		for (int i = 0; i < 10000; i++) {
 			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject>();
-			object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+			//object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
 			object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
 			object->AddComponent<MoveComponent>();
 			gameObjects.push_back(object);

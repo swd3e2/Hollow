@@ -29,9 +29,9 @@ public:
 			MoveComponent * moveComponent = object->GetComponent<MoveComponent>();
 			if (posComponent == nullptr || moveComponent == nullptr) continue;
 			if (moveComponent->move) {
-				posComponent->position.x -= 0.1f;
+				posComponent->position.x -= 0.5f;
 			} else {
-				posComponent->position.x += 0.1f;
+				posComponent->position.x += 0.5f;
 			}
 
 			if (posComponent->position.x > 350.0f) {
