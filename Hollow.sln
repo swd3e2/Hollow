@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hollow", "Hollow\Hollow.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.vcxproj", "{B3FF6361-8B4A-4680-AA13-453EF3A9DB12}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj", "{5D52908B-F8B1-4D4E-B6D2-5C8A7EC5165D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{B3FF6361-8B4A-4680-AA13-453EF3A9DB12}.Debug|x64.Build.0 = Debug|x64
 		{B3FF6361-8B4A-4680-AA13-453EF3A9DB12}.Release|x64.ActiveCfg = Release|x64
 		{B3FF6361-8B4A-4680-AA13-453EF3A9DB12}.Release|x64.Build.0 = Release|x64
+		{5D52908B-F8B1-4D4E-B6D2-5C8A7EC5165D}.Debug|x64.ActiveCfg = Debug|x64
+		{5D52908B-F8B1-4D4E-B6D2-5C8A7EC5165D}.Debug|x64.Build.0 = Debug|x64
+		{5D52908B-F8B1-4D4E-B6D2-5C8A7EC5165D}.Release|x64.ActiveCfg = Release|x64
+		{5D52908B-F8B1-4D4E-B6D2-5C8A7EC5165D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
