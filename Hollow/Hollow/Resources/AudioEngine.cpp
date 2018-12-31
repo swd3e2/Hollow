@@ -65,7 +65,6 @@ namespace Hollow {
 		}
 
 		return S_OK;
-
 	}
 
 	AudioEngine::AudioEngine()
@@ -78,7 +77,7 @@ namespace Hollow {
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't create mastering voice!");
 	}
 
-	void AudioEngine::PlayFromFile(const char * strFileName)
+	SoundResource* AudioEngine::CreateSoundResource(const char * strFileName)
 	{
 		HRESULT hr;
 		WAVEFORMATEXTENSIBLE wfx = { 0 };
@@ -121,21 +120,20 @@ namespace Hollow {
 		buffer.Flags = XAUDIO2_END_OF_STREAM; // tell the source voice not to expect any data after this buffer
 		buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
 
+		IXAudio2SourceVoice* pSourceVoice;
+
 		if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx)))
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't create source voice!");
 
 		if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer)))
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't submit source buffer!");
 
-		if (FAILED(hr = pSourceVoice->Start(0)))
-			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't start!");
+		return new SoundResource(pSourceVoice);
 	}
 
 	AudioEngine::~AudioEngine()
 	{
 		delete masteringVoice;
 		delete pXAudio2;
-		delete pSourceVoice;
 	}
-
 }

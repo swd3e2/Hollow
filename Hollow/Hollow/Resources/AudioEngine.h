@@ -3,6 +3,7 @@
 #include "Hollow/Common/Log.h"
 #include <wrl/client.h>
 #include "Hollow/Platform.h"
+#include "SoundResource.h"
 
 #define fourccRIFF 'FFIR'
 #define fourccDATA 'atad'
@@ -18,13 +19,12 @@ namespace Hollow {
 	private:
 		IXAudio2MasteringVoice*		masteringVoice;
 		IXAudio2*					pXAudio2;
-		IXAudio2SourceVoice*		pSourceVoice;
 	private:
 		HRESULT ReadChunkData(HANDLE hFile, void * buffer, DWORD buffersize, DWORD bufferoffset);
 		HRESULT FindChunk(HANDLE hFile, DWORD fourcc, DWORD & dwChunkSize, DWORD & dwChunkDataPosition);
 	public:
 		AudioEngine();
-		void PlayFromFile(const char * strFileName);
+		SoundResource* CreateSoundResource(const char * strFileName);
 		~AudioEngine();
 	};
 

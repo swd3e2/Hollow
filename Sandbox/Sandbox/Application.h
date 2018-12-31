@@ -9,7 +9,6 @@
 #include "Systems/InterfaceSystem/InterfaceSystem.h"
 #include "Systems/MoveSystem.h"
 #include "Systems/RenderSystem/RenderSystem.h"
-#include "Hollow/Resources/ResourceManager.h"
 #include "DirectXMath.h"
 #include "d3d11.h"
 #include <random>
@@ -30,31 +29,22 @@ private:
 	Hollow::Window			m_Window;
 	HWND*					m_HWND;
 	Hollow::Engine			engine;
-
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;
-	Hollow::ResourceManager m_ResourceManager;
+
 	std::vector<GameObject*> gameObjects;
-	Hollow::Core::Containers::Vector<unsigned int> testContainer;
 private:
 	void InitScene()
 	{
-		testContainer.push_back(1);
-		testContainer.push_back(2);
-		testContainer.push_back(3);
-		testContainer.push_back(4);
-		testContainer.push_back(5);
-		testContainer.push_back(6);
-
-		for (auto& it : testContainer)
-			Hollow::Log::GetClientLogger()->info("{}", it);
+		SoundResource* music = engine.m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
+		music->Play();
 
 		bool result;
 
 		std::default_random_engine generator;
 		std::uniform_int_distribution < int > distribution(-350, 350);
-		for (int i = 0; i < 4096; i++) {
+		for (int i = 0; i < 1024; i++) {
 			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject>();
 			//object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
 			object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
@@ -62,7 +52,6 @@ private:
 			gameObjects.push_back(object);
 		}
 
-		//engine.m_AudioEngine->PlayFromFile("Sandbox/Resources/Sounds/2.wav");
 		/*GameObject* object = engine.m_EntityManager->CreateEntity<GameObject>();
 		m_ResourceManager.LoadFromObj(object, "Sandbox/Resources/Meshes/cube.obj");*/
 	}
