@@ -8,9 +8,12 @@
 #include "Hollow/Events/IEventListener.h"
 #include "Hollow/ECS/EventHandler.h"
 #include <vector>
+#include "Hollow/Resources/SoundResource.h"
 
 class MoveSystem : public Hollow::System<MoveSystem>, Hollow::IEventListener
 {
+public:
+	SoundResource* sound;
 public:
 	MoveSystem() 
 	{
@@ -36,10 +39,12 @@ public:
 
 			if (posComponent->position.x > 350.0f) {
 				Hollow::EventHandler::Get()->Send<MoveEvent>();
+				sound->Play();
 				moveComponent->move = true;
 			}
 			else if (posComponent->position.x < -350.0f) {
 				Hollow::EventHandler::Get()->Send<MoveEvent>();
+				sound->Play();
 				moveComponent->move = false;
 			}
 		}

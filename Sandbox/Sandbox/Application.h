@@ -37,14 +37,16 @@ private:
 private:
 	void InitScene()
 	{
-		SoundResource* music = engine.m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
-		music->Play();
+		SoundResource* music = engine.m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/4.wav");
+		m_MoveSystem->sound = music;
+		SoundResource* music2 = engine.m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
+		music2->Play();
 
 		bool result;
 
 		std::default_random_engine generator;
 		std::uniform_int_distribution < int > distribution(-350, 350);
-		for (int i = 0; i < 1024; i++) {
+		for (int i = 0; i < 2; i++) {
 			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject>();
 			//object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
 			object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);

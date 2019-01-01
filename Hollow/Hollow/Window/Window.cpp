@@ -33,7 +33,7 @@ namespace Hollow {
 		windowRect.bottom = height + windowRect.top;
 		AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-		hWnd = CreateWindow("DirectXAppClassName", "Hollow Engine", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+		hWnd = CreateWindow("DirectXAppClassName", "Hollow", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 			windowRect.left, windowRect.top,
 			windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 			nullptr, nullptr, hInst, this);
