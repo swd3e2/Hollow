@@ -23,7 +23,7 @@ namespace Hollow { namespace Containers {
 			this->data = new T[this->capacity];
 		}
 
-		inline size_t size() { return this->size(); }
+		inline size_t size() { return this->m_size; }
 		void push_back(T& item)
 		{
 			push_back(std::move(item));
@@ -32,15 +32,22 @@ namespace Hollow { namespace Containers {
 		void push_back(T&& item)
 		{
 			if (this->m_size + 1 > this->capacity)
-				this->resize(grow_size);
+				this->resize();
 
 			// Size is -1 coz index of array starts from 0
-			data[this->m_size++ - 1] = item;
+			this->data[this->m_size] = item;
+			this->m_size++;
+		}
+
+		void resize()
+		{
+			this->resize(this->m_size + grow_size);
 		}
 
 		void resize(size_t new_size)
 		{
 			if (new_size > this->capacity) {
+				this->capacity += grow_size;
 				T* temp = new T[new_size];
 				memcpy((void*)temp, (void*)this->data, sizeof(T) * this->m_size);
 				delete[] data;

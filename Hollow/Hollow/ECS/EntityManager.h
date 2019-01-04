@@ -85,7 +85,7 @@ namespace Hollow {
 			this->HandleEntityCount = 0;
 
 			for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-				this->entityTable.push_back(Containers::Pair<EntityID, void*>( i , nullptr));
+				this->entityTable.push_back(Containers::Pair<EntityID, void*>( i , nullptr ));
 		}
 
 		// Get entity id
@@ -94,7 +94,7 @@ namespace Hollow {
 			if (this->HandleEntityCount + 1 > entityTable.size()) {
 				UINT iteration = this->HandleEntityCount / ENTTIY_TABLE_GROW;
 				for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-					this->entityTable.push_back(Containers::Pair<EntityID, void*>(i + iteration * ENTTIY_TABLE_GROW , nullptr));
+					this->entityTable.push_back(Containers::Pair<EntityID, void*>( i + iteration * ENTTIY_TABLE_GROW , nullptr ));
 			}
 			for (size_t i = 0; i < this->entityTable.size(); i++)
 			{
