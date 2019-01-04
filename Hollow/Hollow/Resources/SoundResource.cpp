@@ -2,8 +2,7 @@
 
 SoundResource::SoundResource(IXAudio2SourceVoice* sourceVoice)
 	: pSourceVoice(sourceVoice)
-{
-}
+{}
 
 SoundResource::~SoundResource()
 {

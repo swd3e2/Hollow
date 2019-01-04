@@ -119,7 +119,7 @@ namespace Hollow {
 		buffer.pAudioData = pDataBuffer;  //size of the audio buffer in bytes
 		buffer.Flags = XAUDIO2_END_OF_STREAM; // tell the source voice not to expect any data after this buffer
 		buffer.LoopCount = 1;
-
+		
 		IXAudio2SourceVoice* pSourceVoice;
 
 		if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx)))

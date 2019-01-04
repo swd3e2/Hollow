@@ -2,10 +2,14 @@
 #include "Hollow/Memory/MemoryChunkManager.h"
 #include "Entities/IEntity.h"
 #include "Hollow/Platform.h"
+#include "Hollow/Containers/vector.h"
+#include "Hollow/Containers/pair.h"
+
 #include "ComponentManager.h"
 #include <unordered_map>
 #include <new>
 #include <vector>
+
 #define ENTTIY_TABLE_GROW 1024
 
 namespace Hollow {
@@ -69,7 +73,8 @@ namespace Hollow {
 
 	private:
 		std::unordered_map<EntityTypeID, IEntityContainer*> m_EntityRegistry;
-		std::vector<std::pair<EntityID, void*>> entityTable;
+		//std::vector<std::pair<EntityID, void*>> entityTable;
+		Containers::Vector<Containers::Pair<EntityID, void*>> entityTable;
 		size_t HandleEntityCount;
 	public:
 
@@ -80,7 +85,7 @@ namespace Hollow {
 			this->HandleEntityCount = 0;
 
 			for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-				this->entityTable.push_back({ i , nullptr});
+				this->entityTable.push_back(Containers::Pair<EntityID, void*>( i , nullptr));
 		}
 
 		// Get entity id
@@ -89,7 +94,7 @@ namespace Hollow {
 			if (this->HandleEntityCount + 1 > entityTable.size()) {
 				UINT iteration = this->HandleEntityCount / ENTTIY_TABLE_GROW;
 				for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-					this->entityTable.push_back({ i + iteration * ENTTIY_TABLE_GROW , nullptr });
+					this->entityTable.push_back(Containers::Pair<EntityID, void*>(i + iteration * ENTTIY_TABLE_GROW , nullptr));
 			}
 			for (size_t i = 0; i < this->entityTable.size(); i++)
 			{
