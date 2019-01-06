@@ -15,9 +15,9 @@ namespace Hollow {
 
 			for (int j = 0; j < data->objects[i]->indices.size(); j++) {
 				SimpleVertex simpleVertex;
-				simpleVertex.pos.x = data->vertices[i * 3 + data->objects[i]->indices[j].vertice_index];
-				simpleVertex.pos.y = data->vertices[1 + i * 3 + data->objects[i]->indices[j].vertice_index];
-				simpleVertex.pos.z = data->vertices[2 + i * 3 + data->objects[i]->indices[j].vertice_index];
+				simpleVertex.pos.x = data->vertices[data->objects[i]->indices[j].vertice_index * 3];
+				simpleVertex.pos.y = data->vertices[1 + data->objects[i]->indices[j].vertice_index * 3];
+				simpleVertex.pos.z = data->vertices[2 + data->objects[i]->indices[j].vertice_index * 3];
 
 				simpleVertex.texCoord.x = 0.0f; //data->tex_coords[i * 3 + data->objects[i]->indices[j].tex_coord_index];
 				simpleVertex.texCoord.y = 0.0f; //data->tex_coords[1 + i * 3 + data->objects[i]->indices[j].tex_coord_index];
@@ -25,6 +25,8 @@ namespace Hollow {
 				simpleVertex.normal.x = data->normals[i * 3 + data->objects[i]->indices[j].normal_index];
 				simpleVertex.normal.y = data->normals[1 + i * 3 + data->objects[i]->indices[j].normal_index];
 				simpleVertex.normal.z = data->normals[2 + i * 3 + data->objects[i]->indices[j].normal_index];
+				Hollow::Log::GetCoreLogger()->info("Position: x {} y {} z {}", simpleVertex.pos.x, simpleVertex.pos.y, simpleVertex.pos.z);
+
 				vertices.push_back(simpleVertex);
 			}
 			

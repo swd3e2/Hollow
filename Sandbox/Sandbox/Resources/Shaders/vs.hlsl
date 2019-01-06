@@ -18,22 +18,22 @@ cbuffer ConstantBuffer : register(b2)
 struct PixelShaderOutput
 {
     float4 pos : SV_POSITION;
-    float4 texCoord : NORMAL0;
-    float3 normal : TEXCOORD0;
+    float2 texCoord : TEXCOORD;
+    float3 normal : NORMAL0;
 };
 
 struct VertexShaderInput
 {
     float3 pos : POSITION;
-    float4 texCoord : NORMAL0;
-    float3 normal : TEXCOORD0;
+    float2 texCoord : TEXCOORD;
+    float3 normal : NORMAL;
 };
 
 PixelShaderOutput VSMain(VertexShaderInput input)
 {
     PixelShaderOutput vertexShaderOutput;
 
-    vertexShaderOutput.pos = float4(input.pos, 0.0f);
+    vertexShaderOutput.pos = float4(input.pos, 1.0f);
     vertexShaderOutput.pos = mul(vertexShaderOutput.pos, WVP);
     vertexShaderOutput.normal = input.normal;
     vertexShaderOutput.texCoord = input.texCoord;

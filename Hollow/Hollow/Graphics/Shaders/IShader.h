@@ -17,7 +17,7 @@ namespace Hollow {
 			ID3DBlob* errorBlob = nullptr;
 			HRESULT hr = D3DCompileFromFile(filename.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 				entryPoint, profile,
-				flags, 0, &shaderBlob, &errorBlob);
+				D3DCOMPILE_SKIP_OPTIMIZATION, 0, &shaderBlob, &errorBlob);
 
 			if (FAILED(hr))
 			{

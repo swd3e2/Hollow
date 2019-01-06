@@ -140,20 +140,20 @@ namespace Hollow {
 
 			while ((temp_face = strtok_s((char*)token, WHITESPACE, (char**)&token)) != NULL) {
 				Face face;
-				face.vertice_index = atoi(temp_face);
+				face.vertice_index = atoi(temp_face) - 1;
 
 				if (contains(temp_face, "//")) {
 					temp_str = (char*)strchr(temp_face, '/');
 					temp_str++;
-					face.normal_index = atoi(++temp_str);
+					face.normal_index = atoi(++temp_str) - 1;
 				} else if (contains(temp_face, "/")) {
 					temp_str = (char*)strchr(temp_face, '/');
-					face.tex_coord_index = atoi(++temp_str);
+					face.tex_coord_index = atoi(++temp_str) - 1;
 
 					if (contains(temp_str, "/"))
 					{
 						temp_str = strchr(temp_str, '/');
-						face.normal_index = atoi(++temp_str);
+						face.normal_index = atoi(++temp_str) - 1;
 					}
 				}
 				mesh->indices.push_back(face);

@@ -38,11 +38,11 @@ private:
 	void InitScene()
 	{
 		SoundResource* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
-		music2->Play();
+		//music2->Play();
 
 		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(this->engine.GetReosourceManager()->LoadFromObj(this->m_RenderSystem->GetDevice(), "Sandbox/Resources/Meshes/untitled.obj"));
-		object->AddComponent<PositionComponent, float, float, float, float>(0.0f, 0.0f, 0.0f, 0.0f);
+		object->AddComponent<PositionComponent, float, float, float, float>(1.0f, 1.0f, 1.0f, 1.0f);
 		object->AddComponent<MoveComponent>();
 		gameObjects.push_back(object);
 

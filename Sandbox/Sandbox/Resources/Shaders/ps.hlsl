@@ -1,8 +1,8 @@
 struct PixelShaderInput
 {
     float4 pos : SV_POSITION;
-    float4 texCoord : NORMAL0;
-    float3 normal : TEXCOORD0;
+    float2 texCoord : TEXCOORD;
+    float3 normal : NORMAL;
 };
 
 float4 PSMain(PixelShaderInput input) : SV_TARGET
