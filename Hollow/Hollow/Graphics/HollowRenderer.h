@@ -76,7 +76,9 @@ namespace Hollow { namespace Core { namespace Graphics {
 			m_DeviceContext->RSSetState(this->m_RasterizerState.Get());
 		}
 
-		inline void Draw(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }
+		inline void DrawIndexed(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }
+		inline void Draw(UINT count) { m_DeviceContext->Draw(count, 0); }
+
 		inline void Present() { this->m_pSwapChain->Present(1, 0); }
 
 		inline ID3D11Device* GetDevice() const { return this->m_Device.Get(); }

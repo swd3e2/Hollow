@@ -39,12 +39,12 @@ public:
 
 			if (posComponent->position.x > 350.0f) {
 				Hollow::EventHandler::Get()->Send<MoveEvent>();
-				sound->Play();
+				//sound->Play();
 				moveComponent->move = true;
 			}
 			else if (posComponent->position.x < -350.0f) {
 				Hollow::EventHandler::Get()->Send<MoveEvent>();
-				sound->Play();
+				//sound->Play();
 				moveComponent->move = false;
 			}
 		}

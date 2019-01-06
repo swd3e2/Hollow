@@ -7,12 +7,10 @@
 #include <iostream>
 #include <fstream>
 
-#define MAX_CONSOLE_LINES 500;
+// maximum mumber of lines the output console should have
+#define MAX_CONSOLE_LINES 1000;
 
 namespace Hollow { namespace Console {
 	using namespace std;
-
-	// maximum mumber of lines the output console should have
-
 	HOLLOW_API inline void RedirectIOToConsole();
 }}

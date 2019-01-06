@@ -16,7 +16,7 @@ namespace Hollow {
 		UINT stride;
 		UINT bufferSize = 0;
 	public:
-		VertexBuffer(ID3D11Device * device, T * data, UINT numVertices) 
+		VertexBuffer(ID3D11Device* device, T* data, UINT numVertices) 
 		{
 			Init(device, data, numVertices);
 		}

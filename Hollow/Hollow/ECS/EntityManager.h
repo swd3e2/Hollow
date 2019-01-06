@@ -74,7 +74,7 @@ namespace Hollow {
 	private:
 		std::unordered_map<EntityTypeID, IEntityContainer*> m_EntityRegistry;
 		//std::vector<std::pair<EntityID, void*>> entityTable;
-		Containers::Vector<Containers::Pair<EntityID, void*>> entityTable;
+		Containers::Vector<Containers::Pair<EntityID, void*>, 1024> entityTable;
 		size_t HandleEntityCount;
 	public:
 
@@ -92,11 +92,11 @@ namespace Hollow {
 		size_t AcquireEntityID(IEntity* entity)
 		{
 			if (this->HandleEntityCount + 1 > entityTable.size()) {
-				UINT iteration = this->HandleEntityCount / ENTTIY_TABLE_GROW;
+				UINT iteration = (UINT)(this->HandleEntityCount / ENTTIY_TABLE_GROW);
 				for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
 					this->entityTable.push_back(Containers::Pair<EntityID, void*>( i + iteration * ENTTIY_TABLE_GROW , nullptr ));
 			}
-			for (size_t i = 0; i < this->entityTable.size(); i++)
+			for (int i = 0; i < this->entityTable.size(); i++)
 			{
 				if (this->entityTable[i].second == nullptr)
 				{

@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Components\MeshComponent.h" />
+    <ClInclude Include="Hollow\Containers\hash_map.h" />
     <ClInclude Include="Hollow\Containers\pair.h" />
     <ClInclude Include="Hollow\Containers\vector.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
+    <ClInclude Include="Hollow\Resources\Mesh.h" />
     <ClInclude Include="Hollow\Resources\ResourceManager.h" />
     <ClInclude Include="Hollow\Utils\Console.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
@@ -59,7 +61,7 @@
     <ClInclude Include="Hollow\Memory\MemoryChunkManager.h" />
     <ClInclude Include="Hollow\Memory\MemoryUser.h" />
     <ClInclude Include="Hollow\Memory\StackMemoryManager.h" />
-    <ClInclude Include="Hollow\Utils\ObjParser.h" />
+    <ClInclude Include="Hollow\Resources\Utils\ObjParser.h" />
     <ClInclude Include="Hollow\Window\Window.h" />
     <ClInclude Include="Hollow\ECS\Components\IComponent.h" />
     <ClInclude Include="Hollow\Common\Log.h" />
@@ -136,7 +138,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
@@ -145,8 +147,8 @@
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
 copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Sandbox"
-copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
-copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Sandbox"</Command>
+copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"
+copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Sandbox"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +160,7 @@ copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Eng
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -168,8 +170,8 @@ copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Eng
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
 copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Sandbox"
-copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
-copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Sandbox"</Command>
+copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"
+copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Sandbox"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

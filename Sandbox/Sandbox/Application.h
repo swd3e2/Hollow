@@ -37,25 +37,24 @@ private:
 private:
 	void InitScene()
 	{
-		SoundResource* music = engine.m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/4.wav");
-		m_MoveSystem->sound = music;
-		SoundResource* music2 = engine.m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
+		SoundResource* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
 		music2->Play();
 
-		bool result;
+		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
+		object->AddComponent<MeshComponent, Hollow::Mesh*>(this->engine.GetReosourceManager()->LoadFromObj(this->m_RenderSystem->GetDevice(), "Sandbox/Resources/Meshes/untitled.obj"));
+		object->AddComponent<PositionComponent, float, float, float, float>(0.0f, 0.0f, 0.0f, 0.0f);
+		object->AddComponent<MoveComponent>();
+		gameObjects.push_back(object);
 
-		std::default_random_engine generator;
-		std::uniform_int_distribution < int > distribution(-350, 350);
-		for (int i = 0; i < 2; i++) {
-			GameObject * object = engine.m_EntityManager->CreateEntity<GameObject>();
-			//object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-			object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
-			object->AddComponent<MoveComponent>();
-			gameObjects.push_back(object);
-		}
-
-		/*GameObject* object = engine.m_EntityManager->CreateEntity<GameObject>();
-		m_ResourceManager.LoadFromObj(object, "Sandbox/Resources/Meshes/cube.obj");*/
+		//std::default_random_engine generator;
+		//std::uniform_int_distribution < int > distribution(-150, 150);
+		//for (int i = 0; i < 20; i++) {
+		//	GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
+		//	//object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
+		//	object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
+		//	object->AddComponent<MoveComponent>();
+		//	gameObjects.push_back(object);
+		//}
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
@@ -63,7 +62,7 @@ public:
 	{
 		this->m_HWND = this->m_Window.getHWND();
 		this->m_RenderSystem = new RenderSystem(this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
-		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), engine.m_EntityManager, engine.m_ComponentManager);
+		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), engine.GetEntityManager(), engine.GetComponentManager());
 		this->m_MoveSystem = new MoveSystem();
 
 		this->InitScene();
@@ -72,14 +71,14 @@ public:
 	void Run() {
 		while (m_Window.ProcessMessage())
 		{
-			engine.m_Timer->Tick(DELTA_TIME_STEP);
+			engine.GetTimer()->Tick(DELTA_TIME_STEP);
 			this->m_RenderSystem->PreUpdate(DELTA_TIME_STEP);
 			this->m_MoveSystem->Update(DELTA_TIME_STEP, gameObjects);
 			this->m_RenderSystem->Update(DELTA_TIME_STEP, gameObjects);
 			this->m_InterfaceSystem->Update(DELTA_TIME_STEP);
 			this->m_RenderSystem->PostUpdate(DELTA_TIME_STEP);
 
-			engine.m_EventHandler->DispatchEvents();
+			engine.GetEventHandler()->DispatchEvents();
 		}
 	}
 

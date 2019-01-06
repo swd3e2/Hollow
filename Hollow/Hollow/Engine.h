@@ -9,7 +9,7 @@
 namespace Hollow {
 	class HOLLOW_API Engine
 	{
-	public:
+	private:
 		Hollow::EntityManager *			m_EntityManager;
 		Hollow::ComponentManager *		m_ComponentManager;
 		Hollow::Timer*					m_Timer;
@@ -18,5 +18,11 @@ namespace Hollow {
 	public:
 		Engine();
 		~Engine();
+
+		inline Hollow::EntityManager *		GetEntityManager() { return this->m_EntityManager; };
+		inline Hollow::ComponentManager *	GetComponentManager() { return this->m_ComponentManager; };
+		inline Hollow::Timer *				GetTimer() { return this->m_Timer; };
+		inline Hollow::EventHandler *		GetEventHandler() { return this->m_EventHandler; };
+		inline Hollow::ResourceManager *	GetReosourceManager() { return this->m_ResourceManager; };
 	};
 }
