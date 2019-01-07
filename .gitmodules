@@ -4,3 +4,6 @@
 [submodule "Hollow/vendor/tinyObjLoader"]
 	path = Hollow/vendor/tinyObjLoader
 	url = https://github.com/syoyo/tinyobjloader
+[submodule "Hollow/vendor/DirectXTK"]
+	path = Hollow/vendor/DirectXTK
+	url = https://github.com/Microsoft/DirectXTK
