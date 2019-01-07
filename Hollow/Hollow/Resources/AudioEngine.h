@@ -3,7 +3,7 @@
 #include "Hollow/Common/Log.h"
 #include <wrl/client.h>
 #include "Hollow/Platform.h"
-#include "SoundResource.h"
+#include "Sound.h"
 
 #define fourccRIFF 'FFIR'
 #define fourccDATA 'atad'
@@ -24,7 +24,7 @@ namespace Hollow {
 		HRESULT FindChunk(HANDLE hFile, DWORD fourcc, DWORD & dwChunkSize, DWORD & dwChunkDataPosition);
 	public:
 		AudioEngine();
-		SoundResource* CreateSoundResource(const char * strFileName);
+		Sound* CreateSoundResource(const char * strFileName);
 		~AudioEngine();
 	};
 

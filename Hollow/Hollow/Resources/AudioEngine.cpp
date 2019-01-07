@@ -77,7 +77,7 @@ namespace Hollow {
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't create mastering voice!");
 	}
 
-	SoundResource* AudioEngine::CreateSoundResource(const char * strFileName)
+	Sound* AudioEngine::CreateSoundResource(const char * strFileName)
 	{
 		HRESULT hr;
 		WAVEFORMATEXTENSIBLE wfx = { 0 };
@@ -128,7 +128,7 @@ namespace Hollow {
 		if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer)))
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't submit source buffer!");
 
-		return new SoundResource(pSourceVoice);
+		return new Sound(pSourceVoice);
 	}
 
 	AudioEngine::~AudioEngine()

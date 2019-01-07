@@ -2,11 +2,19 @@
 
 namespace Hollow {
 
-	ResourceManager::ResourceManager() {}
+	ResourceManager* ResourceManager::instance = nullptr;
 
-	Mesh * ResourceManager::LoadFromObj(ID3D11Device * device, const char * filename)
+	ResourceManager::ResourceManager() 
 	{
-		MeshData* data = objLoader.LoadObj(filename);
+		if (instance == nullptr)
+			instance = this;
+		else
+			assert(true && "Trying to create more than 1 resource manager!");
+	}
+
+	Mesh * ResourceManager::CreateMeshResource(ID3D11Device * device, const char * filename, const char* mtl_base_dir)
+	{
+		MeshData* data = objLoader.LoadObj(filename, mtl_base_dir);
 		Mesh* mesh = new Mesh();
 
 		for (int i = 0; i < data->objects.size(); i++) {
@@ -25,7 +33,6 @@ namespace Hollow {
 				simpleVertex.normal.x = data->normals[i * 3 + data->objects[i]->indices[j].normal_index];
 				simpleVertex.normal.y = data->normals[1 + i * 3 + data->objects[i]->indices[j].normal_index];
 				simpleVertex.normal.z = data->normals[2 + i * 3 + data->objects[i]->indices[j].normal_index];
-				Hollow::Log::GetCoreLogger()->info("Position: x {} y {} z {}", simpleVertex.pos.x, simpleVertex.pos.y, simpleVertex.pos.z);
 
 				vertices.push_back(simpleVertex);
 			}
@@ -37,9 +44,27 @@ namespace Hollow {
 		return mesh;
 	}
 
-	SoundResource * ResourceManager::CreateSoundResource(const char* filename)
+	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, const char * filename)
 	{
-		return this->m_AudioEngine.CreateSoundResource(filename);
+		Texture* texture = new Texture();
+		bool result = this->textureLoader.LoadFromWICFile(device, device_context, (wchar_t*)L"Sandbox/Resources/Textures/metal_texture.jpg", &texture->m_TextureShaderResource);
+
+		result = 1;
+		return texture;
+	}
+
+	Material * ResourceManager::CreateMaterialResource(const char * filename)
+	{
+		return nullptr;
+	}
+
+	Sound * ResourceManager::CreateSoundResource(const char* filename)
+	{
+		if (this->sounds.find(filename) == this->sounds.end()) {
+			Sound* sound = this->m_AudioEngine.CreateSoundResource(filename);
+			this->sounds[filename] = sound;
+		}
+		return this->sounds[filename];
 	}
 
 }

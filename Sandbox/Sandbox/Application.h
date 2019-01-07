@@ -12,7 +12,7 @@
 #include "DirectXMath.h"
 #include "d3d11.h"
 #include <random>
-#include "Hollow/Resources/SoundResource.h"
+#include "Hollow/Resources/Sound.h"
 #include "Hollow/Containers/vector.h"
 #include <thread>
 
@@ -37,24 +37,25 @@ private:
 private:
 	void InitScene()
 	{
-		SoundResource* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
-		//music2->Play();
+		Hollow::Sound* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
+		music2->Play();
 
 		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
-		object->AddComponent<MeshComponent, Hollow::Mesh*>(this->engine.GetReosourceManager()->LoadFromObj(this->m_RenderSystem->GetDevice(), "Sandbox/Resources/Meshes/untitled.obj"));
+		object->AddComponent<MeshComponent, Hollow::Mesh*>(
+			this->engine.GetReosourceManager()->CreateMeshResource(this->m_RenderSystem->GetDevice(),
+				"Sandbox/Resources/Meshes/untitled.obj", 
+				"Sandbox/Resources/Meshes/")
+			);
+
 		object->AddComponent<PositionComponent, float, float, float, float>(1.0f, 1.0f, 1.0f, 1.0f);
 		object->AddComponent<MoveComponent>();
 		gameObjects.push_back(object);
 
-		//std::default_random_engine generator;
-		//std::uniform_int_distribution < int > distribution(-150, 150);
-		//for (int i = 0; i < 20; i++) {
-		//	GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
-		//	//object->AddComponent<MeshComponent, ID3D11Device*, std::vector<SimpleVertex>*, std::vector<unsigned int>*>(this->m_RenderSystem->GetDevice(), &vertices, &vindices);
-		//	object->AddComponent<PositionComponent, float, float, float, float>((float)distribution(generator), (float)distribution(generator), (float)distribution(generator), .0f);
-		//	object->AddComponent<MoveComponent>();
-		//	gameObjects.push_back(object);
-		//}
+		Hollow::Texture * texture = this->engine.GetReosourceManager()->CreateTextureResource(
+			this->m_RenderSystem->GetDevice(),
+			this->m_RenderSystem->GetDeviceContext(), 
+			""
+		);
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
