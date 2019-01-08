@@ -36,6 +36,9 @@ namespace Hollow {
 			constantBufferDesc.ByteWidth = static_cast<UINT>(sizeof(T) + (16 - sizeof(T) % 16)); // Align with 16 bytes
 			constantBufferDesc.MiscFlags = 0;
 			constantBufferDesc.StructureByteStride = 0;
+			if (FAILED(device->CreateBuffer(&constantBufferDesc, NULL, m_Buffer.GetAddressOf()))) {
+				Hollow::Log::GetCoreLogger()->critical("ConstantBuffer: can't create constant buffer {}.", typeid(T).name());
+			}
 			return device->CreateBuffer(&constantBufferDesc, NULL, m_Buffer.GetAddressOf());
 		}
 

@@ -12,6 +12,7 @@ cbuffer ConstantBuffer : register(b1)
 
 cbuffer ConstantBuffer : register(b2)
 {
+    int has_texture;
     matrix transform;
 }
 

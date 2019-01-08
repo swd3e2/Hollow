@@ -80,7 +80,8 @@ namespace Hollow {
 
 	LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
-		this->CustomFunction();
+		if (this->CustomFunction(hWnd, msg, wParam, lParam))
+			return true;
 
 		LRESULT result = 0;
 		switch (msg)
@@ -164,9 +165,9 @@ namespace Hollow {
 		return true;
 	}
 
-	void Window::CustomFunction()
+	bool Window::CustomFunction(HWND& hWnd, UINT& msg, WPARAM& wParam, LPARAM& lParam)
 	{
-
+		return false;
 	}
 
 	HWND * Window::getHWND()

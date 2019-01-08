@@ -37,7 +37,7 @@ namespace Hollow {
 			const char *token = linebuff.c_str();
 			token += strspn(token, " \t");
 
-			if (token[0] == '#' || token[0] == '\0') continue;
+			if (token[0] == '#' && token[1] == ' ' && token[2] != 'o' || token[0] == '\0') continue;
 
 			if (token[0] == 'v' && token[1] == ' ') {
 				token += 2;
@@ -49,6 +49,9 @@ namespace Hollow {
 			}
 			if (token[0] == 'v' && token[1] == 't' && token[2] == ' ') {
 				token += 3;
+				if (currentObject != nullptr)
+					currentObject->has_texture = true;
+					
 				parseTexCoords(data, token);
 			}
 			if (token[0] == 'f' && token[1] == ' ') {
@@ -61,8 +64,15 @@ namespace Hollow {
 				base_dir += token;
 				LoadMtl(base_dir);
 			}
-			if (token[0] == 'o' && token[1] == ' ') {
-				token += 2;
+			if (token[0] == 'o' && token[1] == ' ' || 
+				token[0] == '#' && token[1] == ' ' && token[2] == 'o' && token[3] == 'b' 
+				&& token[4] == 'j' && token[5] == 'e' && token[6] == 'c' && token[7] == 't'
+				) {
+				if (token[0] == 'o' && token[1] == ' ') {
+					token += 2;
+				} else {
+					token += 7;
+				}
 				if (currentObject != nullptr)
 					data->objects.push_back(currentObject);
 
@@ -72,8 +82,6 @@ namespace Hollow {
 		}
 		if (currentObject != nullptr)
 			data->objects.push_back(currentObject);
-
-		Hollow::Log::GetCoreLogger()->warn("objects {}", data->objects.size());
 
 		return data;
 	}
@@ -106,8 +114,11 @@ namespace Hollow {
 		char* nextFace;
 		char* temp_str;
 		char* temp_face;
+		int vertex_count = 0;
 
 		while ((temp_face = strtok_s((char*)token, WHITESPACE, (char**)&token)) != NULL) {
+			vertex_count++;
+
 			Face face;
 			face.vertice_index = atoi(temp_face) - 1;
 
@@ -125,6 +136,14 @@ namespace Hollow {
 					temp_str = strchr(temp_str, '/');
 					face.normal_index = atoi(++temp_str) - 1;
 				}
+			}
+			// Triangulate faces
+			if (vertex_count >= 3) {
+				if (mesh->indices.size() >= 127) {
+					int kek = 1;
+				}
+				mesh->indices.push_back(mesh->indices[vertex_count - 2]);
+				mesh->indices.push_back(mesh->indices[vertex_count - 1]);
 			}
 			mesh->indices.push_back(face);
 		}

@@ -11,11 +11,11 @@ namespace Hollow {
 		{}
 
 		VertexBuffer<SimpleVertex> buffer;
+		bool has_texture = false;
 	};
 
-	class Mesh
+	struct Mesh
 	{
-	public:
 		Containers::Vector<MeshModel*> objects;
 	};
 

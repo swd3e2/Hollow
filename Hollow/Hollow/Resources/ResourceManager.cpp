@@ -18,38 +18,48 @@ namespace Hollow {
 		Mesh* mesh = new Mesh();
 
 		for (int i = 0; i < data->objects.size(); i++) {
-			Hollow::Log::GetCoreLogger()->info("name object {}", data->objects[i]->object_name);
 			Containers::Vector<SimpleVertex> vertices;
 
 			for (int j = 0; j < data->objects[i]->indices.size(); j++) {
+
 				SimpleVertex simpleVertex;
 				simpleVertex.pos.x = data->vertices[data->objects[i]->indices[j].vertice_index * 3];
 				simpleVertex.pos.y = data->vertices[1 + data->objects[i]->indices[j].vertice_index * 3];
 				simpleVertex.pos.z = data->vertices[2 + data->objects[i]->indices[j].vertice_index * 3];
 
-				simpleVertex.texCoord.x = 0.0f; //data->tex_coords[i * 3 + data->objects[i]->indices[j].tex_coord_index];
-				simpleVertex.texCoord.y = 0.0f; //data->tex_coords[1 + i * 3 + data->objects[i]->indices[j].tex_coord_index];
-
-				simpleVertex.normal.x = data->normals[i * 3 + data->objects[i]->indices[j].normal_index];
-				simpleVertex.normal.y = data->normals[1 + i * 3 + data->objects[i]->indices[j].normal_index];
-				simpleVertex.normal.z = data->normals[2 + i * 3 + data->objects[i]->indices[j].normal_index];
+				if (data->objects[i]->has_texture) {
+					simpleVertex.texCoord.x = data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
+					simpleVertex.texCoord.y = data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
+				} else {
+					simpleVertex.texCoord.x = 0.0f; 
+					simpleVertex.texCoord.y = 0.0f; 
+				}
+				
+				simpleVertex.normal.x = data->normals[data->objects[i]->indices[j].normal_index * 3];
+				simpleVertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
+				simpleVertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
 
 				vertices.push_back(simpleVertex);
 			}
 			
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
+			meshModel->has_texture = data->objects[i]->has_texture;
 			mesh->objects.push_back(meshModel);
 		}
 
 		return mesh;
 	}
 
-	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, const char * filename)
+	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename)
 	{
 		Texture* texture = new Texture();
-		bool result = this->textureLoader.LoadFromWICFile(device, device_context, (wchar_t*)L"Sandbox/Resources/Textures/metal_texture.jpg", &texture->m_TextureShaderResource);
+		bool result = this->textureLoader.LoadFromWICFile(device, device_context, filename, &texture->m_TextureShaderResource);
 
-		result = 1;
+		if (!result) {
+			_bstr_t convert(filename);
+			char * charFileName = convert;
+			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", charFileName);
+		}
 		return texture;
 	}
 

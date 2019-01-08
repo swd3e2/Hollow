@@ -12,6 +12,7 @@ namespace Hollow { namespace Containers {
 	class Vector
 	{
 	private:
+		std::vector<T> test;
 		T* m_data;
 		size_t capacity;
 		bool is_primitive;
@@ -31,9 +32,13 @@ namespace Hollow { namespace Containers {
 
 		void push_back(T&& item)
 		{
-			if (this->m_size + 1 > this->capacity)
+			if (!has_unused_capacity()) {
+				T temp = item;
 				this->resize();
-
+				this->m_data[this->m_size] = temp;
+				this->m_size++;
+				return;
+			}
 			// Size is -1 coz index of array starts from 0
 			this->m_data[this->m_size] = item;
 			this->m_size++;
@@ -47,7 +52,7 @@ namespace Hollow { namespace Containers {
 		void resize(size_t new_size)
 		{
 			if (new_size > this->capacity) {
-				this->capacity += grow_size;
+				this->capacity = new_size;
 				T* temp = new T[new_size];
 				memcpy((void*)temp, (void*)this->m_data, sizeof(T) * this->m_size);
 				delete[] m_data;
@@ -57,24 +62,13 @@ namespace Hollow { namespace Containers {
 
 		T& operator[](int i)
 		{
-			assert(i < this->m_size);
+			assert(i < this->m_size && i >= 0);
 			return *(this->m_data + i);
 		}
 
 		void clear()
 		{
 			this->m_size = 0;
-			/*if (!is_primitive) {
-				for (int i = 0; i < this->size; i++) {
-					this->data[i].~T();
-					this->data[i] = nullptr;
-				}
-			}
-			else {
-				for (int i = 0; i < this->size; i++) {
-					this->data[i] = nullptr;
-				}
-			}*/
 		}
 
 		inline T* data() { return this->m_data; }
@@ -107,6 +101,11 @@ namespace Hollow { namespace Containers {
 
 		iterator begin() { return iterator(this->m_data); }
 		iterator end() { return iterator(this->m_data + this->m_size); }
+	private:
+		bool has_unused_capacity()
+		{
+			return !( this->m_size + 1 > this->capacity );
+		}
 	};
 
 } }

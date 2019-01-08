@@ -27,5 +27,6 @@
     <ClInclude Include="Sandbox\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Sandbox\ImGui\imstb_textedit.h" />
     <ClInclude Include="Sandbox\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Sandbox\MyWindow.h" />
   </ItemGroup>
 </Project>

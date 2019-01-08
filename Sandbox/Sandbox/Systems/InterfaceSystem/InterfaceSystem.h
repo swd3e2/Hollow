@@ -52,20 +52,20 @@ public:
 			float result = (float)it / 1024 / 1024;
 			std::string first;
 			first += std::to_string(result).c_str();
-			first += " mb.";
+			first += " mb /";
 			ImGui::Text(first.c_str());
 			ImGui::SameLine();
-			ImGui::Text("128 mb.");
+			ImGui::Text("128 mb");
 		}
 		ImGui::Text("Component manager");
 		for (size_t it : componentManager->GetMemoryUsed()) {
 			float result = (float)it / 1024 / 1024;
 			std::string first;
 			first += std::to_string(result).c_str();
-			first += " mb.";
+			first += " mb /";
 			ImGui::Text(first.c_str());
 			ImGui::SameLine();
-			ImGui::Text("128 mb.");
+			ImGui::Text("128 mb");
 		}
 
 		ImGui::End();

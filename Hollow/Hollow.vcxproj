@@ -28,6 +28,7 @@
     <ClInclude Include="Hollow\Graphics\DepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\HollowRenderer.h" />
     <ClInclude Include="Hollow\Graphics\RenderTarget.h" />
+    <ClInclude Include="Hollow\Graphics\ShaderResourceMapping.h" />
     <ClInclude Include="Hollow\Graphics\SimpleVertex.h" />
     <ClInclude Include="Hollow\Input\InputManager.h" />
     <ClInclude Include="Hollow\Input\KeyCodes.h" />
@@ -152,8 +153,8 @@
       <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
+copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Sandbox"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -173,7 +174,8 @@
       <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>C:\dev\Hollow Engine\copy.bat</Command>
+      <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"
+copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Sandbox"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

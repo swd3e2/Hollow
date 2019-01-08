@@ -23,6 +23,7 @@ namespace Hollow {
 		Containers::Vector<Face> indices;
 		std::string mtl_filename;
 		std::string object_name;
+		bool has_texture = false;
 	};
 
 	struct MeshData

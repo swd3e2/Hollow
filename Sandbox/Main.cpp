@@ -10,7 +10,6 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	Hollow::Console::RedirectIOToConsole();
 	Hollow::Log::Init();
 	Application app(hInst, pArgs);
-
 	app.Run();
 	return 0;
 }

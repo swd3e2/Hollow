@@ -1,5 +1,5 @@
 #pragma once
-#include "Hollow/Window/Window.h"
+#include "Sandbox/MyWindow.h"
 #include "Entities/GameObject.h"
 #include "Hollow/Graphics/SimpleVertex.h"
 #include <Hollow/Engine.h>
@@ -26,7 +26,7 @@ class Application
 private:
 	static constexpr float DELTA_TIME_STEP{ 1.0f / 60.0f };
 
-	Hollow::Window			m_Window;
+	MyWindow				m_Window;
 	HWND*					m_HWND;
 	Hollow::Engine			engine;
 	RenderSystem*           m_RenderSystem;
@@ -48,14 +48,8 @@ private:
 			);
 
 		object->AddComponent<PositionComponent, float, float, float, float>(1.0f, 1.0f, 1.0f, 1.0f);
-		object->AddComponent<MoveComponent>();
+		//object->AddComponent<MoveComponent>();
 		gameObjects.push_back(object);
-
-		Hollow::Texture * texture = this->engine.GetReosourceManager()->CreateTextureResource(
-			this->m_RenderSystem->GetDevice(),
-			this->m_RenderSystem->GetDeviceContext(), 
-			""
-		);
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
