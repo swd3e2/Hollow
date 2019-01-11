@@ -12,7 +12,6 @@ namespace Hollow { namespace Containers {
 	class Vector
 	{
 	private:
-		std::vector<T> test;
 		T* m_data;
 		size_t capacity;
 		bool is_primitive;
@@ -62,7 +61,10 @@ namespace Hollow { namespace Containers {
 
 		T& operator[](int i)
 		{
+#if _ITERATOR_DEBUG_LEVEL != 0
 			assert(i < this->m_size && i >= 0);
+#endif /* _ITERATOR_DEBUG_LEVEL != 0 */
+
 			return *(this->m_data + i);
 		}
 

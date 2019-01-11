@@ -7,8 +7,8 @@ struct PixelShaderInput
 
 cbuffer ConstantBuffer : register(b2)
 {
-    int has_texture;
     matrix transform;
+    int kek;
 }
 
 Texture2D objTexture    : TEXUTRE : register(t0);
@@ -17,9 +17,8 @@ SamplerState SampleTypeWrap : register(s1);
 
 float4 PSMain(PixelShaderInput input) : SV_TARGET
 {
-    if (has_texture == 1) {
+    if (kek > 0) {
         return objTexture.Sample(SampleTypeClamp, input.texCoord);
     }
-
-   return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

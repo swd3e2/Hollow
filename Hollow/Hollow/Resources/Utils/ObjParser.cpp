@@ -138,14 +138,14 @@ namespace Hollow {
 				}
 			}
 			// Triangulate faces
-			if (vertex_count >= 3) {
-				if (mesh->indices.size() >= 127) {
-					int kek = 1;
-				}
+			if (vertex_count > 3) {
+				mesh->indices.push_back(mesh->indices[0]);
+				mesh->indices.push_back(face);
 				mesh->indices.push_back(mesh->indices[vertex_count - 2]);
-				mesh->indices.push_back(mesh->indices[vertex_count - 1]);
 			}
-			mesh->indices.push_back(face);
+			else {
+				mesh->indices.push_back(face);
+			}
 		}
 	}
 

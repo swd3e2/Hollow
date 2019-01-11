@@ -30,8 +30,8 @@ struct WVP
 
 struct Transform
 {
-	int has_texture = 1;
 	DirectX::XMMATRIX transform;
+	BOOL bowol;
 };
 
 class RenderSystem : System<RenderSystem>

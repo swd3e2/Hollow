@@ -55,7 +55,6 @@ void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 		if (meshComponent == nullptr || posComponent == nullptr) continue;
 
 		for (auto& it : meshComponent->mesh->objects) {
-			//if (!it->has_texture) continue;
 			this->m_Renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
 			this->UpdateTransform(posComponent, it->has_texture);
 			this->m_Renderer->SetContantBuffer<Transform>(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
@@ -72,7 +71,7 @@ void RenderSystem::PostUpdate(float_t dt)
 void RenderSystem::UpdateTransform(PositionComponent * comp, bool has_texture)
 {
 	transformConstantBuffer.data.transform = XMMatrixTranspose(XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z));
-	transformConstantBuffer.data.has_texture = (int)has_texture;
+	transformConstantBuffer.data.bowol = has_texture;	
 	transformConstantBuffer.Update();
 }
 

@@ -48,7 +48,7 @@ private:
 			);
 
 		object->AddComponent<PositionComponent, float, float, float, float>(1.0f, 1.0f, 1.0f, 1.0f);
-		//object->AddComponent<MoveComponent>();
+		// object->AddComponent<MoveComponent>();
 		gameObjects.push_back(object);
 	}
 public:
