@@ -5,8 +5,11 @@
 class PositionComponent : public Hollow::Component<PositionComponent>
 {
 public:
-	PositionComponent(float x, float y, float z, float h) :
-		position(x, y, z, h)
+	PositionComponent(DirectX::XMFLOAT3&& position, DirectX::XMFLOAT3&& scale, DirectX::XMFLOAT3&& rotation) :
+		position(position), scale(scale), rotation(rotation)
 	{}
-	DirectX::XMFLOAT4 position;
+
+	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT3 scale;
+	DirectX::XMFLOAT3 rotation;
 };

@@ -1,9 +1,9 @@
 #include "RenderSystem.h"
 
 RenderSystem::RenderSystem(HWND * hwnd, int width, int height)
+	: m_Renderer(new Hollow::Core::Graphics::HollowDirectXRenderer(hwnd, width, height))
 {
 	Hollow::Log::GetCoreLogger()->debug("RenderSystem: Initialized.");
-	m_Renderer = new Hollow::Core::Graphics::HollowDirectXRenderer(hwnd, width, height);
 
 	this->camera = new Camera();
 	this->camera->SetProjectionValues(85.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
@@ -70,7 +70,11 @@ void RenderSystem::PostUpdate(float_t dt)
 
 void RenderSystem::UpdateTransform(PositionComponent * comp, bool has_texture)
 {
-	transformConstantBuffer.data.transform = XMMatrixTranspose(XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z));
+	transformConstantBuffer.data.transform = XMMatrixTranspose(
+		(XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z)
+		* XMMatrixScaling(comp->scale.x, comp->scale.y, comp->scale.z))
+		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z)
+	);
 	transformConstantBuffer.data.bowol = has_texture;	
 	transformConstantBuffer.Update();
 }

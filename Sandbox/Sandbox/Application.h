@@ -47,8 +47,8 @@ private:
 				"Sandbox/Resources/Meshes/")
 			);
 
-		object->AddComponent<PositionComponent, float, float, float, float>(1.0f, 1.0f, 1.0f, 1.0f);
-		// object->AddComponent<MoveComponent>();
+		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({1.0f, 1.0f, 1.0f}, { 10.0f, 10.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
+		//object->AddComponent<MoveComponent>();
 		gameObjects.push_back(object);
 	}
 public:
