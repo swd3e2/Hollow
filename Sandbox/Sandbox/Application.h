@@ -9,6 +9,7 @@
 #include "Systems/InterfaceSystem/InterfaceSystem.h"
 #include "Systems/MoveSystem.h"
 #include "Systems/RenderSystem/RenderSystem.h"
+#include "Hollow/Input/InputManager.h"
 #include "DirectXMath.h"
 #include "d3d11.h"
 #include <random>
@@ -74,6 +75,7 @@ public:
 			this->m_RenderSystem->PostUpdate(DELTA_TIME_STEP);
 
 			engine.GetEventHandler()->DispatchEvents();
+			Hollow::InputManager::Clear();
 		}
 	}
 
