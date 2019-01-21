@@ -28,8 +28,8 @@ private:
 	static constexpr float DELTA_TIME_STEP{ 1.0f / 60.0f };
 
 	MyWindow				m_Window;
-	HWND*					m_HWND;
 	Hollow::Engine			engine;
+	HWND*					m_HWND;
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;

@@ -17,12 +17,12 @@ namespace Hollow {
 		//this->projectionMatrix = XMMatrixOrthographicLH(fovRadians, aspectRatio, nearZ, farZ);
 	}
 
-	const XMMATRIX & Camera::GetViewMatrix() const
+	const XMMATRIX& Camera::GetViewMatrix() const
 	{
 		return this->viewMatrix;
 	}
 
-	const XMMATRIX & Camera::GetProjectionMatrix() const
+	const XMMATRIX& Camera::GetProjectionMatrix() const
 	{
 		return this->projectionMatrix;
 	}
@@ -43,22 +43,22 @@ namespace Hollow {
 		return XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, 1.0f, 100.0f);
 	}
 
-	const XMVECTOR & Camera::GetPositionVector() const
+	const XMVECTOR& Camera::GetPositionVector() const
 	{
 		return this->posVector;
 	}
 
-	const XMFLOAT3 & Camera::GetPositionFloat3() const
+	const XMFLOAT3& Camera::GetPositionFloat3() const
 	{
 		return this->pos;
 	}
 
-	const XMVECTOR & Camera::GetRotationVector() const
+	const XMVECTOR& Camera::GetRotationVector() const
 	{
 		return this->rotVector;
 	}
 
-	const XMFLOAT3 & Camera::GetRotationFloat3() const
+	const XMFLOAT3& Camera::GetRotationFloat3() const
 	{
 		return this->rot;
 	}
