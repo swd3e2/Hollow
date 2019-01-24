@@ -13,7 +13,6 @@ cbuffer ConstantBuffer : register(b1)
 cbuffer ConstantBuffer : register(b2)
 {
     matrix transform;
-    int kek;
 }
 
 struct PixelShaderOutput

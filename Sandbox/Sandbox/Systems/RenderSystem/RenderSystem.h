@@ -31,7 +31,6 @@ struct WVP
 struct Transform
 {
 	DirectX::XMMATRIX transform;
-	BOOL bowol;
 };
 
 class RenderSystem : System<RenderSystem>

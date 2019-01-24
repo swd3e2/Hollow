@@ -56,8 +56,8 @@ void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 
 		for (auto& it : meshComponent->mesh->objects) {
 			this->m_Renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
-			this->UpdateTransform(posComponent, it->has_texture);
-			this->m_Renderer->SetContantBuffer<Transform>(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
+			this->UpdateTransform(posComponent, false);
+			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
 			m_Renderer->Draw(it->buffer.BufferSize());
 		}
 	}
@@ -75,7 +75,7 @@ void RenderSystem::UpdateTransform(PositionComponent * comp, bool has_texture)
 		* XMMatrixScaling(comp->scale.x, comp->scale.y, comp->scale.z))
 		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z)
 	);
-	transformConstantBuffer.data.bowol = has_texture;	
+	//transformConstantBuffer.data.bowol = has_texture;	
 	transformConstantBuffer.Update();
 }
 

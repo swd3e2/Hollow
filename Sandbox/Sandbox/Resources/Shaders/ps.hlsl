@@ -8,7 +8,6 @@ struct PixelShaderInput
 cbuffer ConstantBuffer : register(b2)
 {
     matrix transform;
-    int kek;
 }
 
 Texture2D objTexture    : TEXUTRE : register(t0);

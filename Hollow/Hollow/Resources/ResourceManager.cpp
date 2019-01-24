@@ -43,7 +43,9 @@ namespace Hollow {
 			}
 			
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
-			meshModel->has_texture = data->objects[i]->has_texture;
+			meshModel->material = new Material();
+
+			//meshModel->has_texture = data->objects[i]->has_texture;
 			mesh->objects.push_back(meshModel);
 		}
 

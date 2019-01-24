@@ -7,7 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <string>
+#include <unordered_map>
 #define WHITESPACE " \t\n\r"
 
 namespace Hollow {
@@ -18,12 +18,19 @@ namespace Hollow {
 		int normal_index;
 	};
 
+	struct RawMaterial
+	{
+		std::string textureFilename;
+		std::string normalFilename;
+	};
+
 	struct RawMeshData
 	{
 		Containers::Vector<Face> indices;
 		std::string mtl_filename;
 		std::string object_name;
 		bool has_texture = false;
+		std::string material;
 	};
 
 	struct MeshData
@@ -32,7 +39,7 @@ namespace Hollow {
 		Containers::Vector<float> tex_coords;
 		Containers::Vector<float> normals;
 		Containers::Vector<RawMeshData*> objects;
-		Containers::Vector<Material*> materials;
+		std::unordered_map<std::string, Material*> hash_materials;
 	};
 
 	class HOLLOW_API ObjParser
@@ -47,7 +54,7 @@ namespace Hollow {
 		void parseTexCoords(MeshData * data, const char* token);
 		void parseNormals(MeshData * data, const char* token);
 		void parseFace(RawMeshData* mesh, const char* token);
-		void LoadMtl(std::string base_dir);
+		void LoadMtl(MeshData* data, std::string base_dir);
 
 		inline char contains(const char *haystack, const char *needle)
 		{

@@ -58,12 +58,20 @@ namespace Hollow {
 				token += 2;
 				parseFace(currentObject, token);
 			}
-			if (token[0] == 'm' && token[1] == 't' && token[2] == 'l' && token[3] == 'l' && token[4] == 'i' && token[5] == 'b') {
+			// Load all material properties from mtl file
+			if ((0 == strncmp(token, "mtllib", 6)) && token[6] == ' ') {
 				token += 7;
 				std::string base_dir = material_base_dir;
 				base_dir += token;
-				LoadMtl(base_dir);
+				LoadMtl(data, base_dir);
 			}
+
+			// Save usage of material in rawmeshdata
+			if ((0 == strncmp(token, "usemtl", 6)) && token[6] == ' ') {
+				token += 7;	
+				currentObject->material = token;
+			}
+
 			if (token[0] == 'o' && token[1] == ' ' || 
 				token[0] == '#' && token[1] == ' ' && token[2] == 'o' && token[3] == 'b' 
 				&& token[4] == 'j' && token[5] == 'e' && token[6] == 'c' && token[7] == 't'
@@ -138,6 +146,7 @@ namespace Hollow {
 				}
 			}
 			// Triangulate faces
+			// @todo: still don't know how it should work...
 			if (vertex_count > 3) {
 				mesh->indices.push_back(mesh->indices[0]);
 				mesh->indices.push_back(face);
@@ -149,14 +158,14 @@ namespace Hollow {
 		}
 	}
 
-	void ObjParser::LoadMtl(std::string base_dir)
+	void ObjParser::LoadMtl(MeshData* data, std::string base_dir)
 	{
 		std::fstream filestream(base_dir);
 		if (!filestream)
 			Hollow::Log::GetCoreLogger()->error("ObjParser: can't open filestream, filename {}", base_dir);
 
 
-		Material* current_material;
+		Material* material = nullptr;
 
 		std::string linebuff;
 		int lines = 0;
@@ -184,9 +193,22 @@ namespace Hollow {
 			const char *token = linebuff.c_str();
 			token += strspn(token, " \t");
 
-
+			// Parse name
+			if ((0 == strncmp(token, "newmtl", 6)) && token[6] == ' ') {
+				token += 7;
+				if (material != nullptr) {
+					data->hash_materials[material->name] = material;
+				}
+				material = new Material();
+				material->name = token;
+			}
+			// Parse diffues texture
+			if ((0 == strncmp(token, "map_Kd", 6)) && token[6] == ' ') {
+				token += 7;
+				material->diffuse_texture = token;
+			}
 		}
-
+		data->hash_materials[material->name] = material;
 		filestream.close();
 	}
 
