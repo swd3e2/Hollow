@@ -20,8 +20,9 @@ namespace Hollow {
 
 	struct RawMaterial
 	{
-		std::string textureFilename;
-		std::string normalFilename;
+		std::string name;
+		std::string diffuse_texture;
+		std::string normal_texture;
 	};
 
 	struct RawMeshData
@@ -39,7 +40,7 @@ namespace Hollow {
 		Containers::Vector<float> tex_coords;
 		Containers::Vector<float> normals;
 		Containers::Vector<RawMeshData*> objects;
-		std::unordered_map<std::string, Material*> hash_materials;
+		std::unordered_map<std::string, RawMaterial*> hash_materials;
 	};
 
 	class HOLLOW_API ObjParser

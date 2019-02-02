@@ -165,7 +165,7 @@ namespace Hollow {
 			Hollow::Log::GetCoreLogger()->error("ObjParser: can't open filestream, filename {}", base_dir);
 
 
-		Material* material = nullptr;
+		RawMaterial* material = nullptr;
 
 		std::string linebuff;
 		int lines = 0;
@@ -199,7 +199,7 @@ namespace Hollow {
 				if (material != nullptr) {
 					data->hash_materials[material->name] = material;
 				}
-				material = new Material();
+				material = new RawMaterial();
 				material->name = token;
 			}
 			// Parse diffues texture

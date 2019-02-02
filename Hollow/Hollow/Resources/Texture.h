@@ -6,11 +6,11 @@ namespace Hollow {
 	class Texture
 	{
 	public:
-		Texture(std::string filename)
-		{
-			
-		}
-		ID3D11ShaderResourceView * m_TextureShaderResource;
+		Texture(ID3D11ShaderResourceView* textureShaderResource) :
+			m_TextureShaderResource(textureShaderResource)
+		{}
+
+		ID3D11ShaderResourceView* m_TextureShaderResource;
 	};
 
 }

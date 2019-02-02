@@ -13,7 +13,7 @@ namespace Hollow {
 	class Material
 	{
 	public:
-		Material(std::string name, std::string diffuse_texture)
+		Material(std::string name = "default_material", std::string diffuse_texture = "default_texture_name.png")
 			: name(name)
 		{}
 

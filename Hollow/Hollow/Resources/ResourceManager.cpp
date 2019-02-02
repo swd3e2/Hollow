@@ -45,7 +45,6 @@ namespace Hollow {
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
 			meshModel->material = new Material();
 
-			//meshModel->has_texture = data->objects[i]->has_texture;
 			mesh->objects.push_back(meshModel);
 		}
 
@@ -54,10 +53,9 @@ namespace Hollow {
 
 	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename)
 	{
-		Texture* texture = new Texture();
-		bool result = this->textureLoader.LoadFromWICFile(device, device_context, filename, &texture->m_TextureShaderResource);
+		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, filename));
 
-		if (!result) {
+		if (texture != nullptr) {
 			_bstr_t convert(filename);
 			char * charFileName = convert;
 			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", charFileName);

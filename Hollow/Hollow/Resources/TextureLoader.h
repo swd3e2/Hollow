@@ -19,13 +19,14 @@ namespace Hollow {
 			unsigned char bpp;
 			unsigned char data2;
 		};
-	public:
+	private:
 		inline bool LoadFromWICFile(ID3D11Device*, ID3D11DeviceContext*, wchar_t*, ID3D11ShaderResourceView **);
 		bool LoadFromTGAFile(ID3D11Device*, ID3D11DeviceContext*, wchar_t*, ID3D11ShaderResourceView **);
 		bool LoadFromTGAFile(ID3D11Device*, ID3D11DeviceContext*, char*, ID3D11ShaderResourceView **);
 		bool LoadTarga(char* filename, int& height, int& width, unsigned char ** m_targaData);
-		bool LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, char * textureFileName);
-		bool SetTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, wchar_t * textureFileName);
+	public:
+		ID3D11ShaderResourceView* LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, char * textureFileName);
+		ID3D11ShaderResourceView* LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, wchar_t * textureFileName);
 	};
 
 }

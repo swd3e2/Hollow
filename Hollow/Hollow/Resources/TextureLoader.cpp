@@ -181,7 +181,7 @@ namespace Hollow {
 		return true;
 	}
 
-	bool TextureLoader::LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, char * textureFileName)
+	ID3D11ShaderResourceView* TextureLoader::LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, char* textureFileName)
 	{
 		const size_t cSize = strlen(textureFileName) + 1;
 		wchar_t* wc = new wchar_t[cSize];
@@ -189,24 +189,20 @@ namespace Hollow {
 
 		std::wstring filename = wc;
 		filename.insert(0, L"Data/Textures/");
-		LoadTexture(m_Device, m_pImmediateContext, (wchar_t*)filename.c_str());
+		return LoadTexture(m_Device, m_pImmediateContext, (wchar_t*)filename.c_str());
 	}
 
-	void TextureLoader::LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, wchar_t * textureFileName)
+	ID3D11ShaderResourceView* TextureLoader::LoadTexture(ID3D11Device * m_Device, ID3D11DeviceContext * m_pImmediateContext, wchar_t* textureFileName)
 	{
+		ID3D11ShaderResourceView* textureShaderResource = nullptr;
 		bool res = false;
+		// @todo: better filetype filter
 		if (wcslen(textureFileName) > 0) {
-			res = LoadFromWICFile(m_Device, m_pImmediateContext, (wchar_t*)textureFileName, &m_TextureShaderResource);
-
+			res = LoadFromWICFile(m_Device, m_pImmediateContext, (wchar_t*)textureFileName, &textureShaderResource);
 			if (!res) {
-				LoadFromTGAFile(m_Device, m_pImmediateContext, (wchar_t*)textureFileName, &m_TextureShaderResource);
+				LoadFromTGAFile(m_Device, m_pImmediateContext, (wchar_t*)textureFileName, &textureShaderResource);
 			}
 		}
-		if (m_TextureShaderResource != nullptr) {
-			hasTexture = true;
-		}
-		else {
-			OutputDebugStringW(textureFileName);
-		}
+		return textureShaderResource;
 	}
 }
