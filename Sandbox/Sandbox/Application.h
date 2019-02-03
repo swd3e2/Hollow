@@ -44,6 +44,7 @@ private:
 		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(
 			this->engine.GetReosourceManager()->CreateMeshResource(this->m_RenderSystem->GetDevice(),
+				this->m_RenderSystem->GetDeviceContext(),
 				"Sandbox/Resources/Meshes/untitled.obj", 
 				"Sandbox/Resources/Meshes/")
 			);

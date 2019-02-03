@@ -12,7 +12,7 @@ namespace Hollow {
 			assert(true && "Trying to create more than 1 resource manager!");
 	}
 
-	Mesh * ResourceManager::CreateMeshResource(ID3D11Device * device, const char * filename, const char* mtl_base_dir)
+	Mesh * ResourceManager::CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext* deviceContext, const char * filename, const char* mtl_base_dir)
 	{
 		MeshData* data = objLoader.LoadObj(filename, mtl_base_dir);
 		Mesh* mesh = new Mesh();
@@ -43,7 +43,9 @@ namespace Hollow {
 			}
 			
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
-			meshModel->material = new Material();
+			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
+				meshModel->material = new Material(data->objects[i]->material, CreateTextureResource(device, deviceContext, (char*)data->hash_materials[data->objects[i]->material]->diffuse_texture.c_str()));
+			}
 
 			mesh->objects.push_back(meshModel);
 		}
@@ -52,6 +54,18 @@ namespace Hollow {
 	}
 
 	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename)
+	{
+		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, filename));
+
+		if (texture != nullptr) {
+			_bstr_t convert(filename);
+			char * charFileName = convert;
+			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", charFileName);
+		}
+		return texture;
+	}
+
+	Texture * ResourceManager::CreateTextureResource(ID3D11Device* device, ID3D11DeviceContext* device_context, char* filename)
 	{
 		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, filename));
 

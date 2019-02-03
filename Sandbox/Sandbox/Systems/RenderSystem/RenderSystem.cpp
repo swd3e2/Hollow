@@ -29,8 +29,6 @@ RenderSystem::RenderSystem(HWND * hwnd, int width, int height)
 		this->GetDeviceContext(),
 		(wchar_t*)L"Sandbox/Resources/Textures/metal_texture.jpg"
 	);
-
-	this->m_Renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, texture->m_TextureShaderResource);
 }
 
 void RenderSystem::PreUpdate(float_t dt) 
@@ -56,6 +54,7 @@ void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 
 		for (auto& it : meshComponent->mesh->objects) {
 			this->m_Renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
+			this->m_Renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
 			this->UpdateTransform(posComponent, false);
 			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
 			m_Renderer->Draw(it->buffer.BufferSize());
