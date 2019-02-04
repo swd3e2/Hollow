@@ -45,6 +45,8 @@ namespace Hollow {
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
 			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
 				meshModel->material = new Material(data->objects[i]->material, CreateTextureResource(device, deviceContext, (char*)data->hash_materials[data->objects[i]->material]->diffuse_texture.c_str()));
+			} else {
+				meshModel->material = new Material();
 			}
 
 			mesh->objects.push_back(meshModel);
@@ -55,25 +57,29 @@ namespace Hollow {
 
 	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename)
 	{
-		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, filename));
-
-		if (texture != nullptr) {
-			_bstr_t convert(filename);
-			char * charFileName = convert;
-			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", charFileName);
-		}
-		return texture;
+		_bstr_t convert(filename);
+		char * charFileName = convert;
+		return CreateTextureResource(device, device_context, charFileName);
 	}
 
-	Texture * ResourceManager::CreateTextureResource(ID3D11Device* device, ID3D11DeviceContext* device_context, char* filename)
+	Texture * ResourceManager::CreateTextureResource(ID3D11Device* device, ID3D11DeviceContext* device_context, std::string filename)
 	{
-		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, filename));
+		Hollow::Log::GetCoreLogger()->info("ResourceManager: trying to load texture, filename: {}", filename.c_str());
+
+		if (this->texutres.find(filename) != this->texutres.end()) {
+			return this->texutres[filename];
+		}
+
+		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, (char*)filename.c_str()));
 
 		if (texture != nullptr) {
-			_bstr_t convert(filename);
-			char * charFileName = convert;
-			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", charFileName);
+			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", filename.c_str());
 		}
+		else {
+			Hollow::Log::GetCoreLogger()->info("ResourceManager: loaded texture, filename: {}", filename.c_str());
+		}
+
+		this->texutres[filename] = texture;
 		return texture;
 	}
 

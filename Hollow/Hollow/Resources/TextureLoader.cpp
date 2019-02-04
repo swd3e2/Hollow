@@ -188,6 +188,7 @@ namespace Hollow {
 		mbstowcs(wc, textureFileName, cSize);
 
 		std::wstring filename = wc;
+		// @todo: replace this shit
 		filename.insert(0, L"Sandbox/Resources/Textures/");
 		return LoadTexture(m_Device, m_pImmediateContext, (wchar_t*)filename.c_str());
 	}

@@ -47,8 +47,9 @@ namespace Hollow {
 	{
 	private:
 		RawMeshData* currentObject;
+		bool mtllibParsed = false;
 	public:
-		MeshData* LoadObj(const char * filename, const char* material_base_dir);
+		MeshData* LoadObj(std::string filename, std::string material_base_dir);
 
 	private:
 		void parseVertices(MeshData * data, const char* token);

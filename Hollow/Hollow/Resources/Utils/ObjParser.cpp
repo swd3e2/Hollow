@@ -2,11 +2,11 @@
 
 namespace Hollow {
 
-	MeshData * ObjParser::LoadObj(const char * filename, const char * material_base_dir)
+	MeshData* ObjParser::LoadObj(std::string filename, std::string material_base_dir)
 	{
 		MeshData* data = new MeshData();
 
-		std::ifstream filestream(filename);
+		std::ifstream filestream(filename.c_str());
 
 		if (!filestream)
 			Hollow::Log::GetCoreLogger()->error("ObjParser: can't open filestream, filename {}", filename);
@@ -71,9 +71,8 @@ namespace Hollow {
 				token += 7;	
 				currentObject->material = token;
 			}
-
-			if (token[0] == 'o' && token[1] == ' ' || 
-				token[0] == '#' && token[1] == ' ' && token[2] == 'o' && token[3] == 'b' 
+			if (token[0] == 'o' && token[1] == ' ' ||
+				token[0] == '#' && token[1] == ' ' && token[2] == 'o' && token[3] == 'b'
 				&& token[4] == 'j' && token[5] == 'e' && token[6] == 'c' && token[7] == 't'
 				) {
 				if (token[0] == 'o' && token[1] == ' ') {
@@ -88,13 +87,20 @@ namespace Hollow {
 				currentObject->object_name = token;
 			}
 		}
+
+		if (!mtllibParsed) {
+			std::string mtl_filepath = filename.substr(0, filename.size() - 4);
+			mtl_filepath += ".mtl";
+			LoadMtl(data, mtl_filepath);
+		}
+
 		if (currentObject != nullptr)
 			data->objects.push_back(currentObject);
 
 		return data;
 	}
 
-	void ObjParser::parseVertices(MeshData * data, const char * token)
+	void ObjParser::parseVertices(MeshData* data, const char * token)
 	{
 		char* nextToken;
 		data->vertices.push_back(atof(strtok_s((char*)token, " \t\r", &nextToken)));
@@ -102,14 +108,14 @@ namespace Hollow {
 		data->vertices.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
 	}
 
-	void ObjParser::parseTexCoords(MeshData * data, const char * token)
+	void ObjParser::parseTexCoords(MeshData* data, const char * token)
 	{
 		char* nextToken;
-		data->tex_coords.push_back(atof(strtok_s((char*)token, " \t\r", &nextToken)));
-		data->tex_coords.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
+		data->tex_coords.push_back(-atof(strtok_s((char*)token, " \t\r", &nextToken)));
+		data->tex_coords.push_back(-atof(strtok_s(nextToken, " \t\r", &nextToken)));
 	}
 
-	void ObjParser::parseNormals(MeshData * data, const char * token) 
+	void ObjParser::parseNormals(MeshData* data, const char * token) 
 	{
 		char* nextToken;
 		data->normals.push_back(atof(strtok_s((char*)token, " \t\r", &nextToken)));
@@ -117,7 +123,7 @@ namespace Hollow {
 		data->normals.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
 	}
 
-	void ObjParser::parseFace(RawMeshData * mesh, const char * token)
+	void ObjParser::parseFace(RawMeshData* mesh, const char * token)
 	{
 		char* nextFace;
 		char* temp_str;
@@ -148,11 +154,10 @@ namespace Hollow {
 			// Triangulate faces
 			// @todo: still don't know how it should work...
 			if (vertex_count > 3) {
-				mesh->indices.push_back(mesh->indices[0]);
+				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 1]);
 				mesh->indices.push_back(face);
-				mesh->indices.push_back(mesh->indices[vertex_count - 2]);
-			}
-			else {
+				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 5]);
+			} else {
 				mesh->indices.push_back(face);
 			}
 		}
@@ -161,9 +166,10 @@ namespace Hollow {
 	void ObjParser::LoadMtl(MeshData* data, std::string base_dir)
 	{
 		std::fstream filestream(base_dir);
-		if (!filestream)
-			Hollow::Log::GetCoreLogger()->error("ObjParser: can't open filestream, filename {}", base_dir);
-
+		if (!filestream) {
+			Hollow::Log::GetCoreLogger()->error("ObjParser: can't parse mtl file: can't open filestream, filename {}", base_dir);
+			return;
+		}
 
 		RawMaterial* material = nullptr;
 
@@ -210,6 +216,7 @@ namespace Hollow {
 		}
 		data->hash_materials[material->name] = material;
 		filestream.close();
+		this->mtllibParsed = true;
 	}
 
 }

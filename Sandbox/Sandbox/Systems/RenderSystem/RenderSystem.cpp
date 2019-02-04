@@ -23,12 +23,6 @@ RenderSystem::RenderSystem(HWND * hwnd, int width, int height)
 
 	vertexShader = new VertexShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/vs.hlsl", bxlayout, numElements);
 	pixelShader = new PixelShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/ps.hlsl");
-
-	Texture* texture = Hollow::ResourceManager::Get()->CreateTextureResource(
-		this->GetDevice(),
-		this->GetDeviceContext(),
-		(wchar_t*)L"Sandbox/Resources/Textures/metal_texture.jpg"
-	);
 }
 
 void RenderSystem::PreUpdate(float_t dt) 
@@ -54,7 +48,8 @@ void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 
 		for (auto& it : meshComponent->mesh->objects) {
 			this->m_Renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
-			this->m_Renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
+			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
+				this->m_Renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
 			this->UpdateTransform(posComponent, false);
 			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
 			m_Renderer->Draw(it->buffer.BufferSize());
@@ -74,7 +69,6 @@ void RenderSystem::UpdateTransform(PositionComponent * comp, bool has_texture)
 		* XMMatrixScaling(comp->scale.x, comp->scale.y, comp->scale.z))
 		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z)
 	);
-	//transformConstantBuffer.data.bowol = has_texture;	
 	transformConstantBuffer.Update();
 }
 

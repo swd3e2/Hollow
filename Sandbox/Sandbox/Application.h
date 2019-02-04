@@ -39,18 +39,18 @@ private:
 	void InitScene()
 	{
 		Hollow::Sound* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
-		music2->Play();
+		//music2->Play();
 
 		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(
-			this->engine.GetReosourceManager()->CreateMeshResource(this->m_RenderSystem->GetDevice(),
+			this->engine.GetReosourceManager()->CreateMeshResource(
+				this->m_RenderSystem->GetDevice(),
 				this->m_RenderSystem->GetDeviceContext(),
-				"Sandbox/Resources/Meshes/untitled.obj", 
+				"Sandbox/Resources/Meshes/sponza.obj", 
 				"Sandbox/Resources/Meshes/")
 			);
 
-		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({1.0f, 1.0f, 1.0f}, { 10.0f, 10.0f, 10.0f }, { 0.0f, 0.0f, 0.0f });
-		//object->AddComponent<MoveComponent>();
+		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({1.0f, -3.0f, 1.0f}, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
 		gameObjects.push_back(object);
 	}
 public:
@@ -61,7 +61,6 @@ public:
 		this->m_RenderSystem = new RenderSystem(this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
 		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), engine.GetEntityManager(), engine.GetComponentManager());
 		this->m_MoveSystem = new MoveSystem();
-
 		this->InitScene();
 	}
 

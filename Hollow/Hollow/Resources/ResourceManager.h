@@ -33,7 +33,7 @@ namespace Hollow {
 		Sound* CreateSoundResource(const char* filename);
 		Mesh* CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext * device_context, const char* filename, const char* mtl_base_dir);
 		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename);
-		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, char* filename);
+		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, std::string filename);
 		Material* CreateMaterialResource(const char* filename);
 
 		static inline ResourceManager* Get() { return instance; }
