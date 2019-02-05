@@ -111,8 +111,8 @@ namespace Hollow {
 	void ObjParser::parseTexCoords(MeshData* data, const char * token)
 	{
 		char* nextToken;
-		data->tex_coords.push_back(-atof(strtok_s((char*)token, " \t\r", &nextToken)));
-		data->tex_coords.push_back(-atof(strtok_s(nextToken, " \t\r", &nextToken)));
+		data->tex_coords.push_back(atof(strtok_s((char*)token, " \t\r", &nextToken)));
+		data->tex_coords.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
 	}
 
 	void ObjParser::parseNormals(MeshData* data, const char * token) 

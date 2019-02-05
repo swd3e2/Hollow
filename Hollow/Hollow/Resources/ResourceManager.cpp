@@ -12,8 +12,12 @@ namespace Hollow {
 			assert(true && "Trying to create more than 1 resource manager!");
 	}
 
-	Mesh * ResourceManager::CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext* deviceContext, const char * filename, const char* mtl_base_dir)
+	Mesh * ResourceManager::CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext* deviceContext, std::string filename, const char* mtl_base_dir)
 	{
+		if (this->meshes.find(filename) != this->meshes.end()) {
+			return this->meshes[filename];
+		}
+
 		MeshData* data = objLoader.LoadObj(filename, mtl_base_dir);
 		Mesh* mesh = new Mesh();
 
@@ -28,8 +32,8 @@ namespace Hollow {
 				simpleVertex.pos.z = data->vertices[2 + data->objects[i]->indices[j].vertice_index * 3];
 
 				if (data->objects[i]->has_texture) {
-					simpleVertex.texCoord.x = data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
-					simpleVertex.texCoord.y = data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
+					simpleVertex.texCoord.x = -data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
+					simpleVertex.texCoord.y = -data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
 				} else {
 					simpleVertex.texCoord.x = 0.0f; 
 					simpleVertex.texCoord.y = 0.0f; 
@@ -52,6 +56,7 @@ namespace Hollow {
 			mesh->objects.push_back(meshModel);
 		}
 
+		this->meshes[filename] = mesh;
 		return mesh;
 	}
 
@@ -90,11 +95,14 @@ namespace Hollow {
 
 	Sound * ResourceManager::CreateSoundResource(const char* filename)
 	{
-		if (this->sounds.find(filename) == this->sounds.end()) {
-			Sound* sound = this->m_AudioEngine.CreateSoundResource(filename);
-			this->sounds[filename] = sound;
+		if (this->sounds.find(filename) != this->sounds.end()) {
+			return this->sounds[filename];
 		}
-		return this->sounds[filename];
+		
+		Sound* sound = this->m_AudioEngine.CreateSoundResource(filename);
+		this->sounds[filename] = sound;
+
+		return sound;
 	}
 
 }
