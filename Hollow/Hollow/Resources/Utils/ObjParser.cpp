@@ -152,7 +152,6 @@ namespace Hollow {
 				}
 			}
 			// Triangulate faces
-			// @todo: still don't know how it should work...
 			if (vertex_count > 3) {
 				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 1]);
 				mesh->indices.push_back(face);
@@ -167,7 +166,7 @@ namespace Hollow {
 	{
 		std::fstream filestream(base_dir);
 		if (!filestream) {
-			Hollow::Log::GetCoreLogger()->error("ObjParser: can't parse mtl file: can't open filestream, filename {}", base_dir);
+			Hollow::Log::GetCoreLogger()->error("ObjParser: can't parse mtl file, error while trying open filestream, filename {}", base_dir);
 			return;
 		}
 

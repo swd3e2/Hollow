@@ -17,5 +17,4 @@ SamplerState SampleTypeWrap : register(s1);
 float4 PSMain(PixelShaderInput input) : SV_TARGET
 {
     return objTexture.Sample(SampleTypeClamp, input.texCoord);
-    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

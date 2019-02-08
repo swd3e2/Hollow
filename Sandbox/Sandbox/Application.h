@@ -41,7 +41,41 @@ private:
 		Hollow::Sound* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
 		//music2->Play();
 
-		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
+		std::vector<SimpleVertex> vertices;
+		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) });
+
+		vertices.push_back({ XMFLOAT4(-1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(-1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) });
+		vertices.push_back({ XMFLOAT4(1.0f, -1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) });
+
+		std::vector<unsigned int> vindices;
+		unsigned int * indices = new unsigned int[36]{
+				2, 1, 0,
+				2, 0, 3,
+				2, 5, 1,
+				5, 7, 1,
+				4, 2, 3,
+				4, 5, 2,
+				4, 3, 0,
+				4, 0, 6,
+				1, 6, 0,
+				1, 7, 6,
+				5, 6, 7,
+				5, 4, 6
+		};
+
+		for (int i = 0; i < 36; i++)
+			vindices.push_back(indices[i]);
+
+		for (int i = 0; i < 100; i++) {
+			GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
+
+		}
+		/*GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(
 			this->engine.GetReosourceManager()->CreateMeshResource(
 				this->m_RenderSystem->GetDevice(),
@@ -52,6 +86,18 @@ private:
 
 		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({1.0f, -3.0f, 1.0f}, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
 		gameObjects.push_back(object);
+
+		GameObject * object2 = engine.GetEntityManager()->CreateEntity<GameObject>();
+		object2->AddComponent<MeshComponent, Hollow::Mesh*>(
+			this->engine.GetReosourceManager()->CreateMeshResource(
+				this->m_RenderSystem->GetDevice(),
+				this->m_RenderSystem->GetDeviceContext(),
+				"Sandbox/Resources/Meshes/sponza.obj",
+				"Sandbox/Resources/Meshes/")
+			);
+
+		object2->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 10000.0f, -3.0f, 1.0f }, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
+		gameObjects.push_back(object2);*/
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
@@ -78,5 +124,4 @@ public:
 			Hollow::InputManager::Clear();
 		}
 	}
-
 };

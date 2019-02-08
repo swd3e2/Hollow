@@ -32,18 +32,23 @@ struct Transform
 {
 	DirectX::XMMATRIX transform;
 };
-
+struct Picker
+{
+	int id;
+};
 class RenderSystem : System<RenderSystem>
 {
 private:
 	VertexShader*					vertexShader;
 	PixelShader*					pixelShader;
+	PixelShader*					pickerPixelShader;
 	Camera*							camera;
 	ConstantBuffer<WVP>				WVPConstantBuffer;
 	ConstantBuffer<Transform>		transformConstantBuffer;
+	ConstantBuffer<Picker>			pickerConstantBuffer;
 	Core::Graphics::HollowDirectXRenderer*		m_Renderer;
 private:
-	void UpdateTransform(PositionComponent * comp, bool has_texture);
+	void UpdateConstBuffers(PositionComponent * comp, int entityId);
 	void UpdateWVP();
 public:
 	RenderSystem(HWND * hwnd, int width, int height);

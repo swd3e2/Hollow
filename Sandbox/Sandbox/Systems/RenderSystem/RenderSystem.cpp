@@ -23,6 +23,7 @@ RenderSystem::RenderSystem(HWND * hwnd, int width, int height)
 
 	vertexShader = new VertexShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/vs.hlsl", bxlayout, numElements);
 	pixelShader = new PixelShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/ps.hlsl");
+	pickerPixelShader = new PixelShader(this->m_Renderer->GetDevice(), L"Sandbox/Resources/Shaders/pickerPS.hlsl");
 }
 
 void RenderSystem::PreUpdate(float_t dt) 
@@ -35,7 +36,7 @@ void RenderSystem::PreUpdate(float_t dt)
 
 	this->m_Renderer->SetContantBuffer<WVP>(HOLLOW_CONST_BUFFER_WVP_SLOT, &WVPConstantBuffer);
 	this->m_Renderer->SetVertexShader(vertexShader);
-	this->m_Renderer->SetPixelShader(pixelShader);
+	this->m_Renderer->SetPixelShader(pickerPixelShader);
 }
 
 void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
@@ -50,8 +51,9 @@ void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 			this->m_Renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
 			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
 				this->m_Renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
-			this->UpdateTransform(posComponent, false);
+			this->UpdateConstBuffers(posComponent, object->GetEntityID());
 			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
+			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_PICKER_ENTITY_ID_SLOT, &transformConstantBuffer);
 			m_Renderer->Draw(it->buffer.BufferSize());
 		}
 	}
@@ -62,7 +64,7 @@ void RenderSystem::PostUpdate(float_t dt)
 	m_Renderer->Present();
 }
 
-void RenderSystem::UpdateTransform(PositionComponent * comp, bool has_texture)
+void RenderSystem::UpdateConstBuffers(PositionComponent * comp, int entityId)
 {
 	transformConstantBuffer.data.transform = XMMatrixTranspose(
 		(XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z)
@@ -70,6 +72,9 @@ void RenderSystem::UpdateTransform(PositionComponent * comp, bool has_texture)
 		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z)
 	);
 	transformConstantBuffer.Update();
+
+	pickerConstantBuffer.data.id = entityId;
+	pickerConstantBuffer.Update();
 }
 
 void RenderSystem::UpdateWVP()
