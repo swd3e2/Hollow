@@ -47,13 +47,14 @@ void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
 
 		if (meshComponent == nullptr || posComponent == nullptr) continue;
 
+		this->UpdateConstBuffers(posComponent, object->GetEntityID());
+		this->m_Renderer->SetContantBuffer<Transform>(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
+
 		for (auto& it : meshComponent->mesh->objects) {
 			this->m_Renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
 			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
 				this->m_Renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
-			this->UpdateConstBuffers(posComponent, object->GetEntityID());
-			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
-			this->m_Renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_PICKER_ENTITY_ID_SLOT, &transformConstantBuffer);
+			
 			m_Renderer->Draw(it->buffer.BufferSize());
 		}
 	}
@@ -71,10 +72,8 @@ void RenderSystem::UpdateConstBuffers(PositionComponent * comp, int entityId)
 		* XMMatrixScaling(comp->scale.x, comp->scale.y, comp->scale.z))
 		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z)
 	);
+	transformConstantBuffer.data.id = entityId;
 	transformConstantBuffer.Update();
-
-	pickerConstantBuffer.data.id = entityId;
-	pickerConstantBuffer.Update();
 }
 
 void RenderSystem::UpdateWVP()

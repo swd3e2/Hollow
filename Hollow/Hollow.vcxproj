@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hollow\Utils\Helper.h" />
     <ClInclude Include="Hollow\Components\MeshComponent.h" />
     <ClInclude Include="Hollow\Containers\hash_map.h" />
     <ClInclude Include="Hollow\Containers\pair.h" />

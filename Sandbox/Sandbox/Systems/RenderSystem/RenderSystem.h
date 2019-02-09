@@ -31,11 +31,9 @@ struct WVP
 struct Transform
 {
 	DirectX::XMMATRIX transform;
+	float id;
 };
-struct Picker
-{
-	int id;
-};
+
 class RenderSystem : System<RenderSystem>
 {
 private:
@@ -45,7 +43,6 @@ private:
 	Camera*							camera;
 	ConstantBuffer<WVP>				WVPConstantBuffer;
 	ConstantBuffer<Transform>		transformConstantBuffer;
-	ConstantBuffer<Picker>			pickerConstantBuffer;
 	Core::Graphics::HollowDirectXRenderer*		m_Renderer;
 private:
 	void UpdateConstBuffers(PositionComponent * comp, int entityId);

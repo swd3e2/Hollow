@@ -33,10 +33,27 @@ namespace Hollow { namespace Core { namespace Graphics {
 		ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 		const UINT offset = 0;
 		const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+		int height = 0;
+		int width = 0;
+
+		static HollowDirectXRenderer* instance;
 	private:
 	public:
 		HollowDirectXRenderer(HWND* hwnd, int width, int height);
 		~HollowDirectXRenderer();
+
+		void inline Initialize(HWND* hwnd, int width, int height)
+		{
+			this->instance == new HollowDirectXRenderer(hwnd, width, height);
+		}
+
+		inline static HollowDirectXRenderer* Get() {
+			if (instance == nullptr) {
+				throw std::exception("Rendere not initialized!");
+			}
+			return instance; 
+		}
 
 		template<class T>
 		inline void SetVertexBuffer(VertexBuffer<T>* vb) 
@@ -92,7 +109,8 @@ namespace Hollow { namespace Core { namespace Graphics {
 		template<class T>
 		inline void SetContantBuffer(UINT slot, ConstantBuffer<T>* cb) 
 		{ 
-			this->m_DeviceContext->VSSetConstantBuffers(slot, 1, cb->GetAddressOf()); 
+			this->m_DeviceContext->VSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+			this->m_DeviceContext->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
 		}
 
 		inline void PreUpdateFrame()

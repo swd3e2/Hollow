@@ -2,8 +2,15 @@
 
 namespace Hollow { namespace Core { namespace Graphics {
 
+	HollowDirectXRenderer* HollowDirectXRenderer::instance = nullptr;
+
 	HollowDirectXRenderer::HollowDirectXRenderer(HWND* hwnd, int width, int height)
+		: height(height), width(width)
 	{
+		if (instance != nullptr) {
+			throw std::exception("Can't create more than one renderer!");
+		}
+
 		HRESULT hr = S_OK;
 		RECT rc;
 		GetClientRect(*hwnd, &rc);
@@ -25,14 +32,12 @@ namespace Hollow { namespace Core { namespace Graphics {
 		swapChainDesc.SampleDesc.Count = 1;
 		swapChainDesc.OutputWindow = *hwnd;
 		
-		D3D_FEATURE_LEVEL featureLevels[] =
-		{
+		D3D_FEATURE_LEVEL featureLevels[] = {
 			D3D_FEATURE_LEVEL_11_1,
 			D3D_FEATURE_LEVEL_11_0
 		};
 
 		D3D_FEATURE_LEVEL m_featureLevel = D3D_FEATURE_LEVEL_11_1;
-
 		UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG;
 
 		hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags,

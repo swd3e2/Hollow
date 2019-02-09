@@ -48,7 +48,7 @@ namespace Hollow {
 			
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
 			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
-				meshModel->material = new Material(data->objects[i]->material, CreateTextureResource(device, deviceContext, (char*)data->hash_materials[data->objects[i]->material]->diffuse_texture.c_str()));
+				meshModel->material = ;
 			} else {
 				meshModel->material = new Material();
 			}
@@ -80,17 +80,60 @@ namespace Hollow {
 		if (texture != nullptr) {
 			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", filename.c_str());
 		}
-		else {
-			Hollow::Log::GetCoreLogger()->info("ResourceManager: loaded texture, filename: {}", filename.c_str());
-		}
 
 		this->texutres[filename] = texture;
 		return texture;
 	}
 
-	Material * ResourceManager::CreateMaterialResource(const char * filename)
+	Material * ResourceManager::CreateMaterialResource(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string material_name, std::string diffuse_texture_filename)
 	{
-		return nullptr;
+		if (this->materials.find(material_name) != this->materials.end()) {
+			return this->materials[material_name];
+		}
+		Material* material = new Material(material_name, CreateTextureResource(device, deviceContext, diffuse_texture_filename.c_str()));
+		if (material != nullptr) {
+			this->materials[material_name] = material;
+		}
+		else {
+			return nullptr;
+		}
+
+		return material;
+	}
+
+	PixelShader* ResourceManager::CreatePixelShader(ID3D11Device * device, std::string filename)
+	{
+		if (this->pixelShaders.find(filename) != this->pixelShaders.end()) {
+			return this->pixelShaders[filename];
+		}
+
+		PixelShader* pixelShader = new PixelShader(device, Helper::converToWideChar(filename.c_str()));
+		if (pixelShader != nullptr) {
+			this->pixelShaders[filename] = pixelShader;
+		}
+		else {
+			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't create PS, filename: {}", filename.c_str());
+			return nullptr;
+		}
+		return pixelShader;
+	}
+
+	VertexShader * ResourceManager::CreateVertexShader(ID3D11Device * device, std::string filename, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize)
+	{
+		if (this->vertexShaders.find(filename) != this->vertexShaders.end()) {
+			return this->vertexShaders[filename];
+		}
+
+		VertexShader* vertexShader = new VertexShader(device, Helper::converToWideChar(filename.c_str()), layout, layoutSize);
+		if (vertexShader != nullptr) {
+			this->vertexShaders[filename] = vertexShader;
+		}
+		else {
+			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't create VS, filename: {}", filename.c_str());
+			return nullptr;
+		}
+
+		return vertexShader;
 	}
 
 	Sound * ResourceManager::CreateSoundResource(const char* filename)
@@ -104,5 +147,6 @@ namespace Hollow {
 
 		return sound;
 	}
+
 
 }

@@ -48,6 +48,7 @@ namespace Hollow {
 			HRESULT hr = m_DeviceContext->Map(m_Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 			if (FAILED(hr))
 			{
+				Hollow::Log::GetCoreLogger()->critical("ConstantBuffer: cant update buffer {}.", typeid(T).name());
 				return false;
 			}
 			CopyMemory(mappedResource.pData, &data, sizeof(T));
