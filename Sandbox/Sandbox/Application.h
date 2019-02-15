@@ -16,6 +16,7 @@
 #include "Hollow/Resources/Sound.h"
 #include "Hollow/Containers/vector.h"
 #include <thread>
+#include "Hollow/Graphics/Renderer.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -26,7 +27,6 @@ class Application
 {
 private:
 	static constexpr float DELTA_TIME_STEP{ 1.0f / 60.0f };
-
 	MyWindow				m_Window;
 	Hollow::Engine			engine;
 	HWND*					m_HWND;
@@ -47,13 +47,13 @@ private:
 				GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 				object->AddComponent<MeshComponent, Hollow::Mesh*>(
 					this->engine.GetReosourceManager()->CreateMeshResource(
-						this->m_RenderSystem->GetDevice(),
-						this->m_RenderSystem->GetDeviceContext(),
-						"Sandbox/Resources/Meshes/sponza.obj",
+						((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(),
+						((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDeviceContext(),
+						"Sandbox/Resources/Meshes/untitled.obj",
 						"Sandbox/Resources/Meshes/")
 					);
 
-				object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 1500.0f * j, -1500.0f * i, 1.0f }, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
+				object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 17.0f * j, -17.0f * i, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
 				gameObjects.push_back(object);
 			}
 		}
@@ -82,14 +82,35 @@ private:
 		object2->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 10000.0f, -3.0f, 1.0f }, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
 		gameObjects.push_back(object2);*/
 	}
+
+	void InitResources()
+	{
+		D3D11_INPUT_ELEMENT_DESC bxlayout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0,							  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+
+		UINT numElements = ARRAYSIZE(bxlayout);
+
+		ResourceManager::Get()->CreatePixelShader(((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/ps.hlsl", "simple");
+		ResourceManager::Get()->CreatePixelShader(((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/pickerPS.hlsl", "mouse");
+		ResourceManager::Get()->CreateVertexShader(((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/vs.hlsl", "simple", bxlayout, numElements);
+	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :
 		m_Window(hInst, SCREEN_WIDTH, SCREEN_HEIGHT)
 	{
 		this->m_HWND = this->m_Window.getHWND();
-		this->m_RenderSystem = new RenderSystem(this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
-		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, this->m_RenderSystem->GetDevice(), this->m_RenderSystem->GetDeviceContext(), engine.GetEntityManager(), engine.GetComponentManager());
+		Renderer::InitializeRenderer(RendererType::DirectX, this->m_HWND, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+		this->InitResources();
+
+		this->m_RenderSystem = new RenderSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
+		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, engine.GetEntityManager(), engine.GetComponentManager());
 		this->m_MoveSystem = new MoveSystem();
+
 		this->InitScene();
 	}
 

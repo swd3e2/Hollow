@@ -48,7 +48,7 @@ namespace Hollow {
 			
 			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
 			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
-				meshModel->material = ;
+				meshModel->material = CreateMaterialResource(device, deviceContext, data->objects[i]->material, data->hash_materials[data->objects[i]->material]->diffuse_texture);
 			} else {
 				meshModel->material = new Material();
 			}
@@ -101,15 +101,15 @@ namespace Hollow {
 		return material;
 	}
 
-	PixelShader* ResourceManager::CreatePixelShader(ID3D11Device * device, std::string filename)
+	PixelShader* ResourceManager::CreatePixelShader(ID3D11Device * device, std::string filename, std::string shader_name)
 	{
-		if (this->pixelShaders.find(filename) != this->pixelShaders.end()) {
-			return this->pixelShaders[filename];
+		if (this->pixelShaders.find(shader_name) != this->pixelShaders.end()) {
+			return this->pixelShaders[shader_name];
 		}
 
-		PixelShader* pixelShader = new PixelShader(device, Helper::converToWideChar(filename.c_str()));
+		PixelShader* pixelShader = new PixelShader(device, Helper::converToWideChar((char*)filename.c_str()));
 		if (pixelShader != nullptr) {
-			this->pixelShaders[filename] = pixelShader;
+			this->pixelShaders[shader_name] = pixelShader;
 		}
 		else {
 			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't create PS, filename: {}", filename.c_str());
@@ -118,15 +118,15 @@ namespace Hollow {
 		return pixelShader;
 	}
 
-	VertexShader * ResourceManager::CreateVertexShader(ID3D11Device * device, std::string filename, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize)
+	VertexShader * ResourceManager::CreateVertexShader(ID3D11Device * device, std::string filename, std::string shader_name, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize)
 	{
-		if (this->vertexShaders.find(filename) != this->vertexShaders.end()) {
-			return this->vertexShaders[filename];
+		if (this->vertexShaders.find(shader_name) != this->vertexShaders.end()) {
+			return this->vertexShaders[shader_name];
 		}
 
-		VertexShader* vertexShader = new VertexShader(device, Helper::converToWideChar(filename.c_str()), layout, layoutSize);
+		VertexShader* vertexShader = new VertexShader(device, Helper::converToWideChar((char*)filename.c_str()), layout, layoutSize);
 		if (vertexShader != nullptr) {
-			this->vertexShaders[filename] = vertexShader;
+			this->vertexShaders[shader_name] = vertexShader;
 		}
 		else {
 			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't create VS, filename: {}", filename.c_str());

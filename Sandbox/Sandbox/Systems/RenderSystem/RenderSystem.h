@@ -20,6 +20,7 @@
 #include "Hollow/Graphics/ConstBufferMapping.h"
 #include "Hollow/Graphics/ShaderResourceMapping.h"
 #include "Hollow/Resources/ResourceManager.h"
+#include "Hollow/Graphics/Renderer.h"
 
 using namespace Hollow;
 
@@ -37,24 +38,18 @@ struct Transform
 class RenderSystem : System<RenderSystem>
 {
 private:
-	VertexShader*					vertexShader;
-	PixelShader*					pixelShader;
-	PixelShader*					pickerPixelShader;
-	Camera*							camera;
-	ConstantBuffer<WVP>				WVPConstantBuffer;
-	ConstantBuffer<Transform>		transformConstantBuffer;
-	Core::Graphics::HollowDirectXRenderer*		m_Renderer;
+	Camera*								camera;
+	ConstantBuffer<WVP>					WVPConstantBuffer;
+	ConstantBuffer<Transform>			transformConstantBuffer;
+	Core::Graphics::DirectXRenderer*	renderer;
 private:
 	void UpdateConstBuffers(PositionComponent * comp, int entityId);
 	void UpdateWVP();
 public:
-	RenderSystem(HWND * hwnd, int width, int height);
+	RenderSystem(int width, int height);
 
 	virtual void PreUpdate(float_t dt) override;
 	virtual void Update(float_t dt, std::vector<GameObject*>& gameObjects);
 	virtual void PostUpdate(float_t dt) override;
-
-	inline ID3D11Device * GetDevice() const { return this->m_Renderer->GetDevice(); }
-	inline ID3D11DeviceContext * GetDeviceContext() const { return this->m_Renderer->GetDeviceContext(); }
 };
 

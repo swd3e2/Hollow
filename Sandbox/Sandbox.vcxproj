@@ -17,7 +17,6 @@
     <ClCompile Include="Sandbox\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.cpp" />
     <ClCompile Include="Sandbox\Systems\RenderSystem\RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>

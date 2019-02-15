@@ -20,7 +20,7 @@
 namespace Hollow {
 	class HOLLOW_API ResourceManager 
 	{
-	private:
+	public:
 		std::unordered_map<std::string, Mesh*> meshes;
 		std::unordered_map<std::string, Sound*> sounds;
 		std::unordered_map<std::string, Texture*> texutres;
@@ -40,8 +40,8 @@ namespace Hollow {
 		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename);
 		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, std::string filename);
 		Material* CreateMaterialResource(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string material_name, std::string diffuse_texture_filename);
-		PixelShader* CreatePixelShader(ID3D11Device * device, std::string filename);
-		VertexShader* CreateVertexShader(ID3D11Device * device, std::string filename, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize);
+		PixelShader* CreatePixelShader(ID3D11Device * device, std::string filename, std::string shader_name);
+		VertexShader* CreateVertexShader(ID3D11Device * device, std::string filename, std::string shader_name, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize);
 
 		inline PixelShader* GetPixelShader(const char* filename) { 
 			if (this->pixelShaders.find(filename) != this->pixelShaders.end()) {
