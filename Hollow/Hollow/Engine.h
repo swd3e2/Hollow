@@ -15,6 +15,7 @@ namespace Hollow {
 		Hollow::Timer*					m_Timer;
 		Hollow::EventHandler*			m_EventHandler;
 		Hollow::ResourceManager*		m_ResourceManager;
+		static Engine* instance;
 	public:
 		Engine();
 		~Engine();
@@ -24,5 +25,7 @@ namespace Hollow {
 		inline Hollow::Timer *				GetTimer() { return this->m_Timer; };
 		inline Hollow::EventHandler *		GetEventHandler() { return this->m_EventHandler; };
 		inline Hollow::ResourceManager *	GetReosourceManager() { return this->m_ResourceManager; };
+
+		inline static Engine* Get() { return instance; }
 	};
 }

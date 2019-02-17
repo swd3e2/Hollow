@@ -27,22 +27,25 @@ void RenderSystem::PreUpdate(float_t dt)
 	this->renderer->SetContantBuffer<WVP>(HOLLOW_CONST_BUFFER_WVP_SLOT, &WVPConstantBuffer);
 }
 
-void RenderSystem::Update(float_t dt, std::vector<GameObject*>& gameObjects)
+void RenderSystem::Update(float_t dt)
 {
-	for (auto object : gameObjects) {
+	for (auto object : *Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList()) {
 		MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
 		PositionComponent * posComponent = object->GetComponent<PositionComponent>();
+		SelectComponent* selectComponent = object->GetComponent<SelectComponent>();
 
-		if (meshComponent == nullptr || posComponent == nullptr) continue;
+		if (meshComponent == nullptr || posComponent == nullptr || selectComponent == nullptr) continue;
 
-		this->UpdateConstBuffers(posComponent, object->GetEntityID());
+		this->UpdateConstBuffers(posComponent, object->GetEntityID(), selectComponent->selected);
 		this->renderer->SetContantBuffer<Transform>(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
 
 		for (auto& it : meshComponent->mesh->objects) {
 			this->renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
 			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
 				this->renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
-			
+			else
+				this->renderer->FreeShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT);
+
 			renderer->Draw(it->buffer.BufferSize());
 		}
 	}
@@ -53,14 +56,15 @@ void RenderSystem::PostUpdate(float_t dt)
 	renderer->Present();
 }
 
-void RenderSystem::UpdateConstBuffers(PositionComponent * comp, int entityId)
+void RenderSystem::UpdateConstBuffers(PositionComponent * comp, int entityId, bool selected)
 {
 	transformConstantBuffer.data.transform = XMMatrixTranspose(
-		(XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z)
-		* XMMatrixScaling(comp->scale.x, comp->scale.y, comp->scale.z))
-		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z)
+		(XMMatrixScaling(comp->scale.x, comp->scale.y, comp->scale.z)
+		* XMMatrixRotationRollPitchYaw(comp->rotation.x, comp->rotation.y, comp->rotation.z))
+		* XMMatrixTranslation(comp->position.x, comp->position.y, comp->position.z)
 	);
 	transformConstantBuffer.data.id = entityId;
+	transformConstantBuffer.data.selected = selected;
 	transformConstantBuffer.Update();
 }
 

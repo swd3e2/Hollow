@@ -14,7 +14,14 @@ namespace Hollow {
 			mbstowcs_s(&outSize, wc, cSize, string, cSize - 1);
 			return wc;
 		}
-	};
 
+		inline static std::string& trim_to_last_line_entry(std::string string, const char* entry)
+		{
+			int lastEntry = -1;
+			while ((lastEntry = string.find(entry)) != -1) {  }
+			string.substr(0, lastEntry);
+			return string;
+		}
+	};
 }
 

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="Hollow\Graphics\HollowRenderer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer.h" />
+    <ClInclude Include="Hollow\Utils\FileSystem.h" />
     <ClInclude Include="Hollow\Utils\Helper.h" />
     <ClInclude Include="Hollow\Components\MeshComponent.h" />
     <ClInclude Include="Hollow\Containers\hash_map.h" />

@@ -23,6 +23,11 @@ namespace Hollow { namespace Containers {
 			this->m_data = new T[this->capacity];
 		}
 
+		~Vector()
+		{
+			delete m_data;
+		}
+
 		inline size_t size() { return this->m_size; }
 		void push_back(T& item)
 		{

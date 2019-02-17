@@ -25,9 +25,9 @@ public:
 		//Hollow::Log::GetCoreLogger()->critical("Bounce");
 	}
 
-	virtual void Update(float_t dt, std::vector<GameObject*>& gameObjects)
+	virtual void Update(float_t dt)
 	{
-		for (auto object : gameObjects) {
+		for (auto object : *Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList()) {
 			PositionComponent * posComponent = object->GetComponent<PositionComponent>();
 			MoveComponent * moveComponent = object->GetComponent<MoveComponent>();
 			if (posComponent == nullptr || moveComponent == nullptr) continue;

@@ -11,5 +11,14 @@ class MeshComponent : public Hollow::Component<MeshComponent>
 {
 public:
 	MeshComponent(Hollow::Mesh* mesh) : mesh(mesh) {}
+	
+	~MeshComponent()
+	{
+		if (mesh != nullptr)
+		{
+			delete mesh;
+		}
+	}
+
 	Hollow::Mesh* mesh;
 };

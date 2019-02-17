@@ -17,6 +17,8 @@
 #include "Hollow/Containers/vector.h"
 #include <thread>
 #include "Hollow/Graphics/Renderer.h"
+#include "Components/SelectComponent.h"
+#include <thread>
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -33,54 +35,24 @@ private:
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;
-
-	std::vector<GameObject*> gameObjects;
 private:
 	void InitScene()
 	{
 		Hollow::Sound* music2 = engine.GetReosourceManager()->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
 		//music2->Play();
-
 		
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
-				object->AddComponent<MeshComponent, Hollow::Mesh*>(
-					this->engine.GetReosourceManager()->CreateMeshResource(
-						((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(),
-						((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDeviceContext(),
-						"Sandbox/Resources/Meshes/untitled.obj",
-						"Sandbox/Resources/Meshes/")
-					);
-
-				object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 17.0f * j, -17.0f * i, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
-				gameObjects.push_back(object);
-			}
-		}
-
-		/*GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
+		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(
 			this->engine.GetReosourceManager()->CreateMeshResource(
-				this->m_RenderSystem->GetDevice(),
-				this->m_RenderSystem->GetDeviceContext(),
-				"Sandbox/Resources/Meshes/sponza.obj", 
-				"Sandbox/Resources/Meshes/")
+			((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(),
+				((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDeviceContext(),
+				"Sandbox/Resources/Meshes/untitled.obj",
+				"Sandbox/Resources/Meshes/",
+				true)
 			);
 
-		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({1.0f, -3.0f, 1.0f}, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
-		gameObjects.push_back(object);
-
-		GameObject * object2 = engine.GetEntityManager()->CreateEntity<GameObject>();
-		object2->AddComponent<MeshComponent, Hollow::Mesh*>(
-			this->engine.GetReosourceManager()->CreateMeshResource(
-				this->m_RenderSystem->GetDevice(),
-				this->m_RenderSystem->GetDeviceContext(),
-				"Sandbox/Resources/Meshes/sponza.obj",
-				"Sandbox/Resources/Meshes/")
-			);
-
-		object2->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 10000.0f, -3.0f, 1.0f }, { 0.1f, 0.1f, 0.1f }, { 0.0f, 0.0f, 0.0f });
-		gameObjects.push_back(object2);*/
+		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 17.0f, -17.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
+		object->AddComponent<SelectComponent, bool>(false);
 	}
 
 	void InitResources()
@@ -108,9 +80,8 @@ public:
 		this->InitResources();
 
 		this->m_RenderSystem = new RenderSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
-		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND, engine.GetEntityManager(), engine.GetComponentManager());
+		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND);
 		this->m_MoveSystem = new MoveSystem();
-
 		this->InitScene();
 	}
 
@@ -119,8 +90,8 @@ public:
 		{
 			engine.GetTimer()->Tick(DELTA_TIME_STEP);
 			this->m_RenderSystem->PreUpdate(DELTA_TIME_STEP);
-			this->m_MoveSystem->Update(DELTA_TIME_STEP, gameObjects);
-			this->m_RenderSystem->Update(DELTA_TIME_STEP, gameObjects);
+			this->m_MoveSystem->Update(DELTA_TIME_STEP);
+			this->m_RenderSystem->Update(DELTA_TIME_STEP);
 			this->m_InterfaceSystem->Update(DELTA_TIME_STEP);
 			this->m_RenderSystem->PostUpdate(DELTA_TIME_STEP);
 

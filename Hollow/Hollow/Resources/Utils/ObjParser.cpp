@@ -4,12 +4,19 @@ namespace Hollow {
 
 	MeshData* ObjParser::LoadObj(std::string filename, std::string material_base_dir)
 	{
+		if (currentObject != nullptr) {
+			currentObject = nullptr;
+		}
+
 		MeshData* data = new MeshData();
+		currentObject = new RawMeshData();
 
 		std::ifstream filestream(filename.c_str());
 
-		if (!filestream)
+		if (!filestream) {
 			Hollow::Log::GetCoreLogger()->error("ObjParser: can't open filestream, filename {}", filename);
+			return nullptr;
+		}
 
 		std::string linebuff;
 		int lines = 0;
@@ -42,10 +49,12 @@ namespace Hollow {
 			if (token[0] == 'v' && token[1] == ' ') {
 				token += 2;
 				parseVertices(data, token);
+				continue;
 			}
 			if (token[0] == 'v' && token[1] == 'n' && token[2] == ' ') {
 				token += 3;
 				parseNormals(data, token);
+				continue;
 			}
 			if (token[0] == 'v' && token[1] == 't' && token[2] == ' ') {
 				token += 3;
@@ -53,10 +62,12 @@ namespace Hollow {
 					currentObject->has_texture = true;
 					
 				parseTexCoords(data, token);
+				continue;
 			}
 			if (token[0] == 'f' && token[1] == ' ') {
 				token += 2;
 				parseFace(currentObject, token);
+				continue;
 			}
 			// Load all material properties from mtl file
 			if ((0 == strncmp(token, "mtllib", 6)) && token[6] == ' ') {
@@ -64,12 +75,14 @@ namespace Hollow {
 				std::string base_dir = material_base_dir;
 				base_dir += token;
 				LoadMtl(data, base_dir);
+				continue;
 			}
 
 			// Save usage of material in rawmeshdata
 			if ((0 == strncmp(token, "usemtl", 6)) && token[6] == ' ') {
 				token += 7;	
 				currentObject->material = token;
+				continue;
 			}
 			if (token[0] == 'o' && token[1] == ' ' ||
 				token[0] == '#' && token[1] == ' ' && token[2] == 'o' && token[3] == 'b'
@@ -85,6 +98,7 @@ namespace Hollow {
 
 				currentObject = new RawMeshData();
 				currentObject->object_name = token;
+				continue;
 			}
 		}
 

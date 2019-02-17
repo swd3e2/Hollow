@@ -21,6 +21,8 @@
 #include "Hollow/Graphics/ShaderResourceMapping.h"
 #include "Hollow/Resources/ResourceManager.h"
 #include "Hollow/Graphics/Renderer.h"
+#include "Sandbox/Components/SelectComponent.h"
+#include "Hollow/Engine.h"
 
 using namespace Hollow;
 
@@ -33,6 +35,7 @@ struct Transform
 {
 	DirectX::XMMATRIX transform;
 	float id;
+	bool selected;
 };
 
 class RenderSystem : System<RenderSystem>
@@ -43,13 +46,12 @@ private:
 	ConstantBuffer<Transform>			transformConstantBuffer;
 	Core::Graphics::DirectXRenderer*	renderer;
 private:
-	void UpdateConstBuffers(PositionComponent * comp, int entityId);
+	void UpdateConstBuffers(PositionComponent * comp, int entityId, bool selected);
 	void UpdateWVP();
 public:
 	RenderSystem(int width, int height);
 
 	virtual void PreUpdate(float_t dt) override;
-	virtual void Update(float_t dt, std::vector<GameObject*>& gameObjects);
+	virtual void Update(float_t dt);
 	virtual void PostUpdate(float_t dt) override;
 };
-

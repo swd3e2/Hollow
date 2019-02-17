@@ -16,7 +16,7 @@
 #include "Hollow/Graphics/Shaders/PixelShader.h"
 #include "Hollow/Graphics/Shaders/VertexShader.h"
 #include "Hollow/Utils/Helper.h"
-
+#include <thread>
 namespace Hollow {
 	class HOLLOW_API ResourceManager 
 	{
@@ -33,10 +33,12 @@ namespace Hollow {
 		TextureLoader textureLoader;
 	private:
 		static ResourceManager* instance;
+	private:
+		void LoadMeshResource(Mesh* mesh, ID3D11Device * device, ID3D11DeviceContext* deviceContext, std::string filename, const char* mtl_base_dir);
 	public:
 		ResourceManager();
 		Sound* CreateSoundResource(const char* filename);
-		Mesh* CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext * device_context, std::string filename, const char* mtl_base_dir);
+		Mesh* CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext* deviceContext, std::string filename, const char* mtl_base_dir, bool in_separate_thread);
 		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename);
 		Texture* CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, std::string filename);
 		Material* CreateMaterialResource(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string material_name, std::string diffuse_texture_filename);

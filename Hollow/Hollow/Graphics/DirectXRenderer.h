@@ -59,6 +59,11 @@ namespace Hollow { namespace Core { namespace Graphics {
 		{ 
 			this->m_DeviceContext->PSSetShaderResources(slot, 1, &shaderResourceView);
 		}
+		
+		inline void FreeShaderResource(UINT slot)
+		{
+			this->m_DeviceContext->PSSetShaderResources(slot, 1, pSRV);
+		}
 
 		inline void SetVertexShader(VertexShader* vs) 
 		{ 

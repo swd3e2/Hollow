@@ -1,6 +1,8 @@
 #include "Engine.h"
 
 namespace Hollow {
+	Engine* Engine::instance = nullptr;
+
 	Engine::Engine()
 	{
 		this->m_ComponentManager = new Hollow::ComponentManager();
@@ -8,6 +10,8 @@ namespace Hollow {
 		this->m_EventHandler = new Hollow::EventHandler();
 		this->m_Timer = new Hollow::Timer();
 		this->m_ResourceManager = new Hollow::ResourceManager();
+
+		instance = this;
 	}
 
 	Engine::~Engine()

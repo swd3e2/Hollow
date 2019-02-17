@@ -154,6 +154,26 @@ namespace Hollow {
 				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
 			return memoryUsed;
 		}
+
+		Containers::Vector<IEntity*>* GetEntitiesList()
+		{
+			Containers::Vector<IEntity*>* container = new Containers::Vector<IEntity*>;
+			for (int i = 0; i < HandleEntityCount; i++)
+				container->push_back((IEntity*)this->entityTable[i].second);
+
+			return container;
+		}
+
+		IEntity* find(EntityID entityId)
+		{
+			IEntity* entity = nullptr;
+			if (HandleEntityCount > entityId)
+			{
+				entity = (IEntity*)this->entityTable[entityId].second;
+			}
+
+			return entity;
+		}
 	};
 
 }

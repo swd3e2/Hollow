@@ -1,25 +1,24 @@
 #include "ResourceManager.h"
 
 namespace Hollow {
-
 	ResourceManager* ResourceManager::instance = nullptr;
 
-	ResourceManager::ResourceManager() 
+	ResourceManager::ResourceManager()
 	{
-		if (instance == nullptr)
+		if (instance == nullptr) {
 			instance = this;
-		else
+		} else {
 			assert(true && "Trying to create more than 1 resource manager!");
+		}
 	}
 
-	Mesh * ResourceManager::CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext* deviceContext, std::string filename, const char* mtl_base_dir)
+	void ResourceManager::LoadMeshResource(Mesh* mesh, ID3D11Device * device, ID3D11DeviceContext* deviceContext, std::string filename, const char* mtl_base_dir)
 	{
-		if (this->meshes.find(filename) != this->meshes.end()) {
-			return this->meshes[filename];
-		}
-
 		MeshData* data = objLoader.LoadObj(filename, mtl_base_dir);
-		Mesh* mesh = new Mesh();
+
+		if (data == nullptr) {
+			return;
+		}
 
 		for (int i = 0; i < data->objects.size(); i++) {
 			Containers::Vector<SimpleVertex> vertices;
@@ -35,39 +34,58 @@ namespace Hollow {
 					simpleVertex.texCoord.x = -data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
 					simpleVertex.texCoord.y = -data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
 				} else {
-					simpleVertex.texCoord.x = 0.0f; 
-					simpleVertex.texCoord.y = 0.0f; 
+					simpleVertex.texCoord.x = 0.0f;
+					simpleVertex.texCoord.y = 0.0f;
 				}
-				
+
 				simpleVertex.normal.x = data->normals[data->objects[i]->indices[j].normal_index * 3];
 				simpleVertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
 				simpleVertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
 
 				vertices.push_back(simpleVertex);
 			}
-			
-			MeshModel* meshModel = new MeshModel(device, vertices.data(), vertices.size());
+
+			MeshModel* meshModel = new MeshModel(device, data->objects[i]->object_name, vertices.data(), vertices.size());
 			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
 				meshModel->material = CreateMaterialResource(device, deviceContext, data->objects[i]->material, data->hash_materials[data->objects[i]->material]->diffuse_texture);
-			} else {
+			}
+			else {
 				meshModel->material = new Material();
 			}
 
 			mesh->objects.push_back(meshModel);
 		}
+		delete data;
 
 		this->meshes[filename] = mesh;
+	}
+
+	Mesh* ResourceManager::CreateMeshResource(ID3D11Device * device, ID3D11DeviceContext* deviceContext, std::string filename, const char* mtl_base_dir, bool in_separate_thread = false)
+	{
+		if (this->meshes.find(filename) != this->meshes.end()) {
+			return this->meshes[filename];
+		}
+
+		Mesh* mesh = new Mesh();
+
+		if (in_separate_thread) {
+			std::thread tr(&ResourceManager::LoadMeshResource, this, mesh, device, deviceContext, filename, mtl_base_dir);
+			tr.detach();
+		} else {
+			LoadMeshResource(mesh, device, deviceContext, filename, mtl_base_dir);
+		}
+
 		return mesh;
 	}
 
-	Texture * ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename)
+	Texture* ResourceManager::CreateTextureResource(ID3D11Device * device, ID3D11DeviceContext * device_context, wchar_t * filename)
 	{
 		_bstr_t convert(filename);
 		char * charFileName = convert;
 		return CreateTextureResource(device, device_context, charFileName);
 	}
 
-	Texture * ResourceManager::CreateTextureResource(ID3D11Device* device, ID3D11DeviceContext* device_context, std::string filename)
+	Texture* ResourceManager::CreateTextureResource(ID3D11Device* device, ID3D11DeviceContext* device_context, std::string filename)
 	{
 		Hollow::Log::GetCoreLogger()->info("ResourceManager: trying to load texture, filename: {}", filename.c_str());
 
@@ -75,7 +93,7 @@ namespace Hollow {
 			return this->texutres[filename];
 		}
 
-		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, (char*)filename.c_str()));
+		Texture* texture = new Texture(this->textureLoader.LoadTexture(device, device_context, (char*)filename.c_str()), filename);
 
 		if (texture != nullptr) {
 			Hollow::Log::GetCoreLogger()->critical("ResourceManager: can't load texture, filename: {}", filename.c_str());
@@ -85,7 +103,7 @@ namespace Hollow {
 		return texture;
 	}
 
-	Material * ResourceManager::CreateMaterialResource(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string material_name, std::string diffuse_texture_filename)
+	Material* ResourceManager::CreateMaterialResource(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string material_name, std::string diffuse_texture_filename)
 	{
 		if (this->materials.find(material_name) != this->materials.end()) {
 			return this->materials[material_name];
@@ -118,7 +136,7 @@ namespace Hollow {
 		return pixelShader;
 	}
 
-	VertexShader * ResourceManager::CreateVertexShader(ID3D11Device * device, std::string filename, std::string shader_name, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize)
+	VertexShader* ResourceManager::CreateVertexShader(ID3D11Device * device, std::string filename, std::string shader_name, D3D11_INPUT_ELEMENT_DESC* layout, UINT layoutSize)
 	{
 		if (this->vertexShaders.find(shader_name) != this->vertexShaders.end()) {
 			return this->vertexShaders[shader_name];
@@ -136,7 +154,7 @@ namespace Hollow {
 		return vertexShader;
 	}
 
-	Sound * ResourceManager::CreateSoundResource(const char* filename)
+	Sound* ResourceManager::CreateSoundResource(const char* filename)
 	{
 		if (this->sounds.find(filename) != this->sounds.end()) {
 			return this->sounds[filename];
@@ -147,6 +165,4 @@ namespace Hollow {
 
 		return sound;
 	}
-
-
 }

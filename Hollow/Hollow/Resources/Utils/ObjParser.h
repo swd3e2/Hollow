@@ -41,6 +41,15 @@ namespace Hollow {
 		Containers::Vector<float> normals;
 		Containers::Vector<RawMeshData*> objects;
 		std::unordered_map<std::string, RawMaterial*> hash_materials;
+
+		~MeshData()
+		{
+			for (auto& it : objects)
+				delete it;
+
+			for (auto& it : hash_materials)
+				delete it.second;
+		}
 	};
 
 	class HOLLOW_API ObjParser
@@ -50,7 +59,6 @@ namespace Hollow {
 		bool mtllibParsed = false;
 	public:
 		MeshData* LoadObj(std::string filename, std::string material_base_dir);
-
 	private:
 		void parseVertices(MeshData * data, const char* token);
 		void parseTexCoords(MeshData * data, const char* token);
