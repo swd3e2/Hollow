@@ -44,11 +44,11 @@ private:
 		GameObject * object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(
 			this->engine.GetReosourceManager()->CreateMeshResource(
-			((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(),
-				((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDeviceContext(),
-				"Sandbox/Resources/Meshes/untitled.obj",
+			((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(),
+				((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDeviceContext(),
+				"Sandbox/Resources/Meshes/g.obj",
 				"Sandbox/Resources/Meshes/",
-				true)
+				false)
 			);
 
 		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 17.0f, -17.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
@@ -66,9 +66,9 @@ private:
 
 		UINT numElements = ARRAYSIZE(bxlayout);
 
-		ResourceManager::Get()->CreatePixelShader(((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/ps.hlsl", "simple");
-		ResourceManager::Get()->CreatePixelShader(((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/pickerPS.hlsl", "mouse");
-		ResourceManager::Get()->CreateVertexShader(((Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/vs.hlsl", "simple", bxlayout, numElements);
+		ResourceManager::Get()->CreatePixelShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/ps.hlsl", "simple");
+		ResourceManager::Get()->CreatePixelShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/pickerPS.hlsl", "mouse");
+		ResourceManager::Get()->CreateVertexShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/vs.hlsl", "simple", bxlayout, numElements);
 	}
 public:
 	Application(HINSTANCE hInst, LPWSTR pArgs) :

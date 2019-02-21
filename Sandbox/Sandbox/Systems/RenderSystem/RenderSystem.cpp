@@ -3,7 +3,7 @@
 RenderSystem::RenderSystem(int width, int height)
 {
 	Hollow::Log::GetCoreLogger()->debug("RenderSystem: Initialized.");
-	this->renderer = static_cast<Core::Graphics::DirectXRenderer*>(Renderer::Get());
+	this->renderer = static_cast<DirectXRenderer*>(Renderer::Get());
 
 	this->camera = new Camera();
 	this->camera->SetProjectionValues(85.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
@@ -39,6 +39,15 @@ void RenderSystem::Update(float_t dt)
 		this->UpdateConstBuffers(posComponent, object->GetEntityID(), selectComponent->selected);
 		this->renderer->SetContantBuffer<Transform>(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, &transformConstantBuffer);
 
+		for (auto& it : meshComponent->mesh->objects) {
+			this->renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
+			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
+				this->renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
+			else
+				this->renderer->FreeShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT);
+
+			renderer->Draw(it->buffer.BufferSize());
+		}
 		for (auto& it : meshComponent->mesh->objects) {
 			this->renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
 			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)

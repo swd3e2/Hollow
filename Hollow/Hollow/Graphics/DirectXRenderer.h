@@ -11,7 +11,7 @@
 #include "BufferTemplate/VertexBuffer.h"
 #include "HollowRenderer.h"
 
-namespace Hollow { namespace Core { namespace Graphics {
+namespace Hollow {
 
 	// Simple directx renderer
 	class HOLLOW_API DirectXRenderer : public HollowRenderer
@@ -38,8 +38,10 @@ namespace Hollow { namespace Core { namespace Graphics {
 
 		template<class T>
 		inline void SetVertexBuffer(VertexBuffer<T>* vb) 
-		{ 
-			this->m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetAddressOf(), vb->StridePtr(), &this->offset); 
+		{
+			if (vb->GetAddressOf() != nullptr) {
+				this->m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetAddressOf(), vb->StridePtr(), &this->offset); 
+			}
 		}
 
 		template<class T>
@@ -115,4 +117,4 @@ namespace Hollow { namespace Core { namespace Graphics {
 		inline ID3D11DeviceContext* GetDeviceContext() const { return this->m_DeviceContext.Get(); }
 	};
 
-} } }
+}

@@ -44,7 +44,8 @@ private:
 	Camera*								camera;
 	ConstantBuffer<WVP>					WVPConstantBuffer;
 	ConstantBuffer<Transform>			transformConstantBuffer;
-	Core::Graphics::DirectXRenderer*	renderer;
+	DirectXRenderer*					renderer;
+	
 private:
 	void UpdateConstBuffers(PositionComponent * comp, int entityId, bool selected);
 	void UpdateWVP();

@@ -9,7 +9,7 @@ namespace Hollow {
 		{
 		case Hollow::DirectX:
 			if (rendererInstance == nullptr) {
-				rendererInstance = new Core::Graphics::DirectXRenderer(hwnd, width, height);
+				rendererInstance = new DirectXRenderer(hwnd, width, height);
 			}
 			break;
 		case Hollow::OpenGL:

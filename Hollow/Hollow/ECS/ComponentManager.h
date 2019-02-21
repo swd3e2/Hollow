@@ -118,7 +118,7 @@ namespace Hollow {
 			// create mapping from entity id its component id
 			MapEntityComponent(entityId, componentId, CTID);
 			//Hollow::Log::GetCoreLogger()->info("ComponentManager: created component with id {}, typeID {}, pointer {}", componentId, T::STATIC_COMPONENT_TYPE_ID, pObjectMemory);
-
+			component->enabled = true;
 			return (T*)(component);
 		}
 

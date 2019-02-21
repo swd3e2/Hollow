@@ -9,7 +9,6 @@ namespace Hollow {
 		}
 
 		MeshData* data = new MeshData();
-		currentObject = new RawMeshData();
 
 		std::ifstream filestream(filename.c_str());
 
@@ -93,8 +92,10 @@ namespace Hollow {
 				} else {
 					token += 7;
 				}
-				if (currentObject != nullptr)
+				// if object has at least one indices we can save it safely
+				if (currentObject != nullptr && currentObject->indices.size() != 0) {
 					data->objects.push_back(currentObject);
+				}
 
 				currentObject = new RawMeshData();
 				currentObject->object_name = token;

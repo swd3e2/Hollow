@@ -1,6 +1,6 @@
 #include "DirectXRenderer.h"
 
-namespace Hollow { namespace Core { namespace Graphics {
+namespace Hollow {
 
 	DirectXRenderer::DirectXRenderer(HWND* hwnd, int width, int height)
 		: HollowRenderer(hwnd, width, height)
@@ -132,4 +132,4 @@ namespace Hollow { namespace Core { namespace Graphics {
 		m_SampleStateClamp->Release();
 		Transparency->Release();
 	}
-} } }
+}

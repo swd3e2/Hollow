@@ -21,7 +21,7 @@
 class InterfaceSystem : public Hollow::System<InterfaceSystem>
 {
 private:
-	Hollow::Core::Graphics::DirectXRenderer*	renderer;
+	Hollow::DirectXRenderer*			renderer;
 	Hollow::EntityManager*				entityManager;
 	Hollow::ComponentManager*			componentManager;
 	Hollow::FileSystem					fileSystem;
@@ -51,7 +51,7 @@ public:
 		: entityManager(Hollow::Engine::Get()->GetEntityManager()), componentManager(Hollow::Engine::Get()->GetComponentManager())
 	{
 		bool result = true;
-		this->renderer = (Hollow::Core::Graphics::DirectXRenderer*)Hollow::Renderer::Get();
+		this->renderer = (Hollow::DirectXRenderer*)Hollow::Renderer::Get();
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -168,7 +168,7 @@ public:
 			meshComponent = entity->GetComponent<MeshComponent>();
 			posComponent = entity->GetComponent<PositionComponent>();
 
-			if (meshComponent != nullptr) {
+			if (meshComponent != nullptr && meshComponent->IsActive()) {
 				ImGui::TextColored(ImVec4(0.7f, 0.43f, 0.0f, 1.0f), "Objects:");
 				for (auto& object : meshComponent->mesh->objects) {
 					ImGui::Text("%s", object->name.c_str());

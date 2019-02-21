@@ -38,9 +38,11 @@ namespace Hollow {
 					simpleVertex.texCoord.y = 0.0f;
 				}
 
-				simpleVertex.normal.x = data->normals[data->objects[i]->indices[j].normal_index * 3];
-				simpleVertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
-				simpleVertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
+				if (data->objects[i]->indices[j].normal_index > 0 && data->objects[i]->indices[j].normal_index * 3 + 2 < data->normals.size()) {
+					simpleVertex.normal.x = data->normals[data->objects[i]->indices[j].normal_index * 3];
+					simpleVertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
+					simpleVertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
+				}
 
 				vertices.push_back(simpleVertex);
 			}

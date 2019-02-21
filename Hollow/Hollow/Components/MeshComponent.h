@@ -10,7 +10,10 @@
 class MeshComponent : public Hollow::Component<MeshComponent>
 {
 public:
-	MeshComponent(Hollow::Mesh* mesh) : mesh(mesh) {}
+	MeshComponent(Hollow::Mesh* mesh) : mesh(mesh) 
+	{
+		this->enabled = false;
+	}
 	
 	~MeshComponent()
 	{
