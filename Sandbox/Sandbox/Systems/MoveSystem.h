@@ -9,45 +9,28 @@
 #include "Hollow/ECS/EventHandler.h"
 #include <vector>
 #include "Hollow/Resources/Sound.h"
+#include "Hollow/Containers/vector.h"
 
 class MoveSystem : public Hollow::System<MoveSystem>, Hollow::IEventListener
 {
 public:
 	Hollow::Sound* sound;
+	PositionComponent * posComponent;
+	MoveComponent * moveComponent;
 public:
 	MoveSystem() 
 	{
-		this->RegisterEventCallback<MoveEvent, MoveSystem>(&MoveSystem::Kek);
-	}
-
-	void Kek(const MoveEvent* const e)
-	{
-		//Hollow::Log::GetCoreLogger()->critical("Bounce");
 	}
 
 	virtual void Update(float_t dt)
 	{
-		for (auto object : *Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList()) {
-			PositionComponent * posComponent = object->GetComponent<PositionComponent>();
-			MoveComponent * moveComponent = object->GetComponent<MoveComponent>();
-			if (posComponent == nullptr || moveComponent == nullptr) continue;
-			if (moveComponent->move) {
-				posComponent->position.x -= 0.5f;
-			} else {
-				posComponent->position.x += 0.5f;
-			}
+		Hollow::Containers::Vector<Hollow::IEntity*>* container = Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList();
 
-			if (posComponent->position.x > 50.0f) {
-				Hollow::EventHandler::Get()->Send<MoveEvent>();
-				//sound->Play();
-				moveComponent->move = true;
-			}
-			else if (posComponent->position.x < -50.0f) {
-				Hollow::EventHandler::Get()->Send<MoveEvent>();
-				//sound->Play();
-				moveComponent->move = false;
-			}
+		for (Hollow::IEntity* object : *container) {
+			posComponent = object->GetComponent<PositionComponent>();
+			moveComponent = object->GetComponent<MoveComponent>();
+			if (posComponent == nullptr || moveComponent == nullptr) continue;
 		}
+		delete container;
 	}
 };
-

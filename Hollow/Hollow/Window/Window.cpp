@@ -98,8 +98,8 @@ namespace Hollow {
 					RAWINPUT * input = reinterpret_cast<RAWINPUT *>(rawData.get());
 					if (input->header.dwType == RIM_TYPEMOUSE)
 					{
-						InputManager::x = input->data.mouse.lLastX;
-						InputManager::y = input->data.mouse.lLastY;
+						InputManager::mx = input->data.mouse.lLastX;
+						InputManager::my = input->data.mouse.lLastY;
 					}
 				}
 			}
@@ -141,6 +141,11 @@ namespace Hollow {
 		case WM_MBUTTONUP:
 		{
 			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_MIDDLE, false);
+		} break;
+		case WM_MOUSEMOVE:
+		{
+			InputManager::mcx = GET_X_LPARAM(lParam);
+			InputManager::mcy = GET_Y_LPARAM(lParam);
 		} break;
 		default:
 			result = DefWindowProc(hWnd, msg, wParam, lParam);

@@ -23,6 +23,7 @@
 #include "Hollow/Graphics/Renderer.h"
 #include "Sandbox/Components/SelectComponent.h"
 #include "Hollow/Engine.h"
+#include "Hollow/Containers/vector.h"
 
 using namespace Hollow;
 
@@ -45,7 +46,6 @@ private:
 	ConstantBuffer<WVP>					WVPConstantBuffer;
 	ConstantBuffer<Transform>			transformConstantBuffer;
 	DirectXRenderer*					renderer;
-	
 private:
 	void UpdateConstBuffers(PositionComponent * comp, int entityId, bool selected);
 	void UpdateWVP();
@@ -55,4 +55,6 @@ public:
 	virtual void PreUpdate(float_t dt) override;
 	virtual void Update(float_t dt);
 	virtual void PostUpdate(float_t dt) override;
+
+	inline Camera* GetCamera() { return this->camera; }
 };

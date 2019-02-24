@@ -4,7 +4,7 @@
 #include "Hollow/Platform.h"
 #include <vector>
 #include <list>
-#define DEFAULT_STACK_MEMORY_MANAGER_SIZE 134217728 // 128 mb
+#define DEFAULT_STACK_MEMORY_MANAGER_SIZE 67108864 // 64 mb
 
 namespace Hollow { namespace Core { namespace Memory {
 	class HOLLOW_API StackMemoryManager

@@ -79,8 +79,9 @@ namespace Hollow {
 
 			// Save usage of material in rawmeshdata
 			if ((0 == strncmp(token, "usemtl", 6)) && token[6] == ' ') {
-				token += 7;	
-				currentObject->material = token;
+				token += 7;
+				if (currentObject != nullptr)
+					currentObject->material = token;
 				continue;
 			}
 			if (token[0] == 'o' && token[1] == ' ' ||

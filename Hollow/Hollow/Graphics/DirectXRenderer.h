@@ -10,16 +10,16 @@
 #include "BufferTemplate/ConstantBuffer.h"
 #include "BufferTemplate/VertexBuffer.h"
 #include "HollowRenderer.h"
+#include <PrimitiveBatch.h>
 
 namespace Hollow {
-
 	// Simple directx renderer
 	class HOLLOW_API DirectXRenderer : public HollowRenderer
 	{
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device>				m_Device;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>			m_DeviceContext;
-		Microsoft::WRL::ComPtr<IDXGISwapChain>				m_pSwapChain;
+		Microsoft::WRL::ComPtr<IDXGISwapChain>				m_SwapChain;
 		Microsoft::WRL::ComPtr<ID3D11RasterizerState>		m_RasterizerState;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState>			m_SamplerStateWrap;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState>			m_SampleStateClamp;
@@ -27,7 +27,7 @@ namespace Hollow {
 
 		RenderTarget*	renderTarget;
 		DepthStencil*	depthStencil;
-		
+
 		ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 		const UINT offset = 0;
 		const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -78,20 +78,14 @@ namespace Hollow {
 			this->m_DeviceContext->PSSetShader(ps->GetShader(), NULL, 0); 
 		}
 		
-		inline void ClearRenderTarget(RenderTarget*	rt)
+		inline void ClearRenderTarget(ID3D11RenderTargetView*	rt)
 		{ 
-			this->m_DeviceContext->ClearRenderTargetView(rt->GetMainRenderTaget(), ClearColor); 
+			this->m_DeviceContext->ClearRenderTargetView(rt, ClearColor); 
 		}
 
-		inline void CleraDepthStencil(DepthStencil*	ds) 
+		inline void ClearDepthStencil(DepthStencil*	ds) 
 		{ 
 			this->m_DeviceContext->ClearDepthStencilView(ds->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); 
-		}
-
-		inline void Clear() 
-		{
-			this->ClearRenderTarget(this->renderTarget);
-			this->CleraDepthStencil(this->depthStencil);
 		}
 
 		template<class T>
@@ -103,18 +97,32 @@ namespace Hollow {
 
 		inline void PreUpdateFrame()
 		{
+			this->ClearRenderTarget(this->renderTarget->GetMainRenderTaget());
+			this->ClearDepthStencil(this->depthStencil);
 			this->m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap.GetAddressOf());
 			this->m_DeviceContext->PSSetSamplers(1, 1, m_SampleStateClamp.GetAddressOf());
-			this->m_DeviceContext->OMSetRenderTargets(1, this->renderTarget->GetAddressOfMainRenderTaget(), this->depthStencil->GetDepthStencilView());
 			this->m_DeviceContext->RSSetState(this->m_RasterizerState.Get());
+			this->SetMainRenderTarget();
+		}
+
+		inline void SetSecondRenderTarget()
+		{
+			this->m_DeviceContext->OMSetRenderTargets(1, this->renderTarget->GetAddressOfSecondRenderTaget(), depthStencil->GetDepthStencilView());
+		}
+
+		inline void SetMainRenderTarget()
+		{
+			this->m_DeviceContext->OMSetRenderTargets(1, this->renderTarget->GetAddressOfMainRenderTaget(), depthStencil->GetDepthStencilView());
 		}
 
 		inline void DrawIndexed(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }
 		inline void Draw(UINT count) { m_DeviceContext->Draw(count, 0); }
-		inline void Present() { this->m_pSwapChain->Present(1, 0); }
+		inline void Present() { this->m_SwapChain->Present(1, 0); }
 
 		inline ID3D11Device* GetDevice() const { return this->m_Device.Get(); }
 		inline ID3D11DeviceContext* GetDeviceContext() const { return this->m_DeviceContext.Get(); }
+		inline IDXGISwapChain* GetSwapChain() { return this->m_SwapChain.Get(); }
+		inline ID3D11RenderTargetView** GetMainRenderTargetView() { return this->renderTarget->GetAddressOfMainRenderTaget(); }
+		inline ID3D11RenderTargetView** GetSecondRenderTargetView() { return this->renderTarget->GetAddressOfSecondRenderTaget(); }
 	};
-
 }

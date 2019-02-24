@@ -10,8 +10,8 @@
 #include <limits.h>
 #undef max
 #undef min
-#define ENITY_LUT_GROW 512
-#define COMPONENT_LUT_GROW 512
+#define ENITY_LUT_GROW 256
+#define COMPONENT_LUT_GROW 256
 
 namespace Hollow {
 
@@ -34,12 +34,12 @@ namespace Hollow {
 		};
 
 		template<class T>
-		class ComponentContainer : public Core::Memory::MemoryChunkManager<T, 512>, public IComponentContainer
+		class ComponentContainer : public Core::Memory::MemoryChunkManager<T, 256>, public IComponentContainer
 		{
 			ComponentContainer(const ComponentContainer&) = delete;
 			ComponentContainer& operator=(ComponentContainer&) = delete;
 		public:
-			ComponentContainer() : Core::Memory::MemoryChunkManager<T, 512>("ComponentManager") {}
+			ComponentContainer() : Core::Memory::MemoryChunkManager<T, 256>("ComponentManager") {}
 
 			virtual ~ComponentContainer() {}
 
@@ -170,7 +170,6 @@ namespace Hollow {
 		T* GetComponent(const EntityID entityId)
 		{
 			const ComponentTypeID CTID = T::STATIC_COMPONENT_TYPE_ID;
-
 			const ComponentId componentId = this->m_EntityComponentMap[entityId][CTID];
 
 			// entity has no component of type T

@@ -3,7 +3,7 @@
 #include "windows.h"
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Platform.h"
-
+#include <Windowsx.h>
 namespace Hollow {
 
 	class HOLLOW_API Window

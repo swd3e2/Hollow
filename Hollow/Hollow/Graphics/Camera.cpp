@@ -177,7 +177,7 @@ namespace Hollow {
 
 		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT))
 		{
-			AdjustRotation(InputManager::y * 0.005f, InputManager::x * 0.005f, 0.0f);
+			AdjustRotation(InputManager::my * 0.005f, InputManager::mx * 0.005f, 0.0f);
 		}
 	}
 

@@ -18,9 +18,10 @@
 #include <thread>
 #include "Hollow/Graphics/Renderer.h"
 #include "Components/SelectComponent.h"
+#include "Sandbox/Components/CollisionComponent.h"
+#include "Sandbox/Systems/CollisionSystem.h"
 #include <thread>
-
-#define SCREEN_WIDTH 1600
+#define SCREEN_WIDTH 1800
 #define SCREEN_HEIGHT 900
 
 using namespace DirectX;
@@ -35,6 +36,7 @@ private:
 	RenderSystem*           m_RenderSystem;
 	MoveSystem*				m_MoveSystem;
 	InterfaceSystem*		m_InterfaceSystem;
+	CollisionSystem*		m_CollisionSystem;
 private:
 	void InitScene()
 	{
@@ -51,7 +53,21 @@ private:
 				false)
 			);
 
-		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 17.0f, -17.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
+		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
+		object->AddComponent<SelectComponent, bool>(false);
+		object->AddComponent<CollisionComponent>();
+
+		object = engine.GetEntityManager()->CreateEntity<GameObject>();
+		object->AddComponent<MeshComponent, Hollow::Mesh*>(
+			this->engine.GetReosourceManager()->CreateMeshResource(
+			((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(),
+				((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDeviceContext(),
+				"Sandbox/Resources/Meshes/hill.obj",
+				"Sandbox/Resources/Meshes/",
+				false)
+			);
+
+		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, -0.1f, 0.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f });
 		object->AddComponent<SelectComponent, bool>(false);
 	}
 
@@ -68,6 +84,7 @@ private:
 
 		ResourceManager::Get()->CreatePixelShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/ps.hlsl", "simple");
 		ResourceManager::Get()->CreatePixelShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/pickerPS.hlsl", "mouse");
+		ResourceManager::Get()->CreatePixelShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/normalMapPs.hlsl", "normal");
 		ResourceManager::Get()->CreateVertexShader(((Hollow::DirectXRenderer*)Hollow::Renderer::Get())->GetDevice(), "Sandbox/Resources/Shaders/vs.hlsl", "simple", bxlayout, numElements);
 	}
 public:
@@ -82,17 +99,20 @@ public:
 		this->m_RenderSystem = new RenderSystem(SCREEN_WIDTH, SCREEN_HEIGHT);
 		this->m_InterfaceSystem = new InterfaceSystem(this->m_HWND);
 		this->m_MoveSystem = new MoveSystem();
+		this->m_CollisionSystem = new CollisionSystem();
 		this->InitScene();
 	}
 
 	void Run() {
 		while (m_Window.ProcessMessage())
 		{
+			InputManager::GetMousePosition(m_RenderSystem->GetCamera()->GetProjectionMatrix(), m_RenderSystem->GetCamera()->GetViewMatrix());
 			engine.GetTimer()->Tick(DELTA_TIME_STEP);
 			this->m_RenderSystem->PreUpdate(DELTA_TIME_STEP);
 			this->m_MoveSystem->Update(DELTA_TIME_STEP);
 			this->m_RenderSystem->Update(DELTA_TIME_STEP);
 			this->m_InterfaceSystem->Update(DELTA_TIME_STEP);
+			this->m_CollisionSystem->Update(DELTA_TIME_STEP);
 			this->m_RenderSystem->PostUpdate(DELTA_TIME_STEP);
 
 			engine.GetEventHandler()->DispatchEvents();

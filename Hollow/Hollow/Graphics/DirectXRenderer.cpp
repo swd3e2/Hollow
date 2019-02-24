@@ -36,15 +36,12 @@ namespace Hollow {
 		UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG;
 
 		hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags,
-			featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &swapChainDesc, m_pSwapChain.GetAddressOf(),
+			featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &swapChainDesc, m_SwapChain.GetAddressOf(),
 			&m_Device, &m_featureLevel, m_DeviceContext.GetAddressOf());
 
 		if (hr != S_OK) {
 			Hollow::Log::GetCoreLogger()->error("RenderSystem: Can't create DeviceAndSwapChain!");
 		}
-
-		renderTarget = new RenderTarget(m_Device.Get(), m_DeviceContext.Get(), m_pSwapChain.Get(), width, height);
-		depthStencil = new DepthStencil(m_Device.Get(), width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
 		D3D11_VIEWPORT vp;
 		vp.Width = (float)width;
@@ -55,8 +52,10 @@ namespace Hollow {
 		vp.TopLeftY = 0;
 
 		m_DeviceContext->RSSetViewports(1, &vp);
-		m_DeviceContext->OMSetRenderTargets(1, renderTarget->GetAddressOfMainRenderTaget(), depthStencil->GetDepthStencilView());
 		m_DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		renderTarget = new RenderTarget(m_Device.Get(), m_DeviceContext.Get(), m_SwapChain.Get(), width, height);
+		depthStencil = new DepthStencil(m_Device.Get(), width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
 		D3D11_RENDER_TARGET_BLEND_DESC blendingTragetDesc = {0};
 
@@ -126,7 +125,7 @@ namespace Hollow {
 	{
 		m_Device->Release();
 		m_DeviceContext->Release();
-		m_pSwapChain->Release();
+		m_SwapChain->Release();
 		m_RasterizerState->Release();
 		m_SamplerStateWrap->Release();
 		m_SampleStateClamp->Release();

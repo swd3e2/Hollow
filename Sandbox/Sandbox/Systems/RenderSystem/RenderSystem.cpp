@@ -20,16 +20,15 @@ void RenderSystem::PreUpdate(float_t dt)
 {
 	this->camera->Update();
 	this->UpdateWVP();
-
-	this->renderer->Clear();
 	this->renderer->PreUpdateFrame();
-
 	this->renderer->SetContantBuffer<WVP>(HOLLOW_CONST_BUFFER_WVP_SLOT, &WVPConstantBuffer);
 }
 
 void RenderSystem::Update(float_t dt)
 {
-	for (auto object : *Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList()) {
+	Hollow::Containers::Vector<Hollow::IEntity*>* container = Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList();
+
+	for (Hollow::IEntity* object : *container) {
 		MeshComponent * meshComponent = object->GetComponent<MeshComponent>();
 		PositionComponent * posComponent = object->GetComponent<PositionComponent>();
 		SelectComponent* selectComponent = object->GetComponent<SelectComponent>();
@@ -48,16 +47,8 @@ void RenderSystem::Update(float_t dt)
 
 			renderer->Draw(it->buffer.BufferSize());
 		}
-		for (auto& it : meshComponent->mesh->objects) {
-			this->renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
-			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
-				this->renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
-			else
-				this->renderer->FreeShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT);
-
-			renderer->Draw(it->buffer.BufferSize());
-		}
 	}
+	delete container;
 }
 
 void RenderSystem::PostUpdate(float_t dt) 

@@ -24,7 +24,7 @@ namespace Hollow {
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		m_DepthStencilView;
 		Microsoft::WRL::ComPtr<ID3D11Texture2D>				m_DepthStencilBuffer;
 		Microsoft::WRL::ComPtr<ID3D11DepthStencilState>		m_DepthStencilState;
-		ID3D11ShaderResourceView *	mDepthResourceView;
+		ID3D11ShaderResourceView*							mDepthResourceView;
 	};
 
 }

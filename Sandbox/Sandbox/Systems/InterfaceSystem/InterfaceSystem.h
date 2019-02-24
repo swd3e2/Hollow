@@ -17,6 +17,8 @@
 #include "Hollow/Utils/FileSystem.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/PositionComponent.h"
+#include "Hollow/Input/InputManager.h"
+#include "Hollow/Containers/vector.h"
 
 class InterfaceSystem : public Hollow::System<InterfaceSystem>
 {
@@ -36,16 +38,15 @@ private:
 	std::string							selectedFile;
 	bool								file_path_opened = false;
 
-	float* newEntityPosition;
-	float* newEntityRotation;
-	float* newEntityScale;
-
 	float* currentEntityPosition = new float[3];
 	float* currentEntityRotation = new float[3];
 	float* currentEntityScale = new float[3];
+	
 	MeshComponent*						meshComponent;
 	PositionComponent *					posComponent;
 	Hollow::Material*					material;
+	DirectX::XMFLOAT4 temp;
+	ImVec2 childSize = { 120, 150 };
 public:
 	InterfaceSystem(HWND* hwnd)
 		: entityManager(Hollow::Engine::Get()->GetEntityManager()), componentManager(Hollow::Engine::Get()->GetComponentManager())
@@ -61,28 +62,12 @@ public:
 		result = ImGui_ImplDX11_Init(this->renderer->GetDevice(), this->renderer->GetDeviceContext());
 		if (!result) Hollow::Log::GetCoreLogger()->critical("Can't init imgui_dx11");
 		ImGui::StyleColorsDark();
-
 		for (auto &it : Hollow::ResourceManager::Get()->pixelShaders)
 			pixelShadersList.push_back(it.first.c_str());
 		for (auto &it : Hollow::ResourceManager::Get()->vertexShaders)
 			vertexShadersList.push_back(it.first.c_str());
 
 		v = fileSystem.read_next_directory("C");
-
-		newEntityPosition = new float[3];
-		newEntityPosition[0] = 0.0f;
-		newEntityPosition[1] = 0.0f;
-		newEntityPosition[2] = 0.0f;
-
-		newEntityRotation = new float[3];
-		newEntityRotation[0] = 0.0f;
-		newEntityRotation[1] = 0.0f;
-		newEntityRotation[2] = 0.0f;
-
-		newEntityScale = new float[3];
-		newEntityScale[0] = 0.0f;
-		newEntityScale[1] = 0.0f;
-		newEntityScale[2] = 0.0f;
 	}
 
 	virtual void PreUpdate(float_t dt) override
@@ -96,13 +81,13 @@ public:
 	{
 		PreUpdate(dt);
 
-		ImGui::Begin("Resource manager");
+		ImGui::Begin("Resource manager"); 
 		ImGui::Text("Current pixel shader");
 		ImGui::Combo("", &currentPixelShader, pixelShadersList.data(), pixelShadersList.size(), 10);
 		ImGui::Text("Current vertex shader");
 		ImGui::Combo("", &currentVertexShader, vertexShadersList.data(), vertexShadersList.size(), 10);
 
-		if (ImGui::Button("Add entity", ImVec2(100, 20))) {
+		if (ImGui::Button("Add entity")) {
 			GameObject* newEntity = this->entityManager->CreateEntity<GameObject>();
 			newEntity->AddComponent<MeshComponent, Hollow::Mesh*>(
 				Hollow::ResourceManager::Get()->CreateMeshResource(
@@ -110,20 +95,22 @@ public:
 					this->renderer->GetDeviceContext(),
 					filePath.c_str(),
 					fileSystem.get_current_file_path().c_str(),
-					true)
+					false)
 				);
-			newEntity->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ -17.0f, 17.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
+			newEntity->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
 			newEntity->AddComponent<SelectComponent, bool>(false);
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Destroy entity", ImVec2(100, 20))) {
+		if (ImGui::Button("Destroy entity")) {
 			if (entity != nullptr) {
 				entityManager->DestroyEntity<GameObject>(entity->GetEntityID());
 			}
 		}
 
-		ImGui::BeginChild("Entities", ImVec2(120, 150), ImGuiWindowFlags_AlwaysUseWindowPadding);
-		for (auto& it : *entityManager->GetEntitiesList()) {
+		ImGui::BeginChild("Entities", childSize, ImGuiWindowFlags_AlwaysUseWindowPadding);
+
+		Hollow::Containers::Vector<Hollow::IEntity*>* container = entityManager->GetEntitiesList();
+
+		for (Hollow::IEntity* it : *container) {
 			SelectComponent* select = it->GetComponent<SelectComponent>();
 			std::string id = std::to_string(it->GetEntityID());
 			id.insert(0, "Entity ");
@@ -137,9 +124,12 @@ public:
 				}
 			}
 		}
+
+		delete container;
+
 		ImGui::EndChild();
 		ImGui::SameLine();
-		ImGui::BeginChild("File path", ImVec2(200, 150), ImGuiWindowFlags_AlwaysUseWindowPadding);
+		ImGui::BeginChild("File path", childSize, ImGuiWindowFlags_AlwaysUseWindowPadding);
 		ImGui::Text(currentFilePath.c_str());
 		for (auto& it : *v) {
 			if (it.find(".obj") != -1) {
@@ -157,11 +147,31 @@ public:
 			}
 		}
 		ImGui::EndChild();
-		ImGui::DragFloat3("Position", newEntityPosition);
-		ImGui::DragFloat3("Rotation", newEntityRotation);
-		ImGui::DragFloat3("Scale", newEntityScale);
+		ImGui::Text("Mouse x: %f", Hollow::InputManager::mcx);
+		ImGui::SameLine();
+		ImGui::Text("Mouse x: %f", Hollow::InputManager::mcy);
+		ImGui::Text("Mouse x: %f", Hollow::InputManager::pcx);
+		ImGui::SameLine();
+		ImGui::Text("Mouse x: %f", Hollow::InputManager::pcy);
 
-		ImGui::BeginChild("Entity editor", ImVec2(330, 200), ImGuiWindowFlags_AlwaysUseWindowPadding);
+		XMStoreFloat4(&temp, Hollow::InputManager::pickRayInWorldSpacePos);
+
+		ImGui::Text("Mouse position x: %f", temp.x);
+		ImGui::SameLine();
+		ImGui::Text("Mouse position y: %f", temp.y);
+		ImGui::SameLine();
+		ImGui::Text("Mouse position z: %f", temp.z);
+
+		XMStoreFloat4(&temp, Hollow::InputManager::pickRayInWorldSpaceDir);
+
+		ImGui::Text("Mouse direction x: %f", temp.x);
+		ImGui::SameLine();
+		ImGui::Text("Mouse direction y: %f", temp.y);
+		ImGui::SameLine();
+		ImGui::Text("Mouse direction z: %f", temp.z);
+		ImGui::End();
+
+		ImGui::Begin("Entity editor");
 		if (entity != nullptr) {
 			ImGui::Text("Entity %d", entity->GetEntityID());
 
@@ -169,12 +179,12 @@ public:
 			posComponent = entity->GetComponent<PositionComponent>();
 
 			if (meshComponent != nullptr && meshComponent->IsActive()) {
-				ImGui::TextColored(ImVec4(0.7f, 0.43f, 0.0f, 1.0f), "Objects:");
+				ImGui::Text("Objects:");
 				for (auto& object : meshComponent->mesh->objects) {
 					ImGui::Text("%s", object->name.c_str());
 				}
 
-				ImGui::TextColored(ImVec4(0.33f, 0.7f, 0.19f, 1.0f), "Materials:");
+				ImGui::Text("Materials:");
 				for (auto& object : meshComponent->mesh->objects) {
 					if (ImGui::Selectable(object->material->name.c_str(), material && material->name == object->material->name)) {
 						material = object->material;
@@ -195,24 +205,21 @@ public:
 				currentEntityScale[1] = posComponent->scale.y;
 				currentEntityScale[2] = posComponent->scale.z;
 
-				ImGui::DragFloat3("Position", currentEntityPosition);
-				ImGui::DragFloat3("Rotation", currentEntityRotation);
-				ImGui::DragFloat3("Scale", currentEntityScale);
+				ImGui::DragFloat3("Position", currentEntityPosition, 0.01);
+				ImGui::DragFloat3("Rotation", currentEntityRotation, 0.01);
+				ImGui::DragFloat3("Scale", currentEntityScale, 0.01);
 
 				posComponent->setTransform(currentEntityPosition, currentEntityScale, currentEntityRotation);
 			}
 		}
-		ImGui::EndChild();
 
-		ImGui::BeginChild("Material editor", ImVec2(330, 200), ImGuiWindowFlags_AlwaysUseWindowPadding);
 		if (material != nullptr) {
-			ImGui::TextColored(ImVec4(0.2f, 0.43f, 0.7f, 1.0f), "Material: %s", material->name.c_str());
+			ImGui::Text("Material: %s", material->name.c_str());
 			if (material->diffuse_texture != nullptr && !material->diffuse_texture->name.empty()) {
 				ImGui::Text("Material: %s", material->diffuse_texture->name.c_str());
 			}
 		}
 
-		ImGui::EndChild();
 		ImGui::End();
 
 		PostUpdate(dt);

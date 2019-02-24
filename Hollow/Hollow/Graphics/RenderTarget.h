@@ -8,7 +8,7 @@ namespace Hollow {
 	class HOLLOW_API RenderTarget
 	{
 	public:
-		RenderTarget(ID3D11Device * device, ID3D11DeviceContext * deviceContext, IDXGISwapChain * swapChain, int width, int height);
+		RenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain, int width, int height);
 		inline ID3D11RenderTargetView * GetMainRenderTaget() { return mainRenderTarget.Get(); }
 		inline ID3D11RenderTargetView ** GetAddressOfMainRenderTaget() { return mainRenderTarget.GetAddressOf(); }
 
@@ -17,7 +17,6 @@ namespace Hollow {
 
 		inline ID3D11ShaderResourceView * GetShaderResourceView() { return m_ShaderResourceView.Get(); }
 		inline ID3D11ShaderResourceView ** GetAddressOfShaderResourceView() { return m_ShaderResourceView.GetAddressOf(); }
-
 	private:
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		mainRenderTarget;
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>		secondRenderTarget;

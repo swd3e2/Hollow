@@ -30,12 +30,12 @@ namespace Hollow {
 		};
 
 		template<class E>
-		class EntityContainer : public Core::Memory::MemoryChunkManager<E, 512>, public IEntityContainer
+		class EntityContainer : public Core::Memory::MemoryChunkManager<E, 256>, public IEntityContainer
 		{
 			EntityContainer(const EntityContainer&) = delete;
 			EntityContainer& operator=(EntityContainer&) = delete;
 		public:
-			EntityContainer() : Core::Memory::MemoryChunkManager<E, 512>("EntityManager") {}
+			EntityContainer() : Core::Memory::MemoryChunkManager<E, 256>("EntityManager") {}
 
 			virtual ~EntityContainer() {}
 

@@ -28,5 +28,7 @@
     <ClInclude Include="Sandbox\ImGui\imstb_truetype.h" />
     <ClInclude Include="Sandbox\MyWindow.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
+    <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
+    <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
   </ItemGroup>
 </Project>
