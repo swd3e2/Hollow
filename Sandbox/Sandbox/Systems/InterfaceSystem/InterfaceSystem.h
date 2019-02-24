@@ -19,6 +19,7 @@
 #include "Sandbox/Components/PositionComponent.h"
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Containers/vector.h"
+#include "Sandbox/Components/MoveComponent.h"
 
 class InterfaceSystem : public Hollow::System<InterfaceSystem>
 {
@@ -147,6 +148,8 @@ public:
 			}
 		}
 		ImGui::EndChild();
+		ImGui::Text("delta: %f", dt);
+
 		ImGui::Text("Mouse x: %f", Hollow::InputManager::mcx);
 		ImGui::SameLine();
 		ImGui::Text("Mouse x: %f", Hollow::InputManager::mcy);
@@ -169,6 +172,12 @@ public:
 		ImGui::Text("Mouse direction y: %f", temp.y);
 		ImGui::SameLine();
 		ImGui::Text("Mouse direction z: %f", temp.z);
+
+		ImGui::Text("Intersect x: %f", Hollow::InputManager::pix);
+		ImGui::SameLine();
+		ImGui::Text("Intersect y: %f", Hollow::InputManager::piy);
+		ImGui::SameLine();
+		ImGui::Text("Intersect z: %f", Hollow::InputManager::piz);
 		ImGui::End();
 
 		ImGui::Begin("Entity editor");
@@ -177,6 +186,7 @@ public:
 
 			meshComponent = entity->GetComponent<MeshComponent>();
 			posComponent = entity->GetComponent<PositionComponent>();
+			MoveComponent* moveComponent = entity->GetComponent<MoveComponent>();
 
 			if (meshComponent != nullptr && meshComponent->IsActive()) {
 				ImGui::Text("Objects:");
@@ -210,6 +220,11 @@ public:
 				ImGui::DragFloat3("Scale", currentEntityScale, 0.01);
 
 				posComponent->setTransform(currentEntityPosition, currentEntityScale, currentEntityRotation);
+			}
+
+			if (moveComponent != nullptr) {
+				ImGui::Text("Distance %f", moveComponent->distance);
+				ImGui::Text("Distance passed %f", moveComponent->distancePassed);
 			}
 		}
 

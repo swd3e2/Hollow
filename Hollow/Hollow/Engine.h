@@ -5,6 +5,7 @@
 #include "ECS/EventHandler.h"
 #include "Common/Timer.h"
 #include "Resources/ResourceManager.h"
+#include "Input/InputManager.h"
 
 namespace Hollow {
 	class HOLLOW_API Engine

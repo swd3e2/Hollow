@@ -3,10 +3,19 @@
 #include "KeyCodes.h"
 #include <windows.h>
 #include "DirectXMath.h"
+#include <vector>
+#define FIELD_SIZE 10000
 
 namespace Hollow {
 
 	using namespace DirectX;
+
+	struct SimpleFieldVertex
+	{
+		XMFLOAT4 first;
+		XMFLOAT4 second;
+		XMFLOAT4 third;
+	};
 
 	class HOLLOW_API InputManager
 	{
@@ -23,12 +32,18 @@ namespace Hollow {
 		static float pcx;
 		static float pcy;
 
+		static float pix;
+		static float piy;
+		static float piz;
+
 		static XMVECTOR pickRayInWorldSpacePos;
 		static XMVECTOR pickRayInWorldSpaceDir;
 		static XMVECTOR pickRayInViewSpaceDir;
 		static XMVECTOR pickRayInViewSpacePos;
+
+		static std::vector<SimpleFieldVertex> field;
 	public:
-		InputManager()
+		static void StartUp()
 		{
 			for (int i = 0; i < 256; i++) {
 				KeyboardKeys[i] = false;
@@ -36,6 +51,9 @@ namespace Hollow {
 			for (int i = 0; i < 5; i++) {
 				MouseButton[i] = false;
 			}
+
+			field.push_back({ XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(-1000, 0, 1000, 0), XMFLOAT4(1000, 0, 1000, 0) });
+			field.push_back({ XMFLOAT4(FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(1000, 0, 1000, 0), XMFLOAT4(-1000, 0, -1000, 0) });
 		}
 
 		static bool GetKeyboardKeyIsPressed(eKeyCodes keyCode) { return KeyboardKeys[keyCode]; }
@@ -67,10 +85,6 @@ namespace Hollow {
 
 			pickRayInViewSpaceDir = XMVector3Normalize(pickRayInViewSpaceDir);
 
-			//Uncomment this line if you want to use the center of the screen (client area)
-			//to be the point that creates the picking ray (eg. first person shooter)
-			//pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-
 			// Transform 3D Ray from View space to 3D ray in World space
 			XMMATRIX pickRayToWorldSpaceMatrix;
 			XMVECTOR matInvDeter;    //We don't use this, but the xna matrix inverse function requires the first parameter to not be null
@@ -82,5 +96,97 @@ namespace Hollow {
 		}
 
 		static void Clear() { mx = 0; my = 0; }
+
+		static bool calculate()
+		{
+			for (auto& object : field) {
+				//Temporary 3d floats for each vertex
+				XMFLOAT4 tV1 = object.first;
+				XMFLOAT4 tV2 = object.second;
+				XMFLOAT4 tV3 = object.third;
+
+				XMVECTOR tri1V1 = XMVectorSet(tV1.x, tV1.y, tV1.z, 0.0f);
+				XMVECTOR tri1V2 = XMVectorSet(tV2.x, tV2.y, tV2.z, 0.0f);
+				XMVECTOR tri1V3 = XMVectorSet(tV3.x, tV3.y, tV3.z, 0.0f);
+
+				////Transform the vertices to world space
+				//tri1V1 = XMVector3TransformCoord(tri1V1, mesh->GetTransformMatrix());
+				//tri1V2 = XMVector3TransformCoord(tri1V2, mesh->GetTransformMatrix());
+				//tri1V3 = XMVector3TransformCoord(tri1V3, mesh->GetTransformMatrix());
+
+				XMVECTOR faceNormal = { 0, 1, 0, 0 };
+
+				//Calculate a point on the triangle for the plane equation
+				XMVECTOR triPoint = tri1V1;
+
+				//Get plane equation ("Ax + By + Cz + D = 0") Variables
+				float tri1A = XMVectorGetX(faceNormal);
+				float tri1B = XMVectorGetY(faceNormal);
+				float tri1C = XMVectorGetZ(faceNormal);
+				float tri1D = (-tri1A * XMVectorGetX(triPoint) - tri1B * XMVectorGetY(triPoint) - tri1C * XMVectorGetZ(triPoint));
+
+				//Now we find where (on the ray) the ray intersects with the triangles plane
+				float ep1, ep2, t = 0.0f;
+				float planeIntersectX, planeIntersectY, planeIntersectZ = 0.0f;
+				XMVECTOR pointInPlane = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+				ep1 = (XMVectorGetX(pickRayInWorldSpacePos) * tri1A) + (XMVectorGetY(pickRayInWorldSpacePos) * tri1B) + (XMVectorGetZ(pickRayInWorldSpacePos) * tri1C);
+				ep2 = (XMVectorGetX(pickRayInWorldSpaceDir) * tri1A) + (XMVectorGetY(pickRayInWorldSpaceDir) * tri1B) + (XMVectorGetZ(pickRayInWorldSpaceDir) * tri1C);
+
+				//Make sure there are no divide-by-zeros
+				if (ep2 != 0.0f)
+					t = -(ep1 + tri1D) / (ep2);
+
+				if (t > 0.0f)    //Make sure you don't pick objects behind the camera
+				{
+					//Get the point on the plane
+					planeIntersectX = XMVectorGetX(pickRayInWorldSpacePos) + XMVectorGetX(pickRayInWorldSpaceDir) * t;
+					planeIntersectY = XMVectorGetY(pickRayInWorldSpacePos) + XMVectorGetY(pickRayInWorldSpaceDir) * t;
+					planeIntersectZ = XMVectorGetZ(pickRayInWorldSpacePos) + XMVectorGetZ(pickRayInWorldSpaceDir) * t;
+
+					pointInPlane = XMVectorSet(planeIntersectX, planeIntersectY, planeIntersectZ, 0.0f);
+
+					if (PointInTriangle(tri1V1, tri1V2, tri1V3, pointInPlane))
+					{
+						//Return the distance to the hit, so you can check all the other pickable objects in your scene
+						//and choose whichever object is closest to the camera
+
+						pix = planeIntersectX;
+						piy = planeIntersectY;
+						piz = planeIntersectZ;
+
+						return false;
+					}
+				}
+			}
+		}
+
+		static bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point)
+		{
+			//To find out if the point is inside the triangle, we will check to see if the point
+			//is on the correct side of each of the triangles edges.
+
+			XMVECTOR cp1 = XMVector3Cross((triV3 - triV2), (point - triV2));
+			XMVECTOR cp2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
+			if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
+			{
+				cp1 = XMVector3Cross((triV3 - triV1), (point - triV1));
+				cp2 = XMVector3Cross((triV3 - triV1), (triV2 - triV1));
+				if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
+				{
+					cp1 = XMVector3Cross((triV2 - triV1), (point - triV1));
+					cp2 = XMVector3Cross((triV2 - triV1), (triV3 - triV1));
+					if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
+					{
+						return true;
+					}
+					else
+						return false;
+				}
+				else
+					return false;
+			}
+			return false;
+		}
 	};
 }

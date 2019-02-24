@@ -56,6 +56,7 @@ private:
 		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f });
 		object->AddComponent<SelectComponent, bool>(false);
 		object->AddComponent<CollisionComponent>();
+		object->AddComponent<MoveComponent>();
 
 		object = engine.GetEntityManager()->CreateEntity<GameObject>();
 		object->AddComponent<MeshComponent, Hollow::Mesh*>(
@@ -67,7 +68,7 @@ private:
 				false)
 			);
 
-		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, -0.1f, 0.0f }, { 5.0f, 5.0f, 5.0f }, { 0.0f, 0.0f, 0.0f });
+		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, -3.110f, 0.0f }, { 15.0f, 15.0f, 15.0f }, { 0.0f, 0.0f, 0.0f });
 		object->AddComponent<SelectComponent, bool>(false);
 	}
 

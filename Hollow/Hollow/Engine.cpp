@@ -12,6 +12,8 @@ namespace Hollow {
 		this->m_ResourceManager = new Hollow::ResourceManager();
 
 		instance = this;
+
+		InputManager::StartUp();
 	}
 
 	Engine::~Engine()
