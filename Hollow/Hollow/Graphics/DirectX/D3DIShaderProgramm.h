@@ -6,7 +6,7 @@
 
 namespace Hollow {
 
-	class IShader
+	class D3DIShaderProgramm
 	{
 	protected:
 		HRESULT CompileShader(std::wstring filename, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)

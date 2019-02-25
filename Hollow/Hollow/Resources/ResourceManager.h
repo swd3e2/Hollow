@@ -1,6 +1,5 @@
 #pragma once
 #include "Hollow/Platform.h"
-#include "Hollow/Components/MeshComponent.h"
 #include "Hollow/ECS/Entities/IEntity.h"
 #include "Hollow/Common/Log.h"
 #include "AudioEngine.h"

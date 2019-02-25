@@ -3,31 +3,20 @@
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
+#include "Hollow/Graphics/IBuffer.h"
 
 namespace Hollow {
 
-	template <class T>
-	class VertexBuffer
+	class D3DBuffer : public IBuffer
 	{
 	private:
-		VertexBuffer(const VertexBuffer<T>& rhs);
+		D3DBuffer(const D3DBuffer& rhs);
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
 		UINT stride;
 		UINT bufferSize = 0;
 	public:
-		VertexBuffer(ID3D11Device* device, T* data, UINT numVertices) 
-		{
-			Init(device, data, numVertices);
-		}
-
-		ID3D11Buffer * Get() { return buffer.Get(); }
-		ID3D11Buffer ** GetAddressOf() { return buffer.GetAddressOf(); }
-		UINT BufferSize() const { return bufferSize; }
-		const UINT Stride() const { return stride; }
-		const UINT * StridePtr() const { return &stride; }
-
-		void Init(ID3D11Device * device, T * data, UINT numVertices)
+		D3DBuffer(ID3D11Device* device, void* data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag)
 		{
 			HRESULT hr = S_OK;
 
@@ -36,12 +25,11 @@ namespace Hollow {
 				buffer.Reset();
 			}
 			bufferSize = numVertices;
-			stride = sizeof(T);
 
 			D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
 			vertexBufferDesc.ByteWidth = stride * numVertices;
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			vertexBufferDesc.BindFlags = bindFlag; // D3D11_BIND_VERTEX_BUFFER; D3D11_BIND_INDEX_BUFFER
 			vertexBufferDesc.CPUAccessFlags = 0;
 			vertexBufferDesc.MiscFlags = 0;
 			vertexBufferDesc.StructureByteStride = 0;
@@ -51,17 +39,18 @@ namespace Hollow {
 			vertexBufferData.SysMemPitch = 0;
 			vertexBufferData.SysMemSlicePitch = 0;
 
-			hr = device->CreateBuffer(
-				&vertexBufferDesc,
-				&vertexBufferData,
-				buffer.GetAddressOf()
-			);
+			hr = device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, buffer.GetAddressOf());
 
 			if (hr != S_OK)
 			{
 				Hollow::Log::GetCoreLogger()->error("IndexBuffer: Cant create buffer!");
 			}
 		}
-	};
 
+		ID3D11Buffer * Get() { return buffer.Get(); }
+		ID3D11Buffer ** GetAddressOf() { return buffer.GetAddressOf(); }
+		UINT BufferSize() const { return bufferSize; }
+		const UINT Stride() const { return stride; }
+		const UINT * StridePtr() const { return &stride; }
+	};
 }

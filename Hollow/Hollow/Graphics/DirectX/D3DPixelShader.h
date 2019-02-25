@@ -1,5 +1,5 @@
 #pragma once
-#include "IShader.h"
+#include "D3DIShaderProgramm.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <string>
@@ -7,7 +7,7 @@
 
 namespace Hollow {
 
-	class PixelShader : IShader
+	class PixelShader : D3DIShaderProgramm
 	{
 	public:
 		PixelShader(ID3D11Device * device, std::wstring filename)

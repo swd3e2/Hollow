@@ -1,5 +1,5 @@
 #pragma once
-#include "IShader.h"
+#include "D3DIShaderProgramm.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <string>
@@ -7,7 +7,7 @@
 
 namespace Hollow {
 
-	class VertexShader : IShader
+	class VertexShader : D3DIShaderProgramm
 	{
 	public:
 		VertexShader(ID3D11Device * device, std::wstring filename, D3D11_INPUT_ELEMENT_DESC * layoutDescription, UINT numElements)

@@ -1,7 +1,6 @@
 #pragma once
 #include "Hollow/Graphics/BufferTemplate/IndexBuffer.h"
 #include "Hollow/Graphics/BufferTemplate/VertexBuffer.h"
-#include "Hollow/Graphics/SimpleVertex.h"
 #include "Hollow/Containers/vector.h"
 #include "Material.h"
 #include <string>

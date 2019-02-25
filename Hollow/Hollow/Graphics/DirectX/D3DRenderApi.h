@@ -2,20 +2,21 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include "Hollow/Common/Log.h"
-#include "RenderTarget.h"
-#include "DepthStencil.h"
-#include "Shaders/PixelShader.h"
-#include "Shaders/VertexShader.h"
-#include "BufferTemplate/IndexBuffer.h"
-#include "BufferTemplate/ConstantBuffer.h"
-#include "BufferTemplate/VertexBuffer.h"
-#include "HollowRenderer.h"
-#include <PrimitiveBatch.h>
+#include "D3DRenderTarget.h"
+#include "D3DDepthStencil.h"
+#include "D3DPixelShader.h"
+#include "D3DVertexShader.h"
+#include "D3DIndexBuffer.h"
+#include "D3DConstantBuffer.h"
+#include "D3DVertexBuffer.h"
+#include "Hollow/Graphics/IRenderApi.h"
 
 namespace Hollow {
+	class RenderEngine;
 	// Simple directx renderer
-	class HOLLOW_API DirectXRenderer : public HollowRenderer
+	class HOLLOW_API D3DRenderApi : public IRenderApi
 	{
+	friend class RenderEngine;
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device>				m_Device;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext>			m_DeviceContext;
@@ -33,26 +34,17 @@ namespace Hollow {
 		const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	private:
 	public:
-		DirectXRenderer(HWND* hwnd, int width, int height);
-		~DirectXRenderer();
+		D3DRenderApi(HWND* hwnd, int width, int height);
+		~D3DRenderApi();
 
-		template<class T>
-		inline void SetVertexBuffer(VertexBuffer<T>* vb) 
+		inline void SetVertexBuffer(D3DBuffer* vb) 
 		{
 			this->m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetAddressOf(), vb->StridePtr(), &this->offset); 
 		}
 
-		template<class T>
-		inline void SetIndexBuffer(IndexBuffer<T>* ib) 
-		{ 
-			this->m_DeviceContext->IASetIndexBuffer(ib->Get(), DXGI_FORMAT_R32_UINT, 0); 
-		}
-
-		template<class T, class U>
-		inline void SetBuffers(VertexBuffer<T>* vb, IndexBuffer<U>* ib) 
+		inline void SetBuffers(D3DBuffer* vb, D3DBuffer* ib)
 		{
 			this->SetVertexBuffer(vb);
-			this->SetIndexBuffer(ib);
 		}
 
 		inline void SetShaderResource(UINT slot, ID3D11ShaderResourceView * shaderResourceView)
@@ -86,21 +78,10 @@ namespace Hollow {
 			this->m_DeviceContext->ClearDepthStencilView(ds->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); 
 		}
 
-		template<class T>
-		inline void SetContantBuffer(UINT slot, ConstantBuffer<T>* cb) 
+		inline void SetContantBuffer(UINT slot, D3DConstantBuffer* cb) 
 		{ 
 			this->m_DeviceContext->VSSetConstantBuffers(slot, 1, cb->GetAddressOf());
 			this->m_DeviceContext->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
-		}
-
-		inline void PreUpdateFrame()
-		{
-			this->ClearRenderTarget(this->renderTarget->GetMainRenderTaget());
-			this->ClearDepthStencil(this->depthStencil);
-			this->m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap.GetAddressOf());
-			this->m_DeviceContext->PSSetSamplers(1, 1, m_SampleStateClamp.GetAddressOf());
-			this->m_DeviceContext->RSSetState(this->m_RasterizerState.Get());
-			this->SetMainRenderTarget();
 		}
 
 		inline void SetSecondRenderTarget()
@@ -117,10 +98,14 @@ namespace Hollow {
 		inline void Draw(UINT count) { m_DeviceContext->Draw(count, 0); }
 		inline void Present() { this->m_SwapChain->Present(1, 0); }
 
-		inline ID3D11Device* GetDevice() const { return this->m_Device.Get(); }
-		inline ID3D11DeviceContext* GetDeviceContext() const { return this->m_DeviceContext.Get(); }
-		inline IDXGISwapChain* GetSwapChain() { return this->m_SwapChain.Get(); }
-		inline ID3D11RenderTargetView** GetMainRenderTargetView() { return this->renderTarget->GetAddressOfMainRenderTaget(); }
-		inline ID3D11RenderTargetView** GetSecondRenderTargetView() { return this->renderTarget->GetAddressOfSecondRenderTaget(); }
+		virtual void Draw(IRenderable& renderable) override
+		{
+			this->m_DeviceContext->ClearRenderTargetView(this->renderTarget->GetMainRenderTaget(), ClearColor);
+			this->m_DeviceContext->ClearDepthStencilView(this->depthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+			this->m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap.GetAddressOf());
+			this->m_DeviceContext->PSSetSamplers(1, 1, m_SampleStateClamp.GetAddressOf());
+			this->m_DeviceContext->OMSetRenderTargets(1, this->renderTarget->GetAddressOfMainRenderTaget(), depthStencil->GetDepthStencilView());
+
+		}
 	};
 }

@@ -42,11 +42,6 @@ struct Transform
 class RenderSystem : System<RenderSystem>
 {
 private:
-	Camera*								camera;
-	ConstantBuffer<WVP>					WVPConstantBuffer;
-	ConstantBuffer<Transform>			transformConstantBuffer;
-	DirectXRenderer*					renderer;
-private:
 	void UpdateConstBuffers(PositionComponent * comp, int entityId, bool selected);
 	void UpdateWVP();
 public:
@@ -55,6 +50,4 @@ public:
 	virtual void PreUpdate(float_t dt) override;
 	virtual void Update(float_t dt);
 	virtual void PostUpdate(float_t dt) override;
-
-	inline Camera* GetCamera() { return this->camera; }
 };

@@ -15,7 +15,6 @@
 #include <random>
 #include "Hollow/Resources/Sound.h"
 #include "Hollow/Containers/vector.h"
-#include <thread>
 #include "Hollow/Graphics/Renderer.h"
 #include "Components/SelectComponent.h"
 #include "Sandbox/Components/CollisionComponent.h"

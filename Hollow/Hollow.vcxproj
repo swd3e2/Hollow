@@ -11,12 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Hollow\Graphics\DirectX\HollowRenderer.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\RenderEngine.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\Renderer.h" />
+    <ClInclude Include="Hollow\Application.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DIndexBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\IBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\IRenderApi.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderable.h" />
+    <ClInclude Include="Hollow\Graphics\IRenderable.h" />
+    <ClInclude Include="Hollow\Graphics\RenderEngine.h" />
     <ClInclude Include="Hollow\Utils\FileSystem.h" />
     <ClInclude Include="Hollow\Utils\Helper.h" />
-    <ClInclude Include="Hollow\Components\MeshComponent.h" />
     <ClInclude Include="Hollow\Containers\hash_map.h" />
     <ClInclude Include="Hollow\Containers\pair.h" />
     <ClInclude Include="Hollow\Containers\vector.h" />
@@ -30,15 +33,15 @@
     <ClInclude Include="Hollow\Events\IEventDelegate.h" />
     <ClInclude Include="Hollow\Events\IEventDispatcher.h" />
     <ClInclude Include="Hollow\Events\IEventListener.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\DepthStencil.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\DirectXRenderer.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\RenderTarget.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\ShaderResourceMapping.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\SimpleVertex.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DDepthStencil.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderApi.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderTarget.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DShaderResourceMapping.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DSimpleVertex.h" />
     <ClInclude Include="Hollow\Input\InputManager.h" />
     <ClInclude Include="Hollow\Input\KeyCodes.h" />
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\ConstBufferMapping.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DConstBufferMapping.h" />
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
@@ -54,13 +57,12 @@
     <ClInclude Include="Hollow\ECS\Entities\IEntity.h" />
     <ClInclude Include="Hollow\Utils\FamilyTypeID.h" />
     <ClInclude Include="Hollow\ECS\Systems\ISystem.h" />
-    <ClInclude Include="Hollow\Graphics\BufferTemplate\ConstantBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\BufferTemplate\IndexBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\BufferTemplate\VertexBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\Camera.h" />
-    <ClInclude Include="Hollow\Graphics\Shaders\IShader.h" />
-    <ClInclude Include="Hollow\Graphics\Shaders\PixelShader.h" />
-    <ClInclude Include="Hollow\Graphics\Shaders\VertexShader.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DVertexBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\Camera.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DIShaderProgramm.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DPixelShader.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DVertexShader.h" />
     <ClInclude Include="Hollow\ECS\Systems\System.h" />
     <ClInclude Include="Hollow\Memory\Allocators\BaseAllocator.h" />
     <ClInclude Include="Hollow\Memory\Allocators\LinearAllocator.h" />
@@ -78,15 +80,14 @@
     <ClInclude Include="Hollow\Resources\Sound.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Hollow\Application.cpp" />
     <ClCompile Include="Hollow\ECS\ComponentManager.cpp" />
     <ClCompile Include="Hollow\ECS\EventHandler.cpp" />
     <ClCompile Include="Hollow\Engine.cpp" />
     <ClCompile Include="Hollow\Events\IEventListener.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\DepthStencil.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\DirectXRenderer.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\HollowRenderer.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\Renderer.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\RenderTarget.cpp" />
+    <ClCompile Include="Hollow\Graphics\DirectX\D3DDepthStencil.cpp" />
+    <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderApi.cpp" />
+    <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderTarget.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Resources\ResourceManager.cpp" />
@@ -94,7 +95,7 @@
     <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp" />
     <ClCompile Include="Hollow\Utils\Console.cpp" />
     <ClCompile Include="Hollow\Utils\FamilyTypeID.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\Camera.cpp" />
+    <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Memory\StackMemoryManager.cpp" />
     <ClCompile Include="Hollow\Window\Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
