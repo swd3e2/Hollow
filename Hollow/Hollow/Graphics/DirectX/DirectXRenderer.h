@@ -39,9 +39,7 @@ namespace Hollow {
 		template<class T>
 		inline void SetVertexBuffer(VertexBuffer<T>* vb) 
 		{
-			if (vb->GetAddressOf() != nullptr) {
-				this->m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetAddressOf(), vb->StridePtr(), &this->offset); 
-			}
+			this->m_DeviceContext->IASetVertexBuffers(0, 1, vb->GetAddressOf(), vb->StridePtr(), &this->offset); 
 		}
 
 		template<class T>

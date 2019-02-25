@@ -40,10 +40,12 @@ void RenderSystem::Update(float_t dt)
 
 		for (auto& it : meshComponent->mesh->objects) {
 			this->renderer->SetVertexBuffer<SimpleVertex>(&it->buffer);
-			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr)
+
+			if (it->material != nullptr && it->material->diffuse_texture != nullptr && it->material->diffuse_texture->m_TextureShaderResource != nullptr) {
 				this->renderer->SetShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT, it->material->diffuse_texture->m_TextureShaderResource);
-			else
+			} else {
 				this->renderer->FreeShaderResource(HOLLOW_SHADER_RESOURCE_VIEW_DIFFUSE_TEXTURE_SLOT);
+			}
 
 			renderer->Draw(it->buffer.BufferSize());
 		}

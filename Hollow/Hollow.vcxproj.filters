@@ -90,12 +90,6 @@
     <ClInclude Include="Hollow\Graphics\Shaders\VertexShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\SimpleVertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Input\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,12 +132,6 @@
     <ClInclude Include="Hollow\Platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\RenderTarget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\DepthStencil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -160,9 +148,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Resources\AudioEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\ConstBufferMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Containers\pair.h">
@@ -189,22 +174,40 @@
     <ClInclude Include="Hollow\Resources\TextureLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\ShaderResourceMapping.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Utils\Helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\HollowRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\DirectXRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Utils\FileSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\ConstBufferMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\DepthStencil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\DirectXRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\HollowRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\RenderEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\RenderTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\ShaderResourceMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\SimpleVertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -216,9 +219,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\ECS\ComponentManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Input\InputManager.cpp">
@@ -245,12 +245,6 @@
     <ClCompile Include="Hollow\Utils\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\DepthStencil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Graphics\RenderTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Resources\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -266,13 +260,22 @@
     <ClCompile Include="Hollow\Resources\TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\DirectXRenderer.cpp">
+    <ClCompile Include="Hollow\Graphics\DirectX\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Renderer.cpp">
+    <ClCompile Include="Hollow\Graphics\DirectX\DepthStencil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\HollowRenderer.cpp">
+    <ClCompile Include="Hollow\Graphics\DirectX\DirectXRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\DirectX\HollowRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\DirectX\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\DirectX\RenderTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
