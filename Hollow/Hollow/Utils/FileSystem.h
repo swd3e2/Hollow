@@ -28,7 +28,6 @@ namespace Hollow
 				FindClose(hFind);
 			} else {
 				pathHistory.pop_back();
-
 				read_directory(get_current_file_path(), v);
 				Log::GetCoreLogger()->error("FindFirstFIle failed on path = \"{}\". Error {}\n", pattern.c_str(), GetLastError());
 			}

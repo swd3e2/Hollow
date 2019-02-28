@@ -5,25 +5,21 @@
 #include <string>
 #include "Hollow/Platform.h"
 
-namespace Hollow {
-
-	class PixelShader : D3DIShaderProgramm
+class D3DPixelShader : D3DIShaderProgramm
+{
+public:
+	D3DPixelShader(ID3D11Device * device, std::wstring filename)
 	{
-	public:
-		PixelShader(ID3D11Device * device, std::wstring filename)
-		{
-			HRESULT hr = CompileShader(filename.c_str(), "PSMain", "ps_5_0", pixelShaderBlob.GetAddressOf());
+		HRESULT hr = CompileShader(filename.c_str(), "PSMain", "ps_5_0", pixelShaderBlob.GetAddressOf());
 
-			hr = device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(),
-				pixelShaderBlob->GetBufferSize(), NULL, pixelShader.GetAddressOf());
-		}
-		ID3D11PixelShader * GetShader()
-		{
-			return pixelShader.Get();
-		}
-	private:
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-		Microsoft::WRL::ComPtr<ID3DBlob> pixelShaderBlob;
-	};
-
-}
+		hr = device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(),
+			pixelShaderBlob->GetBufferSize(), NULL, pixelShader.GetAddressOf());
+	}
+	ID3D11PixelShader * GetShader()
+	{
+		return pixelShader.Get();
+	}
+private:
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
+	Microsoft::WRL::ComPtr<ID3DBlob> pixelShaderBlob;
+};

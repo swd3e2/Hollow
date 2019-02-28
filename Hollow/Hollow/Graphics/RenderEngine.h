@@ -3,57 +3,54 @@
 #include "Hollow/Containers/vector.h"
 #include <vector>
 #include "IRenderable.h"
-#include "DirectX/D3DRenderApi.h"
-#include "IRenderApi.h"
+#include "DirectX/D3DRenderer.h"
+#include "IRenderer.h"
 #include "Camera.h"
 #include "DirectX/D3DConstantBuffer.h"
+#include "Hollow/Resources/Mesh.h"
 
-namespace Hollow {
-
-	struct WVP
+class RenderEngine
+{
+protected:
+	std::vector<IRenderable>			m_RenderableList;
+	IRenderer*							renderApi;
+public:
+	RenderEngine()
 	{
-		DirectX::XMMATRIX WVP;
-	};
+		renderApi = new D3DRenderer();
+	}
 
-	struct Transform
+	void Render(int renderableId)
 	{
-		DirectX::XMMATRIX transform;
-		float id;
-		bool selected;
-	};
 
-	class RenderEngine
+	}
+
+	void CreateRendereable(Mesh* mesh)
 	{
-	protected:
-		std::vector<IRenderable>			m_RenderableList;
-		IRenderApi*							renderApi;
-		Camera*								camera;
-		WVP									wvp;
-		D3DConstantBuffer*					WVPConstantBuffer;
-		D3DConstantBuffer*					transformConstantBuffer;
-	public:
-		RenderEngine(HWND* hwnd, int width, int height)
-		{
-			renderApi = new D3DRendererApi(hwnd, width, height);
-			WVPConstantBuffer = new D3DConstantBuffer();
-		}
-		void Render(int renderableId)
-		{
-			UpdateWVP();
-		}
+		this->renderApi->createRenderable(mesh);
+	}
 
-		IRenderable* GetRenderable(int renderableId)
-		{
-			return &m_RenderableList[renderableId];
-		}
+	IRenderable* GetRenderable(int renderableId)
+	{
+		return &m_RenderableList[renderableId];
+	}
 
-		void UpdateWVP()
-		{
-			wvp.WVP = XMMatrixTranspose(XMMatrixIdentity()
-				* camera->GetViewMatrix()
-				* camera->GetProjectionMatrix());
+	
 
-			WVPConstantBuffer->Update(&wvp, sizeof(wvp));
-		}
-	};
-}
+	void Update()
+	{
+	}
+
+	void PreUpdate()
+	{
+	}
+
+	void PostUpdate()
+	{
+	}
+
+	bool processMessage()
+	{
+		return renderApi->processMessage();
+	}
+};

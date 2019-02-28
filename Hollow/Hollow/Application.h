@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine.h"
 #include "Platform.h"
 #include "ECS/ComponentManager.h"
 #include "ECS/EntityManager.h"
@@ -8,29 +7,57 @@
 #include "Resources/ResourceManager.h"
 #include "Input/InputManager.h"
 #include "Hollow/Graphics/RenderEngine.h"
+#include "Utils/Console.h"
+#include "ECS/SystemManager.h"
 
 class HOLLOW_API Application
 {
-private:
+protected:
+	float DELTA_TIME_STEP;
 	Hollow::EntityManager *			m_EntityManager;
 	Hollow::ComponentManager *		m_ComponentManager;
 	Hollow::Timer*					m_Timer;
 	Hollow::EventHandler*			m_EventHandler;
 	Hollow::ResourceManager*		m_ResourceManager;
-	Hollow::RenderEngine*			m_RenderEngine;
-	Engine* engine;
+	Hollow::SystemManager*          m_SystemManager;
+	IRenderer*						m_Renderer;
 	static Application* _instance;
 public:
-	Application(HWND* hwnd, int width, int height)
+	Application()
 	{
 		if (_instance == nullptr)
 			_instance = this;
 
-		this->m_ComponentManager = new Hollow::ComponentManager();
-		this->m_EntityManager = new Hollow::EntityManager(m_ComponentManager);
-		this->m_EventHandler = new Hollow::EventHandler();
-		this->m_Timer = new Hollow::Timer();
-		this->m_ResourceManager = new Hollow::ResourceManager();
-		this->m_RenderEngine = new Hollow::RenderEngine(hwnd, width, height);
+		Hollow::Console::RedirectIOToConsole();
+		Hollow::Log::Init();
+
+		m_Renderer = new D3DRenderer();
+		m_ComponentManager = new Hollow::ComponentManager();
+		m_EntityManager = new Hollow::EntityManager(m_ComponentManager);
+		m_EventHandler = new Hollow::EventHandler();
+		m_Timer = new Hollow::Timer();
+		m_ResourceManager = new Hollow::ResourceManager();
+		m_SystemManager = new Hollow::SystemManager();
+
+		DELTA_TIME_STEP = 1.0f / 60.0f;
+	}
+public:
+	void Run()
+	{
+		m_Renderer->PreUpdateFrame();
+
+		m_Renderer->Update();
+		while (m_Renderer->processMessage())
+		{
+			//InputManager::GetMousePosition(m_RenderSystem->GetCamera()->GetProjectionMatrix(), m_RenderSystem->GetCamera()->GetViewMatrix());
+			m_Timer->Tick(DELTA_TIME_STEP);
+			m_SystemManager->PreUpdateSystems(DELTA_TIME_STEP);
+			m_SystemManager->UpdateSystems(DELTA_TIME_STEP);
+			m_SystemManager->PostUpdateSystems(DELTA_TIME_STEP);
+
+			m_EventHandler->DispatchEvents();
+			InputManager::Clear();
+		}
+		m_Renderer->PostUpdateFrame();
 	}
 };

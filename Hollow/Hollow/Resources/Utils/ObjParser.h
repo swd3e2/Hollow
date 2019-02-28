@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #define WHITESPACE " \t\n\r"
+#include "Hollow/Utils/Helper.h"
 
 namespace Hollow {
 	struct Face
@@ -58,7 +59,7 @@ namespace Hollow {
 		RawMeshData* currentObject;
 		bool mtllibParsed = false;
 	public:
-		MeshData* LoadObj(std::string filename, std::string material_base_dir);
+		MeshData* LoadObj(std::string filename);
 	private:
 		void parseVertices(MeshData * data, const char* token);
 		void parseTexCoords(MeshData * data, const char* token);

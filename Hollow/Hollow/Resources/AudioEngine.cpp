@@ -69,6 +69,9 @@ namespace Hollow {
 
 	AudioEngine::AudioEngine()
 	{
+		CoInitialize(NULL);
+		masteringVoice = nullptr;
+		pXAudio2 = nullptr;
 		HRESULT hr;
 		if (FAILED(hr = XAudio2Create(&pXAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR)))
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't create XAudio2 device!");

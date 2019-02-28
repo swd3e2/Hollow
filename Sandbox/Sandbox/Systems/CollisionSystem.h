@@ -3,7 +3,6 @@
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/PositionComponent.h"
 #include "Sandbox/Components/CollisionComponent.h"
-#include "Hollow/Engine.h"
 #include "Hollow/Containers/vector.h"
 
 class CollisionSystem : public Hollow::System<CollisionSystem>
@@ -18,7 +17,7 @@ public:
 
 	virtual void Update(float_t dt) override
 	{
-		Hollow::Containers::Vector<IEntity*>* container = Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList();
+		Hollow::Containers::Vector<IEntity*>* container = EntityManager::instance()->GetEntitiesList();
 		for (IEntity* object : *container) {
 			collisionComponent = object->GetComponent<CollisionComponent>();
 			posComponent = object->GetComponent<PositionComponent>();

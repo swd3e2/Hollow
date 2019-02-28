@@ -15,7 +15,7 @@ namespace Hollow {
 			return wc;
 		}
 
-		inline static std::string& trim_to_last_line_entry(std::string string, const char* entry)
+		inline static std::string& trim_to_last_line_entry(std::string string, char entry)
 		{
 			int lastEntry = -1;
 			while ((lastEntry = string.find(entry)) != -1) {  }
