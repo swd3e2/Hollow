@@ -9,6 +9,7 @@
 #include "Hollow/Graphics/RenderEngine.h"
 #include "Utils/Console.h"
 #include "ECS/SystemManager.h"
+#include <thread>
 
 class HOLLOW_API Application
 {
@@ -42,11 +43,18 @@ public:
 		DELTA_TIME_STEP = 1.0f / 60.0f;
 	}
 public:
+	void runRenderer()
+	{
+		while (!m_Renderer->windowIsClosed()) {
+			m_Renderer->Update();
+			//InputManager::Clear();
+		}
+	}
+
 	void Run()
 	{
-		m_Renderer->PreUpdateFrame();
+		std::thread th(&Application::runRenderer, this);
 
-		m_Renderer->Update();
 		while (m_Renderer->processMessage())
 		{
 			//InputManager::GetMousePosition(m_RenderSystem->GetCamera()->GetProjectionMatrix(), m_RenderSystem->GetCamera()->GetViewMatrix());
@@ -56,8 +64,7 @@ public:
 			m_SystemManager->PostUpdateSystems(DELTA_TIME_STEP);
 
 			m_EventHandler->DispatchEvents();
-			InputManager::Clear();
 		}
-		m_Renderer->PostUpdateFrame();
+		th.join();
 	}
 };

@@ -60,6 +60,18 @@ D3DRenderer::D3DRenderer() :
 	m_SamplerStateClamp = new D3DSamplerState(m_Device.Get(), D3D11_TEXTURE_ADDRESS_CLAMP);
 
 	camera = new Camera();
+	camera->SetProjectionValues(85.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
+	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(WVP));
+
+	std::vector<std::string>* shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/");
+	for (auto& it : *shaders)
+		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
+			vShaders.push_back(new D3DVertexShader(m_Device.Get(), "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/" + it));
+
+	shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/pixel/");
+	for (auto& it : *shaders)
+		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
+			pShaders.push_back(new D3DPixelShader(m_Device.Get(), "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/pixel/" + it));
 }
 
 D3DRenderer::~D3DRenderer()
@@ -74,4 +86,76 @@ D3DRenderer::~D3DRenderer()
 	delete	m_SamplerStateClamp;
 	delete	m_RenderTarget;
 	delete	m_DepthStencil;
+}
+
+void D3DRenderer::PreUpdateFrame()
+{
+	m_DeviceContext->ClearRenderTargetView(m_RenderTarget->GetMainRenderTaget(), ClearColor);
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());
+	m_DeviceContext->PSSetSamplers(1, 1, m_SamplerStateClamp->GetSamplerState());
+	m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfMainRenderTaget(), m_DepthStencil->GetDepthStencilView());
+	camera->Update();
+	UpdateWVP();
+	SetVertexShader(vShaders[0]);
+	SetPixelShader(pShaders[0]);
+	SetContantBuffer(0, m_WVPConstantBuffer);
+}
+
+size_t D3DRenderer::createRenderable(Mesh * mesh)
+{
+	D3DRenderable* renderable = new D3DRenderable();
+
+	for (auto& it : mesh->objects) {
+		RenderableObject* object = new RenderableObject();
+		object->buffer = new D3DBuffer(m_Device.Get(), it->data, sizeof(SimpleVertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
+		D3DMaterial* mat = new D3DMaterial();
+		D3DTexture* tex = new D3DTexture();
+		tex->CreateTexture(m_Device.Get(), m_DeviceContext.Get(), it->material.diffuse_texture.c_str());
+		mat->SetDiffuseTexture(tex);
+		object->material = mat;
+		renderable->renderableObjects.push_back(object);
+	}
+
+	renderables.push_back(renderable);
+	return 1;
+}
+
+void D3DRenderer::Draw(RenderableObject * object)
+{
+	if (object->material->diffuseTexture->active) {
+		this->m_DeviceContext->PSSetShaderResources(0, 1, &object->material->diffuseTexture->m_TextureShaderResource);
+	}
+	this->m_DeviceContext->IASetVertexBuffers(0, 1, object->buffer->GetAddressOf(), object->buffer->StridePtr(), &this->offset);
+	m_DeviceContext->Draw(object->buffer->BufferSize(), 0);
+}
+
+void D3DRenderer::PostUpdateFrame()
+{
+	m_SwapChain->Present(1, 0);
+}
+
+void D3DRenderer::UpdateWVP()
+{
+	m_wvp.WVP = XMMatrixTranspose(XMMatrixIdentity()
+		* camera->GetViewMatrix()
+		* camera->GetProjectionMatrix());
+
+	m_WVPConstantBuffer->Update(&m_wvp, sizeof(m_wvp));
+}
+
+bool D3DRenderer::processMessage()
+{
+	return window.ProcessMessage();
+}
+
+void D3DRenderer::Update()
+{
+	PreUpdateFrame();
+
+	for (auto& it : renderables)
+		for (auto& buff : it->renderableObjects)
+			Draw(buff);
+
+	PostUpdateFrame();
 }

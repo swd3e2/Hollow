@@ -162,6 +162,7 @@ bool Win32Window::ProcessMessage()
 
 		if (message.message == WM_QUIT)
 		{
+			SetIsClosed(true);
 			return false;
 		}
 	}

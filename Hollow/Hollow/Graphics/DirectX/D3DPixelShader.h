@@ -8,9 +8,9 @@
 class D3DPixelShader : D3DIShaderProgramm
 {
 public:
-	D3DPixelShader(ID3D11Device * device, std::wstring filename)
+	D3DPixelShader(ID3D11Device * device, std::string filename)
 	{
-		HRESULT hr = CompileShader(filename.c_str(), "PSMain", "ps_5_0", pixelShaderBlob.GetAddressOf());
+		HRESULT hr = CompileShader(filename, "PSMain", "ps_5_0", pixelShaderBlob.GetAddressOf());
 
 		hr = device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(),
 			pixelShaderBlob->GetBufferSize(), NULL, pixelShader.GetAddressOf());

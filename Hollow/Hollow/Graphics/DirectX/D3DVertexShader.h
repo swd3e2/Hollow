@@ -8,9 +8,9 @@
 class D3DVertexShader : D3DIShaderProgramm
 {
 public:
-	D3DVertexShader(ID3D11Device * device, std::wstring filename)
+	D3DVertexShader(ID3D11Device * device, std::string filename)
 	{
-		HRESULT hr = CompileShader(filename.c_str(), "VSMain", "vs_5_0", m_VertexShaderBlob.GetAddressOf());
+		HRESULT hr = CompileShader(filename, "VSMain", "vs_5_0", m_VertexShaderBlob.GetAddressOf());
 
 		hr = device->CreateVertexShader(m_VertexShaderBlob->GetBufferPointer(),
 			m_VertexShaderBlob->GetBufferSize(), NULL, m_VertexShader.GetAddressOf());

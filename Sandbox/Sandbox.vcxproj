@@ -42,6 +42,7 @@
     <ClInclude Include="Sandbox\ImGui\imstb_textedit.h" />
     <ClInclude Include="Sandbox\ImGui\imstb_truetype.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
+    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
     <ClInclude Include="Sandbox\Systems\RenderSystem\RenderSystem.h" />
   </ItemGroup>
@@ -93,7 +94,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Sandbox;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;$(SolutionDir)Hollow\vendor\DirectXTK\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Sandbox;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;$(SolutionDir)Hollow\vendor\DirectXTK\Inc;$(SolutionDir)Hollow\vendor\FreeImage\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
     </ClCompile>
@@ -119,7 +120,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Sandbox;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;$(SolutionDir)Hollow\vendor\DirectXTK\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Sandbox;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;$(SolutionDir)Hollow\vendor\DirectXTK\Inc;$(SolutionDir)Hollow\vendor\FreeImage\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>

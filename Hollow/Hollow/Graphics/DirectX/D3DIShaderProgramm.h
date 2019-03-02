@@ -3,17 +3,20 @@
 #include <d3dcompiler.h>
 #include <string>
 #include "Hollow/Platform.h"
+#include "Hollow/Utils/Helper.h"
 
 class D3DIShaderProgramm
 {
 protected:
-	HRESULT CompileShader(std::wstring filename, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
+	HRESULT CompileShader(std::string filename, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
 	{
 		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG;
 
 		ID3DBlob* shaderBlob = nullptr;
 		ID3DBlob* errorBlob = nullptr;
-		HRESULT hr = D3DCompileFromFile(filename.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		wchar_t * wideStringFilename = Hollow::Helper::converToWideChar(filename.c_str());
+
+		HRESULT hr = D3DCompileFromFile(wideStringFilename, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 			entryPoint, profile,
 			flags, 0, &shaderBlob, &errorBlob);
 

@@ -22,7 +22,7 @@ namespace Hollow {
 		}
 
 		for (int i = 0; i < data->objects.size(); i++) {
-			Containers::Vector<SimpleVertex> vertices;
+			Containers::Vector<SimpleVertex>* vertices = new Containers::Vector<SimpleVertex>;
 
 			for (int j = 0; j < data->objects[i]->indices.size(); j++) {
 
@@ -45,16 +45,23 @@ namespace Hollow {
 					simpleVertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
 					simpleVertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
 				}
-
-				vertices.push_back(simpleVertex);
+				vertices->push_back(simpleVertex);
 			}
 
-			MeshModel* meshModel = new MeshModel(vertices.data(), vertices.size());
+			MeshModel* meshModel = new MeshModel(vertices->data(), vertices->size());
+
+			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
+				meshModel->material.name = data->objects[i]->material;
+				meshModel->material.diffuse_texture = data->hash_materials[data->objects[i]->material]->diffuse_texture;
+				meshModel->material.normal_texture = "dummy";
+				meshModel->material.active = true;
+			}
+
 			mesh->objects.push_back(meshModel);
 		}
-		delete data;
-
 		size_t renderableId = renderer->createRenderable(mesh);
+
+		delete data;
 		delete mesh;
 		return renderableId;
 	}

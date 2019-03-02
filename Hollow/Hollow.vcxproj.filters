@@ -135,15 +135,6 @@
     <ClInclude Include="Hollow\Resources\Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Resources\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Resources\Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Resources\TextureLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Utils\Helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -258,6 +249,15 @@
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Resources\TextureLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\IMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -297,9 +297,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Resources\TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\DirectX\D3DDepthStencil.cpp">

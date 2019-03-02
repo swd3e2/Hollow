@@ -29,5 +29,6 @@
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
     <ClInclude Include="Sandbox\Components\MeshComponent.h" />
+    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
   </ItemGroup>
 </Project>

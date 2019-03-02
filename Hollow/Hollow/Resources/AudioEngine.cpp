@@ -128,8 +128,9 @@ namespace Hollow {
 		if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx)))
 			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't create source voice!");
 
-		if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer)))
-			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't submit source buffer!");
+		// failing here :(
+		/*if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer)))
+			Hollow::Log::GetCoreLogger()->critical("Audio Engine: can't submit source buffer!");*/
 
 		return new Sound(pSourceVoice);
 	}

@@ -39,7 +39,7 @@ namespace Hollow
 		}
 
 		stringvec* read_next_directory(std::string filepath)
-		{
+		{	
 			if (filepath != "." && filepath != "..") {
 				if (pathHistory.size() == 0) {
 					filepath.append(":\\");
@@ -54,6 +54,22 @@ namespace Hollow
 
 			v->clear();
 			read_directory(get_current_file_path(), v);
+			return v;
+		}
+
+		stringvec* read_directory(std::string filepath)
+		{
+			v->clear();
+			std::string pattern(filepath);
+			pattern.append("*");
+			WIN32_FIND_DATA data;
+			HANDLE hFind;
+			if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
+				do {
+					v->push_back(data.cFileName);
+				} while (FindNextFile(hFind, &data) != 0);
+				FindClose(hFind);
+			}
 			return v;
 		}
 

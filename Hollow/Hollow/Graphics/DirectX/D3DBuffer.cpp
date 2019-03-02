@@ -1,16 +1,11 @@
 #include "D3DBuffer.h"
 
 D3DBuffer::D3DBuffer(ID3D11Device * device, void * data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag)
-
 {
 	HRESULT hr = S_OK;
 
-	if (buffer.Get() != nullptr)
-	{
-		buffer.Reset();
-	}
 	bufferSize = numVertices;
-
+	this->stride = stride;
 	D3D11_BUFFER_DESC bufferDesc = { 0 };
 	bufferDesc.ByteWidth = stride * numVertices;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -24,7 +19,7 @@ D3DBuffer::D3DBuffer(ID3D11Device * device, void * data, UINT stride, UINT numVe
 	bufferData.SysMemPitch = 0;
 	bufferData.SysMemSlicePitch = 0;
 
-	hr = device->CreateBuffer(&bufferDesc, &bufferData, buffer.GetAddressOf());
+	hr = device->CreateBuffer(&bufferDesc, &bufferData, &buffer);
 
 	if (hr != S_OK)
 	{

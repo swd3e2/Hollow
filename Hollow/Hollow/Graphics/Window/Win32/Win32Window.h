@@ -4,10 +4,11 @@
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Platform.h"
 #include <Windowsx.h>
+#include "Hollow/Graphics/Window/IWindow.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-class HOLLOW_API Win32Window
+class HOLLOW_API Win32Window : public IWindow
 {
 public:
 	Win32Window(HINSTANCE hInst, int width, int height);

@@ -4,7 +4,7 @@ namespace Hollow {
 
 	MeshData* ObjParser::LoadObj(std::string filename)
 	{
-		std::string material_base_dir = Helper::trim_to_last_line_entry(filename, '/');
+		std::string material_base_dir = Helper::trim_to_last_line_entry(filename.c_str(), '/');
 		
 		if (currentObject != nullptr) {
 			currentObject = nullptr;

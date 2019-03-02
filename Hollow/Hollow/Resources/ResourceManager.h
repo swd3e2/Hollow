@@ -7,24 +7,18 @@
 #include <stdio.h>
 #include "Utils/ObjParser.h"
 #include "Hollow/Containers/vector.h"
-#include "Material.h"
-#include "Texture.h"
-#include "TextureLoader.h"
 #include "Hollow/Utils/Helper.h"
 #include "Hollow/Graphics/RenderEngine.h"
 #include "Hollow/Containers/vector.h"
-
-
+#include "Hollow/Graphics/IMaterial.h"
 
 namespace Hollow {
 	class HOLLOW_API ResourceManager 
 	{
 	public:
 		std::unordered_map<std::string, Sound*> sounds;
-
 		AudioEngine m_AudioEngine;
 		ObjParser objLoader;
-		TextureLoader textureLoader;
 	private:
 		static ResourceManager* _instance;
 	public:

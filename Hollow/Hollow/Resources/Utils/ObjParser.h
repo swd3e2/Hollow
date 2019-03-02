@@ -2,7 +2,6 @@
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Containers/vector.h"
-#include "Hollow/Resources/Material.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
