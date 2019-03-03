@@ -8,3 +8,4 @@ Sandbox/Sandbox/Resources/*
 Hollow/Debug
 Hollow/x64
 !.gitignore
+Sandbox/imgui.ini

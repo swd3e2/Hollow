@@ -72,6 +72,7 @@ namespace Hollow {
 		}
 
 	private:
+		static EntityManager* _instance;
 		std::unordered_map<EntityTypeID, IEntityContainer*> m_EntityRegistry;
 		//std::vector<std::pair<EntityID, void*>> entityTable;
 		Containers::Vector<Containers::Pair<EntityID, void*>, 1024> entityTable;
@@ -83,6 +84,9 @@ namespace Hollow {
 		{
 			Hollow::Log::GetCoreLogger()->debug("EntityManager: created");
 			this->HandleEntityCount = 0;
+			
+			if (_instance == nullptr)
+				_instance = this;
 
 			for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
 				this->entityTable.push_back(Containers::Pair<EntityID, void*>( i , nullptr ));
@@ -173,6 +177,11 @@ namespace Hollow {
 			}
 
 			return entity;
+		}
+
+		static EntityManager* instance()
+		{
+			return _instance;
 		}
 	};
 

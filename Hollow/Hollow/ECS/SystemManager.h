@@ -1,19 +1,18 @@
 #pragma once
 #include "Systems/ISystem.h"
 #include <list>
-#include "Platform.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
-
 	class HOLLOW_API SystemManager
 	{
 	private:
 		std::list<ISystem*> m_Systems;
 	public:
-		template<class S>
-		void AddSystem(S* system)
+		template<class T>
+		void AddSystem(T* system)
 		{
-			this->m_Systems.push_back(system);
+			this->m_Systems.push_back((ISystem*)system);
 		}
 
 		template<class S>
@@ -26,9 +25,22 @@ namespace Hollow {
 			}
 		}
 
-		void UpdateSystems()
+		void PreUpdateSystems(float dt)
 		{
+			for (auto& it : m_Systems)
+				it->PreUpdate(dt);
+		}
 
+		void PostUpdateSystems(float dt)
+		{
+			for (auto& it : m_Systems)
+				it->PreUpdate(dt);
+		}
+
+		void UpdateSystems(float dt)
+		{
+			for (auto& it : m_Systems)
+				it->Update(dt);
 		}
 	};
 

@@ -29,6 +29,7 @@ namespace Hollow { namespace Containers {
 		}
 
 		inline size_t size() { return this->m_size; }
+
 		void push_back(T& item)
 		{
 			push_back(std::move(item));

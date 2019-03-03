@@ -15,7 +15,6 @@
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\PositionComponent.h" />
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
-    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
     <ClInclude Include="Sandbox\Systems\RenderSystem\RenderSystem.h" />
     <ClInclude Include="Sandbox\Events\MoveEvent.h" />
     <ClInclude Include="Sandbox\ImGui\imconfig.h" />
@@ -26,9 +25,10 @@
     <ClInclude Include="Sandbox\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Sandbox\ImGui\imstb_textedit.h" />
     <ClInclude Include="Sandbox\ImGui\imstb_truetype.h" />
-    <ClInclude Include="Sandbox\MyWindow.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
+    <ClInclude Include="Sandbox\Components\MeshComponent.h" />
+    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
   </ItemGroup>
 </Project>

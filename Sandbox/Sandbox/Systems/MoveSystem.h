@@ -13,10 +13,11 @@
 #include "Sandbox/Components/SelectComponent.h"
 #include "Hollow/Input/InputManager.h"
 #include <DirectXMath.h>
+#include "Hollow/ECS/EntityManager.h"
 
 using namespace DirectX;
 
-class MoveSystem : public Hollow::System<MoveSystem>, Hollow::IEventListener
+class MoveSystem : public Hollow::System<MoveSystem>
 {
 public:
 	Hollow::Sound* sound;
@@ -28,7 +29,7 @@ public:
 
 	virtual void Update(float_t dt)
 	{
-		Hollow::Containers::Vector<Hollow::IEntity*>* container = Hollow::Engine::Get()->GetEntityManager()->GetEntitiesList();
+		Hollow::Containers::Vector<Hollow::IEntity*>* container = Hollow::EntityManager::instance()->GetEntitiesList();
 
 		for (Hollow::IEntity* object : *container) {
 			posComponent = object->GetComponent<PositionComponent>();
@@ -37,11 +38,11 @@ public:
 
 			if (posComponent == nullptr || moveComponent == nullptr || selectComponent == nullptr) continue;
 
-			if (Hollow::InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
-				Hollow::InputManager::calculate();
+			if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+				InputManager::calculate();
 				moveComponent->elapsed = 0.0f;
 				moveComponent->originalPosition = XMLoadFloat3(&posComponent->position);
-				DirectX::XMFLOAT3 temp(Hollow::InputManager::pix, 0, Hollow::InputManager::piz);
+				DirectX::XMFLOAT3 temp(InputManager::pix, 0, InputManager::piz);
 				moveComponent->destination = XMLoadFloat3(&temp);
 
 				moveComponent->direction = moveComponent->originalPosition - moveComponent->destination;
@@ -64,7 +65,7 @@ public:
 
 				if (distance >= moveComponent->distance)
 				{
-					posComponent->position = {Hollow::InputManager::pix, 0, Hollow::InputManager::piz};
+					posComponent->position = {InputManager::pix, 0, InputManager::piz};
 					moveComponent->move = false;
 				}
 			}

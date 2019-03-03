@@ -15,12 +15,21 @@ namespace Hollow {
 			return wc;
 		}
 
-		inline static std::string& trim_to_last_line_entry(std::string string, const char* entry)
+		inline static char* trim_to_last_line_entry(const char* string, char entry)
 		{
 			int lastEntry = -1;
-			while ((lastEntry = string.find(entry)) != -1) {  }
-			string.substr(0, lastEntry);
-			return string;
+			int prevEntry = -1;
+			for (int i = 0; i < strlen(string); i++) {
+				if (string[i] == entry) {
+					lastEntry = i;
+				}
+			}
+			if (lastEntry == -1) return nullptr;
+
+			char* new_string = new char[lastEntry];
+			memcpy((void*)new_string, (void*)string, lastEntry + 2);
+			new_string[lastEntry + 1] = '\0';
+			return new_string;
 		}
 	};
 }

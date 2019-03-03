@@ -1,13 +1,12 @@
 #pragma once
-#include "directXMath.h"
-#include "Hollow/Platform.h"
+#include <DirectXMath.h>
 
 struct SimpleVertex
 {
 	SimpleVertex() {}
 
 	SimpleVertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
-		: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz) 
+		: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz)
 	{}
 
 	DirectX::XMFLOAT3 pos;

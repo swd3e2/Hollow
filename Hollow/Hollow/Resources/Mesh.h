@@ -1,35 +1,28 @@
 #pragma once
-#include "Hollow/Graphics/BufferTemplate/IndexBuffer.h"
-#include "Hollow/Graphics/BufferTemplate/VertexBuffer.h"
 #include "Hollow/Graphics/SimpleVertex.h"
 #include "Hollow/Containers/vector.h"
-#include "Material.h"
-#include <string>
+#include "Hollow/Graphics/IMaterial.h"
 
-namespace Hollow {
+struct MeshModel {
+	MeshModel(SimpleVertex* data, size_t numVertices) :
+		data(data), numVertices(numVertices)
+	{}
 
-	struct MeshModel {
-		MeshModel(ID3D11Device* device, std::string name, SimpleVertex* data, UINT numVertices)
-			: buffer(device, data, numVertices), name(name)
-		{}
+	SimpleVertex* data;
+	size_t numVertices;
+	IMaterial material;
+};
 
-		std::string name;
-		VertexBuffer<SimpleVertex> buffer;
-		Material* material;
-	};
-
-	struct Mesh
+struct Mesh
+{
+	~Mesh()
 	{
-		~Mesh()
+		if (objects.size() > 0)
 		{
-			if (objects.size() > 0)
-			{
-				for (auto& it : objects)
-					delete it;
-			}
+			for (auto& it : objects)
+				delete it;
 		}
+	}
 
-		Containers::Vector<MeshModel*> objects;
-	};
-
-}
+	Hollow::Containers::Vector<MeshModel*> objects;
+};
