@@ -32,8 +32,10 @@
     <ClInclude Include="Hollow\Graphics\IRenderer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderable.h" />
     <ClInclude Include="Hollow\Graphics\IRenderable.h" />
+    <ClInclude Include="Hollow\Graphics\ITexture.h" />
     <ClInclude Include="Hollow\Graphics\RenderEngine.h" />
     <ClInclude Include="Hollow\Graphics\SimpleVertex.h" />
+    <ClInclude Include="Hollow\Graphics\TextureManager.h" />
     <ClInclude Include="Hollow\Resources\Mesh.h" />
     <ClInclude Include="Hollow\Resources\TextureLoader.h" />
     <ClInclude Include="Hollow\Utils\FileSystem.h" />
@@ -109,6 +111,7 @@
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Hollow\Graphics\IRenderer.cpp" />
+    <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Resources\ResourceManager.cpp" />

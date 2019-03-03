@@ -72,6 +72,8 @@ D3DRenderer::D3DRenderer() :
 	for (auto& it : *shaders)
 		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
 			pShaders.push_back(new D3DPixelShader(m_Device.Get(), "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/pixel/" + it));
+
+	textureManager = new TextureManager(m_Device.Get(), m_DeviceContext.Get());
 }
 
 D3DRenderer::~D3DRenderer()
@@ -110,8 +112,7 @@ size_t D3DRenderer::createRenderable(Mesh * mesh)
 		RenderableObject* object = new RenderableObject();
 		object->buffer = new D3DBuffer(m_Device.Get(), it->data, sizeof(SimpleVertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
 		D3DMaterial* mat = new D3DMaterial();
-		D3DTexture* tex = new D3DTexture();
-		tex->CreateTexture(m_Device.Get(), m_DeviceContext.Get(), it->material.diffuse_texture.c_str());
+		D3DTexture* tex = textureManager->CreateTexture(it->material.diffuse_texture);
 		mat->SetDiffuseTexture(tex);
 		object->material = mat;
 		renderable->renderableObjects.push_back(object);

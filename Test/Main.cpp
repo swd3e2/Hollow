@@ -71,7 +71,8 @@ int main()
 			// next line
 			bits += pitch;
 		}
-	}
+	}
+
 
 
 	return 0;

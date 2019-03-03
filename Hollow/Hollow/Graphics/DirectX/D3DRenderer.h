@@ -21,6 +21,7 @@
 #include "Hollow/Utils/FileSystem.h"
 #include "D3DRenderable.h"
 #include "Hollow/Resources/TextureLoader.h"
+#include "Hollow/Graphics/TextureManager.h"
 #define SCREEN_WIDTH 1800
 #define SCREEN_HEIGHT 900
 
@@ -57,6 +58,7 @@ private:
 	D3DDepthStencil*		m_DepthStencil;
 	Camera*					camera;
 	Win32Window				window;
+	TextureManager* textureManager;
 	Hollow::FileSystem		fs;
 	std::vector<D3DPixelShader*> pShaders;
 	std::vector<D3DVertexShader*> vShaders;

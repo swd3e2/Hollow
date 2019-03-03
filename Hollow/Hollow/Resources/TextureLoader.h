@@ -8,7 +8,6 @@ struct TextureData
 	~TextureData()
 	{
 		if (data != nullptr) {
-			Hollow::Log::GetClientLogger()->info("freed at address {}", data);
 			free(data);
 		}
 	}
@@ -68,7 +67,6 @@ public:
 
 		textureData->data = malloc(size);
 		memcpy(textureData->data, bits, size);
-		Hollow::Log::GetClientLogger()->info("allocated {} bytes at address {}", size, textureData->data);
 
 		FreeImage_Unload(dib);
 
