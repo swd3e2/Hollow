@@ -74,13 +74,14 @@ namespace Hollow {
 
 	Sound* ResourceManager::CreateSoundResource(const char* filename)
 	{
-		if (this->sounds.find(filename) != this->sounds.end()) {
+		/*if (this->sounds.find(filename) != this->sounds.end()) {
 			return this->sounds[filename];
 		}
 		
 		Sound* sound = this->m_AudioEngine.CreateSoundResource(filename);
 		this->sounds[filename] = sound;
 
-		return sound;
+		return sound;*/
+		return nullptr;
 	}
 }

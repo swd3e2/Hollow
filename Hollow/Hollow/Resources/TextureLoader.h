@@ -1,11 +1,17 @@
 #pragma once
 #include "FreeImage.h"
 #include "Hollow/Platform.h"
+#include "Hollow/Common/Log.h"
 
 struct TextureData
 {
-	~TextureData() { delete data; }
-
+	~TextureData()
+	{
+		if (data != nullptr) {
+			Hollow::Log::GetClientLogger()->info("freed at address {}", data);
+			free(data);
+		}
+	}
 	int width;
 	int height;
 	int pitch;
@@ -18,7 +24,6 @@ public:
 	static TextureData* loadFromFile(const char* filename)
 	{
 		TextureData* textureData = new TextureData();
-
 		//image format
 		FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 		//pointer to the image, once loaded
@@ -59,15 +64,17 @@ public:
 		textureData->height = FreeImage_GetHeight(dib);
 		textureData->pitch = FreeImage_GetPitch(dib);
 
+		int size = textureData->width * textureData->height * 4;
+
+		textureData->data = malloc(size);
+		memcpy(textureData->data, bits, size);
+		Hollow::Log::GetClientLogger()->info("allocated {} bytes at address {}", size, textureData->data);
+
+		FreeImage_Unload(dib);
+
 		//if this somehow one of these failed (they shouldn't), return failure
 		if ((textureData->width == 0) || (textureData->height == 0))
-			return false;
-		
-		int size = sizeof(unsigned char) * textureData->width * textureData->height * 4;
-
-		void* data = malloc(size);
-		memcpy(data, bits, size);
-		textureData->data = data;
+			return nullptr;
 
 		return textureData;
 	}

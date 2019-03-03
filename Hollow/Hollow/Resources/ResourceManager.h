@@ -17,7 +17,7 @@ namespace Hollow {
 	{
 	public:
 		std::unordered_map<std::string, Sound*> sounds;
-		AudioEngine m_AudioEngine;
+		//AudioEngine m_AudioEngine;
 		ObjParser objLoader;
 	private:
 		static ResourceManager* _instance;

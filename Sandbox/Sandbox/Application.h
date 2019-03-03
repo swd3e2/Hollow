@@ -31,11 +31,11 @@ private:
 private:
 	void InitScene()
 	{
-		Hollow::Sound* music2 = m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
-		music2->Play();
+		/*Hollow::Sound* music2 = m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
+		music2->Play();*/
 		
 		GameObject * object = m_EntityManager->CreateEntity<GameObject>();
-		object->AddComponent<MeshComponent, size_t>(m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/Metal.obj"));
+		object->AddComponent<MeshComponent, size_t>(m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/sponza.obj"));
 		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, -3.110f, 0.0f }, { 15.0f, 15.0f, 15.0f }, { 0.0f, 0.0f, 0.0f });
 		object->AddComponent<SelectComponent, bool>(false);
 	}
