@@ -32,7 +32,7 @@ public:
 		hr = device->CreateBlendState(&blendDesc, &m_BlendState);
 
 		if (hr != S_OK) {
-			Hollow::Log::GetCoreLogger()->error("RenderSystem: Cant create blend state!");
+			HW_ERROR("RenderSystem: Cant create blend state!");
 		}
 	}
 

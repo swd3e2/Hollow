@@ -27,7 +27,7 @@ public:
 		hr = device->CreateRasterizerState(&rasterizerDesc, m_RasterizerState.GetAddressOf());
 
 		if (hr != S_OK) {
-			Hollow::Log::GetCoreLogger()->error("RenderSystem: Cant create RasterizerState!");
+			HW_ERROR("RenderSystem: Cant create RasterizerState!");
 		}
 	}
 

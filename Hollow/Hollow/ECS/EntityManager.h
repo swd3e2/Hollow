@@ -82,7 +82,7 @@ namespace Hollow {
 		EntityManager(ComponentManager * componentManager)
 			: m_ComponentManager(componentManager)
 		{
-			Hollow::Log::GetCoreLogger()->debug("EntityManager: created");
+			HW_DEBUG("EntityManager: created");
 			this->HandleEntityCount = 0;
 			
 			if (_instance == nullptr)
@@ -124,7 +124,6 @@ namespace Hollow {
 
 			((E*)entityMemory)->m_EntityID = id;
 			((E*)entityMemory)->componentManager = this->m_ComponentManager;
-			//Hollow::Log::GetCoreLogger()->info("EntityManager: created entity with id {}, typeID {}, pointer {}", id, E::STATIC_ENTITY_TYPE_ID, entityMemory);
 
 			return (E*)entityMemory;
 		}
@@ -140,7 +139,7 @@ namespace Hollow {
 				if (this->entityTable[i].first == entityId)
 				{
 					entityMemory = (IEntity*)this->entityTable[i].second;
-					Hollow::Log::GetCoreLogger()->info("EntityManager: destroyed entity with id {}, typeID {}, pointer {}", entityMemory->GetEntityID(), E::STATIC_ENTITY_TYPE_ID, (void*)entityMemory);
+					HW_INFO("EntityManager: destroyed entity with id {}, typeID {}, pointer {}", entityMemory->GetEntityID(), E::STATIC_ENTITY_TYPE_ID, (void*)entityMemory);
 
 					this->m_ComponentManager->RemoveAllComponents(entityMemory->GetEntityID());
 					container->DestroyEntity(entityMemory);

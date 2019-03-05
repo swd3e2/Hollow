@@ -4,6 +4,9 @@
 #include "Sandbox/Components/PositionComponent.h"
 #include "Sandbox/Components/CollisionComponent.h"
 #include "Hollow/Containers/vector.h"
+#include "Hollow/ECS/EntityManager.h"
+
+using namespace Hollow;
 
 class CollisionSystem : public Hollow::System<CollisionSystem>
 {

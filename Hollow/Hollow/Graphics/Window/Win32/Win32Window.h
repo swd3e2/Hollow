@@ -5,6 +5,10 @@
 #include "Hollow/Platform.h"
 #include <Windowsx.h>
 #include "Hollow/Graphics/Window/IWindow.h"
+#include "Hollow/Events/WindowCreateEvent.h"
+#include "Hollow/Events/EventSystem.h"
+#include "Hollow/Events/ButtonPressedEvent.h"
+#include "Hollow/Events/ButtonReleasedEvent.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

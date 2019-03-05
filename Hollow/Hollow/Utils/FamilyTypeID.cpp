@@ -1,11 +1,12 @@
 #include "FamilyTypeID.h"
 
+class IEvent;
+
 namespace Hollow {
 
 	class IEntity;
 	class IComponent;
 	class ISystem;
-	class IEvent;
 
 	namespace Core { namespace Utils {
 

@@ -25,7 +25,7 @@ public:
 		hr = device->CreateSamplerState(&samplerDesc, &m_SamplerState);
 
 		if (hr != S_OK) {
-			Hollow::Log::GetCoreLogger()->error("RenderSystem: Cant create sampler state!");
+			HW_ERROR("RenderSystem: Cant create sampler state!");
 		}
 	}
 

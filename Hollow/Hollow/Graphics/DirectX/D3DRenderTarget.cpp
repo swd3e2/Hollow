@@ -8,7 +8,7 @@ D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * de
 	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
 	hr = device->CreateRenderTargetView(backBuffer, NULL, mainRenderTarget.GetAddressOf());
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("RenderTarget: Cant create RenderTargetView!");
+		HW_ERROR("RenderTarget: Cant create RenderTargetView!");
 	}
 
 	// Create second render target view
@@ -26,7 +26,7 @@ D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * de
 
 	hr = device->CreateTexture2D(&textureDesc, NULL, m_BackBuffer.GetAddressOf());
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("RenderTarget: Cant create Texture2D!");
+		HW_ERROR("RenderTarget: Cant create Texture2D!");
 	}
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -36,7 +36,7 @@ D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * de
 
 	hr = device->CreateRenderTargetView(m_BackBuffer.Get(), &renderTargetViewDesc, secondRenderTarget.GetAddressOf());
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("RenderTarget: Cant create RenderTargetView!");
+		HW_ERROR("RenderTarget: Cant create RenderTargetView!");
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
@@ -47,6 +47,6 @@ D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * de
 
 	hr = device->CreateShaderResourceView(m_BackBuffer.Get(), &shaderResourceViewDesc, m_ShaderResourceView.GetAddressOf());
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("RenderTarget: Cant create RenderTargetView!");
+		HW_ERROR("RenderTarget: Cant create RenderTargetView!");
 	}
 }

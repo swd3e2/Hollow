@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Sandbox\Systems\RenderSystem\RenderSystem.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui_impl_dx11.cpp" />
@@ -15,8 +14,6 @@
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\PositionComponent.h" />
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
-    <ClInclude Include="Sandbox\Systems\RenderSystem\RenderSystem.h" />
-    <ClInclude Include="Sandbox\Events\MoveEvent.h" />
     <ClInclude Include="Sandbox\ImGui\imconfig.h" />
     <ClInclude Include="Sandbox\ImGui\imgui.h" />
     <ClInclude Include="Sandbox\ImGui\imgui_impl_dx11.h" />
@@ -29,6 +26,5 @@
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
     <ClInclude Include="Sandbox\Components\MeshComponent.h" />
-    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
   </ItemGroup>
 </Project>

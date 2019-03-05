@@ -1,80 +1,47 @@
 #pragma once
-#include "FreeImage.h"
 #include <iostream>
+#include "Ids.h"
+#include "Event.h"
+#include "ButtonPressEvent.h"
+#include "IEventListener.h"
+#include "EventSystem.h"
+
+class A : public Event<A>
+{
+public:
+	std::string kek = "somestrinrg";
+};
+
+class B : public Event<B>
+{
+public:
+	std::string kek = "somestrinrgb";
+};
+
+class ex : public IEventListener
+{
+public:
+	void onmessage(IEvent* e) { std::cout << ((A*)e)->kek.c_str() << std::endl; }
+	void onmessageb(IEvent* e) { std::cout << ((B*)e)->kek.c_str() << std::endl; }
+};
 
 int main()
 {
-	const char* filename = "1.png";
-	//image format
-	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-	//pointer to the image, once loaded
-	FIBITMAP *dib(0);
-	//pointer to the image data
-	BYTE* bits(0);
-	//image width and height
-	unsigned int width(0), height(0);
+	A a;
+	B b;
+	ex e;
+	
+	EventSystem eventSystem;
+	eventSystem.addEventListener<ex>(&e, &ex::onmessage, a.getEventId());
+	eventSystem.addEventListener(new EventDelegate<ex>(&e, &ex::onmessage, A::getStaticEventId()));
 
-	//check the file signature and deduce its format
-	fif = FreeImage_GetFileType(filename, 0);
-	//if still unknown, try to guess the file format from the file extension
-	if (fif == FIF_UNKNOWN)
-		fif = FreeImage_GetFIFFromFilename(filename);
-	//if still unkown, return failure
-	if (fif == FIF_UNKNOWN)
-		return false;
+	eventSystem.addEvent(&a);
+	eventSystem.addEvent(&a);
+	eventSystem.addEvent(&a);
 
-	//check that the plugin has reading capabilities and load the file
-	if (FreeImage_FIFSupportsReading(fif))
-		dib = FreeImage_Load(fif, filename);
-	//if the image failed to load, return failure
-	if (!dib)
-		return false;
+	eventSystem.dispatch();
 
-	//retrieve the image data
-	bits = FreeImage_GetBits(dib);
-	//get the image width and height
-	width = FreeImage_GetWidth(dib);
-	height = FreeImage_GetHeight(dib);
-	//if this somehow one of these failed (they shouldn't), return failure
-	if ((bits == 0) || (width == 0) || (height == 0))
-		return false;
-
-	/*int BPP = FreeImage_GetBPP(dib);
-
-	if (BPP != 32)
-		dib = FreeImage_ConvertTo32Bits(dib);*/
-
-	unsigned pitch = FreeImage_GetPitch(dib);
-	FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(dib);
-
-	if (image_type == FIT_RGBF) {
-		BYTE *bits = (BYTE*)FreeImage_GetBits(dib);
-		for (int y = 0; y < height; y++) {
-			FIRGBF *pixel = (FIRGBF*)bits;
-			for (int x = 0; x < width; x++) {
-				pixel[x].red = 128;
-				pixel[x].green = 128;
-				pixel[x].blue = 128;
-			}
-			// next line
-			bits += pitch;
-		}
-	}
-	else if ((image_type == FIT_BITMAP) && (FreeImage_GetBPP(dib) == 24)) {
-		BYTE *bits = (BYTE*)FreeImage_GetBits(dib);
-		for (int y = 0; y < height; y++) {
-			BYTE *pixel = (BYTE*)bits;
-			for (int x = 0; x < width; x++) {
-				std::cout << +pixel[FI_RGBA_RED] << " " << +pixel[FI_RGBA_GREEN] << " " << +pixel[FI_RGBA_BLUE] << " " << std::endl;
-				pixel += 3;
-			}
-			// next line
-			bits += pitch;
-		}
-	}
-
-
-
+	system("pause");
 	return 0;
 }
 

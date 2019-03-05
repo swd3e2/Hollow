@@ -26,7 +26,7 @@ namespace Hollow { namespace Core { namespace Memory {
 				this->begin = (size_t)this->allocator->GetMemoryFirstAddress();
 				this->end = this->begin + this->allocator->GetMemorySize();
 				this->objects.clear();
-				Hollow::Log::GetCoreLogger()->debug("MemoryChunk: created, firstAddress {} {}, last address {} {}", this->begin, this->allocator->GetMemoryFirstAddress(), this->end, (void*)(this->begin + this->allocator->GetMemorySize()));
+				HW_DEBUG("MemoryChunk: created, firstAddress {} {}, last address {} {}", this->begin, this->allocator->GetMemoryFirstAddress(), this->end, (void*)(this->begin + this->allocator->GetMemorySize()));
 			}
 		};
 
@@ -87,7 +87,7 @@ namespace Hollow { namespace Core { namespace Memory {
 		MemoryChunkManager(const char* allocatorTag) :
 			allocatorTag(allocatorTag)
 		{
-			Hollow::Log::GetCoreLogger()->debug("MemoryChunkManager: created, firstAddress {}", this->m_Allocator->GetMemoryFirstAddress());
+			HW_DEBUG("MemoryChunkManager: created, firstAddress {}", this->m_Allocator->GetMemoryFirstAddress());
 
 			PoolAllocator* allocator = new PoolAllocator(this->allocate(size, allocatorTag), size, sizeof(T), alignof(T));
 			this->chunks.push_back(new MemoryChunk(allocator));

@@ -2,8 +2,6 @@
 
 D3DTexture * TextureManager::CreateTexture(std::string filename)
 {
-	Hollow::Log::GetCoreLogger()->critical("TextureManager: loading texture {}", filename);
-
 	if (textureList.find(filename) != textureList.end())
 		return textureList[filename];
 	

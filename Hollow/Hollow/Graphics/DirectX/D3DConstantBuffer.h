@@ -26,7 +26,7 @@ public:
 		constantBufferDesc.StructureByteStride = 0;
 
 		if (FAILED(device->CreateBuffer(&constantBufferDesc, NULL, &m_Buffer))) {
-			Hollow::Log::GetCoreLogger()->critical("ConstantBuffer: can't create constant buffer.");
+			HW_ERROR("ConstantBuffer: can't create constant buffer.");
 		}
 		device->CreateBuffer(&constantBufferDesc, NULL, &m_Buffer);
 	}
@@ -47,7 +47,7 @@ public:
 		HRESULT hr = m_DeviceContext->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		if (FAILED(hr))
 		{
-			Hollow::Log::GetCoreLogger()->critical("ConstantBuffer: cant update buffer.");
+			HW_ERROR("ConstantBuffer: cant update buffer.");
 			return false;
 		}
 		CopyMemory(mappedResource.pData, data, size);

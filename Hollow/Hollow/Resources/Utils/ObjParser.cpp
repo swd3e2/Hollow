@@ -15,7 +15,7 @@ namespace Hollow {
 		std::ifstream filestream(filename.c_str());
 
 		if (!filestream) {
-			Hollow::Log::GetCoreLogger()->error("ObjParser: can't open filestream, filename {}", filename);
+			HW_ERROR("ObjParser: can't open filestream, filename {}", filename);
 			return nullptr;
 		}
 
@@ -184,7 +184,7 @@ namespace Hollow {
 	{
 		std::fstream filestream(base_dir);
 		if (!filestream) {
-			Hollow::Log::GetCoreLogger()->error("ObjParser: can't parse mtl file, error while trying open filestream, filename {}", base_dir);
+			HW_ERROR("ObjParser: can't parse mtl file, error while trying open filestream, filename {}", base_dir);
 			return;
 		}
 

@@ -50,7 +50,7 @@ public:
 		ID3D11Texture2D * m_texture;
 		// Create the empty texture.
 		if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
-			Hollow::Log::GetCoreLogger()->critical("D3DTexture: Can't create 2D texture");
+			HW_ERROR("D3DTexture: Can't create 2D texture");
 			delete data;
 			return;
 		}
@@ -64,7 +64,7 @@ public:
 
 		// Create the shader resource view for the texture.
 		if (FAILED(device->CreateShaderResourceView(m_texture, &srvDesc, &m_TextureShaderResource))) {
-			Hollow::Log::GetCoreLogger()->critical("D3DTexture: Can't create shader resource view for 2d texture");
+			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 			delete data;
 			return;
 		}

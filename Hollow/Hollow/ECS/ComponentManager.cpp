@@ -4,7 +4,7 @@ namespace Hollow {
 
 	ComponentManager::ComponentManager()
 	{
-		Hollow::Log::GetCoreLogger()->debug("ComponentManager: created");
+		HW_DEBUG("ComponentManager: created");
 		const size_t NUM_COMPONENTS{ Core::Utils::FamilyTypeID<IComponent>::Get() };
 
 		this->m_EntityComponentMap.resize(ENITY_LUT_GROW);

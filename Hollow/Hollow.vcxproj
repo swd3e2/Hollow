@@ -12,13 +12,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Application.h" />
+    <ClInclude Include="Hollow\ApplicationLayer.h" />
+    <ClInclude Include="Hollow\DummyConsoleListener.h" />
+    <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
+    <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
+    <ClInclude Include="Hollow\Events\Event.h" />
+    <ClInclude Include="Hollow\Events\EventDelegate.h" />
+    <ClInclude Include="Hollow\Events\EventDispatcher.h" />
+    <ClInclude Include="Hollow\Events\EventSystem.h" />
+    <ClInclude Include="Hollow\Events\IEvent.h" />
+    <ClInclude Include="Hollow\Events\IEventDelegate.h" />
+    <ClInclude Include="Hollow\Events\IEventListener.h" />
+    <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBlendState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DIndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderableManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DTexture.h" />
+    <ClInclude Include="Hollow\Graphics\Events\BeginFrameEvent.h" />
+    <ClInclude Include="Hollow\Graphics\Events\EndFrameEvent.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.h" />
@@ -36,6 +51,9 @@
     <ClInclude Include="Hollow\Graphics\RenderEngine.h" />
     <ClInclude Include="Hollow\Graphics\SimpleVertex.h" />
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
+    <ClInclude Include="Hollow\ImGuiLayer.h" />
+    <ClInclude Include="Hollow\Layer.h" />
+    <ClInclude Include="Hollow\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\Mesh.h" />
     <ClInclude Include="Hollow\Resources\TextureLoader.h" />
     <ClInclude Include="Hollow\Utils\FileSystem.h" />
@@ -44,14 +62,6 @@
     <ClInclude Include="Hollow\Containers\pair.h" />
     <ClInclude Include="Hollow\Containers\vector.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
-    <ClInclude Include="Hollow\ECS\EventHandler.h" />
-    <ClInclude Include="Hollow\Events\Event.h" />
-    <ClInclude Include="Hollow\Events\EventDelegate.h" />
-    <ClInclude Include="Hollow\Events\EventDispatcher.h" />
-    <ClInclude Include="Hollow\Events\IEvent.h" />
-    <ClInclude Include="Hollow\Events\IEventDelegate.h" />
-    <ClInclude Include="Hollow\Events\IEventDispatcher.h" />
-    <ClInclude Include="Hollow\Events\IEventListener.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DDepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderTarget.h" />
@@ -75,7 +85,7 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Camera.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\D3DIShaderProgramm.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DIShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DPixelShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DVertexShader.h" />
     <ClInclude Include="Hollow\ECS\Systems\System.h" />
@@ -99,12 +109,12 @@
     <ClCompile Include="Hollow\Application.cpp" />
     <ClCompile Include="Hollow\ECS\ComponentManager.cpp" />
     <ClCompile Include="Hollow\ECS\EntityManager.cpp" />
-    <ClCompile Include="Hollow\ECS\EventHandler.cpp" />
-    <ClCompile Include="Hollow\Events\IEventListener.cpp" />
+    <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DDepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DBuffer.cpp" />
+    <ClCompile Include="Hollow\Graphics\DirectX\D3DShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.cpp" />
@@ -112,6 +122,7 @@
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Hollow\Graphics\IRenderer.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
+    <ClCompile Include="Hollow\Graphics\Window\IWindow.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Resources\ResourceManager.cpp" />

@@ -1,14 +1,10 @@
 #pragma once
 #include "Hollow/ECS/Systems/System.h"
 #include "Hollow/Common/Log.h"
-#include "Sandbox/Events/MoveEvent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/PositionComponent.h"
 #include "Sandbox/Components/MoveComponent.h"
-#include "Hollow/Events/IEventListener.h"
-#include "Hollow/ECS/EventHandler.h"
 #include <vector>
-#include "Hollow/Resources/Sound.h"
 #include "Hollow/Containers/vector.h"
 #include "Sandbox/Components/SelectComponent.h"
 #include "Hollow/Input/InputManager.h"
@@ -20,7 +16,6 @@ using namespace DirectX;
 class MoveSystem : public Hollow::System<MoveSystem>
 {
 public:
-	Hollow::Sound* sound;
 	PositionComponent * posComponent;
 	MoveComponent * moveComponent;
 	SelectComponent* selectComponent;

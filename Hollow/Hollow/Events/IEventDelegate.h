@@ -1,19 +1,16 @@
 #pragma once
-#include "Hollow/Platform.h"
 #include "IEvent.h"
+#include "IEventListener.h"
 
-namespace Hollow {
-	class HOLLOW_API IEventDelegate
+class IEventDelegate
+{
+private:
+public:
+	eventId _eventId = -1;
+	virtual void invoke(IEvent* event) = 0;
+
+	eventId getSubscribedEventId()
 	{
-	public:
-		virtual inline void invoke(const IEvent* const e) = 0;
-
-		virtual inline size_t GetDelegateId() const = 0;
-
-		virtual inline uint64_t GetStaticEventTypeId() const = 0;
-
-		virtual bool operator==(const IEventDelegate* other) const = 0;
-
-		virtual IEventDelegate* clone() = 0;
-	};
-}
+		return _eventId;
+	}
+};

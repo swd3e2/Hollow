@@ -17,7 +17,6 @@
     <ClCompile Include="Sandbox\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Sandbox\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Sandbox\Systems\RenderSystem\RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hollow\Hollow.vcxproj">
@@ -32,7 +31,6 @@
     <ClInclude Include="Sandbox\Components\PositionComponent.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
-    <ClInclude Include="Sandbox\Events\MoveEvent.h" />
     <ClInclude Include="Sandbox\ImGui\imconfig.h" />
     <ClInclude Include="Sandbox\ImGui\imgui.h" />
     <ClInclude Include="Sandbox\ImGui\imgui_impl_dx11.h" />
@@ -42,9 +40,7 @@
     <ClInclude Include="Sandbox\ImGui\imstb_textedit.h" />
     <ClInclude Include="Sandbox\ImGui\imstb_truetype.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
-    <ClInclude Include="Sandbox\Systems\InterfaceSystem\InterfaceSystem.h" />
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
-    <ClInclude Include="Sandbox\Systems\RenderSystem\RenderSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

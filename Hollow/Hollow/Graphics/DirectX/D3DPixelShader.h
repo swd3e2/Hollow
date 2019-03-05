@@ -1,11 +1,11 @@
 #pragma once
-#include "D3DIShaderProgramm.h"
+#include "D3DIShader.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <string>
 #include "Hollow/Platform.h"
 
-class D3DPixelShader : D3DIShaderProgramm
+class D3DPixelShader : D3DIShader
 {
 public:
 	D3DPixelShader(ID3D11Device * device, std::string filename)

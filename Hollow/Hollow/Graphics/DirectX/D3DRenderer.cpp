@@ -38,7 +38,7 @@ D3DRenderer::D3DRenderer() :
 		&m_Device, &m_featureLevel, m_DeviceContext.GetAddressOf());
 
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("RenderSystem: Can't create DeviceAndSwapChain!");
+		HW_ERROR("RenderSystem: Can't create DeviceAndSwapChain!");
 	}
 
 	vp.Width = (float)width;
@@ -63,17 +63,8 @@ D3DRenderer::D3DRenderer() :
 	camera->SetProjectionValues(85.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
 	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(WVP));
 
-	std::vector<std::string>* shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/");
-	for (auto& it : *shaders)
-		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
-			vShaders.push_back(new D3DVertexShader(m_Device.Get(), "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/" + it));
-
-	shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/pixel/");
-	for (auto& it : *shaders)
-		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
-			pShaders.push_back(new D3DPixelShader(m_Device.Get(), "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/pixel/" + it));
-
 	textureManager = new TextureManager(m_Device.Get(), m_DeviceContext.Get());
+	shaderManager = new D3DShaderManager(m_Device.Get());
 }
 
 D3DRenderer::~D3DRenderer()
@@ -99,8 +90,8 @@ void D3DRenderer::PreUpdateFrame()
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfMainRenderTaget(), m_DepthStencil->GetDepthStencilView());
 	camera->Update();
 	UpdateWVP();
-	SetVertexShader(vShaders[0]);
-	SetPixelShader(pShaders[0]);
+	SetVertexShader(shaderManager->getVertexShader("vs"));
+	SetPixelShader(shaderManager->getPixelShader("ps"));
 	SetContantBuffer(0, m_WVPConstantBuffer);
 }
 
@@ -127,6 +118,7 @@ void D3DRenderer::Draw(RenderableObject * object)
 	if (object->material->diffuseTexture->active) {
 		this->m_DeviceContext->PSSetShaderResources(0, 1, &object->material->diffuseTexture->m_TextureShaderResource);
 	}
+
 	this->m_DeviceContext->IASetVertexBuffers(0, 1, object->buffer->GetAddressOf(), object->buffer->StridePtr(), &this->offset);
 	m_DeviceContext->Draw(object->buffer->BufferSize(), 0);
 }
@@ -152,11 +144,7 @@ bool D3DRenderer::processMessage()
 
 void D3DRenderer::Update()
 {
-	PreUpdateFrame();
-
 	for (auto& it : renderables)
 		for (auto& buff : it->renderableObjects)
 			Draw(buff);
-
-	PostUpdateFrame();
 }

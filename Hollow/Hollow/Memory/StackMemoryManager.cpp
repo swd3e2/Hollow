@@ -6,7 +6,7 @@ namespace Hollow { namespace Core { namespace Memory {
 	{
 		this->m_GlobalMemory = malloc(DEFAULT_STACK_MEMORY_MANAGER_SIZE);
 		this->m_Allocator = new StackAllocator(this->m_GlobalMemory, DEFAULT_STACK_MEMORY_MANAGER_SIZE);
-		Hollow::Log::GetCoreLogger()->debug("StackMemoryManager: created, firstAddress {}, size {}", this->m_GlobalMemory, DEFAULT_STACK_MEMORY_MANAGER_SIZE);
+		HW_DEBUG("StackMemoryManager: created, firstAddress {}, size {}", this->m_GlobalMemory, DEFAULT_STACK_MEMORY_MANAGER_SIZE);
 	}
 
 	StackMemoryManager::~StackMemoryManager()
@@ -18,7 +18,7 @@ namespace Hollow { namespace Core { namespace Memory {
 	{
 		void* mem = m_Allocator->allocate(size, alignof(unsigned char));
 		m_UsedMemory.push_back({ user, mem });
-		Hollow::Log::GetCoreLogger()->info("StackMemoryManager: allocated memory with size {}, pointer {}, user {}", size, mem, user);
+		HW_INFO("StackMemoryManager: allocated memory with size {}, pointer {}, user {}", size, mem, user);
 
 		return mem;
 	}

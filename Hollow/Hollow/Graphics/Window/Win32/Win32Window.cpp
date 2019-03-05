@@ -47,6 +47,7 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 	UpdateWindow(hWnd);
+	EventSystem::instance()->addEvent(new WindowCreateEvent("Some stupid message :)"));
 }
 
 LRESULT WINAPI Win32Window::_HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -110,10 +111,12 @@ LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_KEYDOWN:
 	{
 		InputManager::SetKeyboardKeyActive(static_cast<eKeyCodes>(wParam), true);
+		EventSystem::instance()->addEvent(new ButtonPressedEvent(static_cast<eKeyCodes>(wParam)));
 	} break;
 	case WM_KEYUP:
 	{
 		InputManager::SetKeyboardKeyActive(static_cast<eKeyCodes>(wParam), false);
+		EventSystem::instance()->addEvent(new ButtonReleasedEvent(static_cast<eKeyCodes>(wParam)));
 	} break;
 	// Mouse events handling
 	case WM_LBUTTONDOWN:

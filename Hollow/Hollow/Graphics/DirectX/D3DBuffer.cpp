@@ -23,6 +23,6 @@ D3DBuffer::D3DBuffer(ID3D11Device * device, void * data, UINT stride, UINT numVe
 
 	if (hr != S_OK)
 	{
-		Hollow::Log::GetCoreLogger()->error("IndexBuffer: Cant create buffer!");
+		HW_ERROR("IndexBuffer: Cant create buffer!");
 	}
 }

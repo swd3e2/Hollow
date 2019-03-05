@@ -22,7 +22,7 @@ D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, D
 
 	hr = device->CreateTexture2D(&desc, NULL, m_DepthStencilBuffer.GetAddressOf());
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("DepthStencil: Cant create Texture2D!");
+		HW_ERROR("DepthStencil: Cant create Texture2D!");
 	}
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC ddesc;
@@ -33,7 +33,7 @@ D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, D
 
 	hr = device->CreateDepthStencilView(m_DepthStencilBuffer.Get(), &ddesc, m_DepthStencilView.GetAddressOf());
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("DepthStencil: Cant create DepthStencilView!");
+		HW_ERROR("DepthStencil: Cant create DepthStencilView!");
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
@@ -45,7 +45,7 @@ D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, D
 
 	hr = device->CreateShaderResourceView(m_DepthStencilBuffer.Get(), &srvd, &mDepthResourceView);
 	if (hr != S_OK) {
-		Hollow::Log::GetCoreLogger()->error("DepthStencil: Cant create ShaderResourceView!");
+		HW_ERROR("DepthStencil: Cant create ShaderResourceView!");
 	}
 }
 

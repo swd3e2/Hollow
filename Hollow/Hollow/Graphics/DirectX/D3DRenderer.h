@@ -22,6 +22,10 @@
 #include "D3DRenderable.h"
 #include "Hollow/Resources/TextureLoader.h"
 #include "Hollow/Graphics/TextureManager.h"
+#include "D3DShaderManager.h"
+#include "Hollow/Events/EventSystem.h"
+#include "Hollow/Graphics/Events/BeginFrameEvent.h"
+#include "Hollow/Graphics/Events/EndFrameEvent.h"
 #define SCREEN_WIDTH 1800
 #define SCREEN_HEIGHT 900
 
@@ -47,23 +51,20 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Device>				m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			m_DeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				m_SwapChain;
-
-	WVP						m_wvp;
-	D3DConstantBuffer*		m_WVPConstantBuffer;
-	D3DConstantBuffer*		m_TransformConstantBuffer;
-	D3DBlendState*			m_BlendStateTransparancy;
-	D3DSamplerState*		m_SamplerStateWrap;
-	D3DSamplerState*		m_SamplerStateClamp;
-	D3DRenderTarget*		m_RenderTarget;
-	D3DDepthStencil*		m_DepthStencil;
-	Camera*					camera;
-	Win32Window				window;
-	TextureManager* textureManager;
-	Hollow::FileSystem		fs;
-	std::vector<D3DPixelShader*> pShaders;
-	std::vector<D3DVertexShader*> vShaders;
-	Hollow::Containers::Vector<D3DBuffer*> buffers;
-	Hollow::Containers::Vector<D3DRenderable*> renderables;
+	WVP												m_wvp;
+	D3DConstantBuffer*								m_WVPConstantBuffer;
+	D3DConstantBuffer*								m_TransformConstantBuffer;
+	D3DBlendState*									m_BlendStateTransparancy;
+	D3DSamplerState*								m_SamplerStateWrap;
+	D3DSamplerState*								m_SamplerStateClamp;
+	D3DRenderTarget*								m_RenderTarget;
+	D3DDepthStencil*								m_DepthStencil;
+	Camera*											camera;
+	Win32Window										window;
+	TextureManager*									textureManager;
+	D3DShaderManager*								shaderManager;
+	Hollow::FileSystem								fs;
+	Hollow::Containers::Vector<D3DRenderable*>		renderables;
 
 	int width;
 	int height;
