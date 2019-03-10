@@ -34,8 +34,8 @@ D3DRenderer::D3DRenderer() :
 	UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG;
 
 	hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags,
-		featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &swapChainDesc, m_SwapChain.GetAddressOf(),
-		&m_Device, &m_featureLevel, m_DeviceContext.GetAddressOf());
+		featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &swapChainDesc, &m_SwapChain,
+		&m_Device, &m_featureLevel, &m_DeviceContext);
 
 	if (hr != S_OK) {
 		HW_ERROR("RenderSystem: Can't create DeviceAndSwapChain!");
@@ -52,27 +52,32 @@ D3DRenderer::D3DRenderer() :
 	m_DeviceContext->RSSetViewports(1, &vp);
 	m_DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_RenderTarget = new D3DRenderTarget(m_Device.Get(), m_DeviceContext.Get(), m_SwapChain.Get(), width, height);
-	m_DepthStencil = new D3DDepthStencil(m_Device.Get(), width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+	m_RenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, m_SwapChain, width, height);
+	m_DepthStencil = new D3DDepthStencil(m_Device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-	m_BlendStateTransparancy = new D3DBlendState(m_Device.Get());
+	m_BlendStateTransparancy = new D3DBlendState(m_Device);
 
-	m_SamplerStateWrap = new D3DSamplerState(m_Device.Get(), D3D11_TEXTURE_ADDRESS_WRAP);
-	m_SamplerStateClamp = new D3DSamplerState(m_Device.Get(), D3D11_TEXTURE_ADDRESS_CLAMP);
+	m_SamplerStateWrap = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_WRAP);
+	m_SamplerStateClamp = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_CLAMP);
 
-	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(WVP));
-	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(TransformBuff));
-	m_LightBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(Light));
+	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WVP));
+	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(TransformBuff));
+	m_LightBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(Light));
+	m_WorldViewProjectionBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WorldViewProjection));;
 
-	textureManager = new TextureManager(m_Device.Get(), m_DeviceContext.Get());
-	shaderManager = new D3DShaderManager(m_Device.Get());
+	textureManager = new TextureManager(m_Device, m_DeviceContext);
+	shaderManager = new D3DShaderManager(m_Device);
+
+	SetVertexShader(shaderManager->getVertexShader("vs"));
+	SetPixelShader(shaderManager->getPixelShader("ps"));
 }
 
 D3DRenderer::~D3DRenderer()
 {
-	m_Device->Release();
-	m_DeviceContext->Release();
-	m_SwapChain->Release();
+	SAFE_RELEASE(m_Device);
+	SAFE_RELEASE(m_DeviceContext);
+	SAFE_RELEASE(m_SwapChain);
+
 	delete	m_WVPConstantBuffer;
 	delete	m_TransformConstantBuffer;
 	delete	m_BlendStateTransparancy;
@@ -89,8 +94,6 @@ void D3DRenderer::PreUpdateFrame()
 	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());
 	m_DeviceContext->PSSetSamplers(1, 1, m_SamplerStateClamp->GetSamplerState());
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfMainRenderTaget(), m_DepthStencil->GetDepthStencilView());
-	SetVertexShader(shaderManager->getVertexShader("vs"));
-	SetPixelShader(shaderManager->getPixelShader("ps"));
 
 	// Update world view projection matrix
 	m_wvp.WVP = XMMatrixTranspose(XMMatrixIdentity()
@@ -99,6 +102,12 @@ void D3DRenderer::PreUpdateFrame()
 
 	m_WVPConstantBuffer->Update(&m_wvp);
 	SetContantBuffer(0, m_WVPConstantBuffer);
+
+	m_worldViewProjection.World = XMMatrixIdentity();
+	m_worldViewProjection.View = m_Camera->GetViewMatrix();
+	m_worldViewProjection.Projection = m_Camera->GetProjectionMatrix();
+	m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
+	SetContantBuffer(1, m_WorldViewProjectionBuffer);
 
 	// update light
 	m_LightBuffer->Update(&light);

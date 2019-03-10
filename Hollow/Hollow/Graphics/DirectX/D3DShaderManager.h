@@ -1,7 +1,7 @@
 #pragma once
+#include <unordered_map>
 #include "D3DVertexShader.h"
 #include "D3DPixelShader.h"
-#include <unordered_map>
 #include "Hollow/Utils/FileSystem.h"
 #include "Hollow/Utils/Helper.h"
 
@@ -68,5 +68,20 @@ public:
 			return m_pixelShaders[name];
 		}
 		return nullptr;
+	}
+
+	std::unordered_map < std::string, D3DPixelShader* > * getPixelShaderList()
+	{
+		return &m_pixelShaders;
+	}
+
+	std::unordered_map<std::string, D3DVertexShader*>* getVertexShaderList()
+	{
+		return &m_vertexShaders;
+	}
+
+	static D3DShaderManager* instance()
+	{
+		return _instance;
 	}
 };

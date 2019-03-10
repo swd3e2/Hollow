@@ -1,8 +1,9 @@
 #pragma once
 #include "Layer.h"
 #include <vector>
+#include "Hollow/Platform.h"
 
-class LayerStack
+class HOLLOW_API LayerStack
 {
 private:
 	std::vector<Layer*> layers;

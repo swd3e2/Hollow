@@ -1,7 +1,6 @@
 #pragma once
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
-#include <wrl/client.h>
 #include "Hollow/Platform.h"
 
 class D3DBlendState

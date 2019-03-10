@@ -14,9 +14,7 @@
 #include "Sandbox/Systems/CollisionSystem.h"
 #include <thread>
 #include "Hollow/Application.h"
-#include "Hollow/ECS/Components/D3DRenderComponent.h"
 #include "Hollow/Graphics/DirectX/D3DRenderer.h"
-#include "Hollow/ECS/Components/D3DRenderComponent.h"
 #include "Hollow/Common/Log.h"
 
 using namespace DirectX;
@@ -27,15 +25,6 @@ private:
 	HWND*					m_HWND;
 	MoveSystem*				m_MoveSystem;
 	CollisionSystem*		m_CollisionSystem;
-private:
-	void InitScene()
-	{
-		sceneManager.CreateSceneObject(
-			((D3DRenderer*)m_Renderer)->getDevice(), 
-			m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/Ball.obj"), 
-			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
-		);
-	}
 public:
 	MyApp()
 	{
@@ -43,6 +32,11 @@ public:
 		m_CollisionSystem = new CollisionSystem();
 		m_SystemManager->AddSystem(m_MoveSystem);
 		m_SystemManager->AddSystem(m_CollisionSystem);
-		this->InitScene();
+		
+		sceneManager.CreateSceneObject(
+			((D3DRenderer*)m_Renderer)->getDevice(),
+			m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/Ball.obj"),
+			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
+		);
 	}
 };

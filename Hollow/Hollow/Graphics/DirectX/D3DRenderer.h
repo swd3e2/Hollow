@@ -1,12 +1,10 @@
 #pragma once
 #include <d3d11.h>
-#include <wrl/client.h>
 #include "Hollow/Common/Log.h"
 #include "D3DRenderTarget.h"
 #include "D3DDepthStencil.h"
 #include "D3DPixelShader.h"
 #include "D3DVertexShader.h"
-#include "D3DIndexBuffer.h"
 #include "D3DConstantBuffer.h"
 #include "Hollow/Graphics/IRenderer.h"
 #include "D3DRenderable.h"
@@ -17,18 +15,10 @@
 #include "Hollow/Graphics/Camera.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Containers/vector.h"
-#include "Hollow/Utils/FileSystem.h"
 #include "D3DRenderable.h"
-#include "Hollow/Resources/TextureLoader.h"
-#include "Hollow/Graphics/TextureManager.h"
 #include "D3DShaderManager.h"
-#include "Hollow/Events/EventSystem.h"
-#include "Hollow/Graphics/Events/BeginFrameEvent.h"
-#include "Hollow/Graphics/Events/EndFrameEvent.h"
-#include "Hollow/ECS/ComponentManager.h"
-#include "Hollow/ECS/Components/PositionComponent.h"
-#include "Hollow/ECS/Components/D3DRenderComponent.h"
 #include "D3DConstBufferMapping.h"
+#include "Hollow/Graphics/TextureManager.h"
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 600
 
@@ -37,6 +27,13 @@ using namespace DirectX;
 struct WVP
 {
 	XMMATRIX WVP;
+};
+
+struct WorldViewProjection
+{
+	XMMATRIX World;
+	XMMATRIX View;
+	XMMATRIX Projection;
 };
 
 struct TransformBuff
@@ -56,24 +53,26 @@ struct Light
 class HOLLOW_API D3DRenderer : public IRenderer
 {
 public:
-	Light												light;
-private:
-	Microsoft::WRL::ComPtr<ID3D11Device>				m_Device;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			m_DeviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain>				m_SwapChain;
-	WVP													m_wvp;
-	TransformBuff										transformBuff;
-	D3DConstantBuffer*									m_LightBuffer;
-	D3DConstantBuffer*									m_WVPConstantBuffer;
-	D3DConstantBuffer*									m_TransformConstantBuffer;
-	D3DBlendState*										m_BlendStateTransparancy;
-	D3DSamplerState*									m_SamplerStateWrap;
-	D3DSamplerState*									m_SamplerStateClamp;
-	D3DRenderTarget*									m_RenderTarget;
-	D3DDepthStencil*									m_DepthStencil;
-	TextureManager*										textureManager;
-	D3DShaderManager*									shaderManager;
-	Win32Window											window;
+	Light					light;
+private:					
+	ID3D11Device*			m_Device;
+	ID3D11DeviceContext*	m_DeviceContext;
+	IDXGISwapChain*			m_SwapChain;
+	WVP						m_wvp;
+	WorldViewProjection		m_worldViewProjection;
+	TransformBuff			transformBuff;
+	D3DConstantBuffer*		m_LightBuffer;
+	D3DConstantBuffer*		m_WVPConstantBuffer;
+	D3DConstantBuffer*		m_WorldViewProjectionBuffer;
+	D3DConstantBuffer*		m_TransformConstantBuffer;
+	D3DBlendState*			m_BlendStateTransparancy;
+	D3DSamplerState*		m_SamplerStateWrap;
+	D3DSamplerState*		m_SamplerStateClamp;
+	D3DRenderTarget*		m_RenderTarget;
+	D3DDepthStencil*		m_DepthStencil;
+	TextureManager*			textureManager;
+	D3DShaderManager*		shaderManager;
+	Win32Window				window;
 	int width;
 	int height;
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
@@ -131,6 +130,6 @@ public:
 
 	virtual bool windowIsClosed() override { return window.isClosed(); }
 
-	inline ID3D11Device* getDevice() { return m_Device.Get(); }
-	inline ID3D11DeviceContext* getDeviceContext() { return m_DeviceContext.Get(); }
+	inline ID3D11Device* getDevice() { return m_Device; }
+	inline ID3D11DeviceContext* getDeviceContext() { return m_DeviceContext; }
 };

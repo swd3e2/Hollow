@@ -1,12 +1,11 @@
 #pragma once
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
-#include <wrl/client.h>
 
 class D3DRasterizerState
 {
 private:
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState>		m_RasterizerState;
+	ID3D11RasterizerState* m_RasterizerState;
 public:
 	D3DRasterizerState(ID3D11Device* device)
 	{
@@ -24,7 +23,7 @@ public:
 		rasterizerDesc.ScissorEnable = false;
 		rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 
-		hr = device->CreateRasterizerState(&rasterizerDesc, m_RasterizerState.GetAddressOf());
+		hr = device->CreateRasterizerState(&rasterizerDesc, &m_RasterizerState);
 
 		if (hr != S_OK) {
 			HW_ERROR("RenderSystem: Cant create RasterizerState!");
@@ -33,6 +32,6 @@ public:
 
 	ID3D11RasterizerState* GetRasterizerState()
 	{
-		return this->m_RasterizerState.Get();
+		return m_RasterizerState;
 	}
 };

@@ -34,9 +34,10 @@ PixelShaderOutput VSMain(VertexShaderInput input)
     PixelShaderOutput vertexShaderOutput;
 
     vertexShaderOutput.pos = float4(input.pos, 1.0f);
+
     vertexShaderOutput.pos = mul(vertexShaderOutput.pos, transform);
     vertexShaderOutput.pos = mul(vertexShaderOutput.pos, WVP);
-    vertexShaderOutput.normal = input.normal;
+    vertexShaderOutput.normal = mul(input.normal, transform);
     vertexShaderOutput.texCoord = input.texCoord;
 
     return vertexShaderOutput;

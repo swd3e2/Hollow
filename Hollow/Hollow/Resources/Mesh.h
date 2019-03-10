@@ -2,15 +2,16 @@
 #include "Hollow/Graphics/SimpleVertex.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Graphics/IMaterial.h"
+#include "Hollow/Platform.h"
 
 struct MeshModel {
-	MeshModel(SimpleVertex* data, size_t numVertices, std::string name = "") :
+	MeshModel(SimpleVertex* data, UINT numVertices, std::string name = "") :
 		data(data), numVertices(numVertices), name(name)
 	{}
 
 	std::string name;
 	SimpleVertex* data;
-	size_t numVertices;
+	UINT numVertices;
 	IMaterial material;
 };
 

@@ -174,9 +174,6 @@ namespace Hollow {
 				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 1]);
 				mesh->indices.push_back(face);
 				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 5]);
-				/*mesh->indices.push_back(mesh->indices[mesh->indices.size() - 1]);
-				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 3]);
-				mesh->indices.push_back(face);*/
 			} else {
 				mesh->indices.push_back(face);
 			}

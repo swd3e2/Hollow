@@ -1,13 +1,14 @@
 #pragma once
+#include <vector>
 #include "Layer.h"
-#include "Graphics/DirectX/D3DRenderer.h"
+#include "Hollow/Graphics/DirectX/D3DRenderer.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_win32.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_dx11.h"
 #include "Hollow/Graphics/Window/Win32/Win32Window.h"
+#include "Hollow/Graphics/DirectX/D3DRenderable.h"
 #include "Hollow/Common/Log.h"
-#include <vector>
-#include "Graphics/DirectX/D3DRenderable.h"
+#include "Hollow/Graphics/DirectX/D3DShaderManager.h"
 
 class ImGuiLayer : public Layer
 {
@@ -19,8 +20,14 @@ private:
 	float currentScale[3] = {};
 	float lightColor[3] = {};
 	float lightDirection[3] = {};
+
 	D3DRenderer* renderer;
+	D3DShaderManager* shaderManager;
+	D3DVertexShader* vShader;
+	D3DPixelShader* pShader;
+
 	std::vector<IRenderable*>* list;
+	const char* current_item = NULL;
 public:
 	ImGuiLayer(D3DRenderer* renderer, std::vector<IRenderable*>* list) :
 		renderer(renderer), list(list)
@@ -34,6 +41,8 @@ public:
 		result = ImGui_ImplDX11_Init(renderer->getDevice(), renderer->getDeviceContext());
 		if (!result) HW_ERROR("Can't init imgui_dx11");
 		ImGui::StyleColorsDark();
+
+		shaderManager = D3DShaderManager::instance();
 	}
 
 	~ImGuiLayer()
@@ -65,6 +74,33 @@ public:
 		renderer->light.ambient.y = lightColor[1];
 		renderer->light.ambient.z = lightColor[2];
 
+		if (ImGui::BeginCombo("##combo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
+		{
+			for (auto& it : *shaderManager->getPixelShaderList())
+			{
+				if (ImGui::Selectable(it.first.c_str(), pShader == it.second)) {
+					pShader = it.second;
+					renderer->SetPixelShader(pShader);
+				}
+				if (pShader)
+					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+			}
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::BeginCombo("##combo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
+		{
+			for (auto& it : *shaderManager->getVertexShaderList())
+			{
+				if (ImGui::Selectable(it.first.c_str(), vShader == it.second)) {
+					vShader = it.second;
+					renderer->SetVertexShader(vShader);
+				}
+				if (pShader)
+					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+			}
+			ImGui::EndCombo();
+		}
 
 		for (auto& it : *list) 
 		{

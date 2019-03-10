@@ -1,7 +1,8 @@
 #pragma once
 #include <chrono>
+#include "Hollow/Platform.h"
 
-class Timer
+class HOLLOW_API Timer
 {
 public:
 	Timer();

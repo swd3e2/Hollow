@@ -27,7 +27,6 @@ public:
 
 		active = true;
 
-		HRESULT hResult;
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Height = data->height;
 		textureDesc.Width = data->width;
