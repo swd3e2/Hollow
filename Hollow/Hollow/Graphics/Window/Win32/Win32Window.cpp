@@ -1,7 +1,5 @@
 #include "Win32Window.h"
 
-HWND Win32Window::hWnd = nullptr;
-
 Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 	: hInst(hInst)
 {
@@ -105,17 +103,14 @@ LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	} break;
 	case WM_CLOSE:
 	{
-		OutputDebugStringA("WM_CLOSE\n");
-		PostQuitMessage(0);
+		SetIsClosed(true);
 	} break;
 	case WM_KEYDOWN:
 	{
-		InputManager::SetKeyboardKeyActive(static_cast<eKeyCodes>(wParam), true);
 		EventSystem::instance()->addEvent(new ButtonPressedEvent(static_cast<eKeyCodes>(wParam)));
 	} break;
 	case WM_KEYUP:
 	{
-		InputManager::SetKeyboardKeyActive(static_cast<eKeyCodes>(wParam), false);
 		EventSystem::instance()->addEvent(new ButtonReleasedEvent(static_cast<eKeyCodes>(wParam)));
 	} break;
 	// Mouse events handling
@@ -158,16 +153,10 @@ LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 bool Win32Window::ProcessMessage()
 {
 	MSG message;
-	while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE))
+	while (PeekMessage(&message, *getHWND(), 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&message);
 		DispatchMessage(&message);
-
-		if (message.message == WM_QUIT)
-		{
-			SetIsClosed(true);
-			return false;
-		}
 	}
 	return true;
 }

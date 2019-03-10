@@ -1,14 +1,14 @@
 #pragma once
-#include "Hollow/ECS/Systems/System.h"
-#include "Sandbox/Entities/GameObject.h"
-#include "Sandbox/Components/PositionComponent.h"
+#include "Hollow/ECS/System.h"
+#include "Hollow/ECS/Entities/GameObject.h"
+#include "Hollow/ECS/Components/PositionComponent.h"
 #include "Sandbox/Components/CollisionComponent.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/ECS/EntityManager.h"
 
 using namespace Hollow;
 
-class CollisionSystem : public Hollow::System<CollisionSystem>
+class CollisionSystem : public System<CollisionSystem>
 {
 private:
 	CollisionComponent * collisionComponent;

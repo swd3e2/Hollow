@@ -41,6 +41,7 @@ D3DRenderer::D3DRenderer() :
 		HW_ERROR("RenderSystem: Can't create DeviceAndSwapChain!");
 	}
 
+	D3D11_VIEWPORT	vp;
 	vp.Width = (float)width;
 	vp.Height = (float)height;
 	vp.MinDepth = 0.0f;
@@ -59,9 +60,9 @@ D3DRenderer::D3DRenderer() :
 	m_SamplerStateWrap = new D3DSamplerState(m_Device.Get(), D3D11_TEXTURE_ADDRESS_WRAP);
 	m_SamplerStateClamp = new D3DSamplerState(m_Device.Get(), D3D11_TEXTURE_ADDRESS_CLAMP);
 
-	camera = new Camera();
-	camera->SetProjectionValues(85.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
 	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(WVP));
+	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(TransformBuff));
+	m_LightBuffer = new D3DConstantBuffer(m_Device.Get(), m_DeviceContext.Get(), sizeof(Light));
 
 	textureManager = new TextureManager(m_Device.Get(), m_DeviceContext.Get());
 	shaderManager = new D3DShaderManager(m_Device.Get());
@@ -88,29 +89,20 @@ void D3DRenderer::PreUpdateFrame()
 	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());
 	m_DeviceContext->PSSetSamplers(1, 1, m_SamplerStateClamp->GetSamplerState());
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfMainRenderTaget(), m_DepthStencil->GetDepthStencilView());
-	camera->Update();
-	UpdateWVP();
 	SetVertexShader(shaderManager->getVertexShader("vs"));
 	SetPixelShader(shaderManager->getPixelShader("ps"));
+
+	// Update world view projection matrix
+	m_wvp.WVP = XMMatrixTranspose(XMMatrixIdentity()
+		* m_Camera->GetViewMatrix()
+		* m_Camera->GetProjectionMatrix());
+
+	m_WVPConstantBuffer->Update(&m_wvp);
 	SetContantBuffer(0, m_WVPConstantBuffer);
-}
 
-size_t D3DRenderer::createRenderable(Mesh * mesh)
-{
-	D3DRenderable* renderable = new D3DRenderable();
-
-	for (auto& it : mesh->objects) {
-		RenderableObject* object = new RenderableObject();
-		object->buffer = new D3DBuffer(m_Device.Get(), it->data, sizeof(SimpleVertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
-		D3DMaterial* mat = new D3DMaterial();
-		D3DTexture* tex = textureManager->CreateTexture(it->material.diffuse_texture);
-		mat->SetDiffuseTexture(tex);
-		object->material = mat;
-		renderable->renderableObjects.push_back(object);
-	}
-
-	renderables.push_back(renderable);
-	return 1;
+	// update light
+	m_LightBuffer->Update(&light);
+	SetContantBuffer(3, m_LightBuffer);
 }
 
 void D3DRenderer::Draw(RenderableObject * object)
@@ -128,23 +120,26 @@ void D3DRenderer::PostUpdateFrame()
 	m_SwapChain->Present(1, 0);
 }
 
-void D3DRenderer::UpdateWVP()
-{
-	m_wvp.WVP = XMMatrixTranspose(XMMatrixIdentity()
-		* camera->GetViewMatrix()
-		* camera->GetProjectionMatrix());
-
-	m_WVPConstantBuffer->Update(&m_wvp, sizeof(m_wvp));
-}
-
 bool D3DRenderer::processMessage()
 {
 	return window.ProcessMessage();
 }
 
-void D3DRenderer::Update()
+void D3DRenderer::Update(std::vector<IRenderable*>* renderableList)
 {
-	for (auto& it : renderables)
-		for (auto& buff : it->renderableObjects)
-			Draw(buff);
+	for (auto& renderable : *renderableList)
+	{
+		D3DRenderable* dxRenderable = (D3DRenderable*)renderable;
+
+		transformBuff.transform = XMMatrixTranspose(
+			(XMMatrixTranslation(dxRenderable->transform->position.x, dxRenderable->transform->position.y, dxRenderable->transform->position.z) * 
+			XMMatrixScaling(dxRenderable->transform->scale.x, dxRenderable->transform->scale.y, dxRenderable->transform->scale.z)) *
+			XMMatrixRotationRollPitchYaw(dxRenderable->transform->rotation.x, dxRenderable->transform->rotation.y, dxRenderable->transform->rotation.z));
+
+		m_TransformConstantBuffer->Update(&transformBuff);
+		SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
+
+		for (RenderableObject* dxRenderableObject : dxRenderable->renderableObjects)
+			Draw(dxRenderableObject);
+	}
 }

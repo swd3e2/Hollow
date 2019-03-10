@@ -24,5 +24,5 @@ public:
 private:
 	void m_UpdateWindowState();
 	HINSTANCE hInst = nullptr;
-	static HWND hWnd;
+	HWND hWnd;
 };

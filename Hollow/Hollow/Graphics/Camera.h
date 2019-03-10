@@ -3,6 +3,7 @@
 #include "DirectXMath.h"
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Platform.h"
+#include "Hollow/Math/Math.h"
 
 using namespace DirectX;
 
@@ -33,7 +34,7 @@ public:
 	void AdjustRotation(float x, float y, float z);
 	void SetLookAtPos(XMFLOAT3 lookAtPos);
 
-	void Update();
+	void Update(double dt);
 	XMVECTOR & getLookAtVector();
 private:
 	void UpdateViewMatrix();
@@ -49,7 +50,8 @@ private:
 	const XMVECTOR DEFAULT_BACKWARD_VECTOR = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 	const XMVECTOR DEFAULT_LEFT_VECTOR = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
 	const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-	const float cameraSpeed = 0.5f;
+	const float cameraMoveSpeed = 0.001f;
+	const float cameraRotationSpeed = 0.005f;
 
 	XMVECTOR camTarget;
 	XMVECTOR vec_forward;

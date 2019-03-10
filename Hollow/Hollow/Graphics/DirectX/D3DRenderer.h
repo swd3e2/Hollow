@@ -8,7 +8,6 @@
 #include "D3DVertexShader.h"
 #include "D3DIndexBuffer.h"
 #include "D3DConstantBuffer.h"
-#include "D3DBuffer.h"
 #include "Hollow/Graphics/IRenderer.h"
 #include "D3DRenderable.h"
 #include "D3DBlendState.h"
@@ -26,52 +25,60 @@
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Graphics/Events/BeginFrameEvent.h"
 #include "Hollow/Graphics/Events/EndFrameEvent.h"
-#define SCREEN_WIDTH 1800
-#define SCREEN_HEIGHT 900
+#include "Hollow/ECS/ComponentManager.h"
+#include "Hollow/ECS/Components/PositionComponent.h"
+#include "Hollow/ECS/Components/D3DRenderComponent.h"
+#include "D3DConstBufferMapping.h"
+#define SCREEN_WIDTH 1200
+#define SCREEN_HEIGHT 600
 
 using namespace DirectX;
 
 struct WVP
 {
-	DirectX::XMMATRIX WVP;
+	XMMATRIX WVP;
 };
 
-struct Transform
+struct TransformBuff
 {
-	DirectX::XMMATRIX transform;
-	float id;
-	bool selected;
+	XMMATRIX transform;
+};
 
+struct Light
+{
+	Light() { direction = {}; ambient = {}; }
+	XMFLOAT3 direction;
+	float pad;
+	XMFLOAT4 ambient;
 };
 
 // Simple directx renderer
 class HOLLOW_API D3DRenderer : public IRenderer
 {
+public:
+	Light												light;
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device>				m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			m_DeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				m_SwapChain;
-	WVP												m_wvp;
-	D3DConstantBuffer*								m_WVPConstantBuffer;
-	D3DConstantBuffer*								m_TransformConstantBuffer;
-	D3DBlendState*									m_BlendStateTransparancy;
-	D3DSamplerState*								m_SamplerStateWrap;
-	D3DSamplerState*								m_SamplerStateClamp;
-	D3DRenderTarget*								m_RenderTarget;
-	D3DDepthStencil*								m_DepthStencil;
-	Camera*											camera;
-	Win32Window										window;
-	TextureManager*									textureManager;
-	D3DShaderManager*								shaderManager;
-	Hollow::FileSystem								fs;
-	Hollow::Containers::Vector<D3DRenderable*>		renderables;
-
+	WVP													m_wvp;
+	TransformBuff										transformBuff;
+	D3DConstantBuffer*									m_LightBuffer;
+	D3DConstantBuffer*									m_WVPConstantBuffer;
+	D3DConstantBuffer*									m_TransformConstantBuffer;
+	D3DBlendState*										m_BlendStateTransparancy;
+	D3DSamplerState*									m_SamplerStateWrap;
+	D3DSamplerState*									m_SamplerStateClamp;
+	D3DRenderTarget*									m_RenderTarget;
+	D3DDepthStencil*									m_DepthStencil;
+	TextureManager*										textureManager;
+	D3DShaderManager*									shaderManager;
+	Win32Window											window;
 	int width;
 	int height;
-	D3D11_VIEWPORT	vp;
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
-	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	const float ClearColor[4] = { 0.7f, 0.7f, 0.7f, 1.0f };
 private:
 public:
 	D3DRenderer();
@@ -116,12 +123,10 @@ public:
 	inline void DrawIndexed(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }
 	inline void Draw(UINT count) { m_DeviceContext->Draw(count, 0); }
 
-	void UpdateWVP();
 	virtual void PreUpdateFrame() override;
-	virtual void Update() override;
+	virtual void Update(std::vector<IRenderable*>* renderableList) override;
 	void Draw(RenderableObject* vBuffer);
 	virtual void PostUpdateFrame() override;
-	virtual size_t createRenderable(Mesh* mesh) override;
 	virtual bool processMessage() override;
 
 	virtual bool windowIsClosed() override { return window.isClosed(); }

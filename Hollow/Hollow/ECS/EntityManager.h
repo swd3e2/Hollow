@@ -1,10 +1,9 @@
 #pragma once
 #include "Hollow/Memory/MemoryChunkManager.h"
-#include "Entities/IEntity.h"
+#include "IEntity.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Containers/pair.h"
-
 #include "ComponentManager.h"
 #include <unordered_map>
 #include <new>
@@ -26,7 +25,6 @@ namespace Hollow {
 			virtual ~IEntityContainer() {}
 			virtual const char* GetEntityContainerTypeName() const = 0;
 			virtual void DestroyEntity(IEntity* object) = 0;
-			virtual size_t GetContainerMemoryUsed() = 0;
 		};
 
 		template<class E>
@@ -50,7 +48,6 @@ namespace Hollow {
 				object->~IEntity();
 				this->DestroyObject(object);
 			}
-			virtual size_t GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
 		};
 
 		template<class E>
@@ -148,14 +145,6 @@ namespace Hollow {
 					break;
 				}
 			}
-		}
-
-		std::vector<size_t> GetMemoryUsed()
-		{ 
-			std::vector<size_t> memoryUsed;
-			for (auto it : this->m_EntityRegistry)
-				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
-			return memoryUsed;
 		}
 
 		Containers::Vector<IEntity*>* GetEntitiesList()

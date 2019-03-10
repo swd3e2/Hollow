@@ -3,6 +3,11 @@
 #include "KeyCodes.h"
 #include <windows.h>
 #include "DirectXMath.h"
+#include "Hollow/Events/IEventListener.h"
+#include "Hollow/Events/EventSystem.h"
+#include "Hollow/Events/ButtonPressedEvent.h"
+#include "Hollow/Events/ButtonReleasedEvent.h"
+#include "Hollow/Events/WindowCreateEvent.h"
 #include <vector>
 #define FIELD_SIZE 10000
 
@@ -15,7 +20,7 @@ struct SimpleFieldVertex
 	XMFLOAT4 third;
 };
 
-class HOLLOW_API InputManager
+class HOLLOW_API InputManager : IEventListener
 {
 private:
 	static bool KeyboardKeys[256];
@@ -41,7 +46,7 @@ public:
 
 	static std::vector<SimpleFieldVertex> field;
 public:
-	static void StartUp()
+	InputManager()
 	{
 		for (int i = 0; i < 256; i++) {
 			KeyboardKeys[i] = false;
@@ -52,6 +57,21 @@ public:
 
 		field.push_back({ XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(-1000, 0, 1000, 0), XMFLOAT4(1000, 0, 1000, 0) });
 		field.push_back({ XMFLOAT4(FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(1000, 0, 1000, 0), XMFLOAT4(-1000, 0, -1000, 0) });
+
+		EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonReleased, ButtonReleasedEvent::getStaticEventId()));
+		EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonPressed, ButtonPressedEvent::getStaticEventId()));
+	}
+
+	void onButtonPressed(IEvent* ev)
+	{
+		ButtonPressedEvent* event = (ButtonPressedEvent*)ev;
+		SetKeyboardKeyActive(event->button, true);
+	}
+
+	void onButtonReleased(IEvent* ev)
+	{
+		ButtonReleasedEvent* event = (ButtonReleasedEvent*)ev;
+		SetKeyboardKeyActive(event->button, false);
 	}
 
 	static bool GetKeyboardKeyIsPressed(eKeyCodes keyCode) { return KeyboardKeys[keyCode]; }
@@ -106,11 +126,6 @@ public:
 			XMVECTOR tri1V1 = XMVectorSet(tV1.x, tV1.y, tV1.z, 0.0f);
 			XMVECTOR tri1V2 = XMVectorSet(tV2.x, tV2.y, tV2.z, 0.0f);
 			XMVECTOR tri1V3 = XMVectorSet(tV3.x, tV3.y, tV3.z, 0.0f);
-
-			////Transform the vertices to world space
-			//tri1V1 = XMVector3TransformCoord(tri1V1, mesh->GetTransformMatrix());
-			//tri1V2 = XMVector3TransformCoord(tri1V2, mesh->GetTransformMatrix());
-			//tri1V3 = XMVector3TransformCoord(tri1V3, mesh->GetTransformMatrix());
 
 			XMVECTOR faceNormal = { 0, 1, 0, 0 };
 

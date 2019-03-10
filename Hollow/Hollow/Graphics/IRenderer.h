@@ -3,13 +3,16 @@
 #include <DirectXMath.h>
 #include "Hollow/Resources/Mesh.h"
 #include "Hollow/Platform.h"
-
-class D3DRenderer;
+#include "Camera.h"
+#include <vector>
+#include "IRenderable.h"
 
 class HOLLOW_API IRenderer
 {
 private:
 	static IRenderer* _instance;
+protected:
+	Camera* m_Camera;
 protected:
 	IRenderer()
 	{
@@ -24,9 +27,10 @@ public:
 	}
 
 	virtual bool processMessage() = 0;
-	virtual size_t createRenderable(Mesh* mesh) = 0;
 	virtual bool windowIsClosed() = 0;
 	virtual void PreUpdateFrame() = 0;
-	virtual void Update() = 0;
+	virtual void Update(std::vector<IRenderable*>* renderableList) = 0;
 	virtual void PostUpdateFrame() = 0;
+	inline void SetCamera(Camera* camera) { m_Camera = camera; }
+	inline Camera* getCamera() { return m_Camera; }	
 };

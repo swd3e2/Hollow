@@ -13,7 +13,6 @@ cbuffer ConstantBuffer : register(b1)
 cbuffer ConstantBuffer : register(b2)
 {
     matrix transform;
-    float id;
 }
 
 struct PixelShaderOutput
@@ -35,7 +34,7 @@ PixelShaderOutput VSMain(VertexShaderInput input)
     PixelShaderOutput vertexShaderOutput;
 
     vertexShaderOutput.pos = float4(input.pos, 1.0f);
-    //vertexShaderOutput.pos = mul(vertexShaderOutput.pos, transform);
+    vertexShaderOutput.pos = mul(vertexShaderOutput.pos, transform);
     vertexShaderOutput.pos = mul(vertexShaderOutput.pos, WVP);
     vertexShaderOutput.normal = input.normal;
     vertexShaderOutput.texCoord = input.texCoord;

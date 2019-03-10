@@ -1,6 +1,6 @@
 #pragma once
 #include "Hollow/Platform.h"
-#include "Hollow/ECS/Entities/IEntity.h"
+#include "Hollow/ECS/IEntity.h"
 #include "Hollow/Common/Log.h"
 #include "AudioEngine.h"
 #include "Sound.h"
@@ -8,9 +8,10 @@
 #include "Utils/ObjParser.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Utils/Helper.h"
-#include "Hollow/Graphics/RenderEngine.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Graphics/IMaterial.h"
+#include "Mesh.h"
+#include "Hollow/Graphics/DirectX/D3DRenderer.h"
 
 namespace Hollow {
 	class HOLLOW_API ResourceManager 
@@ -24,7 +25,7 @@ namespace Hollow {
 	public:
 		ResourceManager();
 		Sound* CreateSoundResource(const char* filename);
-		size_t CreateMeshResource(std::string filename);
+		Mesh* CreateMeshResource(std::string filename);
 		size_t CreateTextureResource(std::string filename);
 
 		static inline ResourceManager* instance() 

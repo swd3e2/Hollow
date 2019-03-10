@@ -3,7 +3,7 @@
 #include "Hollow/Utils/FamilyTypeID.h"
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
-#include "Components/IComponent.h"
+#include "IComponent.h"
 #include "EntityManager.h"
 #include <unordered_map>
 #include <assert.h>
@@ -24,13 +24,14 @@ namespace Hollow {
 	class HOLLOW_API ComponentManager
 	{
 	private:
+		static ComponentManager* _instance;
+
 		class IComponentContainer
 		{
 		public:
 			virtual ~IComponentContainer() {}
 			virtual const char* GetComponentContainerTypeName() const = 0;
 			virtual void DestroyComponent(IComponent* object) = 0;
-			virtual size_t GetContainerMemoryUsed() = 0;
 		};
 
 		template<class T>
@@ -54,8 +55,6 @@ namespace Hollow {
 				object->~IComponent();
 				this->DestroyObject(object);
 			}
-
-			virtual size_t GetContainerMemoryUsed() override { return this->GetMemoryUsed(); };
 		};
 
 		std::unordered_map<ComponentTypeID, IComponentContainer*> m_ComponentContainerRegistry;
@@ -67,6 +66,8 @@ namespace Hollow {
 
 			auto it = this->m_ComponentContainerRegistry.find(CID);
 			ComponentContainer<T>* cc = nullptr;
+
+			HW_DEBUG("GetComponentContainer Classname {} with static id {}", typeid(T).name(), CID);
 
 			if (it == this->m_ComponentContainerRegistry.end())
 			{
@@ -102,6 +103,7 @@ namespace Hollow {
 			static constexpr std::hash<ComponentId> ENTITY_COMPONENT_ID_HASHER{ std::hash<ComponentId>() };
 
 			const ComponentTypeID CTID = T::STATIC_COMPONENT_TYPE_ID;
+			HW_DEBUG("AddComponent Classname {} with static id {}", typeid(T).name(), CTID);
 
 			// aqcuire memory for new component object of type T
 			void* pObjectMemory = GetComponentContainer<T>()->CreateObject();
@@ -181,22 +183,18 @@ namespace Hollow {
 		template<class T>
 		inline TComponentIterator<T> begin()
 		{
+			HW_DEBUG("begin Classname {} with static id {}", typeid(T).name(), T::STATIC_COMPONENT_TYPE_ID);
 			return GetComponentContainer<T>()->begin();
 		}
 
 		template<class T>
 		inline TComponentIterator<T> end()
 		{
+			HW_DEBUG("end Classname {} with static id {}", typeid(T).name(), T::STATIC_COMPONENT_TYPE_ID);
 			return GetComponentContainer<T>()->end();
 		}
 
-		std::vector<size_t> GetMemoryUsed()
-		{
-			std::vector<size_t> memoryUsed;
-			for (auto it : this->m_ComponentContainerRegistry)
-				memoryUsed.push_back(it.second->GetContainerMemoryUsed());
-			return memoryUsed;
-		}
+		static ComponentManager* instance() { return _instance; }
 	};
 
 }

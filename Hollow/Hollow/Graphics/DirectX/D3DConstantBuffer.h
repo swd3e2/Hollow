@@ -10,11 +10,13 @@ private:
 private:
 	ID3D11Buffer* m_Buffer;
 	ID3D11DeviceContext * m_DeviceContext;
+	UINT size;
 public:
 	/*
 	 * @param UINT size size of structure 
 	 */
 	D3DConstantBuffer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, UINT size) {
+		this->size = size;
 		m_DeviceContext = deviceContext;
 		// Constant buffer
 		D3D11_BUFFER_DESC constantBufferDesc;
@@ -41,7 +43,7 @@ public:
 		return &m_Buffer;
 	}
 
-	bool Update(void* data, UINT size)
+	bool Update(void* data)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		HRESULT hr = m_DeviceContext->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

@@ -2,6 +2,7 @@
 #include "Hollow/Utils/FamilyTypeID.h"
 #include "Hollow/Platform.h"
 #include "IComponent.h"
+#include "Hollow/Common/Log.h"
 
 namespace Hollow {
 
@@ -11,7 +12,7 @@ namespace Hollow {
 	public:
 		static const size_t STATIC_COMPONENT_TYPE_ID;
 
-		Component() {}
+		Component() { HW_DEBUG("==================>Craeted component with static type id {}<===========", STATIC_COMPONENT_TYPE_ID); }
 
 		virtual ~Component() {}
 

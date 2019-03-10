@@ -1,7 +1,7 @@
 #pragma once
-#include "Entities/GameObject.h"
+#include "Hollow/ECS/Entities/GameObject.h"
 #include "Components/MoveComponent.h"
-#include "Components/PositionComponent.h"
+#include "Hollow/ECS/Components/PositionComponent.h"
 #include "Systems/MoveSystem.h"
 #include "Hollow/Input/InputManager.h"
 #include "DirectXMath.h"
@@ -14,7 +14,10 @@
 #include "Sandbox/Systems/CollisionSystem.h"
 #include <thread>
 #include "Hollow/Application.h"
-#include "Sandbox/Components/MeshComponent.h"
+#include "Hollow/ECS/Components/D3DRenderComponent.h"
+#include "Hollow/Graphics/DirectX/D3DRenderer.h"
+#include "Hollow/ECS/Components/D3DRenderComponent.h"
+#include "Hollow/Common/Log.h"
 
 using namespace DirectX;
 
@@ -27,23 +30,19 @@ private:
 private:
 	void InitScene()
 	{
-		/*Hollow::Sound* music2 = m_ResourceManager->CreateSoundResource("Sandbox/Resources/Sounds/2.wav");
-		music2->Play();*/
-		
-		GameObject * object = m_EntityManager->CreateEntity<GameObject>();
-		object->AddComponent<MeshComponent, size_t>(m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/g.obj"));
-		object->AddComponent<PositionComponent, DirectX::XMFLOAT3, DirectX::XMFLOAT3, DirectX::XMFLOAT3>({ 0.0f, -3.110f, 0.0f }, { 15.0f, 15.0f, 15.0f }, { 0.0f, 0.0f, 0.0f });
-		object->AddComponent<SelectComponent, bool>(false);
+		sceneManager.CreateSceneObject(
+			((D3DRenderer*)m_Renderer)->getDevice(), 
+			m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/Ball.obj"), 
+			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
+		);
 	}
 public:
 	MyApp()
 	{
 		m_MoveSystem = new MoveSystem();
 		m_CollisionSystem = new CollisionSystem();
-
 		m_SystemManager->AddSystem(m_MoveSystem);
 		m_SystemManager->AddSystem(m_CollisionSystem);
-
 		this->InitScene();
 	}
 };

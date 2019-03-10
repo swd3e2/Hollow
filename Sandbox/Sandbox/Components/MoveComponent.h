@@ -1,5 +1,5 @@
 #pragma once
-#include "Hollow/ECS/Components/Component.h"
+#include "Hollow/ECS/Component.h"
 #include <DirectXMath.h>
 
 using namespace DirectX;

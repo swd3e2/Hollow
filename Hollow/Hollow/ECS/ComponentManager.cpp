@@ -2,8 +2,14 @@
 
 namespace Hollow {
 
+	ComponentManager* ComponentManager::_instance = nullptr;
+
 	ComponentManager::ComponentManager()
 	{
+		if (_instance == nullptr) {
+			_instance = this;
+		}
+
 		HW_DEBUG("ComponentManager: created");
 		const size_t NUM_COMPONENTS{ Core::Utils::FamilyTypeID<IComponent>::Get() };
 

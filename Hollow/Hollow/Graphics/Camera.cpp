@@ -149,33 +149,33 @@ void Camera::SetLookAtPos(XMFLOAT3 lookAtPos)
 	this->SetRotation(pitch, yaw, 0.0f);
 }
 
-void Camera::Update()
+void Camera::Update(double dt)
 {
 	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_W) == true)
 	{
 		XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
-		AdjustPosition((vec_forward + vector * 1.5f) * cameraSpeed);
+		AdjustPosition((vec_forward + vector * 1.5f) * cameraMoveSpeed * dt);
 	}
 		
 	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_S) == true)
 	{
 		XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
-		AdjustPosition((vec_backward - vector * 1.5f) * cameraSpeed);
+		AdjustPosition((vec_backward - vector * 1.5f) * cameraMoveSpeed * dt);
 	}
 		
 	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_A) == true)
 	{
-		AdjustPosition(vec_left * cameraSpeed);
+		AdjustPosition(vec_left * cameraMoveSpeed * dt);
 	}
 		
 	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_D) == true)
 	{
-		AdjustPosition(vec_right * cameraSpeed);
+		AdjustPosition(vec_right * cameraMoveSpeed * dt);
 	}
 
 	if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT))
 	{
-		AdjustRotation(InputManager::my * 0.005f, InputManager::mx * 0.005f, 0.0f);
+		AdjustRotation(InputManager::my * cameraRotationSpeed, InputManager::mx * cameraRotationSpeed, 0.0f);
 	}
 }
 

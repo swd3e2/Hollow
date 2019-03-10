@@ -10,15 +10,13 @@ namespace Hollow {
 		}
 	}
 
-	size_t ResourceManager::CreateMeshResource(std::string filename)
+	Mesh* ResourceManager::CreateMeshResource(std::string filename)
 	{
-		IRenderer* renderer = IRenderer::instance();
-
 		MeshData* data = objLoader.LoadObj(filename);
-		Mesh* mesh = new Mesh();
-
+		Mesh* mesh = new Mesh(filename);
+		
 		if (data == nullptr) {
-			return 1;
+			return nullptr;
 		}
 
 		for (int i = 0; i < data->objects.size(); i++) {
@@ -48,7 +46,7 @@ namespace Hollow {
 				vertices->push_back(simpleVertex);
 			}
 
-			MeshModel* meshModel = new MeshModel(vertices->data(), vertices->size());
+			MeshModel* meshModel = new MeshModel(vertices->data(), vertices->size(), data->objects[i]->object_name);
 
 			if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
 				meshModel->material.name = data->objects[i]->material;
@@ -59,11 +57,9 @@ namespace Hollow {
 
 			mesh->objects.push_back(meshModel);
 		}
-		size_t renderableId = renderer->createRenderable(mesh);
 
 		delete data;
-		delete mesh;
-		return renderableId;
+		return mesh;
 	}
 
 	size_t ResourceManager::CreateTextureResource(std::string filename)

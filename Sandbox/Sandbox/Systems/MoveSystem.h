@@ -1,8 +1,8 @@
 #pragma once
-#include "Hollow/ECS/Systems/System.h"
+#include "Hollow/ECS/System.h"
 #include "Hollow/Common/Log.h"
-#include "Sandbox/Entities/GameObject.h"
-#include "Sandbox/Components/PositionComponent.h"
+#include "Hollow/ECS/Entities/GameObject.h"
+#include "Hollow/ECS/Components/PositionComponent.h"
 #include "Sandbox/Components/MoveComponent.h"
 #include <vector>
 #include "Hollow/Containers/vector.h"

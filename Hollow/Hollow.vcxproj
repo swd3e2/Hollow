@@ -12,8 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Application.h" />
-    <ClInclude Include="Hollow\ApplicationLayer.h" />
     <ClInclude Include="Hollow\DummyConsoleListener.h" />
+    <ClInclude Include="Hollow\ECS\Components\PositionComponent.h" />
+    <ClInclude Include="Hollow\ECS\Components\D3DRenderComponent.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
     <ClInclude Include="Hollow\Events\Event.h" />
@@ -23,7 +24,9 @@
     <ClInclude Include="Hollow\Events\IEvent.h" />
     <ClInclude Include="Hollow\Events\IEventDelegate.h" />
     <ClInclude Include="Hollow\Events\IEventListener.h" />
+    <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
+    <ClInclude Include="Hollow\ECS\Entities\GameObject.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBlendState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DIndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h" />
@@ -48,14 +51,15 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderable.h" />
     <ClInclude Include="Hollow\Graphics\IRenderable.h" />
     <ClInclude Include="Hollow\Graphics\ITexture.h" />
-    <ClInclude Include="Hollow\Graphics\RenderEngine.h" />
     <ClInclude Include="Hollow\Graphics\SimpleVertex.h" />
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
+    <ClInclude Include="Hollow\Graphics\Transform.h" />
     <ClInclude Include="Hollow\ImGuiLayer.h" />
     <ClInclude Include="Hollow\Layer.h" />
     <ClInclude Include="Hollow\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\Mesh.h" />
     <ClInclude Include="Hollow\Resources\TextureLoader.h" />
+    <ClInclude Include="Hollow\SceneManager.h" />
     <ClInclude Include="Hollow\Utils\FileSystem.h" />
     <ClInclude Include="Hollow\Utils\Helper.h" />
     <ClInclude Include="Hollow\Containers\hash_map.h" />
@@ -77,18 +81,18 @@
     <ClInclude Include="Hollow\Resources\ResourceManager.h" />
     <ClInclude Include="Hollow\Utils\Console.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
-    <ClInclude Include="Hollow\ECS\Components\Component.h" />
-    <ClInclude Include="Hollow\ECS\Entities\Entity.h" />
-    <ClInclude Include="Hollow\ECS\Entities\IEntity.h" />
+    <ClInclude Include="Hollow\ECS\Component.h" />
+    <ClInclude Include="Hollow\ECS\Entity.h" />
+    <ClInclude Include="Hollow\ECS\IEntity.h" />
     <ClInclude Include="Hollow\Utils\FamilyTypeID.h" />
-    <ClInclude Include="Hollow\ECS\Systems\ISystem.h" />
+    <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Camera.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DIShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DPixelShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DVertexShader.h" />
-    <ClInclude Include="Hollow\ECS\Systems\System.h" />
+    <ClInclude Include="Hollow\ECS\System.h" />
     <ClInclude Include="Hollow\Memory\Allocators\BaseAllocator.h" />
     <ClInclude Include="Hollow\Memory\Allocators\LinearAllocator.h" />
     <ClInclude Include="Hollow\Memory\Allocators\PointerMathUtils.h" />
@@ -100,10 +104,11 @@
     <ClInclude Include="Hollow\Resources\Utils\ObjParser.h" />
     <ClInclude Include="Hollow\Graphics\Window\IWindow.h" />
     <ClInclude Include="Hollow\Graphics\Window\Win32\Win32Window.h" />
-    <ClInclude Include="Hollow\ECS\Components\IComponent.h" />
+    <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\Common\Log.h" />
     <ClInclude Include="Hollow\Common\Timer.h" />
     <ClInclude Include="Hollow\Resources\Sound.h" />
+    <ClInclude Include="Hollow\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Application.cpp" />
@@ -187,7 +192,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;$(SolutionDir)Hollow\vendor\DirectXTK\Inc;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
@@ -208,13 +213,13 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engin
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinyObjLoader;$(SolutionDir)Hollow\vendor\DirectXTK\Inc;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;DirectXTK.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"

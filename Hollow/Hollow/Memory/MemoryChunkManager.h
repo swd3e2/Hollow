@@ -67,30 +67,51 @@ namespace Hollow { namespace Core { namespace Memory {
 				return *this;
 			}
 
-			inline T& operator*() const { return *m_CurrentObject; }
+			inline T* operator*() const { return *m_CurrentObject; }
 			inline T* operator->() const { return *m_CurrentObject; }
 
-			inline bool operator==(iterator& other) {
+			inline bool operator==(iterator& other) 
+			{
 				return ((this->m_CurrentChunk == other.m_CurrentChunk) && (this->m_CurrentObject == other.m_CurrentObject));
 			}
 			inline bool operator!=(iterator& other)
 			{
-				return ((this->m_CurrentChunk != other.m_CurrentChunk) && (this->m_CurrentObject != other.m_CurrentObject));
+				return ((this->m_CurrentChunk != other.m_CurrentChunk) || (this->m_CurrentObject != other.m_CurrentObject));
 			}
 		};
 	private:
 		// Size of allocated memory for each of memory chunks
 		static const size_t size = (sizeof(T) + alignof(T)) * max_ojbects;
-		std::vector<MemoryChunk*> chunks;
+		std::list<MemoryChunk*> chunks;
 		const char* allocatorTag;
 	public:
 		MemoryChunkManager(const char* allocatorTag) :
 			allocatorTag(allocatorTag)
 		{
 			HW_DEBUG("MemoryChunkManager: created, firstAddress {}", this->m_Allocator->GetMemoryFirstAddress());
-
 			PoolAllocator* allocator = new PoolAllocator(this->allocate(size, allocatorTag), size, sizeof(T), alignof(T));
 			this->chunks.push_back(new MemoryChunk(allocator));
+		}
+
+		virtual ~MemoryChunkManager()
+		{
+			// make sure all entities will be released!
+			for (auto chunk : this->chunks)
+			{
+				for (auto obj : chunk->objects)
+					((T*)obj)->~T();
+
+				chunk->objects.clear();
+
+				// free allocated allocator memory
+				free((void*)chunk->allocator->GetMemoryFirstAddress());
+				delete chunk->allocator;
+				chunk->allocator = nullptr;
+
+				// delete helper chunk object
+				delete chunk;
+				chunk = nullptr;
+			}
 		}
 
 		void* CreateObject()
@@ -98,7 +119,7 @@ namespace Hollow { namespace Core { namespace Memory {
 			void* objectMemory = nullptr;
 
 			// Iterate threw chunks, if we find place to allocate memory - we store it
-			// if not - create new chunk and store here
+			// if not - create new chunk and store in it
 			for (auto chunk : this->chunks)
 			{
 				if (chunk->objects.size() > max_ojbects)
@@ -141,7 +162,8 @@ namespace Hollow { namespace Core { namespace Memory {
 			}
 		}
 
-		inline size_t GetMemoryUsed() { return this->m_Allocator->GetMemoryUsed(); }
+		inline iterator begin() { return iterator(this->chunks.begin(), this->chunks.end()); }
+		inline iterator end() { return iterator(this->chunks.end(), this->chunks.end()); }
 	};
 
 }}}

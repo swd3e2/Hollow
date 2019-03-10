@@ -8,8 +8,6 @@
 class HOLLOW_API D3DBuffer : public IBuffer
 {
 private:
-	//D3DBuffer(const D3DBuffer& rhs);
-private:
 	ID3D11Buffer* buffer;
 	UINT stride;
 	UINT bufferSize = 0;

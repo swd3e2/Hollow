@@ -1,5 +1,5 @@
 #pragma once
-#include "Hollow/ECS/Components/Component.h"
+#include "Hollow/ECS/Component.h"
 
 class CollisionComponent : public Hollow::Component<CollisionComponent>
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Systems/ISystem.h"
+#include "ISystem.h"
 #include <list>
 #include "Hollow/Platform.h"
 

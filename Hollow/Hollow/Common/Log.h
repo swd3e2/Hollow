@@ -32,5 +32,4 @@ namespace Hollow {
 #define HW_INFO(...)     Hollow::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define HW_WARN(...)     Hollow::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define HW_ERROR(...)    Hollow::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define HW_FATAL(...)    Hollow::Log::GetCoreLogger()->fatal(__VA_ARGS__)
 #define HW_DEBUG(...)    Hollow::Log::GetCoreLogger()->debug(__VA_ARGS__)

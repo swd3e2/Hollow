@@ -1,20 +1,53 @@
 #include "Timer.h"
 
-namespace Hollow {
-	Timer::Timer() :
-		m_Elapsed(0)
-	{}
+Timer::Timer()
+{
+	start = std::chrono::high_resolution_clock::now();
+	stop = std::chrono::high_resolution_clock::now();
+}
 
-	Timer::~Timer()
-	{}
-
-	void Timer::Tick(float_t ms)
+double Timer::GetMilisecondsElapsed()
+{
+	if (isrunning)
 	{
-		this->m_Elapsed += std::chrono::duration<float, std::ratio<1, 1000>>(ms);
+		auto elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start);
+		return elapsed.count();
 	}
-
-	void Timer::Reset()
+	else
 	{
-		this->m_Elapsed = Elapsed::zero();
+		auto elapsed = std::chrono::duration<double, std::milli>(stop - start);
+		return elapsed.count();
+	}
+}
+
+void Timer::Restart()
+{
+	isrunning = true;
+	start = std::chrono::high_resolution_clock::now();
+}
+
+bool Timer::Stop()
+{
+	if (!isrunning)
+		return false;
+	else
+	{
+		stop = std::chrono::high_resolution_clock::now();
+		isrunning = false;
+		return true;
+	}
+}
+
+bool Timer::Start()
+{
+	if (isrunning)
+	{
+		return false;
+	}
+	else
+	{
+		start = std::chrono::high_resolution_clock::now();
+		isrunning = true;
+		return true;
 	}
 }

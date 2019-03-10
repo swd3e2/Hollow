@@ -1,5 +1,7 @@
 #include "TextureManager.h"
 
+TextureManager* TextureManager::_instance = nullptr;
+
 D3DTexture * TextureManager::CreateTexture(std::string filename)
 {
 	if (textureList.find(filename) != textureList.end())

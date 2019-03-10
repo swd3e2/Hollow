@@ -1,9 +1,10 @@
 #pragma once
 #include "Event.h"
+#include "Hollow/Input/KeyCodes.h"
 
 class ButtonReleasedEvent : public Event<ButtonReleasedEvent>
 {
 public:
-	ButtonReleasedEvent(char button) : button(button) {}
-	char button;
+	ButtonReleasedEvent(eKeyCodes button) : button(button) {}
+	eKeyCodes button;
 };

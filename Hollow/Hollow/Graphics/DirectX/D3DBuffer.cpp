@@ -1,6 +1,6 @@
 #include "D3DBuffer.h"
 
-D3DBuffer::D3DBuffer(ID3D11Device * device, void * data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag)
+D3DBuffer::D3DBuffer(ID3D11Device* device, void * data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag)
 {
 	HRESULT hr = S_OK;
 
