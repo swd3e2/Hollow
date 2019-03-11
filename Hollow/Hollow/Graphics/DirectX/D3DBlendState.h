@@ -16,15 +16,15 @@ public:
 
 		blendingTragetDesc.BlendEnable = true;
 		blendingTragetDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-		blendingTragetDesc.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+		blendingTragetDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 		blendingTragetDesc.BlendOp = D3D11_BLEND_OP_ADD;
-		blendingTragetDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendingTragetDesc.SrcBlendAlpha = D3D11_BLEND_ZERO;
 		blendingTragetDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
 		blendingTragetDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendingTragetDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		D3D11_BLEND_DESC blendDesc = { 0 };
-
+		
 		blendDesc.AlphaToCoverageEnable = false;
 		blendDesc.RenderTarget[0] = blendingTragetDesc;
 
@@ -40,8 +40,8 @@ public:
 		SAFE_RELEASE(m_BlendState);
 	}
 
-	ID3D11BlendState* const * GetBlendState() 
+	ID3D11BlendState* GetBlendState() 
 	{
-		return &m_BlendState;
+		return m_BlendState;
 	}
 };

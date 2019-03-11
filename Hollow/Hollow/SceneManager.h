@@ -7,6 +7,7 @@
 #include "Resources/Mesh.h"
 #include "Graphics/Transform.h"
 #include "Hollow/Platform.h"
+#include "Hollow/Graphics/DirectX/Icons/LightIcon.h"
 
 class HOLLOW_API SceneManager
 {

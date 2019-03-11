@@ -35,7 +35,7 @@ public:
 		
 		sceneManager.CreateSceneObject(
 			((D3DRenderer*)m_Renderer)->getDevice(),
-			m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/Ball.obj"),
+			m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/gwen.obj"),
 			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
 		);
 	}

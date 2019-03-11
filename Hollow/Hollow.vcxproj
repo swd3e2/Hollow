@@ -27,11 +27,13 @@
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
     <ClInclude Include="Hollow\ECS\Entities\GameObject.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBlendState.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DGeometryShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DTexture.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\Icons\LightIcon.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.h" />

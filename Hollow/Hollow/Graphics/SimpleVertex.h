@@ -12,4 +12,6 @@ struct SimpleVertex
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT2 texCoord;
 	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT3 tangent;
+	DirectX::XMFLOAT3 bitangent;
 };

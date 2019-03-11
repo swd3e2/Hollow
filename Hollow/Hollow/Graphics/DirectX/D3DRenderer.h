@@ -19,6 +19,7 @@
 #include "D3DShaderManager.h"
 #include "D3DConstBufferMapping.h"
 #include "Hollow/Graphics/TextureManager.h"
+#include "Icons/LightIcon.h"
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 600
 
@@ -41,12 +42,26 @@ struct TransformBuff
 	XMMATRIX transform;
 };
 
-struct Light
+struct AmbientLight
 {
-	Light() { direction = {}; ambient = {}; }
+	AmbientLight() { direction = {}; ambient = {}; }
 	XMFLOAT3 direction;
 	float pad;
 	XMFLOAT4 ambient;
+};
+
+struct PointLight
+{
+	PointLight() { position = {}; ambient = {}; power = 0; }
+	XMFLOAT3 position;
+	float power;
+	XMFLOAT4 ambient;
+};
+
+struct Light
+{
+	AmbientLight ambientLight;
+	PointLight pointLight;
 };
 
 // Simple directx renderer
@@ -73,6 +88,7 @@ private:
 	TextureManager*			textureManager;
 	D3DShaderManager*		shaderManager;
 	Win32Window				window;
+	LightIcon*				lightIcon;
 	int width;
 	int height;
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
@@ -117,6 +133,35 @@ public:
 	{ 
 		this->m_DeviceContext->VSSetConstantBuffers(slot, 1, cb->GetAddressOf());
 		this->m_DeviceContext->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+	}
+
+	void DrawLight()
+	{
+		XMVECTOR cameravector = m_Camera->GetPositionVector();
+		XMVECTOR iconposvector = { lightIcon->renderable.transform->position.x, lightIcon->renderable.transform->position.y, lightIcon->renderable.transform->position.z, 1.0f};
+		XMVECTOR icontocameravector = iconposvector - cameravector;
+
+		//DirectX::XMStoreFloat3(&(lightIcon->renderable.transform->rotation), m_Camera->GetRotationFloat3());
+		lightIcon->renderable.transform->rotation = m_Camera->GetRotationFloat3();
+
+		D3DRenderable& dxRenderable = lightIcon->renderable;
+
+		transformBuff.transform = XMMatrixTranspose(
+			(XMMatrixRotationRollPitchYaw(dxRenderable.transform->rotation.x, dxRenderable.transform->rotation.y, dxRenderable.transform->rotation.z) *
+				XMMatrixScaling(dxRenderable.transform->scale.x, dxRenderable.transform->scale.y, dxRenderable.transform->scale.z)) *
+			XMMatrixTranslation(dxRenderable.transform->position.x, dxRenderable.transform->position.y, dxRenderable.transform->position.z));
+
+		m_TransformConstantBuffer->Update(&transformBuff);
+		SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
+
+		float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
+
+		for (RenderableObject* dxRenderableObject : dxRenderable.renderableObjects)
+			Draw(dxRenderableObject);
+
+		float blendFactor1[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor1, 0xffffffff);
 	}
 
 	inline void DrawIndexed(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }

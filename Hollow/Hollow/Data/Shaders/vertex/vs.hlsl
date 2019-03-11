@@ -18,8 +18,11 @@ cbuffer ConstantBuffer : register(b2)
 struct PixelShaderOutput
 {
     float4 pos : SV_POSITION;
+    float4 worldPos : WORLD_POS;
     float2 texCoord : TEXCOORD;
     float3 normal : NORMAL0;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
 };
 
 struct VertexShaderInput
@@ -27,18 +30,24 @@ struct VertexShaderInput
     float3 pos : POSITION;
     float2 texCoord : TEXCOORD;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
 };
 
 PixelShaderOutput VSMain(VertexShaderInput input)
 {
-    PixelShaderOutput vertexShaderOutput;
+    PixelShaderOutput output;
 
-    vertexShaderOutput.pos = float4(input.pos, 1.0f);
+    output.pos = float4(input.pos, 1.0f);
+    output.pos = mul(output.pos, transform);
+    output.worldPos = output.pos;
 
-    vertexShaderOutput.pos = mul(vertexShaderOutput.pos, transform);
-    vertexShaderOutput.pos = mul(vertexShaderOutput.pos, WVP);
-    vertexShaderOutput.normal = mul(input.normal, transform);
-    vertexShaderOutput.texCoord = input.texCoord;
+    output.pos = mul(output.pos, WVP);
+    output.normal = mul(input.normal, transform);
+    output.texCoord = input.texCoord;
 
-    return vertexShaderOutput;
+    output.tangent = input.tangent;
+    output.bitangent = input.bitangent;
+
+    return output;
 }

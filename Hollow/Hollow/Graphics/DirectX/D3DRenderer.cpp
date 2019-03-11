@@ -58,7 +58,7 @@ D3DRenderer::D3DRenderer() :
 	m_BlendStateTransparancy = new D3DBlendState(m_Device);
 
 	m_SamplerStateWrap = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_WRAP);
-	m_SamplerStateClamp = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_CLAMP);
+	m_SamplerStateClamp = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_WRAP);
 
 	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WVP));
 	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(TransformBuff));
@@ -70,6 +70,8 @@ D3DRenderer::D3DRenderer() :
 
 	SetVertexShader(shaderManager->getVertexShader("vs"));
 	SetPixelShader(shaderManager->getPixelShader("ps"));
+
+	lightIcon = new LightIcon(m_Device);
 }
 
 D3DRenderer::~D3DRenderer()
@@ -112,12 +114,24 @@ void D3DRenderer::PreUpdateFrame()
 	// update light
 	m_LightBuffer->Update(&light);
 	SetContantBuffer(3, m_LightBuffer);
+	lightIcon->renderable.transform->setPosition(light.pointLight.position.x, light.pointLight.position.y, light.pointLight.position.z);
+
+	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
+	//this->m_DeviceContext->GSSetShader(shaderManager->getGeometryShader("gs")->GetShader(), NULL, 0);
 }
 
 void D3DRenderer::Draw(RenderableObject * object)
 {
-	if (object->material->diffuseTexture->active) {
+	if (object->material->diffuseTexture && object->material->diffuseTexture->active) {
 		this->m_DeviceContext->PSSetShaderResources(0, 1, &object->material->diffuseTexture->m_TextureShaderResource);
+	} else {
+		this->m_DeviceContext->PSSetShaderResources(0, 1, pSRV);
+	}
+	if (object->material->normalTexture && object->material->normalTexture->active) {
+		this->m_DeviceContext->PSSetShaderResources(1, 1, &object->material->normalTexture->m_TextureShaderResource);
+	} else {
+		this->m_DeviceContext->PSSetShaderResources(1, 1, pSRV);
 	}
 
 	this->m_DeviceContext->IASetVertexBuffers(0, 1, object->buffer->GetAddressOf(), object->buffer->StridePtr(), &this->offset);
@@ -126,6 +140,7 @@ void D3DRenderer::Draw(RenderableObject * object)
 
 void D3DRenderer::PostUpdateFrame()
 {
+	DrawLight();
 	m_SwapChain->Present(1, 0);
 }
 

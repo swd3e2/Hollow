@@ -18,8 +18,12 @@ private:
 	float currentPosition[3] = {};
 	float currentRotation[3] = {};
 	float currentScale[3] = {};
-	float lightColor[3] = {};
-	float lightDirection[3] = {};
+	float ambientLightColor[3] = {};
+	float ambientLightDirection[3] = {};
+
+	float pointLightColor[3] = {};
+	float pointLightPosition[3] = {};
+	float pointLightStrenght = 0;
 
 	D3DRenderer* renderer;
 	D3DShaderManager* shaderManager;
@@ -63,16 +67,32 @@ public:
 	{
 		ImGui::Begin("Resource manager");
 
-		ImGui::DragFloat3("Light color", lightColor, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat3("Light direction", lightDirection, 0.01f, -1.0f, 1.0f);
+		ImGui::Text("Ambient");
+		ImGui::DragFloat3("Ambient Light color", ambientLightColor, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat3("Ambient Light direction", ambientLightDirection, 0.01f, -1.0f, 1.0f);
 
-		renderer->light.direction.x = lightDirection[0];
-		renderer->light.direction.y = lightDirection[1];
-		renderer->light.direction.z = lightDirection[2];
+		renderer->light.ambientLight.direction.x = ambientLightDirection[0];
+		renderer->light.ambientLight.direction.y = ambientLightDirection[1];
+		renderer->light.ambientLight.direction.z = ambientLightDirection[2];
 
-		renderer->light.ambient.x = lightColor[0];
-		renderer->light.ambient.y = lightColor[1];
-		renderer->light.ambient.z = lightColor[2];
+		renderer->light.ambientLight.ambient.x = ambientLightColor[0];
+		renderer->light.ambientLight.ambient.y = ambientLightColor[1];
+		renderer->light.ambientLight.ambient.z = ambientLightColor[2];
+
+		ImGui::Text("Point");
+		ImGui::DragFloat3("Point Light color", pointLightColor, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
+		ImGui::DragFloat("Point Light strength", &pointLightStrenght, 0.01f, -30.0f, 30.0f);
+
+		renderer->light.pointLight.ambient.x = pointLightColor[0];
+		renderer->light.pointLight.ambient.y = pointLightColor[1];
+		renderer->light.pointLight.ambient.z = pointLightColor[2];
+
+		renderer->light.pointLight.position.x = pointLightPosition[0];
+		renderer->light.pointLight.position.y = pointLightPosition[1];
+		renderer->light.pointLight.position.z = pointLightPosition[2];
+
+		renderer->light.pointLight.power = pointLightStrenght;
 
 		if (ImGui::BeginCombo("##combo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
 		{

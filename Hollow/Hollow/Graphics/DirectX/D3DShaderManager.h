@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "D3DVertexShader.h"
 #include "D3DPixelShader.h"
+#include "D3DGeometryShader.h"
 #include "Hollow/Utils/FileSystem.h"
 #include "Hollow/Utils/Helper.h"
 
@@ -10,6 +11,7 @@ class D3DShaderManager
 private:
 	std::unordered_map<std::string, D3DVertexShader*> m_vertexShaders;
 	std::unordered_map<std::string, D3DPixelShader*> m_pixelShaders;
+	std::unordered_map<std::string, D3DGeometryShader*> m_geometryShaders;
 	Hollow::FileSystem fs;
 	ID3D11Device* device;
 	static D3DShaderManager* _instance;
@@ -34,6 +36,11 @@ public:
 		for (auto& it : *shaders)
 			if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
 				m_pixelShaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = new D3DPixelShader(device, "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/pixel/" + it);
+
+		shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/geometry/");
+		for (auto& it : *shaders)
+			if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
+				m_geometryShaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = new D3DGeometryShader(device, "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/geometry/" + it);
 	}
 
 	void addVertexShader(std::string name, std::string shaderPath)
@@ -66,6 +73,23 @@ public:
 		if (m_pixelShaders.find(name) != m_pixelShaders.end())
 		{
 			return m_pixelShaders[name];
+		}
+		return nullptr;
+	}
+
+	void addGeometryShader(std::string name, std::string shaderPath)
+	{
+		if (m_geometryShaders.find(name) != m_geometryShaders.end())
+		{
+			m_geometryShaders[name] = new D3DGeometryShader(device, shaderPath);
+		}
+	}
+
+	D3DGeometryShader* getGeometryShader(std::string name)
+	{
+		if (m_geometryShaders.find(name) != m_geometryShaders.end())
+		{
+			return m_geometryShaders[name];
 		}
 		return nullptr;
 	}

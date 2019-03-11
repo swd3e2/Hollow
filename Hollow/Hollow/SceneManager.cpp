@@ -22,6 +22,8 @@ void SceneManager::CreateSceneObject(ID3D11Device * device, Mesh * mesh, Transfo
 		D3DMaterial* mat = new D3DMaterial();
 		D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.diffuse_texture);
 		mat->SetDiffuseTexture(tex);
+		tex = TextureManager::instance()->CreateTexture(it->material.normal_texture);
+		mat->SetNormalTexture(tex);
 		object->material = mat;
 		renderable->renderableObjects.push_back(object);
 	}
