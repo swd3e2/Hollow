@@ -1,7 +1,7 @@
 #include "D3DRenderer.h"
 
-D3DRenderer::D3DRenderer() :
-	window(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT)
+D3DRenderer::D3DRenderer(int width, int height) :
+	window(GetModuleHandle(NULL), width, height)
 {
 	HRESULT hr = S_OK;
 	RECT rc;
@@ -63,7 +63,8 @@ D3DRenderer::D3DRenderer() :
 	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WVP));
 	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(TransformBuff));
 	m_LightBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(Light));
-	m_WorldViewProjectionBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WorldViewProjection));;
+	m_WorldViewProjectionBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WorldViewProjection));
+	materialConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(MaterialData));
 
 	textureManager = new TextureManager(m_Device, m_DeviceContext);
 	shaderManager = new D3DShaderManager(m_Device);
@@ -119,6 +120,7 @@ void D3DRenderer::PreUpdateFrame()
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
 	//this->m_DeviceContext->GSSetShader(shaderManager->getGeometryShader("gs")->GetShader(), NULL, 0);
+	m_worldViewProjection.cameraPosition = m_Camera->GetPositionFloat3();
 }
 
 void D3DRenderer::Draw(RenderableObject * object)
@@ -133,6 +135,8 @@ void D3DRenderer::Draw(RenderableObject * object)
 	} else {
 		this->m_DeviceContext->PSSetShaderResources(1, 1, pSRV);
 	}
+	materialConstantBuffer->Update(&object->material->materialData);
+	SetContantBuffer(4, materialConstantBuffer);
 
 	this->m_DeviceContext->IASetVertexBuffers(0, 1, object->buffer->GetAddressOf(), object->buffer->StridePtr(), &this->offset);
 	m_DeviceContext->Draw(object->buffer->BufferSize(), 0);

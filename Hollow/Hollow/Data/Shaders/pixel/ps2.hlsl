@@ -45,8 +45,7 @@ float4 addAmbientColor(float3 normal)
 float4 PSMain(PixelShaderInput input) : SV_TARGET
 {
     float4 color = normal_map.Sample(SampleTypeClamp, input.texCoord);
-
-    color += addAmbientColor(input.normal);
+    color = color * 2 - 1;
 
     return color;
 }

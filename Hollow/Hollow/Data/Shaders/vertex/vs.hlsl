@@ -8,6 +8,7 @@ cbuffer ConstantBuffer : register(b1)
     matrix World;
     matrix View;
     matrix Projection;
+    float3 cameraPosition;
 }
 
 cbuffer ConstantBuffer : register(b2)

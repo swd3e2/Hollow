@@ -14,6 +14,8 @@
 #include "LayerStack.h"
 #include "Graphics/Camera.h"
 #include "SceneManager.h"
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 class HOLLOW_API Application
 {
@@ -44,9 +46,9 @@ public:
 		m_EventSystem = new EventSystem();
 		DummyConsoleListener e;
 		camera = new Camera();
-		camera->SetProjectionValues(75.0f, static_cast<float>(1200) / static_cast<float>(600), 0.1f, 1000.0f);
+		camera->SetProjectionValues(75.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 1000.0f);
 
-		m_Renderer = new D3DRenderer();
+		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT);
 		m_Renderer->SetCamera(camera);
 
 		m_ComponentManager = new Hollow::ComponentManager();
@@ -66,21 +68,9 @@ public:
 		sceneManager.Shutdown();
 	}
 public:
-	void runRenderer()
-	{
-		while (!m_Renderer->windowIsClosed()) {
-			m_Renderer->PreUpdateFrame();
-			m_LayerStack.PreUpdate();
-			m_LayerStack.Update();
-			m_Renderer->Update(sceneManager.GetSceneObjects());
-			m_LayerStack.PostUpdate();
-			m_Renderer->PostUpdateFrame();
-		}
-	}
 
 	void Run()
 	{
-		std::thread th(&Application::runRenderer, this);
 		m_Timer.Start();
 
 		while (!m_Renderer->windowIsClosed())
@@ -88,15 +78,25 @@ public:
 			dt = m_Timer.GetMilisecondsElapsed();
 			m_Timer.Restart();
 			m_Renderer->processMessage();
+
 			camera->Update(dt);
-			//InputManager::GetMousePosition(m_RenderSystem->GetCamera()->GetProjectionMatrix(), m_RenderSystem->GetCamera()->GetViewMatrix());
+			m_Renderer->PreUpdateFrame();
+
 			m_SystemManager->PreUpdateSystems(DELTA_TIME_STEP);
+			m_LayerStack.PreUpdate();
+
+			m_LayerStack.Update();
 			m_SystemManager->UpdateSystems(DELTA_TIME_STEP);
+			m_Renderer->Update(sceneManager.GetSceneObjects());
+
 			m_SystemManager->PostUpdateSystems(DELTA_TIME_STEP);
+			m_LayerStack.PostUpdate();
+
 			m_EventSystem->dispatch();
 			InputManager::Clear();
+			m_Renderer->PostUpdateFrame();
+
 			m_Timer.Stop();
 		}
-		th.join();
 	}
 };

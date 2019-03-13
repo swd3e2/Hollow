@@ -20,8 +20,6 @@
 #include "D3DConstBufferMapping.h"
 #include "Hollow/Graphics/TextureManager.h"
 #include "Icons/LightIcon.h"
-#define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 600
 
 using namespace DirectX;
 
@@ -35,6 +33,7 @@ struct WorldViewProjection
 	XMMATRIX World;
 	XMMATRIX View;
 	XMMATRIX Projection;
+	XMFLOAT3 cameraPosition;
 };
 
 struct TransformBuff
@@ -52,10 +51,12 @@ struct AmbientLight
 
 struct PointLight
 {
-	PointLight() { position = {}; ambient = {}; power = 0; }
+	PointLight() { position = {}; ambient = {}; power = 0; specularPower = 0; }
 	XMFLOAT3 position;
 	float power;
 	XMFLOAT4 ambient;
+	float specularPower;
+	float attenuation[3];
 };
 
 struct Light
@@ -76,10 +77,13 @@ private:
 	WVP						m_wvp;
 	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
+
 	D3DConstantBuffer*		m_LightBuffer;
 	D3DConstantBuffer*		m_WVPConstantBuffer;
 	D3DConstantBuffer*		m_WorldViewProjectionBuffer;
 	D3DConstantBuffer*		m_TransformConstantBuffer;
+	D3DConstantBuffer*		materialConstantBuffer;
+
 	D3DBlendState*			m_BlendStateTransparancy;
 	D3DSamplerState*		m_SamplerStateWrap;
 	D3DSamplerState*		m_SamplerStateClamp;
@@ -93,10 +97,10 @@ private:
 	int height;
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
-	const float ClearColor[4] = { 0.7f, 0.7f, 0.7f, 1.0f };
+	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 private:
 public:
-	D3DRenderer();
+	D3DRenderer(int width, int height);
 	~D3DRenderer();
 
 	inline void SetShaderResource(UINT slot, ID3D11ShaderResourceView * shaderResourceView)

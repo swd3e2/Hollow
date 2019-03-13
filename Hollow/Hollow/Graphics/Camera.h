@@ -50,8 +50,8 @@ private:
 	const XMVECTOR DEFAULT_BACKWARD_VECTOR = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 	const XMVECTOR DEFAULT_LEFT_VECTOR = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
 	const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-	const float cameraMoveSpeed = 0.001f;
-	const float cameraRotationSpeed = 0.005f;
+	const float cameraMoveSpeed = 0.002f;
+	const float cameraRotationSpeed = 0.008f;
 
 	XMVECTOR camTarget;
 	XMVECTOR vec_forward;

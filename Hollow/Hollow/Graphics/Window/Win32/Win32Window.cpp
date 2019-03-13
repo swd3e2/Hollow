@@ -29,7 +29,7 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 	windowRect.bottom = height + windowRect.top;
 	AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	hWnd = CreateWindow("DirectXAppClassName", "Hollow", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+	hWnd = CreateWindow("DirectXAppClassName", "Hollow", WS_POPUP,
 		windowRect.left, windowRect.top,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 		nullptr, nullptr, hInst, this);
@@ -43,7 +43,7 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 
 	RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 
-	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 	UpdateWindow(hWnd);
 	EventSystem::instance()->addEvent(new WindowCreateEvent("Some stupid message :)"));
 }
