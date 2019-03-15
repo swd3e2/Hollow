@@ -28,7 +28,7 @@ std::unordered_map<std::string, D3DTexture*>* TextureManager::getTexuresList()
 
 TextureData* TextureManager::loadTexture(std::string filename)
 {
-	filename.append(baseTexturePapth);
+	filename = baseTexturePapth + filename;
 
 	TextureData* textureData = new TextureData();
 	//image format

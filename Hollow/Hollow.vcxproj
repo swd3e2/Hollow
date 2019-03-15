@@ -75,7 +75,6 @@
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstBufferMapping.h" />
     <ClInclude Include="Hollow\Platform.h" />
-    <ClInclude Include="Hollow.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
     <ClInclude Include="Hollow\Utils\Console.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
@@ -199,7 +198,7 @@
       <AssemblerOutput>All</AssemblerOutput>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;DirectXTK.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"

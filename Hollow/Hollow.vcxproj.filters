@@ -69,9 +69,6 @@
     <ClInclude Include="Hollow\Platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Resources\AudioEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>

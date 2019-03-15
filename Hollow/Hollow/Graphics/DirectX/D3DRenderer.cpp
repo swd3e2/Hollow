@@ -101,17 +101,17 @@ void D3DRenderer::PreUpdateFrame()
 		* m_Camera->GetProjectionMatrix());
 
 	m_WVPConstantBuffer->Update(&m_wvp);
-	SetContantBuffer(0, m_WVPConstantBuffer);
+	SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
 
 	m_worldViewProjection.World = XMMatrixIdentity();
 	m_worldViewProjection.View = m_Camera->GetViewMatrix();
 	m_worldViewProjection.Projection = m_Camera->GetProjectionMatrix();
 	m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
-	SetContantBuffer(1, m_WorldViewProjectionBuffer);
+	SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
 
 	// update light
 	m_LightBuffer->Update(&light);
-	SetContantBuffer(3, m_LightBuffer);
+	SetContantBuffer(HOLLOW_CONST_BUFFER_LIGHT_SLOT, m_LightBuffer);
 	lightIcon->renderable.transform->setPosition(light.pointLight.position.x, light.pointLight.position.y, light.pointLight.position.z);
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
