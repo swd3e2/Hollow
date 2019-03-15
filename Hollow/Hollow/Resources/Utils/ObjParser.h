@@ -23,6 +23,11 @@ namespace Hollow {
 		std::string name;
 		std::string diffuse_texture;
 		std::string normal_texture;
+		float Ns;
+		float Ka[3];
+		float Kd[3];
+		float Ks[3];
+		float Ke[3];
 	};
 
 	struct RawMeshData

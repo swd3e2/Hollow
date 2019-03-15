@@ -2,7 +2,6 @@
 #include <d3d11.h>
 #include <string>
 #include "Hollow/Platform.h"
-#include "Hollow/Resources/TextureLoader.h"
 #include "Hollow/Common/Log.h"
 #include "Hollow/Graphics/ITexture.h"
 
@@ -14,22 +13,13 @@ public:
 		SAFE_RELEASE(m_TextureShaderResource);
 	}
 
-	void CreateTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const char* filename)
+	void CreateTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename, int width, int height, void* data, int pitch)
 	{
-		std::string filepath = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/";
-		filepath += filename;
-		TextureData* data = TextureLoader::loadFromFile(filepath.c_str());
-		
-		if (data == nullptr) {
-			delete data;
-			return;
-		}
-
 		active = true;
 
 		D3D11_TEXTURE2D_DESC textureDesc = {};
-		textureDesc.Height = data->height;
-		textureDesc.Width = data->width;
+		textureDesc.Height = height;
+		textureDesc.Width = width;
 		textureDesc.MiscFlags = 0;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
@@ -42,18 +32,16 @@ public:
 		textureDesc.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA initData;
-		initData.pSysMem = data->data;
-		initData.SysMemPitch = static_cast<UINT>(data->pitch);
+		initData.pSysMem = data;
+		initData.SysMemPitch = pitch;
 		initData.SysMemSlicePitch = 0;
 
 		ID3D11Texture2D * m_texture;
 		// Create the empty texture.
 		if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
 			HW_ERROR("D3DTexture: Can't create 2D texture");
-			delete data;
-			return;
 		}
-		delete data;
+
 		// Setup the shader resource view description.
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 		srvDesc.Format = textureDesc.Format;
@@ -64,11 +52,7 @@ public:
 		// Create the shader resource view for the texture.
 		if (FAILED(device->CreateShaderResourceView(m_texture, &srvDesc, &m_TextureShaderResource))) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
-			delete data;
-			return;
 		}
-
-		return;
 	}
 
 	void SetShaderResource(ID3D11ShaderResourceView* textureShaderResource)

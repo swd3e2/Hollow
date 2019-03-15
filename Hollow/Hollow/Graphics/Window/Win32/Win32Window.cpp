@@ -45,7 +45,6 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 
 	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 	UpdateWindow(hWnd);
-	EventSystem::instance()->addEvent(new WindowCreateEvent("Some stupid message :)"));
 }
 
 LRESULT WINAPI Win32Window::_HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)

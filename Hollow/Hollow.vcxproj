@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Application.h" />
+    <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\DummyConsoleListener.h" />
     <ClInclude Include="Hollow\ECS\Components\PositionComponent.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
@@ -31,7 +32,7 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
-    <ClInclude Include="Hollow\Graphics\DirectX\D3DShaderManager.h" />
+    <ClInclude Include="Hollow\Resources\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DTexture.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\Icons\LightIcon.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h" />
@@ -49,13 +50,14 @@
     <ClInclude Include="Hollow\Graphics\IRenderable.h" />
     <ClInclude Include="Hollow\Graphics\ITexture.h" />
     <ClInclude Include="Hollow\Graphics\SimpleVertex.h" />
-    <ClInclude Include="Hollow\Graphics\TextureManager.h" />
+    <ClInclude Include="Hollow\Resources\MeshManager.h" />
+    <ClInclude Include="Hollow\Resources\TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Transform.h" />
     <ClInclude Include="Hollow\ImGuiLayer.h" />
     <ClInclude Include="Hollow\Layer.h" />
     <ClInclude Include="Hollow\LayerStack.h" />
+    <ClInclude Include="Hollow\Resources\MaterialManager.h" />
     <ClInclude Include="Hollow\Resources\Mesh.h" />
-    <ClInclude Include="Hollow\Resources\TextureLoader.h" />
     <ClInclude Include="Hollow\SceneManager.h" />
     <ClInclude Include="Hollow\Utils\FileSystem.h" />
     <ClInclude Include="Hollow\Utils\Helper.h" />
@@ -75,7 +77,6 @@
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
-    <ClInclude Include="Hollow\Resources\ResourceManager.h" />
     <ClInclude Include="Hollow\Utils\Console.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
     <ClInclude Include="Hollow\ECS\Component.h" />
@@ -116,19 +117,20 @@
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DBuffer.cpp" />
-    <ClCompile Include="Hollow\Graphics\DirectX\D3DShaderManager.cpp" />
+    <ClCompile Include="Hollow\Resources\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Hollow\Graphics\IRenderer.cpp" />
-    <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
+    <ClCompile Include="Hollow\Resources\MaterialManager.cpp" />
+    <ClCompile Include="Hollow\Resources\MeshManager.cpp" />
+    <ClCompile Include="Hollow\Resources\TextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Transform.cpp" />
     <ClCompile Include="Hollow\Graphics\Window\IWindow.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
-    <ClCompile Include="Hollow\Resources\ResourceManager.cpp" />
     <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp" />
     <ClCompile Include="Hollow\SceneManager.cpp" />
     <ClCompile Include="Hollow\Utils\Console.cpp" />

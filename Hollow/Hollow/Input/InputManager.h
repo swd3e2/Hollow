@@ -8,6 +8,7 @@
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
 #include "Hollow/Events/WindowCreateEvent.h"
+#include "Hollow/Core/CModule.h"
 #include <vector>
 #define FIELD_SIZE 10000
 
@@ -20,7 +21,7 @@ struct SimpleFieldVertex
 	XMFLOAT4 third;
 };
 
-class HOLLOW_API InputManager : IEventListener
+class HOLLOW_API InputManager : IEventListener, public CModule<InputManager>
 {
 private:
 	static bool KeyboardKeys[256];
@@ -46,7 +47,7 @@ public:
 
 	static std::vector<SimpleFieldVertex> field;
 public:
-	InputManager()
+	void startUp()
 	{
 		for (int i = 0; i < 256; i++) {
 			KeyboardKeys[i] = false;
@@ -60,6 +61,13 @@ public:
 
 		EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonReleased, ButtonReleasedEvent::getStaticEventId()));
 		EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonPressed, ButtonPressedEvent::getStaticEventId()));
+
+		setStartedUp();
+	}
+
+	void shutdown()
+	{
+		setShutdown();
 	}
 
 	void onButtonPressed(IEvent* ev)
@@ -73,6 +81,8 @@ public:
 		ButtonReleasedEvent* event = (ButtonReleasedEvent*)ev;
 		SetKeyboardKeyActive(event->button, false);
 	}
+
+	void Clear() { mx = 0; my = 0; }
 
 	static bool GetKeyboardKeyIsPressed(eKeyCodes keyCode) { return KeyboardKeys[keyCode]; }
 	static void SetKeyboardKeyActive(eKeyCodes keyCode, bool active) { KeyboardKeys[keyCode] = active; }
@@ -112,8 +122,6 @@ public:
 		pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
 		pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
 	}
-
-	static void Clear() { mx = 0; my = 0; }
 
 	static bool calculate()
 	{

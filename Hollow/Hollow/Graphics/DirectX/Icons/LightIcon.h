@@ -1,7 +1,7 @@
 #pragma once
 #include "Hollow/Graphics/DirectX/D3DRenderable.h"
 #include "Hollow/Graphics/SimpleVertex.h"
-#include "Hollow/Graphics/TextureManager.h"
+#include "Hollow/Resources/TextureManager.h"
 
 class LightIcon
 {

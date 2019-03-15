@@ -1,13 +1,15 @@
 #include "SceneManager.h"
 
-void SceneManager::StartUp()
+void SceneManager::startUp()
 {
+	setStartedUp();
 }
 
-void SceneManager::Shutdown()
+void SceneManager::shutdown()
 {
 	for (auto& it : sceneObjects)
 		delete it;
+	setShutdown();
 }
 
 void SceneManager::CreateSceneObject(ID3D11Device * device, Mesh * mesh, Transform * transform)

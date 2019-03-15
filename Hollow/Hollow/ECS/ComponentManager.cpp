@@ -2,31 +2,6 @@
 
 namespace Hollow {
 
-	ComponentManager* ComponentManager::_instance = nullptr;
-
-	ComponentManager::ComponentManager()
-	{
-		if (_instance == nullptr) {
-			_instance = this;
-		}
-
-		HW_DEBUG("ComponentManager: created");
-		const size_t NUM_COMPONENTS{ Core::Utils::FamilyTypeID<IComponent>::Get() };
-
-		this->m_EntityComponentMap.resize(ENITY_LUT_GROW);
-		for (auto i = 0; i < ENITY_LUT_GROW; ++i)
-			this->m_EntityComponentMap[i].resize(NUM_COMPONENTS, INVALID_OBJECT_ID);
-	}
-
-	ComponentManager::~ComponentManager()
-	{
-		for (auto cc : this->m_ComponentContainerRegistry)
-		{
-			delete cc.second;
-			cc.second = nullptr;
-		}
-	}
-
 	ComponentId ComponentManager::AqcuireComponentId(IComponent* component)
 	{
 		int i = 0;

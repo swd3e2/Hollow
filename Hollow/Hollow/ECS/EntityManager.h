@@ -8,13 +8,14 @@
 #include <unordered_map>
 #include <new>
 #include <vector>
+#include "Hollow/Core/CModule.h"
 
 #define ENTTIY_TABLE_GROW 1024
 
 namespace Hollow {
 
 	// Entity manager
-	class HOLLOW_API EntityManager
+	class HOLLOW_API EntityManager : public CModule<EntityManager>
 	{
 	private:
 		ComponentManager * m_ComponentManager;
@@ -75,18 +76,25 @@ namespace Hollow {
 		Containers::Vector<Containers::Pair<EntityID, void*>, 1024> entityTable;
 		size_t HandleEntityCount;
 	public:
-
-		EntityManager(ComponentManager * componentManager)
-			: m_ComponentManager(componentManager)
+		void startUp(ComponentManager * componentManager)
 		{
+			m_ComponentManager = componentManager;
+
 			HW_DEBUG("EntityManager: created");
 			this->HandleEntityCount = 0;
-			
+
 			if (_instance == nullptr)
 				_instance = this;
 
 			for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-				this->entityTable.push_back(Containers::Pair<EntityID, void*>( i , nullptr ));
+				this->entityTable.push_back(Containers::Pair<EntityID, void*>(i, nullptr));
+
+			setStartedUp();
+		}
+
+		void shutdown()
+		{
+			setShutdown();
 		}
 
 		// Get entity id

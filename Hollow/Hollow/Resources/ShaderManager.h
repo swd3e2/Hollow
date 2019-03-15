@@ -1,33 +1,29 @@
 #pragma once
 #include <unordered_map>
-#include "D3DVertexShader.h"
-#include "D3DPixelShader.h"
-#include "D3DGeometryShader.h"
+#include "Hollow/Graphics/DirectX/D3DVertexShader.h"
+#include "Hollow/Graphics/DirectX/D3DPixelShader.h"
+#include "Hollow/Graphics/DirectX/D3DGeometryShader.h"
 #include "Hollow/Utils/FileSystem.h"
 #include "Hollow/Utils/Helper.h"
+#include "Hollow/Core/CModule.h"
 
-class D3DShaderManager
+class ShaderManager : public CModule<ShaderManager>
 {
 private:
 	std::unordered_map<std::string, D3DVertexShader*> m_vertexShaders;
 	std::unordered_map<std::string, D3DPixelShader*> m_pixelShaders;
 	std::unordered_map<std::string, D3DGeometryShader*> m_geometryShaders;
+
 	Hollow::FileSystem fs;
 	ID3D11Device* device;
-	static D3DShaderManager* _instance;
 public:
-	D3DShaderManager(ID3D11Device* device) :
-		device(device)
+	void startUp(ID3D11Device* device)
 	{
-		if (_instance == nullptr)
-			_instance = this;
+		this->device = device;
 
-		Initialize();
-	}
+		std::vector<std::string>* shaders;
 
-	void Initialize()
-	{
-		std::vector<std::string>* shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/");
+		shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/");
 		for (auto& it : *shaders)
 			if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
 				m_vertexShaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = new D3DVertexShader(device, "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/" + it);
@@ -41,6 +37,12 @@ public:
 		for (auto& it : *shaders)
 			if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
 				m_geometryShaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = new D3DGeometryShader(device, "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/geometry/" + it);
+		setStartedUp();
+	}
+
+	void shutdown()
+	{
+		setShutdown();
 	}
 
 	void addVertexShader(std::string name, std::string shaderPath)
@@ -94,7 +96,7 @@ public:
 		return nullptr;
 	}
 
-	std::unordered_map < std::string, D3DPixelShader* > * getPixelShaderList()
+	std::unordered_map<std::string, D3DPixelShader*>* getPixelShaderList()
 	{
 		return &m_pixelShaders;
 	}
@@ -102,10 +104,5 @@ public:
 	std::unordered_map<std::string, D3DVertexShader*>* getVertexShaderList()
 	{
 		return &m_vertexShaders;
-	}
-
-	static D3DShaderManager* instance()
-	{
-		return _instance;
 	}
 };

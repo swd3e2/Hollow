@@ -2,13 +2,23 @@
 #include "ISystem.h"
 #include <list>
 #include "Hollow/Platform.h"
+#include "Hollow/Core/CModule.h"
 
 namespace Hollow {
-	class HOLLOW_API SystemManager
+	class HOLLOW_API SystemManager : public CModule<SystemManager>
 	{
 	private:
 		std::list<ISystem*> m_Systems;
 	public:
+		void startUp()
+		{
+			setStartedUp();
+		}
+
+		void shutdown()
+		{
+			setShutdown();
+		}
 		template<class T>
 		void AddSystem(T* system)
 		{
@@ -43,5 +53,4 @@ namespace Hollow {
 				it->Update(dt);
 		}
 	};
-
 }

@@ -66,12 +66,6 @@ D3DRenderer::D3DRenderer(int width, int height) :
 	m_WorldViewProjectionBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WorldViewProjection));
 	materialConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(MaterialData));
 
-	textureManager = new TextureManager(m_Device, m_DeviceContext);
-	shaderManager = new D3DShaderManager(m_Device);
-
-	SetVertexShader(shaderManager->getVertexShader("vs"));
-	SetPixelShader(shaderManager->getPixelShader("ps"));
-
 	lightIcon = new LightIcon(m_Device);
 }
 
@@ -92,6 +86,9 @@ D3DRenderer::~D3DRenderer()
 
 void D3DRenderer::PreUpdateFrame()
 {
+	SetVertexShader(ShaderManager::instance()->getVertexShader("vs"));
+	SetPixelShader(ShaderManager::instance()->getPixelShader("ps"));
+
 	m_DeviceContext->ClearRenderTargetView(m_RenderTarget->GetMainRenderTaget(), ClearColor);
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());

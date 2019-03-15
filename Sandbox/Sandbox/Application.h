@@ -22,7 +22,6 @@ using namespace DirectX;
 class MyApp : public Application
 {
 private:
-	HWND*					m_HWND;
 	MoveSystem*				m_MoveSystem;
 	CollisionSystem*		m_CollisionSystem;
 public:
@@ -30,12 +29,12 @@ public:
 	{
 		m_MoveSystem = new MoveSystem();
 		m_CollisionSystem = new CollisionSystem();
-		m_SystemManager->AddSystem(m_MoveSystem);
-		m_SystemManager->AddSystem(m_CollisionSystem);
+		systemManager.AddSystem(m_MoveSystem);
+		systemManager.AddSystem(m_CollisionSystem);
 		
 		sceneManager.CreateSceneObject(
 			((D3DRenderer*)m_Renderer)->getDevice(),
-			m_ResourceManager->CreateMeshResource("Sandbox/Resources/Meshes/Metal.obj"),
+			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj"),
 			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
 		);
 	}

@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <assert.h>
 #include <limits.h>
+#include "Hollow/Core/CModule.h"
 #undef max
 #undef min
 #define ENITY_LUT_GROW 256
@@ -21,11 +22,9 @@ namespace Hollow {
 
 	static const size_t INVALID_OBJECT_ID = std::numeric_limits<size_t>::max();
 
-	class HOLLOW_API ComponentManager
+	class HOLLOW_API ComponentManager : public CModule<ComponentManager>
 	{
 	private:
-		static ComponentManager* _instance;
-
 		class IComponentContainer
 		{
 		public:
@@ -93,8 +92,25 @@ namespace Hollow {
 		template<class T>
 		using TComponentIterator = typename ComponentContainer<T>::iterator;
 
-		ComponentManager();
-		~ComponentManager();
+		void startUp()
+		{
+			HW_DEBUG("ComponentManager: created");
+			const size_t NUM_COMPONENTS{ Core::Utils::FamilyTypeID<IComponent>::Get() };
+
+			this->m_EntityComponentMap.resize(ENITY_LUT_GROW);
+			for (auto i = 0; i < ENITY_LUT_GROW; ++i)
+				this->m_EntityComponentMap[i].resize(NUM_COMPONENTS, INVALID_OBJECT_ID);
+			setStartedUp();
+		}
+
+		void shutdown()
+		{
+			for (auto cc : this->m_ComponentContainerRegistry)
+			{
+				delete cc.second;
+				cc.second = nullptr;
+			}
+		}
 
 		template<class T, class ...ARGS>
 		T* AddComponent(const EntityID entityId, ARGS&&... args)
@@ -193,8 +209,6 @@ namespace Hollow {
 			HW_DEBUG("end Classname {} with static id {}", typeid(T).name(), T::STATIC_COMPONENT_TYPE_ID);
 			return GetComponentContainer<T>()->end();
 		}
-
-		static ComponentManager* instance() { return _instance; }
 	};
 
 }

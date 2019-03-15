@@ -234,6 +234,42 @@ namespace Hollow {
 				token += 7;
 				material->normal_texture = token;
 			}
+			if ((0 == strncmp(token, "Ns", 2)) && token[2] == ' ') {
+				token += 3;
+				material->Ns = atof(token);
+			}
+			if ((0 == strncmp(token, "Ka", 2)) && token[2] == ' ') {
+				token += 3;
+				char* nextToken;
+
+				material->Ka[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
+				material->Ka[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				material->Ka[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+			}
+			if ((0 == strncmp(token, "Kd", 2)) && token[2] == ' ') {
+				token += 3;
+				char* nextToken;
+
+				material->Kd[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
+				material->Kd[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				material->Kd[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+			}
+			if ((0 == strncmp(token, "Ks", 2)) && token[2] == ' ') {
+				token += 3;
+				char* nextToken;
+
+				material->Ks[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
+				material->Ks[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				material->Ks[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+			}
+			if ((0 == strncmp(token, "Ke", 2)) && token[2] == ' ') {
+				token += 3;
+				char* nextToken;
+
+				material->Ke[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
+				material->Ke[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				material->Ke[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+			}
 		}
 		data->hash_materials[material->name] = material;
 		filestream.close();

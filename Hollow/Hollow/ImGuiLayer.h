@@ -7,8 +7,9 @@
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_dx11.h"
 #include "Hollow/Graphics/Window/Win32/Win32Window.h"
 #include "Hollow/Graphics/DirectX/D3DRenderable.h"
+#include "Hollow/Resources/TextureManager.h"
 #include "Hollow/Common/Log.h"
-#include "Hollow/Graphics/DirectX/D3DShaderManager.h"
+#include "Hollow/Resources/ShaderManager.h"
 
 class ImGuiLayer : public Layer
 {
@@ -27,7 +28,7 @@ private:
 	float pointLightSpecularPower = 0;
 
 	D3DRenderer* renderer;
-	D3DShaderManager* shaderManager;
+	ShaderManager* shaderManager;
 	D3DVertexShader* vShader;
 	D3DPixelShader* pShader;
 	bool* p_open;
@@ -53,7 +54,7 @@ public:
 		p_open = new bool;
 		*p_open = false;
 		
-		shaderManager = D3DShaderManager::instance();
+		shaderManager = ShaderManager::instance();
 	}
 
 	~ImGuiLayer()
@@ -135,7 +136,7 @@ public:
 		}
 		if (ImGui::CollapsingHeader("Shaders"))
 		{
-			if (ImGui::BeginCombo("##combo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
+			if (ImGui::BeginCombo("##pixelShaderCombo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
 			{
 				for (auto& it : *shaderManager->getPixelShaderList())
 				{
@@ -149,7 +150,7 @@ public:
 				ImGui::EndCombo();
 			}
 
-			if (ImGui::BeginCombo("##combo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
+			if (ImGui::BeginCombo("##vertexShaderCombo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
 			{
 				for (auto& it : *shaderManager->getVertexShaderList())
 				{
@@ -193,8 +194,8 @@ public:
 
 			ImGui::Text("Position: x | y | z");
 			ImGui::DragFloat3("##position", currentPosition, 0.1f);
-			ImGui::Text("##rotation");
-			ImGui::DragFloat3("Rotation", currentRotation, 0.1f);
+			ImGui::Text("Rotation");
+			ImGui::DragFloat3("##rotation", currentRotation, 0.1f);
 			ImGui::Text("Scale: x | y | z");
 			ImGui::DragFloat3("##scale", currentScale, 0.1f);
 
@@ -214,123 +215,19 @@ public:
 		}
 		ImGui::End();
 
-
-		ImGui::Begin("Object propertie1111s");
+		ImGui::Begin("12312312312");
+		for (auto& it : *TextureManager::instance()->getTexuresList())
+		{
+			ImGui::Text(it.first.c_str());
+		}
 		ImGui::End();
-		//if (ImGui::BeginTabBar("Scene"))
-		//{
-		//	if (ImGui::BeginTabItem("Light"))
-		//	{
-		//		ImGui::Text("Ambient");
-		//		ImGui::Text("Ambient Light color");
-		//		ImGui::ColorEdit3("###", ambientLightColor);
-		//		ImGui::Text("Ambient Light direction");
-		//		ImGui::DragFloat3("###", ambientLightDirection, 0.01f, -1.0f, 1.0f);
-		//		renderer->light.ambientLight.direction.x = ambientLightDirection[0];
-		//		renderer->light.ambientLight.direction.y = ambientLightDirection[1];
-		//		renderer->light.ambientLight.direction.z = ambientLightDirection[2];
 
-		//		renderer->light.ambientLight.ambient.x = ambientLightColor[0];
-		//		renderer->light.ambientLight.ambient.y = ambientLightColor[1];
-		//		renderer->light.ambientLight.ambient.z = ambientLightColor[2];
-
-		//		ImGui::Text("Point");
-		//		ImGui::ColorEdit3("Point Light color", pointLightColor);
-		//		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
-		//		ImGui::DragFloat3("Point Light attentuation", renderer->light.pointLight.attenuation, 0.01f, -1.0f, 1.0f);
-		//		ImGui::SliderFloat("Point Light strength", &pointLightStrenght, -5.0f, 5.0f);
-		//		ImGui::SliderFloat("Point Light specular power", &pointLightSpecularPower, -5.0f, 5.0f);
-
-		//		renderer->light.pointLight.ambient.x = pointLightColor[0];
-		//		renderer->light.pointLight.ambient.y = pointLightColor[1];
-		//		renderer->light.pointLight.ambient.z = pointLightColor[2];
-
-		//		renderer->light.pointLight.position.x = pointLightPosition[0];
-		//		renderer->light.pointLight.position.y = pointLightPosition[1];
-		//		renderer->light.pointLight.position.z = pointLightPosition[2];
-
-		//		renderer->light.pointLight.power = pointLightStrenght;
-		//		renderer->light.pointLight.specularPower = pointLightSpecularPower;
-		//		ImGui::EndTabItem();
-		//	}
-		//	if (ImGui::BeginTabItem("Shaders"))
-		//	{
-		//		if (ImGui::BeginCombo("##combo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
-		//		{
-		//			for (auto& it : *shaderManager->getPixelShaderList())
-		//			{
-		//				if (ImGui::Selectable(it.first.c_str(), pShader == it.second)) {
-		//					pShader = it.second;
-		//					renderer->SetPixelShader(pShader);
-		//				}
-		//				if (pShader)
-		//					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-		//			}
-		//			ImGui::EndCombo();
-		//		}
-
-		//		if (ImGui::BeginCombo("##combo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
-		//		{
-		//			for (auto& it : *shaderManager->getVertexShaderList())
-		//			{
-		//				if (ImGui::Selectable(it.first.c_str(), vShader == it.second)) {
-		//					vShader = it.second;
-		//					renderer->SetVertexShader(vShader);
-		//				}
-		//				if (pShader)
-		//					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-		//			}
-		//			ImGui::EndCombo();
-		//		}
-		//		ImGui::EndTabItem();
-		//	}
-		//	ImGui::EndTabBar();
-		//}
-
-		//ImGui::Begin("Resource manager");
-
-		//for (auto& it : *list) 
-		//{
-		//	D3DRenderable* renderable = (D3DRenderable*)it;
-		//	if (ImGui::Selectable(renderable->name.c_str()))
-		//	{
-		//		selected = renderable;
-		//	}
-		//}
-		//ImGui::End();
-
-		//ImGui::Begin("Properties");
-		//if (selected != nullptr)
-		//{
-		//	currentPosition[0] = selected->transform->position.x;
-		//	currentPosition[1] = selected->transform->position.y;
-		//	currentPosition[2] = selected->transform->position.z;
-
-		//	currentRotation[0] = selected->transform->rotation.x;
-		//	currentRotation[1] = selected->transform->rotation.y;
-		//	currentRotation[2] = selected->transform->rotation.z;
-
-		//	currentScale[0] = selected->transform->scale.x;
-		//	currentScale[1] = selected->transform->scale.y;
-		//	currentScale[2] = selected->transform->scale.z;
-
-		//	ImGui::DragFloat3("Position", currentPosition, 0.1f);
-		//	ImGui::DragFloat3("Rotation", currentRotation, 0.1f);
-		//	ImGui::DragFloat3("Scale", currentScale, 0.1f);
-
-		//	selected->transform->setPosition(currentPosition[0], currentPosition[1], currentPosition[2]);
-		//	selected->transform->setRotation(currentRotation[0], currentRotation[1], currentRotation[2]);
-		//	selected->transform->setScale(currentScale[0], currentScale[1], currentScale[2]);
-
-		//	for (auto& it : selected->renderableObjects)
-		//	{
-		//		if (ImGui::Selectable(it->name.c_str()))
-		//		{
-		//			selectedObject = it;
-		//		}
-		//	}
-		//}
-		//ImGui::End();
+		ImGui::Begin("Material properties");
+		if (selectedObject != nullptr)
+		{
+			
+		}
+		ImGui::End();
 	}
 
 

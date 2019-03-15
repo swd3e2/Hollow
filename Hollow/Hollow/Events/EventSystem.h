@@ -5,18 +5,22 @@
 #include <unordered_map>
 #include "EventDelegate.h"
 #include <vector>
+#include "Hollow/Core/CModule.h"
 
-class EventSystem
+class EventSystem : public CModule<EventSystem>
 {
 private:
 	std::vector<IEventDelegate*>  eventListeners;
 	std::vector<IEvent*> events;
-	static EventSystem* _instance;
 public:
-	EventSystem()
+	void startUp()
 	{
-		if (_instance == nullptr)
-			_instance = this;
+		setStartedUp();
+	}
+
+	void shutdown()
+	{
+		setShutdown();
 	}
 
 	template<class T>
@@ -47,10 +51,5 @@ public:
 			delete ev;
 		}
 		events.clear();
-	}
-
-	static EventSystem* instance()
-	{
-		return _instance;
 	}
 };

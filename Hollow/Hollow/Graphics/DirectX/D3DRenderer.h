@@ -16,10 +16,9 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Containers/vector.h"
 #include "D3DRenderable.h"
-#include "D3DShaderManager.h"
 #include "D3DConstBufferMapping.h"
-#include "Hollow/Graphics/TextureManager.h"
 #include "Icons/LightIcon.h"
+#include "Hollow/Resources/ShaderManager.h"
 
 using namespace DirectX;
 
@@ -89,8 +88,6 @@ private:
 	D3DSamplerState*		m_SamplerStateClamp;
 	D3DRenderTarget*		m_RenderTarget;
 	D3DDepthStencil*		m_DepthStencil;
-	TextureManager*			textureManager;
-	D3DShaderManager*		shaderManager;
 	Win32Window				window;
 	LightIcon*				lightIcon;
 	int width;
