@@ -20,13 +20,19 @@ void SceneManager::CreateSceneObject(ID3D11Device * device, Mesh * mesh, Transfo
 	D3DRenderable* renderable = new D3DRenderable(transform, mesh->name);
 	for (auto& it : mesh->objects) {
 		RenderableObject* object = new RenderableObject(it->name);
-		object->buffer = new D3DBuffer(device, it->data, sizeof(SimpleVertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
+		object->buffer = new D3DBuffer(device, it->data, sizeof(Vertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
 		D3DMaterial* mat = new D3DMaterial();
-		D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.diffuse_texture);
-		mat->SetDiffuseTexture(tex);
-		tex = TextureManager::instance()->CreateTexture(it->material.normal_texture);
-		mat->SetNormalTexture(tex);
+		if (it->material.materialData.hasDiffuseTexture) {
+			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.diffuse_texture);
+			mat->SetDiffuseTexture(tex);
+		}
+		if (it->material.materialData.hasNormalMap) {
+			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.normal_texture);
+			mat->SetNormalTexture(tex);
+		}
 		object->material = mat;
+		mat->materialData = it->material.materialData;
+
 		renderable->renderableObjects.push_back(object);
 	}
 	delete mesh;

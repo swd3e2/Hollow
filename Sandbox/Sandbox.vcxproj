@@ -24,8 +24,6 @@
     <ClInclude Include="Sandbox\Components\MeshComponent.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
-    <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
-    <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

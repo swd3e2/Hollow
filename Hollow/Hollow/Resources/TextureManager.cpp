@@ -44,15 +44,19 @@ TextureData* TextureManager::loadTexture(std::string filename)
 	if (fif == FIF_UNKNOWN)
 		fif = FreeImage_GetFIFFromFilename(filename.c_str());
 	//if still unkown, return failure
-	if (fif == FIF_UNKNOWN)
+	if (fif == FIF_UNKNOWN) {
+		HW_ERROR("Texture manager: unknown file format, file {}", filename.c_str());
 		return false;
+	}
 
 	//check that the plugin has reading capabilities and load the file
 	if (FreeImage_FIFSupportsReading(fif))
 		dib = FreeImage_Load(fif, filename.c_str());
 	//if the image failed to load, return failure
-	if (!dib)
+	if (!dib) {
+		HW_ERROR("Texture manager: failed to load image, file {}", filename.c_str());
 		return false;
+	}
 
 	int BPP = FreeImage_GetBPP(dib);
 
@@ -79,8 +83,10 @@ TextureData* TextureManager::loadTexture(std::string filename)
 	FreeImage_Unload(dib);
 
 	//if this somehow one of these failed (they shouldn't), return failure
-	if ((textureData->width == 0) || (textureData->height == 0))
+	if ((textureData->width == 0) || (textureData->height == 0)) {
+		HW_ERROR("Texture manager: file loaded with erorr's, can't get height and width, file {}", filename.c_str());
 		return nullptr;
+	}
 
 	return textureData;
 }

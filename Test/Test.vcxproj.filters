@@ -3,15 +3,4 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="EventSystem.h" />
-    <ClInclude Include="IEvent.h" />
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="Ids.h" />
-    <ClInclude Include="ButtonPressEvent.h" />
-    <ClInclude Include="IEventListener.h" />
-    <ClInclude Include="IEventDelegate.h" />
-    <ClInclude Include="EventDelegate.h" />
-    <ClInclude Include="EventDispatcher.h" />
-  </ItemGroup>
 </Project>

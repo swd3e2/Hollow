@@ -3,8 +3,8 @@
 #include "Hollow/Graphics/DirectX/D3DVertexShader.h"
 #include "Hollow/Graphics/DirectX/D3DPixelShader.h"
 #include "Hollow/Graphics/DirectX/D3DGeometryShader.h"
-#include "Hollow/Utils/FileSystem.h"
-#include "Hollow/Utils/Helper.h"
+#include "Hollow/Common/FileSystem.h"
+#include "Hollow/Common/Helper.h"
 #include "Hollow/Core/CModule.h"
 
 class ShaderManager : public CModule<ShaderManager>
@@ -20,7 +20,6 @@ public:
 	void startUp(ID3D11Device* device)
 	{
 		this->device = device;
-
 		std::vector<std::string>* shaders;
 
 		shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/vertex/");

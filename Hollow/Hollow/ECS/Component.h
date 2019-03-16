@@ -1,5 +1,5 @@
 #pragma once
-#include "Hollow/Utils/FamilyTypeID.h"
+#include "Hollow/Common/FamilyTypeID.h"
 #include "Hollow/Platform.h"
 #include "IComponent.h"
 #include "Hollow/Common/Log.h"

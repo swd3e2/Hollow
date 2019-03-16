@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_map>
 #define WHITESPACE " \t\n\r"
-#include "Hollow/Utils/Helper.h"
+#include "Hollow/Common/Helper.h"
 
 namespace Hollow {
 	struct Face
@@ -20,9 +20,35 @@ namespace Hollow {
 
 	struct RawMaterial
 	{
+		RawMaterial()
+		{
+			name = "";
+			diffuse_texture = "";
+			normal_texture = "";
+
+			Ns = 1000.0f;
+
+			Ka[0] = 0.0f;
+			Ka[1] = 0.0f;
+			Ka[2] = 0.0f;
+
+			Kd[0] = 0.0f;
+			Kd[1] = 0.0f;
+			Kd[2] = 0.0f;
+
+			Ks[0] = 0.0f;
+			Ks[1] = 0.0f;
+			Ks[2] = 0.0f;
+
+			Ke[0] = 0.0f;
+			Ke[1] = 0.0f;
+			Ke[2] = 0.0f;
+		}
+
 		std::string name;
 		std::string diffuse_texture;
 		std::string normal_texture;
+
 		float Ns;
 		float Ka[3];
 		float Kd[3];

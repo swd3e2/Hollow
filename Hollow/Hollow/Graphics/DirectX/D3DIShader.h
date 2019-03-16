@@ -3,13 +3,16 @@
 #include <d3dcompiler.h>
 #include <string>
 #include "Hollow/Platform.h"
-#include "Hollow/Utils/Helper.h"
+#include "Hollow/Common/Helper.h"
 
 class D3DIShader
 {
 protected:
+	std::string name;
+protected:
 	HRESULT CompileShader(std::string filename, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
 	{
+		name = filename;
 		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG;
 
 		ID3DBlob* shaderBlob = nullptr;
@@ -35,4 +38,6 @@ protected:
 		*blob = shaderBlob;
 		return hr;
 	}
+public:
+	inline std::string getName() { return name; }
 };

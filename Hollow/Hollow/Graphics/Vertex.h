@@ -1,11 +1,11 @@
 #pragma once
 #include <DirectXMath.h>
 
-struct SimpleVertex
+struct Vertex
 {
-	SimpleVertex() {}
+	Vertex() {}
 
-	SimpleVertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
+	Vertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
 		: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz)
 	{}
 

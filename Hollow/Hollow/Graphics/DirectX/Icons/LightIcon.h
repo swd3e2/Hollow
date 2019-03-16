@@ -1,6 +1,6 @@
 #pragma once
 #include "Hollow/Graphics/DirectX/D3DRenderable.h"
-#include "Hollow/Graphics/SimpleVertex.h"
+#include "Hollow/Graphics/Vertex.h"
 #include "Hollow/Resources/TextureManager.h"
 
 class LightIcon
@@ -10,7 +10,7 @@ public:
 
 	LightIcon(ID3D11Device* device)
 	{
-		SimpleVertex vertices[] = {
+		Vertex vertices[] = {
 				{ -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
 				{  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f },
 				{  1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f },
@@ -26,7 +26,7 @@ public:
 		mat->SetDiffuseTexture(tex);
 		object->material = mat;
 		object->name = "Icon";
-		object->buffer = new D3DBuffer(device, vertices, sizeof(SimpleVertex), 6, D3D11_BIND_VERTEX_BUFFER);
+		object->buffer = new D3DBuffer(device, vertices, sizeof(Vertex), 6, D3D11_BIND_VERTEX_BUFFER);
 		renderable.renderableObjects.push_back(object);
 		renderable.transform->setScale(0.2f, 0.2f, 0.2f);
 	}

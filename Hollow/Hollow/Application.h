@@ -5,7 +5,7 @@
 #include "Events/EventSystem.h"
 #include "Common/Timer.h"
 #include "Input/InputManager.h"
-#include "Utils/Console.h"
+#include "Common/Console.h"
 #include "ECS/SystemManager.h"
 #include <thread>
 #include "Hollow/ImGuiLayer.h"

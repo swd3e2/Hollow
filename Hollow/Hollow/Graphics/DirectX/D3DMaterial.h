@@ -3,6 +3,7 @@
 #include "D3DTexture.h"
 #include "D3DVertexShader.h"
 #include "D3DPixelShader.h"
+#include "Hollow/Resources/ShaderManager.h"
 
 class D3DMaterial : public IMaterial
 {
@@ -13,4 +14,10 @@ public:
 	D3DTexture* normalTexture;
 	D3DPixelShader* pixelShader;
 	D3DVertexShader* vertexShader;
+	
+	D3DMaterial()
+	{
+		vertexShader = ShaderManager::instance()->getVertexShader("vs");
+		pixelShader = ShaderManager::instance()->getPixelShader("ps");
+	}
 };

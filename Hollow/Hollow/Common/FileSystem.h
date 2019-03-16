@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <vector>
 #include <string>
-#include "Hollow/Common/Log.h"
+#include "Log.h"
 
 namespace Hollow
 {

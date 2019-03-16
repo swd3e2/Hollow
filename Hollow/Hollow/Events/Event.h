@@ -1,6 +1,6 @@
 #pragma once
 #include "IEvent.h"
-#include "Hollow/Utils/FamilyTypeID.h"
+#include "Hollow/Common/FamilyTypeID.h"
 
 template<class T>
 class Event : public IEvent

@@ -16,6 +16,7 @@ public:
 	 */
 	D3DConstantBuffer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, UINT size) {
 		this->size = size;
+
 		m_DeviceContext = deviceContext;
 		// Constant buffer
 		D3D11_BUFFER_DESC constantBufferDesc;

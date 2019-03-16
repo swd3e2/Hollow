@@ -10,7 +10,7 @@ void MeshManager::shutdown()
 	setShutdown();
 }
 
-Mesh* MeshManager::CreateMesh(std::string filename)
+Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 {
 	MeshData* data = objParser.LoadObj(filename);
 	Mesh* mesh = new Mesh(filename);
@@ -20,38 +20,42 @@ Mesh* MeshManager::CreateMesh(std::string filename)
 	}
 
 	for (int i = 0; i < data->objects.size(); i++) {
-		Containers::Vector<SimpleVertex>* vertices = new Containers::Vector<SimpleVertex>;
+		Containers::Vector<Vertex>* vertices = new Containers::Vector<Vertex>;
 
 		for (int j = 0; j < data->objects[i]->indices.size(); j++) {
-
-			SimpleVertex simpleVertex;
-			simpleVertex.pos.x = data->vertices[data->objects[i]->indices[j].vertice_index * 3];
-			simpleVertex.pos.y = data->vertices[1 + data->objects[i]->indices[j].vertice_index * 3];
-			simpleVertex.pos.z = data->vertices[2 + data->objects[i]->indices[j].vertice_index * 3];
+			Vertex vertex;
+			vertex.pos.x = data->vertices[data->objects[i]->indices[j].vertice_index * 3];
+			vertex.pos.y = data->vertices[1 + data->objects[i]->indices[j].vertice_index * 3];
+			vertex.pos.z = data->vertices[2 + data->objects[i]->indices[j].vertice_index * 3];
 
 			if (data->objects[i]->has_texture) {
-				simpleVertex.texCoord.x = -data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
-				simpleVertex.texCoord.y = -data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
-			}
-			else {
-				simpleVertex.texCoord.x = 0.0f;
-				simpleVertex.texCoord.y = 0.0f;
+				if (inversceTexCoords) {
+					vertex.texCoord.x = -data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
+					vertex.texCoord.y = -data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
+				} else {
+					vertex.texCoord.x = data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
+					vertex.texCoord.y = data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
+				}
+			} else {
+				vertex.texCoord.x = 0.0f;
+				vertex.texCoord.y = 0.0f;
 			}
 
 			if (data->objects[i]->indices[j].normal_index > 0 && data->objects[i]->indices[j].normal_index * 3 + 2 < data->normals.size()) {
-				simpleVertex.normal.x = data->normals[data->objects[i]->indices[j].normal_index * 3];
-				simpleVertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
-				simpleVertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
+				vertex.normal.x = data->normals[data->objects[i]->indices[j].normal_index * 3];
+				vertex.normal.y = data->normals[1 + data->objects[i]->indices[j].normal_index * 3];
+				vertex.normal.z = data->normals[2 + data->objects[i]->indices[j].normal_index * 3];
 			}
-			vertices->push_back(simpleVertex);
+
+			vertices->push_back(vertex);
 		}
 
 		// tangents
 		for (int j = 0; j < vertices->size(); j += 3)
 		{
-			SimpleVertex* firstVertex = &(*vertices)[j];
-			SimpleVertex* secondVertex = &(*vertices)[j + 1];
-			SimpleVertex* thirdVertex = &(*vertices)[j + 2];
+			Vertex* firstVertex = &(*vertices)[j];
+			Vertex* secondVertex = &(*vertices)[j + 1];
+			Vertex* thirdVertex = &(*vertices)[j + 2];
 
 			//Get the vector describing one edge of our triangle (edge 0,2)
 			XMVECTOR edge1 = XMVectorSet(
@@ -101,11 +105,35 @@ Mesh* MeshManager::CreateMesh(std::string filename)
 
 		MeshModel* meshModel = new MeshModel(vertices->data(), vertices->size(), data->objects[i]->object_name);
 
+		// fill material
 		if (data->objects[i]->material != "" && data->hash_materials.find(data->objects[i]->material) != data->hash_materials.end()) {
 			meshModel->material.name = data->objects[i]->material;
 			meshModel->material.diffuse_texture = data->hash_materials[data->objects[i]->material]->diffuse_texture;
 			meshModel->material.normal_texture = data->hash_materials[data->objects[i]->material]->normal_texture;
-			meshModel->material.active = true;
+			meshModel->material.active = true;	
+
+			if (meshModel->material.diffuse_texture.length() != 0)
+				meshModel->material.materialData.hasDiffuseTexture = true;
+
+			if (meshModel->material.normal_texture.length() != 0)
+				meshModel->material.materialData.hasDiffuseTexture = true;
+
+			meshModel->material.materialData.Ns = data->hash_materials[data->objects[i]->material]->Ns;
+			meshModel->material.materialData.Ka[0] = data->hash_materials[data->objects[i]->material]->Ka[0];
+			meshModel->material.materialData.Ka[1] = data->hash_materials[data->objects[i]->material]->Ka[1];
+			meshModel->material.materialData.Ka[2] = data->hash_materials[data->objects[i]->material]->Ka[2];
+
+			meshModel->material.materialData.Kd[0] = data->hash_materials[data->objects[i]->material]->Kd[0];
+			meshModel->material.materialData.Kd[1] = data->hash_materials[data->objects[i]->material]->Kd[1];
+			meshModel->material.materialData.Kd[2] = data->hash_materials[data->objects[i]->material]->Kd[2];
+
+			meshModel->material.materialData.Ke[0] = data->hash_materials[data->objects[i]->material]->Ke[0];
+			meshModel->material.materialData.Ke[1] = data->hash_materials[data->objects[i]->material]->Ke[1];
+			meshModel->material.materialData.Ke[2] = data->hash_materials[data->objects[i]->material]->Ke[2];
+
+			meshModel->material.materialData.Ks[0] = data->hash_materials[data->objects[i]->material]->Ks[0];
+			meshModel->material.materialData.Ks[1] = data->hash_materials[data->objects[i]->material]->Ks[1];
+			meshModel->material.materialData.Ks[2] = data->hash_materials[data->objects[i]->material]->Ks[2];
 		}
 
 		mesh->objects.push_back(meshModel);

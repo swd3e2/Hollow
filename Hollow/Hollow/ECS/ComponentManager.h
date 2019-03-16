@@ -1,6 +1,6 @@
 #pragma once
 #include "Hollow/Memory/MemoryChunkManager.h"
-#include "Hollow/Utils/FamilyTypeID.h"
+#include "Hollow/Common/FamilyTypeID.h"
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
 #include "IComponent.h"

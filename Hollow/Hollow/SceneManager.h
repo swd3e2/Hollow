@@ -3,7 +3,7 @@
 #include "ECS/IEntity.h"
 #include "Graphics/DirectX/D3DRenderable.h"
 #include "Resources/TextureManager.h"
-#include "Graphics/SimpleVertex.h"
+#include "Graphics/Vertex.h"
 #include "Resources/Mesh.h"
 #include "Graphics/Transform.h"
 #include "Hollow/Platform.h"

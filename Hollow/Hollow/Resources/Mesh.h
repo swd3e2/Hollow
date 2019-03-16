@@ -1,16 +1,16 @@
 #pragma once
-#include "Hollow/Graphics/SimpleVertex.h"
+#include "Hollow/Graphics/Vertex.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Graphics/IMaterial.h"
 #include "Hollow/Platform.h"
 
 struct MeshModel {
-	MeshModel(SimpleVertex* data, UINT numVertices, std::string name = "") :
+	MeshModel(Vertex* data, UINT numVertices, std::string name = "") :
 		data(data), numVertices(numVertices), name(name)
 	{}
 
 	std::string name;
-	SimpleVertex* data;
+	Vertex* data;
 	UINT numVertices;
 	IMaterial material;
 };

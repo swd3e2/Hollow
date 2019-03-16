@@ -62,11 +62,10 @@ D3DRenderer::D3DRenderer(int width, int height) :
 
 	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WVP));
 	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(TransformBuff));
-	m_LightBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(Light));
+	m_LightBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(PointLightStruct));
+
 	m_WorldViewProjectionBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WorldViewProjection));
 	materialConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(MaterialData));
-
-	lightIcon = new LightIcon(m_Device);
 }
 
 D3DRenderer::~D3DRenderer()
@@ -108,11 +107,12 @@ void D3DRenderer::PreUpdateFrame()
 	m_worldViewProjection.Projection = m_Camera->GetProjectionMatrix();
 	m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
 	SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
-
-	// update light
-	m_LightBuffer->Update(&light);
-	SetContantBuffer(HOLLOW_CONST_BUFFER_LIGHT_SLOT, m_LightBuffer);
-	lightIcon->renderable.transform->setPosition(light.pointLight.position.x, light.pointLight.position.y, light.pointLight.position.z);
+	
+	if (pointLight != nullptr) {
+		// update light
+		m_LightBuffer->Update(&pointLight->data);
+		SetContantBuffer(HOLLOW_CONST_BUFFER_LIGHT_SLOT, m_LightBuffer);
+	}
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
@@ -132,8 +132,9 @@ void D3DRenderer::Draw(RenderableObject * object)
 	} else {
 		this->m_DeviceContext->PSSetShaderResources(1, 1, pSRV);
 	}
+
 	materialConstantBuffer->Update(&object->material->materialData);
-	SetContantBuffer(4, materialConstantBuffer);
+	SetContantBuffer(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, materialConstantBuffer);
 
 	this->m_DeviceContext->IASetVertexBuffers(0, 1, object->buffer->GetAddressOf(), object->buffer->StridePtr(), &this->offset);
 	m_DeviceContext->Draw(object->buffer->BufferSize(), 0);
@@ -157,9 +158,21 @@ void D3DRenderer::Update(std::vector<IRenderable*>* renderableList)
 		D3DRenderable* dxRenderable = (D3DRenderable*)renderable;
 
 		transformBuff.transform = XMMatrixTranspose(
-			(XMMatrixTranslation(dxRenderable->transform->position.x, dxRenderable->transform->position.y, dxRenderable->transform->position.z) * 
-			XMMatrixScaling(dxRenderable->transform->scale.x, dxRenderable->transform->scale.y, dxRenderable->transform->scale.z)) *
-			XMMatrixRotationRollPitchYaw(dxRenderable->transform->rotation.x, dxRenderable->transform->rotation.y, dxRenderable->transform->rotation.z));
+			(XMMatrixTranslation(
+				dxRenderable->transform->position.x, 
+				dxRenderable->transform->position.y, 
+				dxRenderable->transform->position.z) * 
+			XMMatrixScaling(
+				dxRenderable->transform->scale.x, 
+				dxRenderable->transform->scale.y, 
+				dxRenderable->transform->scale.z
+			)) *
+			XMMatrixRotationRollPitchYaw(
+				dxRenderable->transform->rotation.x, 
+				dxRenderable->transform->rotation.y, 
+				dxRenderable->transform->rotation.z
+			)
+		);
 
 		m_TransformConstantBuffer->Update(&transformBuff);
 		SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);

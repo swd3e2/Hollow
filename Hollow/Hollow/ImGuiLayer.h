@@ -108,31 +108,16 @@ public:
 			ImGui::DragFloat3("###", ambientLightDirection, 0.01f, -1.0f, 1.0f);
 			ImGui::Spacing();
 
-			renderer->light.ambientLight.direction.x = ambientLightDirection[0];
-			renderer->light.ambientLight.direction.y = ambientLightDirection[1];
-			renderer->light.ambientLight.direction.z = ambientLightDirection[2];
-
-			renderer->light.ambientLight.ambient.x = ambientLightColor[0];
-			renderer->light.ambientLight.ambient.y = ambientLightColor[1];
-			renderer->light.ambientLight.ambient.z = ambientLightColor[2];
-
 			ImGui::Text("Point");
 			ImGui::ColorEdit3("Point Light color", pointLightColor);
 			ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
-			ImGui::DragFloat3("Point Light attentuation", renderer->light.pointLight.attenuation, 0.01f, -1.0f, 1.0f);
-			ImGui::SliderFloat("Point Light strength", &pointLightStrenght, -5.0f, 5.0f);
+			ImGui::SliderFloat("Point Light range", &pointLightStrenght, -5.0f, 5.0f);
 			ImGui::SliderFloat("Point Light specular power", &pointLightSpecularPower, -5.0f, 5.0f);
 
-			renderer->light.pointLight.ambient.x = pointLightColor[0];
-			renderer->light.pointLight.ambient.y = pointLightColor[1];
-			renderer->light.pointLight.ambient.z = pointLightColor[2];
-
-			renderer->light.pointLight.position.x = pointLightPosition[0];
-			renderer->light.pointLight.position.y = pointLightPosition[1];
-			renderer->light.pointLight.position.z = pointLightPosition[2];
-
-			renderer->light.pointLight.power = pointLightStrenght;
-			renderer->light.pointLight.specularPower = pointLightSpecularPower;
+			if (renderer->pointLight != nullptr) {
+				renderer->pointLight->setColor(pointLightColor);
+				renderer->pointLight->setPosition(pointLightPosition);
+			}
 		}
 		if (ImGui::CollapsingHeader("Shaders"))
 		{
@@ -225,7 +210,13 @@ public:
 		ImGui::Begin("Material properties");
 		if (selectedObject != nullptr)
 		{
-			
+			if (selectedObject->material->pixelShader != nullptr) {
+				ImGui::Text(selectedObject->material->pixelShader->getName().c_str());
+			}
+
+			if (selectedObject->material->vertexShader != nullptr) {
+				ImGui::Text(selectedObject->material->vertexShader->getName().c_str());
+			}
 		}
 		ImGui::End();
 	}

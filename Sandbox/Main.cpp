@@ -1,6 +1,4 @@
 #pragma once
-#include "Hollow/Utils/Console.h"
-#include "Hollow/Common/Log.h"
 #include "Sandbox/Application.h"
 
 // App entrypoint

@@ -5,7 +5,7 @@
 #include <string>
 #include "Hollow/Platform.h"
 
-class D3DVertexShader : D3DIShader
+class D3DVertexShader : public D3DIShader
 {
 public:
 	D3DVertexShader(ID3D11Device * device, std::string filename)
