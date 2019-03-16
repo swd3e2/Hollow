@@ -211,11 +211,29 @@ public:
 		if (selectedObject != nullptr)
 		{
 			if (selectedObject->material->pixelShader != nullptr) {
-				ImGui::Text(selectedObject->material->pixelShader->getName().c_str());
+				if (ImGui::BeginCombo("##materialVertexShaderCombo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
+				{
+					for (auto& it : *shaderManager->getVertexShaderList())
+					{
+						if (ImGui::Selectable(it.first.c_str(), selectedObject->material->vertexShader == it.second)) {
+							selectedObject->material->vertexShader = it.second;
+						}
+					}
+					ImGui::EndCombo();
+				}
 			}
 
 			if (selectedObject->material->vertexShader != nullptr) {
-				ImGui::Text(selectedObject->material->vertexShader->getName().c_str());
+				if (ImGui::BeginCombo("##materialPixelShaderCombo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
+				{
+					for (auto& it : *shaderManager->getPixelShaderList())
+					{
+						if (ImGui::Selectable(it.first.c_str(), selectedObject->material->pixelShader == it.second)) {
+							selectedObject->material->pixelShader = it.second;
+						}
+					}
+					ImGui::EndCombo();
+				}
 			}
 		}
 		ImGui::End();

@@ -85,9 +85,6 @@ D3DRenderer::~D3DRenderer()
 
 void D3DRenderer::PreUpdateFrame()
 {
-	SetVertexShader(ShaderManager::instance()->getVertexShader("vs"));
-	SetPixelShader(ShaderManager::instance()->getPixelShader("ps"));
-
 	m_DeviceContext->ClearRenderTargetView(m_RenderTarget->GetMainRenderTaget(), ClearColor);
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());
@@ -135,6 +132,9 @@ void D3DRenderer::Draw(RenderableObject * object)
 
 	materialConstantBuffer->Update(&object->material->materialData);
 	SetContantBuffer(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, materialConstantBuffer);
+
+	SetVertexShader(object->material->vertexShader);
+	SetPixelShader(object->material->pixelShader);
 
 	this->m_DeviceContext->IASetVertexBuffers(0, 1, object->buffer->GetAddressOf(), object->buffer->StridePtr(), &this->offset);
 	m_DeviceContext->Draw(object->buffer->BufferSize(), 0);

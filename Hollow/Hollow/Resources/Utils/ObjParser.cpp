@@ -226,14 +226,14 @@ namespace Hollow {
 				material->name = token;
 			}
 			// Parse diffues texture
-			if ((0 == strncmp(token, "map_Ka", 6)) && token[6] == ' ') {
+			if ((0 == strncmp(token, "map_Kd", 6)) && token[6] == ' ') {
 				token += 7;
 				material->diffuse_texture = token;
 			}
-			if ((0 == strncmp(token, "map_Kd", 6)) && token[6] == ' ') {
+			/*if ((0 == strncmp(token, "map_Kd", 6)) && token[6] == ' ') {
 				token += 7;
 				material->normal_texture = token;
-			}
+			}*/
 			if ((0 == strncmp(token, "Ns", 2)) && token[2] == ' ') {
 				token += 3;
 				material->Ns = atof(token);
