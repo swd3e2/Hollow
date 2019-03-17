@@ -12,8 +12,7 @@ private:
 public:
 	MyApp()
 	{
-		/*
-		m_MoveSystem = new MoveSystem();
+		/*m_MoveSystem = new MoveSystem();
 		m_CollisionSystem = new CollisionSystem();
 		systemManager.AddSystem(m_MoveSystem);
 		systemManager.AddSystem(m_CollisionSystem);*/
@@ -22,7 +21,7 @@ public:
 
 		sceneManager.CreateSceneObject(
 			((D3DRenderer*)m_Renderer)->getDevice(),
-			meshManager.CreateMesh("Sandbox/Resources/Meshes/atlantis.obj", true),
+			meshManager.CreateMesh("Sandbox/Resources/Meshes/gwen.obj", true),
 			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
 		);
 	}

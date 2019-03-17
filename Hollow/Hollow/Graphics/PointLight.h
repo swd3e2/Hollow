@@ -35,9 +35,9 @@ public:
 
 	void setPosition(float position[3])
 	{
-		data.attenuation[0] = position[0];
-		data.attenuation[1] = position[1];
-		data.attenuation[2] = position[2];
+		data.position[0] = position[0];
+		data.position[1] = position[1];
+		data.position[2] = position[2];
 
 		lightIcon.renderable.transform->position = { position[0], position[1], position[2] };
 	}

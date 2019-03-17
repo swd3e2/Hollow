@@ -74,6 +74,8 @@ private:
 	int directionalLightNum = 0;
 	int spotLifhtNum = 0;
 
+	bool vSync = true;
+
 	Win32Window				window;
 	int width;
 	int height;
@@ -170,4 +172,7 @@ public:
 
 	inline ID3D11Device* getDevice() { return m_Device; }
 	inline ID3D11DeviceContext* getDeviceContext() { return m_DeviceContext; }
+
+	void setWindowIsClosed(bool status) { window.setIsClosed(status); }
+	void toggleVSync() { vSync = !vSync; }
 };

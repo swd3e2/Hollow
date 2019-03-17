@@ -3,7 +3,7 @@
 class Layer
 {
 public:
-	virtual void Update() = 0;
-	virtual void PreUpdate() = 0;
-	virtual void PostUpdate() = 0;
+	virtual void Update(float dt) = 0;
+	virtual void PreUpdate(float dt) = 0;
+	virtual void PostUpdate(float dt) = 0;
 };

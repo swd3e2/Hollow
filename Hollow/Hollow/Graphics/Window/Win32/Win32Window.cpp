@@ -102,7 +102,7 @@ LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	} break;
 	case WM_CLOSE:
 	{
-		SetIsClosed(true);
+		setIsClosed(true);
 	} break;
 	case WM_KEYDOWN:
 	{

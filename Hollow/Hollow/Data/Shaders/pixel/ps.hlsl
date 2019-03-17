@@ -20,6 +20,7 @@ struct Material
     float pad2;
     bool hasDiffuseTexture;
     bool hasNormalMap;
+    bool hasSpecularMap;
 };
 
 cbuffer ConstantBuffer : register(b0)
@@ -68,10 +69,12 @@ cbuffer MateriaBuffer : register(b4)
 
 Texture2D ambient_map   : TEXUTRE : register(t0);
 Texture2D normal_map    : TEXUTRE : register(t1);
+Texture2D specular_map  : TEXUTRE : register(t2);
+
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);
 
-float4 addAmbientColor(float3 normal, float4 position)
+float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
 {
     //float4 color = saturate(dot(normal, ambientLight.direction) * ambientLight.ambient);
     float4 color = float4(0.f, 0.f, 0.f, 0.f);
@@ -93,11 +96,17 @@ float4 addAmbientColor(float3 normal, float4 position)
             color *= pointColor;
         }
     }
+    
+    float4 specularIntensity = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    if (material.hasSpecularMap)
+    {
+        specularIntensity = specular_map.Sample(SampleTypeClamp, texCoords);
+    }
 
     // specular light
     float3 R = reflect(-lightToPixel, normal);
     float3 V = normalize(cameraPosition - position);
-    color += pow(max(dot(R, V), 0.0f), 3.0f); // change to Ns later
+    color += pow(max(dot(R, V), 0.0f), material.Ns) * specularIntensity; // change to Ns later
 
     return color;
 }
@@ -122,10 +131,11 @@ float4 PSMain(PixelShaderInput input) : SV_TARGET
     }
 
     color.xyz -= 0.3f;
+
     if (material.hasNormalMap){
         input.normal = calculateNormals(input.texCoord, input.normal, input.tangent, input.bitangent);
     }
 
-    color += addAmbientColor(input.normal, input.worldPos);
+    color += addAmbientColor(input.normal, input.worldPos, input.texCoord);
     return color;
 }

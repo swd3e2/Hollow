@@ -41,7 +41,7 @@ public:
 		setShutdown();
 	}
 
-	D3DTexture* CreateTexture(std::string filename);
+	D3DTexture* CreateTexture(std::string filename, bool loadFromDefaultDir = true);
 
 	std::unordered_map<std::string, D3DTexture*>* getTexuresList();
 private:

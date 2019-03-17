@@ -25,6 +25,7 @@ namespace Hollow {
 			name = "";
 			diffuse_texture = "";
 			normal_texture = "";
+			specular_texture = "";
 
 			Ns = 1000.0f;
 
@@ -48,6 +49,7 @@ namespace Hollow {
 		std::string name;
 		std::string diffuse_texture;
 		std::string normal_texture;
+		std::string specular_texture;
 
 		float Ns;
 		float Ka[3];

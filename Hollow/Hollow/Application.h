@@ -96,14 +96,14 @@ public:
 			m_Renderer->PreUpdateFrame();
 
 			systemManager.PreUpdateSystems(dt);
-			m_LayerStack.PreUpdate();
+			m_LayerStack.PreUpdate(dt);
 
-			m_LayerStack.Update();
+			m_LayerStack.Update(dt);
 			systemManager.UpdateSystems(dt);
 			m_Renderer->Update(sceneManager.GetSceneObjects());
 
 			systemManager.PostUpdateSystems(dt);
-			m_LayerStack.PostUpdate();
+			m_LayerStack.PostUpdate(dt);
 
 			eventSystem.dispatch();
 			inputManager.Clear();

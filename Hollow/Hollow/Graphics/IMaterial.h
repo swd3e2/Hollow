@@ -12,8 +12,9 @@ struct MaterialData
 	float pad2;
 	float Ke[3] = {};
 	float pad3;
-	bool hasDiffuseTexture = false;
-	bool hasNormalMap = false;
+	int hasDiffuseTexture = 0;
+	int hasNormalMap = 0;
+	int hasSpecularMap = 0;
 };
 
 class IMaterial
@@ -23,6 +24,7 @@ public:
 	std::string name;
 	std::string diffuse_texture;
 	std::string normal_texture;
-	
+	std::string specular_texture;
+
 	MaterialData materialData;
 };

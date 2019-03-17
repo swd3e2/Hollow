@@ -10,6 +10,12 @@
 #include "Hollow/Resources/TextureManager.h"
 #include "Hollow/Common/Log.h"
 #include "Hollow/Resources/ShaderManager.h"
+#include "Hollow/Common/FileSystem.h"
+
+enum MenuAction
+{
+	MENU_ITEM_FILESYSTEM
+};
 
 class ImGuiLayer : public Layer
 {
@@ -27,11 +33,23 @@ private:
 	float pointLightStrenght = 0;
 	float pointLightSpecularPower = 0;
 
+	bool vSync = true;
+
+	int menuItemSelected = -1;
+
 	D3DRenderer* renderer;
 	ShaderManager* shaderManager;
-	D3DVertexShader* vShader;
-	D3DPixelShader* pShader;
+	
+	// File system stuff
+	Hollow::FileSystem fs;
+	std::vector<std::string>* v = nullptr;
+
+	std::string currentFilePath = "C:\\";
+	std::string filePath;
+	std::string selectedFile;
+
 	bool* p_open;
+
 	std::vector<IRenderable*>* list;
 	const char* current_item = NULL;
 public:
@@ -50,11 +68,11 @@ public:
 		result = ImGui_ImplDX11_Init(renderer->getDevice(), renderer->getDeviceContext());
 		if (!result) HW_ERROR("Can't init imgui_dx11");
 		ImGui::StyleColorsDark();
-
 		p_open = new bool;
 		*p_open = false;
-		
+
 		shaderManager = ShaderManager::instance();
+		v = fs.read_next_directory("C");
 	}
 
 	~ImGuiLayer()
@@ -64,7 +82,7 @@ public:
 		ImGui::DestroyContext();
 	}
 
-	virtual void PreUpdate() override
+	virtual void PreUpdate(float dt) override
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
@@ -90,64 +108,93 @@ public:
 		ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
 		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruDockspace;
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("Menu"))
+			{
+				if (ImGui::MenuItem("Exit")) {
+					renderer->setWindowIsClosed(true);
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Assets"))
+			{
+				if (ImGui::MenuItem("Load texture")) {
+					menuItemSelected = MenuAction::MENU_ITEM_FILESYSTEM;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		if (menuItemSelected == MenuAction::MENU_ITEM_FILESYSTEM)
+		{
+			ImGui::OpenPopup("Filesystem");
+		}
+
+		if (ImGui::BeginPopupModal("Filesystem"))
+		{
+			ImGui::BeginChild("Child1", ImVec2(400, 360), false, window_flags);
+			for (auto& it : *v) {
+				if (it.find(".png") != -1 || it.find(".jpeg") != -1 || it.find(".jpg") != -1 || it.find(".dds") != -1 || it.find(".tga") != -1) {
+					if (ImGui::Selectable(it.c_str(), it.c_str() == selectedFile.c_str())) {
+						selectedFile = it;
+						filePath = fs.get_current_file_path();
+						filePath.append(it);
+					}
+				} else {
+					if (ImGui::Selectable(it.c_str(), false)) {
+						v = fs.read_next_directory(it);
+						currentFilePath = fs.get_current_file_path();
+						break;
+					}
+				}
+			}
+			ImGui::EndChild();
+
+			if (ImGui::Button("Add texture"))
+			{
+				TextureManager::instance()->CreateTexture(filePath, false);
+				menuItemSelected = -1;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
 	}
 
-	virtual void Update() override
+	virtual void Update(float dt) override
 	{
-		ImGui::Begin("Editor");
-		if (ImGui::CollapsingHeader("Header"))
-		{
-			ImGui::Text("Ambient");
-			ImGui::Spacing();
-
-			ImGui::Text("Ambient Light color");
-			ImGui::ColorEdit3("###", ambientLightColor);
-			ImGui::Spacing();
-
-			ImGui::Text("Ambient Light direction");
-			ImGui::DragFloat3("###", ambientLightDirection, 0.01f, -1.0f, 1.0f);
-			ImGui::Spacing();
-
-			ImGui::Text("Point");
-			ImGui::ColorEdit3("Point Light color", pointLightColor);
-			ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
-			ImGui::SliderFloat("Point Light range", &pointLightStrenght, -5.0f, 5.0f);
-			ImGui::SliderFloat("Point Light specular power", &pointLightSpecularPower, -5.0f, 5.0f);
-
-			if (renderer->pointLight != nullptr) {
-				renderer->pointLight->setColor(pointLightColor);
-				renderer->pointLight->setPosition(pointLightPosition);
-			}
+		ImGui::Begin("Renderer");
+		ImGui::Text("Past frame time %f", dt);
+		if (ImGui::Checkbox("VSync", &vSync)) {
+			renderer->toggleVSync();
 		}
-		if (ImGui::CollapsingHeader("Shaders"))
-		{
-			if (ImGui::BeginCombo("##pixelShaderCombo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
-			{
-				for (auto& it : *shaderManager->getPixelShaderList())
-				{
-					if (ImGui::Selectable(it.first.c_str(), pShader == it.second)) {
-						pShader = it.second;
-						renderer->SetPixelShader(pShader);
-					}
-					if (pShader)
-						ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-				}
-				ImGui::EndCombo();
-			}
+		static float fov = 75.0f;
+		if (ImGui::DragFloat("FOV", &fov)) {
+			renderer->getCamera()->SetProjectionValues(fov, static_cast<float>(1920) / static_cast<float>(1080), 0.1f, 1000.0f);
+		}
+		ImGui::End();
 
-			if (ImGui::BeginCombo("##vertexShaderCombo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
-			{
-				for (auto& it : *shaderManager->getVertexShaderList())
-				{
-					if (ImGui::Selectable(it.first.c_str(), vShader == it.second)) {
-						vShader = it.second;
-						renderer->SetVertexShader(vShader);
-					}
-					if (pShader)
-						ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-				}
-				ImGui::EndCombo();
-			}
+		ImGui::Begin("Lights");
+		ImGui::Text("Ambient");
+		ImGui::Spacing();
+
+		ImGui::Text("Ambient Light color");
+		ImGui::ColorEdit3("###", ambientLightColor);
+		ImGui::Spacing();
+
+		ImGui::Text("Ambient Light direction");
+		ImGui::DragFloat3("###", ambientLightDirection, 0.01f, -1.0f, 1.0f);
+		ImGui::Spacing();
+
+		ImGui::Text("Point");
+		ImGui::ColorEdit3("Point Light color", pointLightColor);
+		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
+
+		if (renderer->pointLight != nullptr) {
+			renderer->pointLight->setColor(pointLightColor);
+			renderer->pointLight->setPosition(pointLightPosition);
 		}
 		ImGui::End();
 
@@ -200,51 +247,76 @@ public:
 		}
 		ImGui::End();
 
-		ImGui::Begin("12312312312");
+		ImGui::Begin("Resources");
 		for (auto& it : *TextureManager::instance()->getTexuresList())
 		{
 			ImGui::Text(it.first.c_str());
 		}
+
 		ImGui::End();
 
 		ImGui::Begin("Material properties");
 		if (selectedObject != nullptr)
 		{
-			if (selectedObject->material->pixelShader != nullptr) {
-				if (ImGui::BeginCombo("##materialVertexShaderCombo", "Vertex shader")) // The second parameter is the label previewed before opening the combo.
+			ImGui::Text("Material properties\n\n");
+			ImGui::Text("Vertex shader");
+			if (ImGui::BeginCombo("##materialVertexShaderCombo", "")) // The second parameter is the label previewed before opening the combo.
+			{
+				for (auto& it : *shaderManager->getVertexShaderList())
 				{
-					for (auto& it : *shaderManager->getVertexShaderList())
-					{
-						if (ImGui::Selectable(it.first.c_str(), selectedObject->material->vertexShader == it.second)) {
-							selectedObject->material->vertexShader = it.second;
-						}
+					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->vertexShader == it.second)) {
+						selectedObject->material->vertexShader = it.second;
 					}
-					ImGui::EndCombo();
 				}
+				ImGui::EndCombo();
 			}
 
-			if (selectedObject->material->vertexShader != nullptr) {
-				if (ImGui::BeginCombo("##materialPixelShaderCombo", "Pixel shader")) // The second parameter is the label previewed before opening the combo.
+			ImGui::Text("Pixel shader");
+			if (ImGui::BeginCombo("##materialPixelShaderCombo", "")) // The second parameter is the label previewed before opening the combo.
+			{
+				for (auto& it : *shaderManager->getPixelShaderList())
 				{
-					for (auto& it : *shaderManager->getPixelShaderList())
-					{
-						if (ImGui::Selectable(it.first.c_str(), selectedObject->material->pixelShader == it.second)) {
-							selectedObject->material->pixelShader = it.second;
-						}
+					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->pixelShader == it.second)) {
+						selectedObject->material->pixelShader = it.second;
 					}
-					ImGui::EndCombo();
 				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::Text("Diffuese texture");
+			if (ImGui::BeginCombo("##materialDiffuesTextureCombo", "")) // The second parameter is the label previewed before opening the combo.
+			{
+				for (auto& it : *TextureManager::instance()->getTexuresList())
+				{
+					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->diffuseTexture == it.second)) {
+						selectedObject->material->diffuseTexture = it.second;
+						selectedObject->material->materialData.hasDiffuseTexture = true;
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::Text("Normal texture");
+			if (ImGui::BeginCombo("##materialNormalTextureCombo", "")) // The second parameter is the label previewed before opening the combo.
+			{
+				for (auto& it : *TextureManager::instance()->getTexuresList())
+				{
+					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->normalTexture == it.second)) {
+						selectedObject->material->normalTexture = it.second;
+						selectedObject->material->materialData.hasNormalMap = true;
+					}
+				}
+				ImGui::EndCombo();
 			}
 		}
 		ImGui::End();
 	}
 
 
-	virtual void PostUpdate() override
+	virtual void PostUpdate(float dt) override
 	{
 		// End docking viewport
 		ImGui::End();
-
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}

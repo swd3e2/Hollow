@@ -33,6 +33,7 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
+    <ClInclude Include="Hollow\Math\Vec2.h" />
     <ClInclude Include="Hollow\Resources\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DTexture.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\Icons\LightIcon.h" />

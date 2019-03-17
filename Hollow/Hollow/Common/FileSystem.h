@@ -4,10 +4,11 @@
 #include <vector>
 #include <string>
 #include "Log.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow
 {
-	class FileSystem
+	class HOLLOW_API FileSystem
 	{
 	private:
 		using stringvec = std::vector<std::string>;

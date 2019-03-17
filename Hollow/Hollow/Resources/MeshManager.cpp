@@ -110,6 +110,8 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 			meshModel->material.name = data->objects[i]->material;
 			meshModel->material.diffuse_texture = data->hash_materials[data->objects[i]->material]->diffuse_texture;
 			meshModel->material.normal_texture = data->hash_materials[data->objects[i]->material]->normal_texture;
+			meshModel->material.specular_texture = data->hash_materials[data->objects[i]->material]->specular_texture;
+
 			meshModel->material.active = true;	
 
 			if (meshModel->material.diffuse_texture.length() != 0)
@@ -117,6 +119,9 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 
 			if (meshModel->material.normal_texture.length() != 0)
 				meshModel->material.materialData.hasDiffuseTexture = true;
+
+			if (meshModel->material.specular_texture.length() != 0)
+				meshModel->material.materialData.hasSpecularMap = true;
 
 			meshModel->material.materialData.Ns = data->hash_materials[data->objects[i]->material]->Ns;
 			meshModel->material.materialData.Ka[0] = data->hash_materials[data->objects[i]->material]->Ka[0];

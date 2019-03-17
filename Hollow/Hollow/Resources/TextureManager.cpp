@@ -2,10 +2,13 @@
 
 TextureManager* TextureManager::_instance = nullptr;
 
-D3DTexture * TextureManager::CreateTexture(std::string filename)
+D3DTexture * TextureManager::CreateTexture(std::string filename, bool loadFromDefaultDir)
 {
 	if (textureList.find(filename) != textureList.end())
 		return textureList[filename];
+
+	if (loadFromDefaultDir)
+		filename = baseTexturePapth + filename;
 
 	TextureData* data = loadTexture(filename);
 
@@ -28,8 +31,6 @@ std::unordered_map<std::string, D3DTexture*>* TextureManager::getTexuresList()
 
 TextureData* TextureManager::loadTexture(std::string filename)
 {
-	filename = baseTexturePapth + filename;
-
 	TextureData* textureData = new TextureData();
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;

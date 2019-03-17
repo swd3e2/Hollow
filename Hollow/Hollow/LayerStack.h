@@ -13,27 +13,27 @@ public:
 		layers.push_back(layer);
 	}
 
-	void Update()
+	void Update(float dt)
 	{
 		for (auto& it : layers)
 		{
-			it->Update();
+			it->Update(dt);
 		}
 	}
 
-	void PreUpdate()
+	void PreUpdate(float dt)
 	{
 		for (auto& it : layers)
 		{
-			it->PreUpdate();
+			it->PreUpdate(dt);
 		}
 	}
 
-	void PostUpdate()
+	void PostUpdate(float dt)
 	{
 		for (auto& it : layers)
 		{
-			it->PostUpdate();
+			it->PostUpdate(dt);
 		}
 	}
 };

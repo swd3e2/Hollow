@@ -30,6 +30,10 @@ void SceneManager::CreateSceneObject(ID3D11Device * device, Mesh * mesh, Transfo
 			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.normal_texture);
 			mat->SetNormalTexture(tex);
 		}
+		if (it->material.materialData.hasSpecularMap) {
+			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.specular_texture);
+			mat->SetSpecularTexture(tex);
+		}
 		object->material = mat;
 		mat->materialData = it->material.materialData;
 

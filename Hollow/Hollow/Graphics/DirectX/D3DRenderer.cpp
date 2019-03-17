@@ -129,6 +129,11 @@ void D3DRenderer::Draw(RenderableObject * object)
 	} else {
 		this->m_DeviceContext->PSSetShaderResources(1, 1, pSRV);
 	}
+	if (object->material->specularTexture && object->material->specularTexture->active) {
+		this->m_DeviceContext->PSSetShaderResources(2, 1, &object->material->specularTexture->m_TextureShaderResource);
+	} else {
+		this->m_DeviceContext->PSSetShaderResources(2, 1, pSRV);
+	}
 
 	materialConstantBuffer->Update(&object->material->materialData);
 	SetContantBuffer(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, materialConstantBuffer);
@@ -143,7 +148,7 @@ void D3DRenderer::Draw(RenderableObject * object)
 void D3DRenderer::PostUpdateFrame()
 {
 	DrawLight();
-	m_SwapChain->Present(1, 0);
+	m_SwapChain->Present(vSync, 0);
 }
 
 bool D3DRenderer::processMessage()
