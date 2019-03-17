@@ -86,15 +86,17 @@ float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
     // normalize vector
     lightToPixel /= lenght;
   
-    if (lenght < pointLight.range)
+    if (lenght > pointLight.range)
     {
-        float howMuchLight = dot(lightToPixel, normal);
-        if (howMuchLight > 0.0f)
-        {
-            float4 pointColor = howMuchLight * float4(pointLight.color, 0.0f);
-            pointColor /= pointLight.attenuation[0] + (pointLight.attenuation[1] * lenght) + (pointLight.attenuation[2] * lenght * lenght);
-            color *= pointColor;
-        }
+        return color;
+    }
+
+    float howMuchLight = dot(lightToPixel, normal);
+    if (howMuchLight > 0.0f)
+    {
+        float4 pointColor = howMuchLight * float4(pointLight.color, 0.0f);
+        pointColor /= pointLight.attenuation[0] + (pointLight.attenuation[1] * lenght) + (pointLight.attenuation[2] * lenght * lenght);
+        color *= pointColor;
     }
     
     float4 specularIntensity = float4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -130,7 +132,7 @@ float4 PSMain(PixelShaderInput input) : SV_TARGET
         color = float4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 
-    color.xyz -= 0.3f;
+    color.xyz *= material.Kd;
 
     if (material.hasNormalMap){
         input.normal = calculateNormals(input.texCoord, input.normal, input.tangent, input.bitangent);

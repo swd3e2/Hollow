@@ -38,7 +38,7 @@ XMMATRIX Camera::GetProjectionMatrixCopy()
 	screenAspect = 1.0f;
 
 	// Create the projection matrix for the light.
-	return XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, 1.0f, 100.0f);
+	return XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, 1.0f, 10000.0f);
 }
 
 const XMVECTOR& Camera::GetPositionVector() const

@@ -88,6 +88,10 @@ public:
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		ImGui::Begin("dummy");
+		ImGui::Image(renderer->m_SecondRenderTarget->GetShaderResourceView(), ImVec2(ImGui::GetWindowContentRegionWidth(), ImGui::GetWindowContentRegionWidth() * 0.5625));
+		ImGui::End();
+
 		// Begin docking viewport
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->Pos);
@@ -172,8 +176,10 @@ public:
 		}
 		static float fov = 75.0f;
 		if (ImGui::DragFloat("FOV", &fov)) {
-			renderer->getCamera()->SetProjectionValues(fov, static_cast<float>(1920) / static_cast<float>(1080), 0.1f, 1000.0f);
+			renderer->getCamera()->SetProjectionValues(fov, static_cast<float>(1920) / static_cast<float>(1080), 0.1f, 10000.0f);
 		}
+		ImGui::DragFloat("Camera speed", &renderer->getCamera()->cameraMoveSpeed, 0.01f);
+		ImGui::DragFloat("Camera rotation", &renderer->getCamera()->cameraRotationSpeed, 0.01f);
 		ImGui::End();
 
 		ImGui::Begin("Lights");
@@ -248,17 +254,27 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("Resources");
-		for (auto& it : *TextureManager::instance()->getTexuresList())
-		{
-			ImGui::Text(it.first.c_str());
+		if (ImGui::CollapsingHeader("Textures")) {
+			for (auto& it : *TextureManager::instance()->getTexuresList())
+			{
+				ImGui::Image(it.second->m_TextureShaderResource, ImVec2(100, 100));
+				ImGui::Text(it.first.c_str());
+			}
 		}
-
 		ImGui::End();
 
 		ImGui::Begin("Material properties");
 		if (selectedObject != nullptr)
 		{
 			ImGui::Text("Material properties\n\n");
+
+			ImGui::DragFloat("Ns", &selectedObject->material->materialData.Ns, 0.1f, 0.0f, 100.0f);
+			
+			ImGui::DragFloat3("Kd", selectedObject->material->materialData.Ka, 0.01, -1.0f, 1.0f);
+			ImGui::DragFloat3("Kd", selectedObject->material->materialData.Kd, 0.01, -1.0f, 1.0f);
+			ImGui::DragFloat3("Ks", selectedObject->material->materialData.Ks, 0.01, -1.0f, 1.0f);
+			ImGui::DragFloat3("Ke", selectedObject->material->materialData.Ke, 0.01, -1.0f, 1.0f);
+
 			ImGui::Text("Vertex shader");
 			if (ImGui::BeginCombo("##materialVertexShaderCombo", "")) // The second parameter is the label previewed before opening the combo.
 			{
@@ -304,6 +320,18 @@ public:
 					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->normalTexture == it.second)) {
 						selectedObject->material->normalTexture = it.second;
 						selectedObject->material->materialData.hasNormalMap = true;
+					}
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::Text("Specular texture");
+			if (ImGui::BeginCombo("##materialSpecularTextureCombo", "")) // The second parameter is the label previewed before opening the combo.
+			{
+				for (auto& it : *TextureManager::instance()->getTexuresList())
+				{
+					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->specularTexture == it.second)) {
+						selectedObject->material->specularTexture = it.second;
+						selectedObject->material->materialData.hasSpecularMap = true;
 					}
 				}
 				ImGui::EndCombo();

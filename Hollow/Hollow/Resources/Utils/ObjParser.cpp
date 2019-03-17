@@ -135,10 +135,10 @@ namespace Hollow {
 
 	void ObjParser::parseNormals(MeshData* data, const char * token) 
 	{
-		char* nextToken;
-		data->normals.push_back(atof(strtok_s((char*)token, " \t\r", &nextToken)));
-		data->normals.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
-		data->normals.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
+	char* nextToken;
+	data->normals.push_back(atof(strtok_s((char*)token, " \t\r", &nextToken)));
+	data->normals.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
+	data->normals.push_back(atof(strtok_s(nextToken, " \t\r", &nextToken)));
 	}
 
 	void ObjParser::parseFace(RawMeshData* mesh, const char * token)
@@ -174,7 +174,8 @@ namespace Hollow {
 				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 1]);
 				mesh->indices.push_back(face);
 				mesh->indices.push_back(mesh->indices[mesh->indices.size() - 5]);
-			} else {
+			}
+			else {
 				mesh->indices.push_back(face);
 			}
 		}
@@ -224,23 +225,33 @@ namespace Hollow {
 				}
 				material = new RawMaterial();
 				material->name = token;
+				continue;
 			}
 			// Parse diffues texture
 			if ((0 == strncmp(token, "map_Kd", 6)) && token[6] == ' ') {
 				token += 7;
 				material->diffuse_texture = token;
+				continue;
 			}
 			if ((0 == strncmp(token, "map_Ns", 6)) && token[6] == ' ') {
 				token += 7;
 				material->normal_texture = token;
+				continue;
+			}
+			if ((0 == strncmp(token, "map_bump", 8)) && token[8] == ' ') {
+				token += 9;
+				material->normal_texture = token;
+				continue;
 			}
 			if ((0 == strncmp(token, "map_Ks", 6)) && token[6] == ' ') {
 				token += 7;
 				material->specular_texture = token;
+				continue;
 			}
 			if ((0 == strncmp(token, "Ns", 2)) && token[2] == ' ') {
 				token += 3;
 				material->Ns = atof(token);
+				continue;
 			}
 			if ((0 == strncmp(token, "Ka", 2)) && token[2] == ' ') {
 				token += 3;
@@ -249,6 +260,7 @@ namespace Hollow {
 				material->Ka[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
 				material->Ka[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
 				material->Ka[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				continue;
 			}
 			if ((0 == strncmp(token, "Kd", 2)) && token[2] == ' ') {
 				token += 3;
@@ -257,6 +269,7 @@ namespace Hollow {
 				material->Kd[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
 				material->Kd[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
 				material->Kd[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				continue;
 			}
 			if ((0 == strncmp(token, "Ks", 2)) && token[2] == ' ') {
 				token += 3;
@@ -265,6 +278,7 @@ namespace Hollow {
 				material->Ks[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
 				material->Ks[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
 				material->Ks[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				continue;
 			}
 			if ((0 == strncmp(token, "Ke", 2)) && token[2] == ' ') {
 				token += 3;
@@ -273,6 +287,7 @@ namespace Hollow {
 				material->Ke[0] = atof(strtok_s((char*)token, " \t\r", &nextToken));
 				material->Ke[1] = atof(strtok_s(nextToken, " \t\r", &nextToken));
 				material->Ke[2] = atof(strtok_s(nextToken, " \t\r", &nextToken));
+				continue;
 			}
 		}
 		data->hash_materials[material->name] = material;

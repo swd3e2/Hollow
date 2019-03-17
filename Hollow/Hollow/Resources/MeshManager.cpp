@@ -118,7 +118,7 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 				meshModel->material.materialData.hasDiffuseTexture = true;
 
 			if (meshModel->material.normal_texture.length() != 0)
-				meshModel->material.materialData.hasDiffuseTexture = true;
+				meshModel->material.materialData.hasNormalMap = true;
 
 			if (meshModel->material.specular_texture.length() != 0)
 				meshModel->material.materialData.hasSpecularMap = true;

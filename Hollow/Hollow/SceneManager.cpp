@@ -24,15 +24,18 @@ void SceneManager::CreateSceneObject(ID3D11Device * device, Mesh * mesh, Transfo
 		D3DMaterial* mat = new D3DMaterial();
 		if (it->material.materialData.hasDiffuseTexture) {
 			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.diffuse_texture);
-			mat->SetDiffuseTexture(tex);
+			if (tex != nullptr)
+				mat->SetDiffuseTexture(tex);
 		}
 		if (it->material.materialData.hasNormalMap) {
 			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.normal_texture);
-			mat->SetNormalTexture(tex);
+			if (tex != nullptr)
+				mat->SetNormalTexture(tex);
 		}
 		if (it->material.materialData.hasSpecularMap) {
 			D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.specular_texture);
-			mat->SetSpecularTexture(tex);
+			if (tex != nullptr)
+				mat->SetSpecularTexture(tex);
 		}
 		object->material = mat;
 		mat->materialData = it->material.materialData;

@@ -48,6 +48,7 @@ class HOLLOW_API D3DRenderer : public IRenderer
 {
 public:
 	PointLight*				pointLight;
+	D3DRenderTarget*		m_SecondRenderTarget;
 private:					
 	ID3D11Device*			m_Device;
 	ID3D11DeviceContext*	m_DeviceContext;
@@ -55,8 +56,10 @@ private:
 	WVP						m_wvp;
 	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
+	D3DRasterizerState*		m_rasterizerState;
 	// light sources
 	DirectionalLight*		directionaltLight;
+
 	// constant buffers
 	D3DConstantBuffer*		m_LightBuffer;
 	D3DConstantBuffer*		m_WVPConstantBuffer;
@@ -82,6 +85,7 @@ private:
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	const float ClearColor2[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 private:
 public:
 	D3DRenderer(int width, int height);
@@ -107,7 +111,7 @@ public:
 		this->m_DeviceContext->PSSetShader(ps->GetShader(), NULL, 0); 
 	}
 		
-	inline void ClearRenderTarget(ID3D11RenderTargetView*	rt)
+	inline void ClearRenderTarget(ID3D11RenderTargetView* rt)
 	{ 
 		this->m_DeviceContext->ClearRenderTargetView(rt, ClearColor); 
 	}
@@ -148,14 +152,13 @@ public:
 			m_TransformConstantBuffer->Update(&transformBuff);
 			SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
-			static float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-			m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
+			/*static float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);*/
 
 			for (RenderableObject* dxRenderableObject : dxRenderable.renderableObjects)
 				Draw(dxRenderableObject);
 
-			static float blendFactor1[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-			m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor1, 0xffffffff);
+			//m_DeviceContext->OMSetBlendState(0, 0, 0xffffffff);
 		}
 	}
 

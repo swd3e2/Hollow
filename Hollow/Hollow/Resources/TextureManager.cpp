@@ -4,19 +4,23 @@ TextureManager* TextureManager::_instance = nullptr;
 
 D3DTexture * TextureManager::CreateTexture(std::string filename, bool loadFromDefaultDir)
 {
-	if (textureList.find(filename) != textureList.end())
+	if (textureList.find(filename) != textureList.end()) {
 		return textureList[filename];
+	}
+
+	std::string pathToFile = filename;
 
 	if (loadFromDefaultDir)
-		filename = baseTexturePapth + filename;
+		pathToFile = baseTexturePapth + filename;
 
-	TextureData* data = loadTexture(filename);
+	TextureData* data = loadTexture(pathToFile);
 
 	if (data == nullptr) {
 		return nullptr;
 	}
 
 	D3DTexture* tex = new D3DTexture();
+
 	tex->CreateTexture(device, deviceContext, filename, data->width, data->height, data->data, data->pitch);
 	textureList[filename] = tex;
 
@@ -47,7 +51,7 @@ TextureData* TextureManager::loadTexture(std::string filename)
 	//if still unkown, return failure
 	if (fif == FIF_UNKNOWN) {
 		HW_ERROR("Texture manager: unknown file format, file {}", filename.c_str());
-		return false;
+		return nullptr;
 	}
 
 	//check that the plugin has reading capabilities and load the file
@@ -56,7 +60,7 @@ TextureData* TextureManager::loadTexture(std::string filename)
 	//if the image failed to load, return failure
 	if (!dib) {
 		HW_ERROR("Texture manager: failed to load image, file {}", filename.c_str());
-		return false;
+		return nullptr;
 	}
 
 	int BPP = FreeImage_GetBPP(dib);
@@ -80,7 +84,7 @@ TextureData* TextureManager::loadTexture(std::string filename)
 
 	textureData->data = malloc(size);
 	memcpy(textureData->data, bits, size);
-
+	
 	FreeImage_Unload(dib);
 
 	//if this somehow one of these failed (they shouldn't), return failure

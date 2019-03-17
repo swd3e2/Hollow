@@ -48,7 +48,7 @@ public:
 		Hollow::Log::Init();
 
 		camera = new Camera();
-		camera->SetProjectionValues(75.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 1000.0f);
+		camera->SetProjectionValues(75.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
 		eventSystem.startUp();
 		inputManager.startUp();

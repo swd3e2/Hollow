@@ -52,10 +52,13 @@ D3DRenderer::D3DRenderer(int width, int height) :
 	m_DeviceContext->RSSetViewports(1, &vp);
 	m_DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_RenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, m_SwapChain, width, height);
+	m_RenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, m_SwapChain, width, height, RenderTargetType::MAIN);
+	m_SecondRenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, m_SwapChain, width, height, RenderTargetType::SECONDARY);
+
 	m_DepthStencil = new D3DDepthStencil(m_Device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
 	m_BlendStateTransparancy = new D3DBlendState(m_Device);
+	m_rasterizerState = new D3DRasterizerState(m_Device);
 
 	m_SamplerStateWrap = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_WRAP);
 	m_SamplerStateClamp = new D3DSamplerState(m_Device, D3D11_TEXTURE_ADDRESS_WRAP);
@@ -85,16 +88,24 @@ D3DRenderer::~D3DRenderer()
 
 void D3DRenderer::PreUpdateFrame()
 {
-	m_DeviceContext->ClearRenderTargetView(m_RenderTarget->GetMainRenderTaget(), ClearColor);
+	m_DeviceContext->ClearRenderTargetView(m_RenderTarget->GetRenderTaget(), ClearColor);
+	m_DeviceContext->ClearRenderTargetView(m_SecondRenderTarget->GetRenderTaget(), ClearColor2);
+
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 	m_DeviceContext->PSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());
 	m_DeviceContext->PSSetSamplers(1, 1, m_SamplerStateClamp->GetSamplerState());
-	m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfMainRenderTaget(), m_DepthStencil->GetDepthStencilView());
+
+	// Setting states 
+	m_DeviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
+	m_DeviceContext->OMSetDepthStencilState(m_DepthStencil->GetDepthStencilState(), 0);
 
 	// Update world view projection matrix
-	m_wvp.WVP = XMMatrixTranspose(XMMatrixIdentity()
+	m_wvp.WVP = XMMatrixTranspose(
+		XMMatrixIdentity()
 		* m_Camera->GetViewMatrix()
-		* m_Camera->GetProjectionMatrix());
+		* m_Camera->GetProjectionMatrix()
+	);
 
 	m_WVPConstantBuffer->Update(&m_wvp);
 	SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
@@ -111,8 +122,8 @@ void D3DRenderer::PreUpdateFrame()
 		SetContantBuffer(HOLLOW_CONST_BUFFER_LIGHT_SLOT, m_LightBuffer);
 	}
 
-	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
+	/*float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);*/
 	//this->m_DeviceContext->GSSetShader(shaderManager->getGeometryShader("gs")->GetShader(), NULL, 0);
 	m_worldViewProjection.cameraPosition = m_Camera->GetPositionFloat3();
 }
@@ -181,6 +192,13 @@ void D3DRenderer::Update(std::vector<IRenderable*>* renderableList)
 
 		m_TransformConstantBuffer->Update(&transformBuff);
 		SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
+
+		m_DeviceContext->OMSetRenderTargets(1, m_SecondRenderTarget->GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
+		for (RenderableObject* dxRenderableObject : dxRenderable->renderableObjects)
+			Draw(dxRenderableObject);
+
+		m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
 
 		for (RenderableObject* dxRenderableObject : dxRenderable->renderableObjects)
 			Draw(dxRenderableObject);
