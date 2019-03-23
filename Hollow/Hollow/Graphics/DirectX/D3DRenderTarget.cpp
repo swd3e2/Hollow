@@ -1,6 +1,6 @@
 #include "D3DRenderTarget.h"
 
-D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * deviceContext, IDXGISwapChain * swapChain, int width, int height, RenderTargetType type)
+D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * deviceContext, int width, int height, RenderTargetType type, DXGI_FORMAT format, IDXGISwapChain * swapChain)
 {
 	HRESULT hr = S_OK;
 	// Create deafult render target view
@@ -20,7 +20,7 @@ D3DRenderTarget::D3DRenderTarget(ID3D11Device * device, ID3D11DeviceContext * de
 		textureDesc.Height = height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.Format = format;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
 		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;

@@ -3,4 +3,8 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PoolAllocator.h" />
+    <ClInclude Include="array.h" />
+  </ItemGroup>
 </Project>

@@ -12,7 +12,15 @@ enum RenderTargetType
 class HOLLOW_API D3DRenderTarget
 {
 public:
-	D3DRenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain, int width, int height, RenderTargetType type);
+	D3DRenderTarget(ID3D11Device* device, 
+		ID3D11DeviceContext* deviceContext, 
+		int width, 
+		int height, 
+		RenderTargetType type, 
+		DXGI_FORMAT format, 
+		IDXGISwapChain* swapChain = nullptr
+	);
+
 	~D3DRenderTarget();
 	inline ID3D11RenderTargetView * GetRenderTaget() { return renderTarget; }
 	inline ID3D11RenderTargetView ** GetAddressOfRenderTaget() { return &renderTarget; }

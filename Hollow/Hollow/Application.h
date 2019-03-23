@@ -47,7 +47,7 @@ public:
 		Hollow::Console::RedirectIOToConsole();
 		Hollow::Log::Init();
 
-		camera = new Camera();
+		camera = new Camera(true);
 		camera->SetProjectionValues(75.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
 		eventSystem.startUp();
@@ -91,7 +91,7 @@ public:
 			dt = m_Timer.GetMilisecondsElapsed();
 			m_Timer.Restart();
 			m_Renderer->processMessage();
-
+			m_Renderer->shadowMap->camera.Update(dt);
 			camera->Update(dt);
 			m_Renderer->PreUpdateFrame();
 

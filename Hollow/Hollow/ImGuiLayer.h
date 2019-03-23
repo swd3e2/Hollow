@@ -33,6 +33,8 @@ private:
 	float pointLightStrenght = 0;
 	float pointLightSpecularPower = 0;
 
+	float shadowMapPosition[3] = {};
+
 	bool vSync = true;
 
 	int menuItemSelected = -1;
@@ -87,10 +89,6 @@ public:
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-
-		ImGui::Begin("dummy");
-		ImGui::Image(renderer->m_SecondRenderTarget->GetShaderResourceView(), ImVec2(ImGui::GetWindowContentRegionWidth(), ImGui::GetWindowContentRegionWidth() * 0.5625));
-		ImGui::End();
 
 		// Begin docking viewport
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -169,6 +167,9 @@ public:
 
 	virtual void Update(float dt) override
 	{
+		ImGui::Begin("dummy11");
+		ImGui::Image(renderer->m_SecondRenderTarget->GetShaderResourceView(), ImVec2(ImGui::GetWindowContentRegionWidth(), ImGui::GetWindowContentRegionWidth() * 0.5625));
+		ImGui::End();
 		ImGui::Begin("Renderer");
 		ImGui::Text("Past frame time %f", dt);
 		if (ImGui::Checkbox("VSync", &vSync)) {
@@ -178,6 +179,17 @@ public:
 		if (ImGui::DragFloat("FOV", &fov)) {
 			renderer->getCamera()->SetProjectionValues(fov, static_cast<float>(1920) / static_cast<float>(1080), 0.1f, 10000.0f);
 		}
+		if (ImGui::Checkbox("Toggle camera", p_open)) {
+			if (renderer->getCamera()->mainCamera == true) {
+				renderer->shadowMap->camera.mainCamera = true;
+				renderer->getCamera()->mainCamera = false;
+			}
+			else {
+				renderer->shadowMap->camera.mainCamera = false;
+				renderer->getCamera()->mainCamera = true;
+			}
+		}
+
 		ImGui::DragFloat("Camera speed", &renderer->getCamera()->cameraMoveSpeed, 0.01f);
 		ImGui::DragFloat("Camera rotation", &renderer->getCamera()->cameraRotationSpeed, 0.01f);
 		ImGui::End();
@@ -197,6 +209,7 @@ public:
 		ImGui::Text("Point");
 		ImGui::ColorEdit3("Point Light color", pointLightColor);
 		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
+		ImGui::DragFloat3("Point Light attenuation", renderer->pointLight->data.attenuation, 0.01f, -30.0f, 30.0f);
 
 		if (renderer->pointLight != nullptr) {
 			renderer->pointLight->setColor(pointLightColor);

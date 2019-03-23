@@ -52,8 +52,8 @@ D3DRenderer::D3DRenderer(int width, int height) :
 	m_DeviceContext->RSSetViewports(1, &vp);
 	m_DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_RenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, m_SwapChain, width, height, RenderTargetType::MAIN);
-	m_SecondRenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, m_SwapChain, width, height, RenderTargetType::SECONDARY);
+	m_RenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, width, height, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, m_SwapChain);
+	m_SecondRenderTarget = new D3DRenderTarget(m_Device, m_DeviceContext, width, height, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
 	m_DepthStencil = new D3DDepthStencil(m_Device, width, height, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
@@ -66,9 +66,11 @@ D3DRenderer::D3DRenderer(int width, int height) :
 	m_WVPConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WVP));
 	m_TransformConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(TransformBuff));
 	m_LightBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(PointLightStruct));
-
+	lightMatricesConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(LightMatrices));
 	m_WorldViewProjectionBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(WorldViewProjection));
 	materialConstantBuffer = new D3DConstantBuffer(m_Device, m_DeviceContext, sizeof(MaterialData));
+
+	shadowMap = new ShadowMap(m_Device, m_DeviceContext, 1920, 1080);
 }
 
 D3DRenderer::~D3DRenderer()
@@ -89,7 +91,8 @@ D3DRenderer::~D3DRenderer()
 void D3DRenderer::PreUpdateFrame()
 {
 	m_DeviceContext->ClearRenderTargetView(m_RenderTarget->GetRenderTaget(), ClearColor);
-	m_DeviceContext->ClearRenderTargetView(m_SecondRenderTarget->GetRenderTaget(), ClearColor2);
+	m_DeviceContext->ClearRenderTargetView(m_SecondRenderTarget->GetRenderTaget(), ClearColor);
+	m_DeviceContext->ClearRenderTargetView(shadowMap->shadowRenderTarget.GetRenderTaget(), ClearColor);
 
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -100,22 +103,6 @@ void D3DRenderer::PreUpdateFrame()
 	m_DeviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
 	m_DeviceContext->OMSetDepthStencilState(m_DepthStencil->GetDepthStencilState(), 0);
 
-	// Update world view projection matrix
-	m_wvp.WVP = XMMatrixTranspose(
-		XMMatrixIdentity()
-		* m_Camera->GetViewMatrix()
-		* m_Camera->GetProjectionMatrix()
-	);
-
-	m_WVPConstantBuffer->Update(&m_wvp);
-	SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
-
-	m_worldViewProjection.World = XMMatrixIdentity();
-	m_worldViewProjection.View = m_Camera->GetViewMatrix();
-	m_worldViewProjection.Projection = m_Camera->GetProjectionMatrix();
-	m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
-	SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
-	
 	if (pointLight != nullptr) {
 		// update light
 		m_LightBuffer->Update(&pointLight->data);
@@ -158,7 +145,6 @@ void D3DRenderer::Draw(RenderableObject * object)
 
 void D3DRenderer::PostUpdateFrame()
 {
-	DrawLight();
 	m_SwapChain->Present(vSync, 0);
 }
 
@@ -169,6 +155,22 @@ bool D3DRenderer::processMessage()
 
 void D3DRenderer::Update(std::vector<IRenderable*>* renderableList)
 {
+	lightMatrices.Projection = XMMatrixTranspose(shadowMap->camera.GetProjectionMatrix());
+	lightMatrices.View = XMMatrixTranspose(shadowMap->camera.GetViewMatrix());
+	lightMatrices.lightPosition = shadowMap->camera.GetPositionFloat3();
+	lightMatricesConstantBuffer->Update(&lightMatrices);
+
+	SetContantBuffer(5, lightMatricesConstantBuffer);
+
+	drawShadowMap(renderableList);
+
+	m_DeviceContext->OMSetRenderTargets(1, m_SecondRenderTarget->GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	this->m_DeviceContext->PSSetShaderResources(3, 1, shadowMap->shadowRenderTarget.GetAddressOfShaderResourceView());
+	
+	updateWVP(m_Camera);
+
 	for (auto& renderable : *renderableList)
 	{
 		D3DRenderable* dxRenderable = (D3DRenderable*)renderable;
@@ -193,14 +195,77 @@ void D3DRenderer::Update(std::vector<IRenderable*>* renderableList)
 		m_TransformConstantBuffer->Update(&transformBuff);
 		SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
-		m_DeviceContext->OMSetRenderTargets(1, m_SecondRenderTarget->GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
 		for (RenderableObject* dxRenderableObject : dxRenderable->renderableObjects)
 			Draw(dxRenderableObject);
+	}
+	
+	this->m_DeviceContext->PSSetShaderResources(3, 1, pSRV);
 
-		m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
+	DrawLight();
+
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_DeviceContext->OMSetRenderTargets(1, m_RenderTarget->GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
+}
+
+void D3DRenderer::updateWVP(Camera* camera)
+{
+	// Update world view projection matrix
+	m_wvp.WVP = XMMatrixTranspose(
+		XMMatrixIdentity()
+		* camera->GetViewMatrix()
+		* camera->GetProjectionMatrix()
+	);
+
+	m_WVPConstantBuffer->Update(&m_wvp);
+	SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
+
+	m_worldViewProjection.World = XMMatrixIdentity();
+	m_worldViewProjection.View = XMMatrixTranspose(camera->GetViewMatrix());
+	m_worldViewProjection.Projection = XMMatrixTranspose(camera->GetProjectionMatrix());
+	m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
+	SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
+}
+
+void D3DRenderer::drawShadowMap(std::vector<IRenderable*>* renderableList)
+{
+	m_DeviceContext->ClearRenderTargetView(shadowMap->shadowRenderTarget.GetRenderTaget(), ShadowClearColor);
+	// Shadow map drawing
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_DeviceContext->OMSetRenderTargets(1, shadowMap->shadowRenderTarget.GetAddressOfRenderTaget(), m_DepthStencil->GetDepthStencilView());
+
+	updateWVP(&shadowMap->camera);
+
+	for (auto& renderable : *renderableList)
+	{
+		D3DRenderable* dxRenderable = (D3DRenderable*)renderable;
+
+		transformBuff.transform = XMMatrixTranspose(
+			(XMMatrixTranslation(
+				dxRenderable->transform->position.x,
+				dxRenderable->transform->position.y,
+				dxRenderable->transform->position.z) *
+				XMMatrixScaling(
+					dxRenderable->transform->scale.x,
+					dxRenderable->transform->scale.y,
+					dxRenderable->transform->scale.z
+				)) *
+			XMMatrixRotationRollPitchYaw(
+				dxRenderable->transform->rotation.x,
+				dxRenderable->transform->rotation.y,
+				dxRenderable->transform->rotation.z
+			)
+		);
+
+		m_TransformConstantBuffer->Update(&transformBuff);
+		SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
 		for (RenderableObject* dxRenderableObject : dxRenderable->renderableObjects)
-			Draw(dxRenderableObject);
+		{
+			SetVertexShader(ShaderManager::instance()->getVertexShader("depthVS"));
+			SetPixelShader(ShaderManager::instance()->getPixelShader("depthPS"));
+
+			this->m_DeviceContext->IASetVertexBuffers(0, 1, dxRenderableObject->buffer->GetAddressOf(), dxRenderableObject->buffer->StridePtr(), &this->offset);
+			m_DeviceContext->Draw(dxRenderableObject->buffer->BufferSize(), 0);
+		}
 	}
 }

@@ -24,5 +24,28 @@ public:
 			meshManager.CreateMesh("Sandbox/Resources/Meshes/gwen.obj", true),
 			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
 		);
+
+		sceneManager.CreateSceneObject(
+			((D3DRenderer*)m_Renderer)->getDevice(),
+			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj", true),
+			new Transform({ -10.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
+		);
+
+		sceneManager.CreateSceneObject(
+			((D3DRenderer*)m_Renderer)->getDevice(),
+			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj", true),
+			new Transform({ 5.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
+		);
+
+		sceneManager.CreateSceneObject(
+			((D3DRenderer*)m_Renderer)->getDevice(),
+			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj", true),
+			new Transform({ 10.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
+		);
+		sceneManager.CreateSceneObject(
+			((D3DRenderer*)m_Renderer)->getDevice(),
+			meshManager.CreateMesh("Sandbox/Resources/Meshes/plane.obj", true),
+			new Transform({ 0.0f, -0.0975, 0.0f }, { 100.0f, 100.0f, 100.0f }, { 0.0f, 0.0f, 0.0f })
+		);
 	}
 };

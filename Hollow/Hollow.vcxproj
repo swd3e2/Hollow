@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Application.h" />
+    <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\DummyConsoleListener.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
+    <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
     <ClInclude Include="Hollow\Math\Vec2.h" />
     <ClInclude Include="Hollow\Resources\ShaderManager.h" />

@@ -6,8 +6,8 @@ struct PointLightStruct
 	float position[3];
 	float range;
 	float color[3];
-	float attenuation[3];
 	float pad;
+	float attenuation[3];
 };
 
 class HOLLOW_API PointLight

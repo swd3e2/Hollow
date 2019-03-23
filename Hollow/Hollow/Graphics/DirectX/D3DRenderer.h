@@ -21,6 +21,7 @@
 #include "Hollow/Resources/ShaderManager.h"
 #include "Hollow/Graphics/PointLight.h"
 #include "Hollow/Graphics/DirectionalLight.h"
+#include "Hollow/Graphics/ShadowMap.h"
 #include "D3DMaterial.h"
 
 using namespace DirectX;
@@ -43,12 +44,20 @@ struct TransformBuff
 	XMMATRIX transform;
 };
 
+struct LightMatrices
+{
+	XMMATRIX View;
+	XMMATRIX Projection;
+	XMFLOAT3 lightPosition;
+};
+
 // Simple directx renderer
 class HOLLOW_API D3DRenderer : public IRenderer
 {
 public:
 	PointLight*				pointLight;
 	D3DRenderTarget*		m_SecondRenderTarget;
+	ShadowMap*				shadowMap;
 private:					
 	ID3D11Device*			m_Device;
 	ID3D11DeviceContext*	m_DeviceContext;
@@ -59,13 +68,14 @@ private:
 	D3DRasterizerState*		m_rasterizerState;
 	// light sources
 	DirectionalLight*		directionaltLight;
-
+	LightMatrices			lightMatrices;
 	// constant buffers
 	D3DConstantBuffer*		m_LightBuffer;
 	D3DConstantBuffer*		m_WVPConstantBuffer;
 	D3DConstantBuffer*		m_WorldViewProjectionBuffer;
 	D3DConstantBuffer*		m_TransformConstantBuffer;
 	D3DConstantBuffer*		materialConstantBuffer;
+	D3DConstantBuffer*		lightMatricesConstantBuffer;
 
 	D3DBlendState*			m_BlendStateTransparancy;
 	D3DSamplerState*		m_SamplerStateWrap;
@@ -85,7 +95,7 @@ private:
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
-	const float ClearColor2[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 private:
 public:
 	D3DRenderer(int width, int height);
@@ -173,9 +183,12 @@ public:
 
 	virtual bool windowIsClosed() override { return window.isClosed(); }
 
+	void updateWVP(Camera* camera);
+
 	inline ID3D11Device* getDevice() { return m_Device; }
 	inline ID3D11DeviceContext* getDeviceContext() { return m_DeviceContext; }
 
+	void drawShadowMap(std::vector<IRenderable*>* renderableList);
 	void setWindowIsClosed(bool status) { window.setIsClosed(status); }
 	void toggleVSync() { vSync = !vSync; }
 };

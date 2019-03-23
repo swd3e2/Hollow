@@ -10,8 +10,9 @@ using namespace DirectX;
 class HOLLOW_API Camera
 {
 public:
-	Camera();
+	Camera(bool mainCamera);
 	void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ);
+	void SetProjectionValues();
 
 	const XMMATRIX & GetViewMatrix() const;
 	const XMMATRIX & GetProjectionMatrix() const;
@@ -39,6 +40,7 @@ public:
 public:
 	float cameraRotationSpeed = 0.008f;
 	float cameraMoveSpeed = 0.002f;
+	bool mainCamera;
 private:
 	void UpdateViewMatrix();
 	XMVECTOR posVector;

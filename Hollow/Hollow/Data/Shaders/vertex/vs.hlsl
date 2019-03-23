@@ -16,6 +16,13 @@ cbuffer ConstantBuffer : register(b2)
     matrix transform;
 }
 
+cbuffer ConstantBuffer : register(b5)
+{
+    matrix lightViewMatrix;
+    matrix lightProjectionMatrix;
+    float3 lightPosition;
+}
+
 struct PixelShaderOutput
 {
     float4 pos : SV_POSITION;
@@ -24,6 +31,8 @@ struct PixelShaderOutput
     float3 normal : NORMAL0;
     float3 tangent : TANGENT;
     float3 bitangent : BITANGENT;
+    float4 lightViewPosition : TEXCOORD1;
+    float3 lightPos : TEXCOORD2;
 };
 
 struct VertexShaderInput
@@ -46,6 +55,18 @@ PixelShaderOutput VSMain(VertexShaderInput input)
     output.pos = mul(output.pos, WVP);
     output.normal = mul(input.normal, transform);
     output.texCoord = input.texCoord;
+
+    output.lightViewPosition = float4(input.pos, 1.0f);
+    output.lightViewPosition = mul(output.lightViewPosition, transform);
+    output.lightViewPosition = mul(output.lightViewPosition, World);
+    output.lightViewPosition = mul(output.lightViewPosition, lightViewMatrix);
+    output.lightViewPosition = mul(output.lightViewPosition, lightProjectionMatrix);
+
+    float4 worldPosition = mul(input.pos, World);
+    worldPosition = mul(worldPosition, transform);
+
+    output.lightPos = lightPosition.xyz - worldPosition.xyz;
+    output.lightPos = normalize(output.lightPos);
 
     output.tangent = input.tangent;
     output.bitangent = input.bitangent;

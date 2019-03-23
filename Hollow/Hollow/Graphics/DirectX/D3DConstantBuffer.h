@@ -15,7 +15,7 @@ public:
 	 * @param UINT size size of structure 
 	 */
 	D3DConstantBuffer(ID3D11Device * device, ID3D11DeviceContext * deviceContext, UINT size) {
-		this->size = size;
+		this->size = static_cast<UINT>(size + (16 - size % 16));
 
 		m_DeviceContext = deviceContext;
 		// Constant buffer
@@ -23,7 +23,7 @@ public:
 		constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		constantBufferDesc.ByteWidth = static_cast<UINT>(size + (16 - size % 16)); // Align with 16 bytes
+		constantBufferDesc.ByteWidth = this->size; // Align with 16 bytes
 		constantBufferDesc.MiscFlags = 0;
 		constantBufferDesc.StructureByteStride = 0;
 

@@ -1,11 +1,12 @@
 #include "Camera.h"
 
-Camera::Camera()
+Camera::Camera(bool mainCamera)
 {
 	this->pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	this->rotVector = XMLoadFloat3(&this->rot);
+	this->mainCamera = mainCamera;
 	this->UpdateViewMatrix();
 }
 
@@ -13,6 +14,12 @@ void Camera::SetProjectionValues(float fovDegrees, float aspectRatio, float near
 {
 	float fovRadians = (fovDegrees / 360.0f) * XM_2PI;
 	this->projectionMatrix = XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
+}
+
+void Camera::SetProjectionValues()
+{
+	float fovRadians = (float)Math::PI / 2.0f;
+	this->projectionMatrix = XMMatrixPerspectiveFovLH(fovRadians, 1.0f, 0.1f, 10000.0f);
 }
 
 const XMMATRIX& Camera::GetViewMatrix() const
@@ -151,31 +158,33 @@ void Camera::SetLookAtPos(XMFLOAT3 lookAtPos)
 
 void Camera::Update(double dt)
 {
-	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_W) == true)
-	{
-		XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
-		AdjustPosition((vec_forward + vector * 1.5f) * cameraMoveSpeed * dt);
-	}
+	if (mainCamera) {
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_W) == true)
+		{
+			XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
+			AdjustPosition((vec_forward + vector * 1.5f) * cameraMoveSpeed * dt);
+		}
 		
-	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_S) == true)
-	{
-		XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
-		AdjustPosition((vec_backward - vector * 1.5f) * cameraMoveSpeed * dt);
-	}
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_S) == true)
+		{
+			XMVECTOR vector = { 0, this->camTarget.m128_f32[1] - this->posVector.m128_f32[1] , 0.0f, 0.0f };
+			AdjustPosition((vec_backward - vector * 1.5f) * cameraMoveSpeed * dt);
+		}
 		
-	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_A) == true)
-	{
-		AdjustPosition(vec_left * cameraMoveSpeed * dt);
-	}
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_A) == true)
+		{
+			AdjustPosition(vec_left * cameraMoveSpeed * dt);
+		}
 		
-	if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_D) == true)
-	{
-		AdjustPosition(vec_right * cameraMoveSpeed * dt);
-	}
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_D) == true)
+		{
+			AdjustPosition(vec_right * cameraMoveSpeed * dt);
+		}
 
-	if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT))
-	{
-		AdjustRotation(InputManager::my * cameraRotationSpeed, InputManager::mx * cameraRotationSpeed, 0.0f);
+		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT))
+		{
+			AdjustRotation(InputManager::my * cameraRotationSpeed, InputManager::mx * cameraRotationSpeed, 0.0f);
+		}
 	}
 }
 
