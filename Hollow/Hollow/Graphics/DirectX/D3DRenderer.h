@@ -24,72 +24,17 @@
 #include "Hollow/Graphics/ShadowMap.h"
 #include "D3DMaterial.h"
 
-using namespace DirectX;
-
-struct WVP
-{
-	XMMATRIX WVP;
-};
-
-struct WorldViewProjection
-{
-	XMMATRIX World;
-	XMMATRIX View;
-	XMMATRIX Projection;
-	XMFLOAT3 cameraPosition;
-};
-
-struct TransformBuff
-{
-	XMMATRIX transform;
-};
-
-struct LightMatrices
-{
-	XMMATRIX View;
-	XMMATRIX Projection;
-	XMFLOAT3 lightPosition;
-};
-
 // Simple directx renderer
 class HOLLOW_API D3DRenderer : public IRenderer
 {
 public:
-	PointLight*				pointLight;
-	D3DRenderTarget*		m_SecondRenderTarget;
-	ShadowMap*				shadowMap;
+	bool vSync = true;
 private:					
 	ID3D11Device*			m_Device;
 	ID3D11DeviceContext*	m_DeviceContext;
 	IDXGISwapChain*			m_SwapChain;
-	WVP						m_wvp;
-	WorldViewProjection		m_worldViewProjection;
-	TransformBuff			transformBuff;
 	D3DRasterizerState*		m_rasterizerState;
-	// light sources
-	DirectionalLight*		directionaltLight;
-	LightMatrices			lightMatrices;
-	// constant buffers
-	D3DConstantBuffer*		m_LightBuffer;
-	D3DConstantBuffer*		m_WVPConstantBuffer;
-	D3DConstantBuffer*		m_WorldViewProjectionBuffer;
-	D3DConstantBuffer*		m_TransformConstantBuffer;
-	D3DConstantBuffer*		materialConstantBuffer;
-	D3DConstantBuffer*		lightMatricesConstantBuffer;
 
-	D3DBlendState*			m_BlendStateTransparancy;
-	D3DSamplerState*		m_SamplerStateWrap;
-	D3DSamplerState*		m_SamplerStateClamp;
-	D3DRenderTarget*		m_RenderTarget;
-	D3DDepthStencil*		m_DepthStencil;
-
-	int pointLightsNum = 0;
-	int directionalLightNum = 0;
-	int spotLifhtNum = 0;
-
-	bool vSync = true;
-
-	Win32Window				window;
 	int width;
 	int height;
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
@@ -98,7 +43,7 @@ private:
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 private:
 public:
-	D3DRenderer(int width, int height);
+	D3DRenderer(int width, int height, HWND* hwnd);
 	~D3DRenderer();
 
 	inline void SetShaderResource(UINT slot, ID3D11ShaderResourceView * shaderResourceView)
@@ -137,58 +82,12 @@ public:
 		this->m_DeviceContext->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
 	}
 
-	void DrawLight()
-	{
-		if (pointLight != nullptr) {
-			
-			XMVECTOR cameravector = m_Camera->GetPositionVector();
-			XMVECTOR iconposvector = { 
-				pointLight->lightIcon.renderable.transform->position.x, 
-				pointLight->lightIcon.renderable.transform->position.y, 
-				pointLight->lightIcon.renderable.transform->position.z, 
-				1.0f
-			};
-			XMVECTOR icontocameravector = iconposvector - cameravector;
-
-			pointLight->lightIcon.renderable.transform->rotation = m_Camera->GetRotationFloat3();
-
-			D3DRenderable& dxRenderable = pointLight->lightIcon.renderable;
-
-			transformBuff.transform = XMMatrixTranspose(
-				(XMMatrixRotationRollPitchYaw(dxRenderable.transform->rotation.x, dxRenderable.transform->rotation.y, dxRenderable.transform->rotation.z) *
-					XMMatrixScaling(dxRenderable.transform->scale.x, dxRenderable.transform->scale.y, dxRenderable.transform->scale.z)) *
-				XMMatrixTranslation(dxRenderable.transform->position.x, dxRenderable.transform->position.y, dxRenderable.transform->position.z));
-
-			m_TransformConstantBuffer->Update(&transformBuff);
-			SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
-
-			/*static float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-			m_DeviceContext->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);*/
-
-			for (RenderableObject* dxRenderableObject : dxRenderable.renderableObjects)
-				Draw(dxRenderableObject);
-
-			//m_DeviceContext->OMSetBlendState(0, 0, 0xffffffff);
-		}
-	}
-
 	inline void DrawIndexed(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }
 	inline void Draw(UINT count) { m_DeviceContext->Draw(count, 0); }
 
-	virtual void PreUpdateFrame() override;
-	virtual void Update(std::vector<IRenderable*>* renderableList) override;
-	void Draw(RenderableObject* vBuffer);
-	virtual void PostUpdateFrame() override;
-	virtual bool processMessage() override;
-
-	virtual bool windowIsClosed() override { return window.isClosed(); }
-
-	void updateWVP(Camera* camera);
-
 	inline ID3D11Device* getDevice() { return m_Device; }
 	inline ID3D11DeviceContext* getDeviceContext() { return m_DeviceContext; }
+	inline IDXGISwapChain* getSwapChain() { return m_SwapChain; }
 
-	void drawShadowMap(std::vector<IRenderable*>* renderableList);
-	void setWindowIsClosed(bool status) { window.setIsClosed(status); }
 	void toggleVSync() { vSync = !vSync; }
 };

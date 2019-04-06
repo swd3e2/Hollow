@@ -17,7 +17,6 @@ public:
 		systemManager.AddSystem(m_MoveSystem);
 		systemManager.AddSystem(m_CollisionSystem);*/
 		
-		m_Renderer->pointLight = new PointLight(m_Renderer->getDevice());
 
 		sceneManager.CreateSceneObject(
 			((D3DRenderer*)m_Renderer)->getDevice(),

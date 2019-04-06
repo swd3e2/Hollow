@@ -20,21 +20,8 @@ public:
 		return std::move(Vec2(x - second.x, y - second.y));
 	}
 
-	void operator+(const Vec2 second) 
+	Vec2&& operator+(const Vec2 second) noexcept
 	{
-		x += second.x;
-		y += second.y;
-	}
-
-	void operator/(float val)
-	{
-		x /= val;
-		y /= val;
-	}
-
-	void operator*(float val)
-	{
-		x *= val;
-		y *= val;
+		return std::move(Vec2(x += second.x, y += second.y));
 	}
 };

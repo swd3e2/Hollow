@@ -10,7 +10,7 @@ inline void* AlignForward(const void* address, size_t alignment)
 
 class PoolAllocator
 {
-private:
+public:
 	void* firstAddress;
 	void** pointer;
 	unsigned int size;
@@ -36,7 +36,7 @@ public:
 
 	~PoolAllocator()
 	{
-		free(this->firstAddress);
+		_aligned_free(this->firstAddress);
 	}
 
 	template<class T, typename ...Args>

@@ -54,9 +54,10 @@ private:
 
 	std::vector<IRenderable*>* list;
 	const char* current_item = NULL;
+	PointLight* light;
 public:
-	ImGuiLayer(D3DRenderer* renderer, std::vector<IRenderable*>* list) :
-		renderer(renderer), list(list)
+	ImGuiLayer(D3DRenderer* renderer, std::vector<IRenderable*>* list, PointLight* light) :
+		renderer(renderer), list(list), light(light)
 	{
 		bool result = true;
 		IMGUI_CHECKVERSION();
@@ -116,7 +117,6 @@ public:
 			if (ImGui::BeginMenu("Menu"))
 			{
 				if (ImGui::MenuItem("Exit")) {
-					renderer->setWindowIsClosed(true);
 				}
 				ImGui::EndMenu();
 			}
@@ -167,9 +167,6 @@ public:
 
 	virtual void Update(float dt) override
 	{
-		ImGui::Begin("dummy11");
-		ImGui::Image(renderer->m_SecondRenderTarget->GetShaderResourceView(), ImVec2(ImGui::GetWindowContentRegionWidth(), ImGui::GetWindowContentRegionWidth() * 0.5625));
-		ImGui::End();
 		ImGui::Begin("Renderer");
 		ImGui::Text("Past frame time %f", dt);
 		if (ImGui::Checkbox("VSync", &vSync)) {
@@ -179,7 +176,7 @@ public:
 		if (ImGui::DragFloat("FOV", &fov)) {
 			renderer->getCamera()->SetProjectionValues(fov, static_cast<float>(1920) / static_cast<float>(1080), 0.1f, 10000.0f);
 		}
-		if (ImGui::Checkbox("Toggle camera", p_open)) {
+		/*if (ImGui::Checkbox("Toggle camera", p_open)) {
 			if (renderer->getCamera()->mainCamera == true) {
 				renderer->shadowMap->camera.mainCamera = true;
 				renderer->getCamera()->mainCamera = false;
@@ -188,10 +185,10 @@ public:
 				renderer->shadowMap->camera.mainCamera = false;
 				renderer->getCamera()->mainCamera = true;
 			}
-		}
+		}*/
 
-		ImGui::DragFloat("Camera speed", &renderer->getCamera()->cameraMoveSpeed, 0.01f);
-		ImGui::DragFloat("Camera rotation", &renderer->getCamera()->cameraRotationSpeed, 0.01f);
+	/*	ImGui::DragFloat("Camera speed", &renderer->getCamera()->cameraMoveSpeed, 0.01f);
+		ImGui::DragFloat("Camera rotation", &renderer->getCamera()->cameraRotationSpeed, 0.01f);*/
 		ImGui::End();
 
 		ImGui::Begin("Lights");
@@ -208,12 +205,13 @@ public:
 
 		ImGui::Text("Point");
 		ImGui::ColorEdit3("Point Light color", pointLightColor);
-		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.01f, -30.0f, 30.0f);
-		ImGui::DragFloat3("Point Light attenuation", renderer->pointLight->data.attenuation, 0.01f, -30.0f, 30.0f);
+		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.1f, -30.0f, 30.0f);
+		ImGui::DragFloat3("Point Light attenuation", light->data.attenuation, 0.01f, -30.0f, 30.0f);
+		ImGui::DragFloat("Range", &light->data.range, 0.1f, -30.0f, 30.0f);
 
-		if (renderer->pointLight != nullptr) {
-			renderer->pointLight->setColor(pointLightColor);
-			renderer->pointLight->setPosition(pointLightPosition);
+		if (light != nullptr) {
+			light->setColor(pointLightColor);
+			light->setPosition(pointLightPosition);
 		}
 		ImGui::End();
 

@@ -96,10 +96,10 @@ float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
 
     float howMuchLight = dot(lightToPixel, normal);
 
-    if (howMuchLight > 0.0f)
-    {
-        color += howMuchLight * float4(pointLight.color, 1.0f) * (1 / pointLight.attenuation[0] + (pointLight.attenuation[1] * lenght) + (pointLight.attenuation[2] * (lenght * lenght)));
-    }
+    color += float4(pointLight.color, 1.0f) * 
+    (1 / pointLight.attenuation[0] + 
+    (pointLight.attenuation[1] * lenght) + 
+    (pointLight.attenuation[2] * (lenght * lenght)));
     
     float4 specularIntensity = float4(1.0f, 1.0f, 1.0f, 0.0f);
     if (material.hasSpecularMap)
@@ -108,10 +108,8 @@ float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
     }
     
     // specular light
-    float3 R = reflect(-lightToPixel, normal);
     float3 V = normalize(cameraPosition - position);
-
-    color = saturate(color + pow(max(dot(R, V), 0.0f), material.Ns) * specularIntensity);
+    color = saturate(color + pow(min(dot(normalize(V + lightToPixel), normal), 0.0f), material.Ns) * specularIntensity);
 
     return color;
 }
@@ -131,15 +129,15 @@ float4 PSMain(PixelShaderInput input) : SV_TARGET
     float4 color;
     if (material.hasDiffuseTexture) {
         color = ambient_map.Sample(SampleTypeClamp, input.texCoord);
+        color.xyz *= material.Kd;
     } else {
         color = float4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 
-    color.xyz *= material.Kd;
-
-    if (material.hasNormalMap){
+    if (material.hasNormalMap) {
         input.normal = calculateNormals(input.texCoord, input.normal, input.tangent, input.bitangent);
     }
+
     input.normal = normalize(input.normal);
 
     // Set the bias value for fixing the floating point precision issues.

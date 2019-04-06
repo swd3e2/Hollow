@@ -26,12 +26,14 @@
     <ClInclude Include="Hollow\Events\IEventListener.h" />
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
+    <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h" />
     <ClInclude Include="Hollow\Graphics\DirectionalLight.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBlendState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DGeometryShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
+    <ClInclude Include="Hollow\Graphics\ForwardRenderPass.h" />
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />

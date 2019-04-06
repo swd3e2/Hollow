@@ -1,6 +1,8 @@
 #include "PoolAllocator.h"
 #include <windows.h>
 #include "array.h"
+#include <cmath>
+#include <iostream>
 
 class pos
 {
@@ -38,20 +40,15 @@ int main()
 	memset(mem1, 0, sizeof(pos));
 	memset(mem2, 0, sizeof(pos));
 
-	Hollow::array<pos> array;
-	pos* posComponent = array.createObject();
-	posComponent->kek1 = 112312312;
-	posComponent->x = 46345;
-	posComponent->y = 12312;
-	posComponent->z = 235235;
-	posComponent->w = 586354;
+	Hollow::array<pos, 1024> array;
+	for (int i = 0; i < 10000000; i++) {
+		array.createObject<int>(5);
+	}
+	for (auto& it : array)
+	{
+		std::cout << it.x << std::endl;
+	}
 
-	pos* posComponent1 = array.createObject();
-	pos* posComponent2 = array.createObject<int>(5);
-
-	pos* posComponent11 = array[0];
-	posComponent11->x = 100000;
-	posComponent11->y = 2000;
 
 	system("pause");
 	return 0;

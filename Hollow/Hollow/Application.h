@@ -15,6 +15,8 @@
 #include "Resources/TextureManager.h"
 #include "Resources/ShaderManager.h"
 #include "Resources/MeshManager.h"
+#include "Graphics/ForwardRenderPass.h"
+
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
@@ -36,10 +38,14 @@ protected:
 	ShaderManager					shaderManager;
 	MeshManager						meshManager;
 	InputManager					inputManager;
+	ForwardRenderPass*				renderPass;
+	Win32Window						window;
+
 	double dt;
 	static Application* _instance;
 public:
-	Application()
+	Application() :
+		window(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT)
 	{
 		if (_instance == nullptr)
 			_instance = this;
@@ -59,13 +65,14 @@ public:
 		
 		meshManager.startUp();
 
-		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT);
-		m_Renderer->SetCamera(camera);
+		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window.getHWND());
 		
 		textureManager.startUp(m_Renderer->getDevice(), m_Renderer->getDeviceContext());
 		shaderManager.startUp(m_Renderer->getDevice());
 
-		m_LayerStack.AddLayer(new ImGuiLayer((D3DRenderer*)m_Renderer, sceneManager.GetSceneObjects()));
+		m_LayerStack.AddLayer(new ImGuiLayer((D3DRenderer*)m_Renderer, sceneManager.GetSceneObjects(), new PointLight(m_Renderer->getDevice())));
+		renderPass = new ForwardRenderPass(m_Renderer);
+		renderPass->m_Camera = camera;
 	}
 
 	~Application()
@@ -86,21 +93,22 @@ public:
 	{
 		m_Timer.Start();
 
-		while (!m_Renderer->windowIsClosed())
+		while (!window.isClosed())
 		{
 			dt = m_Timer.GetMilisecondsElapsed();
 			m_Timer.Restart();
-			m_Renderer->processMessage();
-			m_Renderer->shadowMap->camera.Update(dt);
+			window.ProcessMessage();
+
+			renderPass->shadowMap->camera.Update(dt);
 			camera->Update(dt);
-			m_Renderer->PreUpdateFrame();
+			renderPass->PreUpdateFrame();
 
 			systemManager.PreUpdateSystems(dt);
 			m_LayerStack.PreUpdate(dt);
 
 			m_LayerStack.Update(dt);
 			systemManager.UpdateSystems(dt);
-			m_Renderer->Update(sceneManager.GetSceneObjects());
+			renderPass->Update(sceneManager.GetSceneObjects());
 
 			systemManager.PostUpdateSystems(dt);
 			m_LayerStack.PostUpdate(dt);
@@ -108,7 +116,7 @@ public:
 			eventSystem.dispatch();
 			inputManager.Clear();
 
-			m_Renderer->PostUpdateFrame();
+			renderPass->PostUpdateFrame();
 
 			m_Timer.Stop();
 		}

@@ -26,11 +26,6 @@ public:
 		return _instance;
 	}
 
-	virtual bool processMessage() = 0;
-	virtual bool windowIsClosed() = 0;
-	virtual void PreUpdateFrame() = 0;
-	virtual void Update(std::vector<IRenderable*>* renderableList) = 0;
-	virtual void PostUpdateFrame() = 0;
 	inline void SetCamera(Camera* camera) { m_Camera = camera; }
 	inline Camera* getCamera() { return m_Camera; }	
 };
