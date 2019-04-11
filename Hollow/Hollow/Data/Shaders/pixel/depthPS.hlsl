@@ -6,6 +6,5 @@ struct PixelShaderInput
 
 float4 PSMain(PixelShaderInput input) : SV_TARGET
 {   
-    float depthValue = input.depthPosition.z / input.depthPosition.w;
-    return float4(depthValue, depthValue, depthValue, 1.0f);
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

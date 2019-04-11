@@ -37,6 +37,9 @@ D3DRenderer::D3DRenderer(int width, int height, HWND* hwnd)
 	}
 		
 	m_DeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	m_rasterizerState = new D3DRasterizerState(m_Device);
+	this->m_DeviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
 }
 
 D3DRenderer::~D3DRenderer()

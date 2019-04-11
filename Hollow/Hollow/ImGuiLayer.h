@@ -11,6 +11,7 @@
 #include "Hollow/Common/Log.h"
 #include "Hollow/Resources/ShaderManager.h"
 #include "Hollow/Common/FileSystem.h"
+#include "Hollow/Graphics/ForwardRenderPass.h"
 
 enum MenuAction
 {
@@ -55,9 +56,14 @@ private:
 	std::vector<IRenderable*>* list;
 	const char* current_item = NULL;
 	PointLight* light;
+	Win32Window* window;
+	Camera* mainCamera;
+	ShadowMap* shadowMap;
+	ForwardRenderPass* renderPass;
+
 public:
-	ImGuiLayer(D3DRenderer* renderer, std::vector<IRenderable*>* list, PointLight* light) :
-		renderer(renderer), list(list), light(light)
+	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, std::vector<IRenderable*>* list, PointLight* light, Camera* mainCamera) :
+		renderer(renderer), renderPass(renderPass), list(list), light(light), mainCamera(mainCamera), shadowMap(shadowMap)
 	{
 		bool result = true;
 		IMGUI_CHECKVERSION();
@@ -176,19 +182,18 @@ public:
 		if (ImGui::DragFloat("FOV", &fov)) {
 			renderer->getCamera()->SetProjectionValues(fov, static_cast<float>(1920) / static_cast<float>(1080), 0.1f, 10000.0f);
 		}
-		/*if (ImGui::Checkbox("Toggle camera", p_open)) {
-			if (renderer->getCamera()->mainCamera == true) {
-				renderer->shadowMap->camera.mainCamera = true;
-				renderer->getCamera()->mainCamera = false;
+		if (ImGui::Checkbox("Toggle camera", p_open)) {
+			if (mainCamera->mainCamera == true) {
+				renderPass->shadowMap->camera.mainCamera = true;
+				mainCamera->mainCamera = false;
 			}
 			else {
-				renderer->shadowMap->camera.mainCamera = false;
-				renderer->getCamera()->mainCamera = true;
+				renderPass->shadowMap->camera.mainCamera = false;
+				mainCamera->mainCamera = true;
 			}
-		}*/
-
-	/*	ImGui::DragFloat("Camera speed", &renderer->getCamera()->cameraMoveSpeed, 0.01f);
-		ImGui::DragFloat("Camera rotation", &renderer->getCamera()->cameraRotationSpeed, 0.01f);*/
+		}
+		ImGui::DragFloat("Bias", &renderPass->shadowMap->bias, 0.001f, 0.0f, 1.0f);
+		ImGui::Image(renderPass->m_ShadowDepthStencil->GetDepthStencilResource(), ImVec2(200, 200));
 		ImGui::End();
 
 		ImGui::Begin("Lights");
@@ -280,7 +285,6 @@ public:
 			ImGui::Text("Material properties\n\n");
 
 			ImGui::DragFloat("Ns", &selectedObject->material->materialData.Ns, 0.1f, 0.0f, 100.0f);
-			
 			ImGui::DragFloat3("Kd", selectedObject->material->materialData.Ka, 0.01, -1.0f, 1.0f);
 			ImGui::DragFloat3("Kd", selectedObject->material->materialData.Kd, 0.01, -1.0f, 1.0f);
 			ImGui::DragFloat3("Ks", selectedObject->material->materialData.Ks, 0.01, -1.0f, 1.0f);
@@ -299,7 +303,7 @@ public:
 			}
 
 			ImGui::Text("Pixel shader");
-			if (ImGui::BeginCombo("##materialPixelShaderCombo", "")) // The second parameter is the label previewed before opening the combo.
+			if (ImGui::BeginCombo("##materialPixelShaderCombo", "")) 
 			{
 				for (auto& it : *shaderManager->getPixelShaderList())
 				{
@@ -311,7 +315,7 @@ public:
 			}
 
 			ImGui::Text("Diffuese texture");
-			if (ImGui::BeginCombo("##materialDiffuesTextureCombo", "")) // The second parameter is the label previewed before opening the combo.
+			if (ImGui::BeginCombo("##materialDiffuesTextureCombo", ""))
 			{
 				for (auto& it : *TextureManager::instance()->getTexuresList())
 				{
@@ -324,7 +328,7 @@ public:
 			}
 
 			ImGui::Text("Normal texture");
-			if (ImGui::BeginCombo("##materialNormalTextureCombo", "")) // The second parameter is the label previewed before opening the combo.
+			if (ImGui::BeginCombo("##materialNormalTextureCombo", ""))
 			{
 				for (auto& it : *TextureManager::instance()->getTexuresList())
 				{
@@ -335,8 +339,9 @@ public:
 				}
 				ImGui::EndCombo();
 			}
+
 			ImGui::Text("Specular texture");
-			if (ImGui::BeginCombo("##materialSpecularTextureCombo", "")) // The second parameter is the label previewed before opening the combo.
+			if (ImGui::BeginCombo("##materialSpecularTextureCombo", ""))
 			{
 				for (auto& it : *TextureManager::instance()->getTexuresList())
 				{

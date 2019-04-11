@@ -48,38 +48,58 @@ public:
 
 	inline void SetShaderResource(UINT slot, ID3D11ShaderResourceView * shaderResourceView)
 	{ 
-		this->m_DeviceContext->PSSetShaderResources(slot, 1, &shaderResourceView);
+		m_DeviceContext->PSSetShaderResources(slot, 1, &shaderResourceView);
 	}
 		
 	inline void FreeShaderResource(UINT slot)
 	{
-		this->m_DeviceContext->PSSetShaderResources(slot, 1, pSRV);
+		m_DeviceContext->PSSetShaderResources(slot, 1, pSRV);
 	}
 
 	inline void SetVertexShader(D3DVertexShader* vs)
 	{ 
-		this->m_DeviceContext->VSSetShader(vs->GetShader(), NULL, 0); 
-		this->m_DeviceContext->IASetInputLayout(vs->GetInputLayout());
+		m_DeviceContext->VSSetShader(vs->GetShader(), NULL, 0); 
+		m_DeviceContext->IASetInputLayout(vs->GetInputLayout());
 	}
 	inline void SetPixelShader(D3DPixelShader* ps)
 	{ 
-		this->m_DeviceContext->PSSetShader(ps->GetShader(), NULL, 0); 
+		m_DeviceContext->PSSetShader(ps->GetShader(), NULL, 0); 
 	}
-		
-	inline void ClearRenderTarget(ID3D11RenderTargetView* rt)
+	
+	inline void ClearDepthStencilView(D3DDepthStencil*	ds, int flag) 
 	{ 
-		this->m_DeviceContext->ClearRenderTargetView(rt, ClearColor); 
-	}
-
-	inline void ClearDepthStencil(D3DDepthStencil*	ds) 
-	{ 
-		this->m_DeviceContext->ClearDepthStencilView(ds->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0); 
+		m_DeviceContext->ClearDepthStencilView(ds->GetDepthStencilView(), flag, 1.0f, 0);
 	}
 
 	inline void SetContantBuffer(UINT slot, D3DConstantBuffer* cb) 
 	{ 
-		this->m_DeviceContext->VSSetConstantBuffers(slot, 1, cb->GetAddressOf());
-		this->m_DeviceContext->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+		m_DeviceContext->VSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+		m_DeviceContext->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+	}
+
+	inline void SetVertexBuffer(D3DBuffer* buffer)
+	{
+		m_DeviceContext->IASetVertexBuffers(0, 1, buffer->GetAddressOf(), buffer->StridePtr(), &this->offset);
+	}
+
+	inline void ClearRenderTargetView(D3DRenderTarget* renderTarget, float* color)
+	{
+		m_DeviceContext->ClearRenderTargetView(renderTarget->GetRenderTaget(), color);
+	}
+
+	inline void SetSampler(int slot, D3DSamplerState* sampler)
+	{
+		m_DeviceContext->PSSetSamplers(slot, 1, sampler->GetSamplerState());
+	}
+
+	inline void SetDepthStencil(D3DDepthStencil* depthStencil)
+	{
+		m_DeviceContext->OMSetDepthStencilState(depthStencil->GetDepthStencilState(), 0);
+	}
+
+	inline void SetRenderTarget(D3DRenderTarget* renderTarget, D3DDepthStencil* depthStencil)
+	{
+		m_DeviceContext->OMSetRenderTargets(1, renderTarget->GetAddressOfRenderTaget(), depthStencil->GetDepthStencilView());
 	}
 
 	inline void DrawIndexed(UINT count) { m_DeviceContext->DrawIndexed(count, 0, 0); }

@@ -13,7 +13,7 @@ protected:
 	HRESULT CompileShader(std::string filename, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
 	{
 		name = filename;
-		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG;
+		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_OPTIMIZATION_LEVEL0;
 
 		ID3DBlob* shaderBlob = nullptr;
 		ID3DBlob* errorBlob = nullptr;

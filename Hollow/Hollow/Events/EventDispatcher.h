@@ -14,7 +14,7 @@ public:
 	{
 		for (auto& it : eventDelegates)
 		{
-			if (it->)
+
 		}
 	}
 

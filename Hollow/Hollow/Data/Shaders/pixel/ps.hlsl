@@ -69,6 +69,14 @@ cbuffer MateriaBuffer : register(b4)
     Material material;
 }
 
+cbuffer ConstantBuffer : register(b5)
+{
+    matrix lightViewMatrix;
+    matrix lightProjectionMatrix;
+    float3 lightPosition;
+    float bias;    
+}
+
 Texture2D ambient_map   : TEXUTRE : register(t0);
 Texture2D normal_map    : TEXUTRE : register(t1);
 Texture2D specular_map  : TEXUTRE : register(t2);
@@ -82,7 +90,7 @@ float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
     float4 color = float4(0.f, 0.f, 0.f, 0.f);
 
     // point light
-    float4 pointLightPosition = float4(pointLight.position, 1.0f);
+    float4 pointLightPosition = float4(pointLight.position, 0.0f);
     float3 lightToPixel = pointLightPosition - position;
   
     float lenght = length(lightToPixel);
@@ -97,7 +105,7 @@ float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
     float howMuchLight = dot(lightToPixel, normal);
 
     color += float4(pointLight.color, 1.0f) * 
-    (1 / pointLight.attenuation[0] + 
+    saturate(1 / pointLight.attenuation[0] + 
     (pointLight.attenuation[1] * lenght) + 
     (pointLight.attenuation[2] * (lenght * lenght)));
     
@@ -109,14 +117,16 @@ float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
     
     // specular light
     float3 V = normalize(cameraPosition - position);
-    color = saturate(color + pow(min(dot(normalize(V + lightToPixel), normal), 0.0f), material.Ns) * specularIntensity);
+    float3 R = reflect(-lightToPixel, normal);
+
+    color = color + saturate(pow(max(dot(R, V), 0.0f), material.Ns) * specularIntensity);
 
     return color;
 }
 
 float3 calculateNormals(float2 texCoord, float3 normal, float3 tangent, float3 bitangent)
 {
-    float4 normalMap = normal_map.Sample(SampleTypeClamp, texCoord);
+    float4 normalMap = normal_map.Sample(SampleTypeWrap, texCoord);
     normalMap = (2.0f * normalMap) - 1.0f;
     tangent = normalize(tangent - dot(tangent, normal) * normal);
     float3x3 texSpace = float3x3(tangent, bitangent, normal);
@@ -128,7 +138,7 @@ float4 PSMain(PixelShaderInput input) : SV_TARGET
 {
     float4 color;
     if (material.hasDiffuseTexture) {
-        color = ambient_map.Sample(SampleTypeClamp, input.texCoord);
+        color = ambient_map.Sample(SampleTypeWrap, input.texCoord);
         color.xyz *= material.Kd;
     } else {
         color = float4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -141,22 +151,27 @@ float4 PSMain(PixelShaderInput input) : SV_TARGET
     input.normal = normalize(input.normal);
 
     // Set the bias value for fixing the floating point precision issues.
-    float bias = 0.0035f;
-
     float2 projectTexCoord;
 
     // Calculate the projected texture coordinates.
-    projectTexCoord.x = input.lightViewPosition.x / input.lightViewPosition.w * 0.5f + 0.5f;
-    projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w * 0.5f + 0.5f;
-    projectTexCoord = saturate(projectTexCoord);
-
-    float4 shadowMap = shadow_map.Sample(SampleTypeClamp, projectTexCoord);
-
-    if (shadowMap.r < (input.lightViewPosition.z / input.lightViewPosition.w - bias))
+    float result = 0;
+    for (int j = -1; j <= 1; j++)
     {
-        color -= 0.5f;
-    }
+        for (int i = -1; i <= 1; i++)
+        {
+            projectTexCoord.x = (input.lightViewPosition.x ) / input.lightViewPosition.w * 0.5f + 0.5f;
+            projectTexCoord.y = (-input.lightViewPosition.y) / input.lightViewPosition.w * 0.5f + 0.5f;
 
+            if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
+            {
+                float4 shadowMap = shadow_map.Sample(SampleTypeClamp, float2(projectTexCoord.x, projectTexCoord.y));
+                result += shadowMap.r < input.lightViewPosition.z / input.lightViewPosition.w ? 1.0f : 0.0f;
+            }
+
+        }
+    }
+    color -= (result / 9.0f);
+            
     color += addAmbientColor(input.normal, input.worldPos, input.texCoord);
 
     return color;

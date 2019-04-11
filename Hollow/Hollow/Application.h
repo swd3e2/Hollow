@@ -70,9 +70,14 @@ public:
 		textureManager.startUp(m_Renderer->getDevice(), m_Renderer->getDeviceContext());
 		shaderManager.startUp(m_Renderer->getDevice());
 
-		m_LayerStack.AddLayer(new ImGuiLayer((D3DRenderer*)m_Renderer, sceneManager.GetSceneObjects(), new PointLight(m_Renderer->getDevice())));
+		PointLight* light = new PointLight(m_Renderer->getDevice());
+
+
 		renderPass = new ForwardRenderPass(m_Renderer);
 		renderPass->m_Camera = camera;
+		renderPass->pointLight = light;
+		
+		m_LayerStack.AddLayer(new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, sceneManager.GetSceneObjects(), light, camera));
 	}
 
 	~Application()
