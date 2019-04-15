@@ -17,4 +17,5 @@ public:
 	void shutdown();
 
 	Mesh* CreateMesh(std::string filename, bool inversceTexCoords = false);
+	Mesh* CreateMeshI(std::string filename, bool inversceTexCoords = false);
 };

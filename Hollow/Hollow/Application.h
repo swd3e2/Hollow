@@ -25,8 +25,8 @@ class HOLLOW_API Application
 protected:
 	HWND*							m_HWND;
 
-	Hollow::EntityManager			entityManager;
-	Hollow::ComponentManager		componentManager;
+	EntityManager					entityManager;
+	/*Hollow::ComponentManager		componentManager;*/
 	Hollow::SystemManager           systemManager;
 	Timer							m_Timer;
 	EventSystem						eventSystem;
@@ -39,16 +39,17 @@ protected:
 	MeshManager						meshManager;
 	InputManager					inputManager;
 	ForwardRenderPass*				renderPass;
-	Win32Window						window;
+	std::shared_ptr<Win32Window>	window;
 
 	double dt;
 	static Application* _instance;
 public:
-	Application() :
-		window(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT)
+	Application()
 	{
 		if (_instance == nullptr)
 			_instance = this;
+
+		window = std::make_shared<Win32Window>(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		Hollow::Console::RedirectIOToConsole();
 		Hollow::Log::Init();
@@ -58,14 +59,14 @@ public:
 
 		eventSystem.startUp();
 		inputManager.startUp();
-		componentManager.startUp();
-		entityManager.startUp(&componentManager);
+		//componentManager.startUp();
+		entityManager.startUp();
 		sceneManager.startUp();
 		systemManager.startUp();
 		
 		meshManager.startUp();
-
-		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window.getHWND());
+		
+		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
 		
 		textureManager.startUp(m_Renderer->getDevice(), m_Renderer->getDeviceContext());
 		shaderManager.startUp(m_Renderer->getDevice());
@@ -88,7 +89,7 @@ public:
 		sceneManager.shutdown();
 		systemManager.shutdown();
 		entityManager.shutdown();
-		componentManager.shutdown();
+		//componentManager.shutdown();
 		inputManager.shutdown();
 		eventSystem.shutdown();
 	}
@@ -98,11 +99,11 @@ public:
 	{
 		m_Timer.Start();
 
-		while (!window.isClosed())
+		while (!window->isClosed())
 		{
 			dt = m_Timer.GetMilisecondsElapsed();
 			m_Timer.Restart();
-			window.ProcessMessage();
+			window->ProcessMessage();
 
 			renderPass->shadowMap->camera.Update(dt);
 			camera->Update(dt);

@@ -15,6 +15,10 @@
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\DummyConsoleListener.h" />
+    <ClInclude Include="Hollow\ECS\ComponentManager.h" />
+    <ClInclude Include="Hollow\ECS\Entity.h" />
+    <ClInclude Include="Hollow\ECS\EntityManager.h" />
+    <ClInclude Include="Hollow\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
     <ClInclude Include="Hollow\Events\Event.h" />
@@ -26,6 +30,7 @@
     <ClInclude Include="Hollow\Events\IEventListener.h" />
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
+    <ClInclude Include="Hollow\ApplicationLayer.h" />
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h" />
     <ClInclude Include="Hollow\Graphics\DirectionalLight.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBlendState.h" />
@@ -38,6 +43,9 @@
     <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
     <ClInclude Include="Hollow\Math\Vec2.h" />
+    <ClInclude Include="Hollow\Memory\AllocatorUtils.h" />
+    <ClInclude Include="Hollow\Memory\IAllocator.h" />
+    <ClInclude Include="Hollow\Memory\PoolAllocator.h" />
     <ClInclude Include="Hollow\Resources\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DTexture.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\Icons\LightIcon.h" />
@@ -70,7 +78,6 @@
     <ClInclude Include="Hollow\Containers\hash_map.h" />
     <ClInclude Include="Hollow\Containers\pair.h" />
     <ClInclude Include="Hollow\Containers\vector.h" />
-    <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DDepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRenderTarget.h" />
@@ -82,10 +89,6 @@
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
     <ClInclude Include="Hollow\Common\Console.h" />
-    <ClInclude Include="Hollow\ECS\ComponentManager.h" />
-    <ClInclude Include="Hollow\ECS\Component.h" />
-    <ClInclude Include="Hollow\ECS\Entity.h" />
-    <ClInclude Include="Hollow\ECS\IEntity.h" />
     <ClInclude Include="Hollow\Common\FamilyTypeID.h" />
     <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h" />
@@ -95,18 +98,9 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DPixelShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DVertexShader.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
-    <ClInclude Include="Hollow\Memory\Allocators\BaseAllocator.h" />
-    <ClInclude Include="Hollow\Memory\Allocators\LinearAllocator.h" />
-    <ClInclude Include="Hollow\Memory\Allocators\PointerMathUtils.h" />
-    <ClInclude Include="Hollow\Memory\Allocators\PoolAllocator.h" />
-    <ClInclude Include="Hollow\Memory\Allocators\StackAllocator.h" />
-    <ClInclude Include="Hollow\Memory\MemoryChunkManager.h" />
-    <ClInclude Include="Hollow\Memory\MemoryUser.h" />
-    <ClInclude Include="Hollow\Memory\StackMemoryManager.h" />
     <ClInclude Include="Hollow\Resources\Utils\ObjParser.h" />
     <ClInclude Include="Hollow\Graphics\Window\IWindow.h" />
     <ClInclude Include="Hollow\Graphics\Window\Win32\Win32Window.h" />
-    <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\Common\Log.h" />
     <ClInclude Include="Hollow\Common\Timer.h" />
     <ClInclude Include="Hollow\Resources\Sound.h" />
@@ -114,8 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Application.cpp" />
-    <ClCompile Include="Hollow\ECS\ComponentManager.cpp" />
-    <ClCompile Include="Hollow\ECS\EntityManager.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DDepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />
@@ -140,7 +132,6 @@
     <ClCompile Include="Hollow\Common\Console.cpp" />
     <ClCompile Include="Hollow\Common\FamilyTypeID.cpp" />
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
-    <ClCompile Include="Hollow\Memory\StackMemoryManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Window\Win32\Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />

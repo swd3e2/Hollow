@@ -14,6 +14,5 @@ public:
 		camera(false)
 	{
 		camera.SetProjectionValues();
-		//camera.SetProjectionValues(75.0f, 1920.0f / 1080.0f, 0.1f, 10000.0f);
 	}
 };

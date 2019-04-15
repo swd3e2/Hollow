@@ -15,8 +15,9 @@ public:
 		/*m_MoveSystem = new MoveSystem();
 		m_CollisionSystem = new CollisionSystem();
 		systemManager.AddSystem(m_MoveSystem);
-		systemManager.AddSystem(m_CollisionSystem);*/
-		
+		systemManager.AddSystem(m_CollisionSystem);*/ 
+
+		entityManager.createEntity();
 
 		sceneManager.CreateSceneObject(
 			((D3DRenderer*)m_Renderer)->getDevice(),

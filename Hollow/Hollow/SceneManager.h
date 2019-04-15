@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "ECS/IEntity.h"
 #include "Graphics/DirectX/D3DRenderable.h"
 #include "Resources/TextureManager.h"
 #include "Graphics/Vertex.h"
