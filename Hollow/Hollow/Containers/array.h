@@ -34,14 +34,14 @@ namespace Hollow {
 		 * Creates object T
 		 */
 		template<typename ...ARGS>
-		T* createObject(ARGS&&... args)
+		T* createObject(ARGS&& ...args)
 		{
 			if (currentSize + 1 > capacity) {
 				capacity = capacity * 2;
 				PoolAllocator* allocator = new PoolAllocator(capacity, sizeof(T), alignof(T));
-				memset(allocator->firstAddress, 0, this->allocator->size);
-				memcpy(allocator->firstAddress, this->allocator->firstAddress, this->allocator->size);
-				allocator->pointer = (void**)((uintptr_t)allocator->firstAddress + this->allocator->count * this->allocator->objectSize);
+				memset(allocator->getFirstAddress(), 0, this->allocator->getSize());
+				memcpy(allocator->getFirstAddress(), this->allocator->getFirstAddress(), this->allocator->getSize());
+				allocator->pointer = (void**)((uintptr_t)allocator->getFirstAddress() + this->allocator->count * this->allocator->objectSize);
 				delete this->allocator;
 				this->allocator = allocator;
 				m_data = this->allocator->getFirstAddress();
@@ -72,7 +72,7 @@ namespace Hollow {
 		}
 
 		/*
-		 * Itertor
+		 * Iterator
 		 */
 		class iterator : public std::iterator<std::forward_iterator_tag, T>
 		{
@@ -88,6 +88,13 @@ namespace Hollow {
 				return *this;
 			}
 
+			inline iterator& operator++(int)
+			{
+				T* temp = this;
+				++p;
+				return *temp;
+			}
+
 			inline iterator& operator--()
 			{
 				--p;
@@ -101,7 +108,9 @@ namespace Hollow {
 		};
 
 		iterator begin() { return iterator((T*)this->m_data); }
-		iterator end() { return iterator((T*)((uintptr_t)this->m_data + this->capacity)); }
+		iterator end() { 
+			return iterator((T*)((uintptr_t)this->m_data + this->allocator->objectSize * currentSize)); 
+		}
 	};
 }
 

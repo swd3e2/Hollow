@@ -15,9 +15,14 @@
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\DummyConsoleListener.h" />
+    <ClInclude Include="Hollow\ECS\Component.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
     <ClInclude Include="Hollow\ECS\Entity.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
+    <ClInclude Include="Hollow\ECS\GameObject.h" />
+    <ClInclude Include="Hollow\ECS\IComponent.h" />
+    <ClInclude Include="Hollow\ECS\IEntity.h" />
+    <ClInclude Include="Hollow\ECS\MeshComponent.h" />
     <ClInclude Include="Hollow\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
@@ -108,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Application.cpp" />
+    <ClCompile Include="Hollow\ECS\ComponentManager.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DDepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />

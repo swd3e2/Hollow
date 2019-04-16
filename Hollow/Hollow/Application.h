@@ -26,7 +26,7 @@ protected:
 	HWND*							m_HWND;
 
 	EntityManager					entityManager;
-	/*Hollow::ComponentManager		componentManager;*/
+	ComponentManager				componentManager;
 	Hollow::SystemManager           systemManager;
 	Timer							m_Timer;
 	EventSystem						eventSystem;
@@ -59,7 +59,7 @@ public:
 
 		eventSystem.startUp();
 		inputManager.startUp();
-		//componentManager.startUp();
+		componentManager.startUp();
 		entityManager.startUp();
 		sceneManager.startUp();
 		systemManager.startUp();
@@ -89,7 +89,7 @@ public:
 		sceneManager.shutdown();
 		systemManager.shutdown();
 		entityManager.shutdown();
-		//componentManager.shutdown();
+		componentManager.shutdown();
 		inputManager.shutdown();
 		eventSystem.shutdown();
 	}

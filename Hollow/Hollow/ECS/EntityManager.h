@@ -1,7 +1,7 @@
+#pragma once
 
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
-#pragma once
 #include <unordered_map>
 
 #include "Hollow/Containers/array.h"
@@ -13,20 +13,13 @@
 class EntityManager : public CModule<EntityManager>
 {
 private:
-	class IEntityContainer
-	{
+	class IEntityContainer {};
 
-	};
 	template<class T>
-	class EntityContainer
+	class EntityContainer : public IEntityContainer
 	{
 	public:
-		Hollow::array<Entity<T>> entityList;
-		template<class ...ARGS>
-		Entity<T> createEntity(ARGS&& ...args)
-		{
-			return entityList.createObject(std::move(args)...);
-		}
+		Hollow::array<T> entityList;
 	};
 private:
 	std::unordered_map<size_t, IEntityContainer*> entityContainers;
@@ -38,16 +31,15 @@ public:
 	}
 
 	template<class T>
-	EntityContainer<T> getEntityContainer()
+	EntityContainer<T>* getEntityContainer()
 	{
-		size_t entityTypeId = T::getTypeId();
+		size_t entityTypeId = T::staticGetTypeId();
 
 		// Trying to find container, if found - just return it
 		if (entityContainers.find(entityTypeId) != entityContainers.end())
 		{
-			return entityContainers[entityTypeId];
+			return (EntityContainer<T>*)(entityContainers[entityTypeId]);
 		}
-
 		// if not - need to create one
 		EntityContainer<T>* container = new EntityContainer<T>();
 		entityContainers[entityTypeId] = container;
@@ -56,12 +48,12 @@ public:
 	}
 
 	template<class T, typename ...ARGS>
-	Entity<T>* createEntity(ARGS&& ...args)
+	T* createEntity(ARGS&& ...args)
 	{
-		EntityContainer<T> container = getEntityContainer<T>();
-		Entity<T>* entity = container.createEntity(std::forward(args)...);
+		EntityContainer<T>* container = getEntityContainer<T>();
+		T* entity = container->entityList.createObject(std::forward(args)...);
 		entity->entityId = getNextEntityId();
-
+		
 		return entity;
 	}
 
@@ -71,6 +63,18 @@ public:
 	size_t getNextEntityId()
 	{
 		return entityIdCounter++;
+	}
+
+	template<class E>
+	typename Hollow::array<E>::iterator& begin()
+	{
+		return getEntityContainer<E>()->entityList.begin();
+	}
+
+	template<class E>
+	typename Hollow::array<E>::iterator& end()
+	{
+		return getEntityContainer<E>()->entityList.end();
 	}
 };
 

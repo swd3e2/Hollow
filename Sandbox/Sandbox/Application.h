@@ -1,6 +1,8 @@
 #pragma once
 #include "Hollow/Application.h"
 #include "Hollow/Graphics/PointLight.h"
+#include "Hollow/ECS/GameObject.h"
+#include "Hollow/ECS/MeshComponent.h"
 
 using namespace DirectX;
 
@@ -16,8 +18,12 @@ public:
 		m_CollisionSystem = new CollisionSystem();
 		systemManager.AddSystem(m_MoveSystem);
 		systemManager.AddSystem(m_CollisionSystem);*/ 
+		GameObject* object = entityManager.createEntity<GameObject>();
+		GameObject* object2 = entityManager.createEntity<GameObject>();
+		GameObject* object3 = entityManager.createEntity<GameObject>();
 
-		entityManager.createEntity();
+		MeshComponent* component = componentManager.create<MeshComponent>(object);
+		object->destroyComponent<MeshComponent>();
 
 		sceneManager.CreateSceneObject(
 			((D3DRenderer*)m_Renderer)->getDevice(),
