@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef HW_PAIR_H
+#define HW_PAIR_H
+
 namespace Hollow { namespace Containers {
 
 	template<class T, class U>
@@ -13,3 +16,5 @@ namespace Hollow { namespace Containers {
 	};
 
 } }
+
+#endif

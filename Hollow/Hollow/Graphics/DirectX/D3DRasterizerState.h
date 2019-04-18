@@ -13,15 +13,15 @@ public:
 
 		D3D11_RASTERIZER_DESC rasterizerDesc;
 		rasterizerDesc.AntialiasedLineEnable = false;
-		rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
-		rasterizerDesc.DepthBias = 0;
-		rasterizerDesc.DepthBiasClamp = 0.0f;
+		rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+		rasterizerDesc.DepthBias = 0.0001f;
+		rasterizerDesc.DepthBiasClamp = 0;
 		rasterizerDesc.DepthClipEnable = true;
 		rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
 		rasterizerDesc.FrontCounterClockwise = false;
 		rasterizerDesc.MultisampleEnable = false;
 		rasterizerDesc.ScissorEnable = false;
-		rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+		rasterizerDesc.SlopeScaledDepthBias = 2.0f;
 
 		hr = device->CreateRasterizerState(&rasterizerDesc, &m_RasterizerState);
 

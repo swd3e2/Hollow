@@ -16,6 +16,7 @@
 #include "Resources/ShaderManager.h"
 #include "Resources/MeshManager.h"
 #include "Graphics/ForwardRenderPass.h"
+#include "Common/SaveHelper.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -25,8 +26,8 @@ class HOLLOW_API Application
 protected:
 	HWND*							m_HWND;
 
-	Hollow::EntityManager			entityManager;
-	Hollow::ComponentManager		componentManager;
+	EntityManager					entityManager;
+	ComponentManager				componentManager;
 	Hollow::SystemManager           systemManager;
 	Timer							m_Timer;
 	EventSystem						eventSystem;
@@ -39,16 +40,18 @@ protected:
 	MeshManager						meshManager;
 	InputManager					inputManager;
 	ForwardRenderPass*				renderPass;
-	Win32Window						window;
+	SaveHelper						saveHelper;
+	std::shared_ptr<Win32Window>	window;
 
 	double dt;
 	static Application* _instance;
 public:
-	Application() :
-		window(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT)
+	Application()
 	{
 		if (_instance == nullptr)
 			_instance = this;
+
+		window = std::make_shared<Win32Window>(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		Hollow::Console::RedirectIOToConsole();
 		Hollow::Log::Init();
@@ -59,24 +62,30 @@ public:
 		eventSystem.startUp();
 		inputManager.startUp();
 		componentManager.startUp();
-		entityManager.startUp(&componentManager);
+		entityManager.startUp();
 		sceneManager.startUp();
 		systemManager.startUp();
 		
 		meshManager.startUp();
-
-		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window.getHWND());
+		
+		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
 		
 		textureManager.startUp(m_Renderer->getDevice(), m_Renderer->getDeviceContext());
 		shaderManager.startUp(m_Renderer->getDevice());
+		saveHelper.startUp();
 
-		m_LayerStack.AddLayer(new ImGuiLayer((D3DRenderer*)m_Renderer, sceneManager.GetSceneObjects(), new PointLight(m_Renderer->getDevice())));
 		renderPass = new ForwardRenderPass(m_Renderer);
 		renderPass->m_Camera = camera;
+		
+		systemManager.AddSystem(renderPass);
+		ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, sceneManager.GetSceneObjects(), camera);
+		layer->window = &*window;
+		m_LayerStack.AddLayer(layer);
 	}
 
 	~Application()
 	{
+		saveHelper.shutdown();
 		meshManager.shutdown();
 		shaderManager.shutdown();
 		textureManager.shutdown();
@@ -93,30 +102,26 @@ public:
 	{
 		m_Timer.Start();
 
-		while (!window.isClosed())
+		while (!window->isClosed())
 		{
 			dt = m_Timer.GetMilisecondsElapsed();
 			m_Timer.Restart();
-			window.ProcessMessage();
+			window->ProcessMessage();
 
 			renderPass->shadowMap->camera.Update(dt);
 			camera->Update(dt);
-			renderPass->PreUpdateFrame();
 
-			systemManager.PreUpdateSystems(dt);
 			m_LayerStack.PreUpdate(dt);
+			systemManager.PreUpdateSystems(dt);
 
-			m_LayerStack.Update(dt);
 			systemManager.UpdateSystems(dt);
-			renderPass->Update(sceneManager.GetSceneObjects());
+			m_LayerStack.Update(dt);
 
-			systemManager.PostUpdateSystems(dt);
 			m_LayerStack.PostUpdate(dt);
+			systemManager.PostUpdateSystems(dt);
 
 			eventSystem.dispatch();
 			inputManager.Clear();
-
-			renderPass->PostUpdateFrame();
 
 			m_Timer.Stop();
 		}

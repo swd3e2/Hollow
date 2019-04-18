@@ -1,24 +1,23 @@
 #pragma once
-#include "Hollow/Common/FamilyTypeID.h"
-#include "Hollow/Platform.h"
+
+#ifndef ENTITY_H
+#define ENTITY_H
 #include "IEntity.h"
 
-namespace Hollow {
+class EntityManager;
 
-	template <class E>
-	class Entity : public IEntity
-	{
-	public:
-		static const size_t STATIC_ENTITY_TYPE_ID;
-	public:
-		Entity() {}
-		~Entity() {}
-		virtual inline const EntityTypeID GetStaticEntityTypeID() const override
-		{
-			return EntityTypeID();
-		}
-	};
+template<class T>
+class Entity : public IEntity
+{
+	friend class EntityManager;
+private:
+	static size_t entityTypeId;
+public:
+	Entity() {}
+	static size_t staticGetTypeId() { return entityTypeId; }
+	size_t getTypeId() { return entityTypeId; }
+};
 
-	template<class E>
-	const size_t Entity<E>::STATIC_ENTITY_TYPE_ID = Core::Utils::FamilyTypeID<IEntity>::Get<E>();
-}
+template<class T> size_t Entity<T>::entityTypeId = typeid(Entity<T>).hash_code();
+
+#endif

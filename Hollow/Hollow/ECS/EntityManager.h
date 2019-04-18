@@ -1,184 +1,84 @@
 #pragma once
-#include "Hollow/Memory/MemoryChunkManager.h"
-#include "IEntity.h"
-#include "Hollow/Platform.h"
-#include "Hollow/Containers/vector.h"
-#include "Hollow/Containers/pair.h"
-#include "ComponentManager.h"
+
+#ifndef ENTITY_MANAGER_H
+#define ENTITY_MANAGER_H
+
 #include <unordered_map>
-#include <new>
-#include <vector>
+
+#include "Hollow/Containers/array.h"
 #include "Hollow/Core/CModule.h"
+#include "Hollow/Platform.h"
+#include "Entity.h"
 
-#define ENTTIY_TABLE_GROW 1024
+#define DEFAULT_ENTITY_CONTAINER_GROW_SIZE 2048
 
-namespace Hollow {
+class HOLLOW_API EntityManager : public CModule<EntityManager>
+{
+private:
+	class IEntityContainer {};
 
-	// Entity manager
-	class HOLLOW_API EntityManager : public CModule<EntityManager>
+	template<class T>
+	class EntityContainer : public IEntityContainer
 	{
-	private:
-		ComponentManager * m_ComponentManager;
-
-		class HOLLOW_API IEntityContainer
-		{
-		public:
-			virtual ~IEntityContainer() {}
-			virtual const char* GetEntityContainerTypeName() const = 0;
-			virtual void DestroyEntity(IEntity* object) = 0;
-		};
-
-		template<class E>
-		class EntityContainer : public Core::Memory::MemoryChunkManager<E, 256>, public IEntityContainer
-		{
-			EntityContainer(const EntityContainer&) = delete;
-			EntityContainer& operator=(EntityContainer&) = delete;
-		public:
-			EntityContainer() : Core::Memory::MemoryChunkManager<E, 256>("EntityManager") {}
-
-			virtual ~EntityContainer() {}
-
-			virtual const char* GetEntityContainerTypeName() const override
-			{
-				static const char* ENTITY_TYPE_NAME{ typeid(E).name() };
-				return ENTITY_TYPE_NAME;
-			}
-
-			virtual void DestroyEntity(IEntity* object) override
-			{
-				object->~IEntity();
-				this->DestroyObject(object);
-			}
-		};
-
-		template<class E>
-		inline EntityContainer<E>* GetEntityContainer()
-		{
-			EntityTypeID EID = E::STATIC_ENTITY_TYPE_ID;
-			auto it = this->m_EntityRegistry.find(EID);
-			EntityContainer<E>* ec = nullptr;
-			if (it == this->m_EntityRegistry.end())
-			{
-				ec = new EntityContainer<E>();
-				this->m_EntityRegistry[EID] = ec;
-			}
-			else
-				ec = (EntityContainer<E>*)it->second;
-
-			assert(ec != nullptr && "Failed to create EntityContainer<T>!");
-			return ec;
-		}
-
-	private:
-		static EntityManager* _instance;
-		std::unordered_map<EntityTypeID, IEntityContainer*> m_EntityRegistry;
-		//std::vector<std::pair<EntityID, void*>> entityTable;
-		Containers::Vector<Containers::Pair<EntityID, void*>, 1024> entityTable;
-		size_t HandleEntityCount;
 	public:
-		void startUp(ComponentManager * componentManager)
-		{
-			m_ComponentManager = componentManager;
-
-			HW_DEBUG("EntityManager: created");
-			this->HandleEntityCount = 0;
-
-			if (_instance == nullptr)
-				_instance = this;
-
-			for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-				this->entityTable.push_back(Containers::Pair<EntityID, void*>(i, nullptr));
-
-			setStartedUp();
-		}
-
-		void shutdown()
-		{
-			setShutdown();
-		}
-
-		// Get entity id
-		size_t AcquireEntityID(IEntity* entity)
-		{
-			if (this->HandleEntityCount + 1 > entityTable.size()) {
-				UINT iteration = (UINT)(this->HandleEntityCount / ENTTIY_TABLE_GROW);
-				for (int i = 0; i < ENTTIY_TABLE_GROW; i++)
-					this->entityTable.push_back(Containers::Pair<EntityID, void*>( i + iteration * ENTTIY_TABLE_GROW , nullptr ));
-			}
-			for (int i = 0; i < this->entityTable.size(); i++)
-			{
-				if (this->entityTable[i].second == nullptr)
-				{
-					this->entityTable[i].second = (void*)entity;
-					this->HandleEntityCount++;
-					return this->entityTable[i].first;
-				}
-			}
-			return 0;
-		}
-
-		template<class E, class ...ARGS>
-		E* CreateEntity(ARGS&&... args)
-		{
-			EntityContainer<E>* container = this->GetEntityContainer<E>();
-			void* entityMemory = container->CreateObject();
-
-			IEntity* entity = new (entityMemory)E(std::forward<ARGS>(args)...);
-
-			size_t id = this->AcquireEntityID((E*)entityMemory);
-
-			((E*)entityMemory)->m_EntityID = id;
-			((E*)entityMemory)->componentManager = this->m_ComponentManager;
-
-			return (E*)entityMemory;
-		}
-
-		template<class E>
-		void DestroyEntity(EntityID entityId)
-		{
-			EntityContainer<E>* container = this->GetEntityContainer<E>();
-			IEntity* entityMemory = nullptr;
-
-			for (int i = 0; i < this->entityTable.size(); i++)
-			{
-				if (this->entityTable[i].first == entityId)
-				{
-					entityMemory = (IEntity*)this->entityTable[i].second;
-					HW_INFO("EntityManager: destroyed entity with id {}, typeID {}, pointer {}", entityMemory->GetEntityID(), E::STATIC_ENTITY_TYPE_ID, (void*)entityMemory);
-
-					this->m_ComponentManager->RemoveAllComponents(entityMemory->GetEntityID());
-					container->DestroyEntity(entityMemory);
-					this->entityTable[i] = {entityId, nullptr};
-					this->HandleEntityCount--;
-					break;
-				}
-			}
-		}
-
-		Containers::Vector<IEntity*>* GetEntitiesList()
-		{
-			Containers::Vector<IEntity*>* container = new Containers::Vector<IEntity*>;
-			for (int i = 0; i < HandleEntityCount; i++)
-				container->push_back((IEntity*)this->entityTable[i].second);
-
-			return container;
-		}
-
-		IEntity* find(EntityID entityId)
-		{
-			IEntity* entity = nullptr;
-			if (HandleEntityCount > entityId)
-			{
-				entity = (IEntity*)this->entityTable[entityId].second;
-			}
-
-			return entity;
-		}
-
-		static EntityManager* instance()
-		{
-			return _instance;
-		}
+		Hollow::array<T> entityList;
 	};
+private:
+	std::unordered_map<size_t, IEntityContainer*> entityContainers;
+	size_t entityIdCounter;
+public:
+	EntityManager()
+	{
+		entityIdCounter = 0;
+	}
 
-}
+	template<class T>
+	EntityContainer<T>* getContainer()
+	{
+		size_t entityTypeId = T::staticGetTypeId();
+
+		// Trying to find container, if found - just return it
+		if (entityContainers.find(entityTypeId) != entityContainers.end())
+		{
+			return (EntityContainer<T>*)(entityContainers[entityTypeId]);
+		}
+		// if not - need to create one
+		EntityContainer<T>* container = new EntityContainer<T>();
+		entityContainers[entityTypeId] = container;
+
+		return container;
+	}
+
+	template<class T, typename ...ARGS>
+	T* createEntity(ARGS&& ...args)
+	{
+		EntityContainer<T>* container = getContainer<T>();
+		T* entity = container->entityList.createObject(std::forward(args)...);
+		entity->entityId = getNextEntityId();
+		
+		return entity;
+	}
+
+	void startUp() { setStartedUp(); }
+	void shutdown() { setShutdown(); }
+
+	size_t getNextEntityId()
+	{
+		return entityIdCounter++;
+	}
+
+	template<class E>
+	typename Hollow::array<E>::iterator& begin()
+	{
+		return getContainer<E>()->entityList.begin();
+	}
+
+	template<class E>
+	typename Hollow::array<E>::iterator& end()
+	{
+		return getContainer<E>()->entityList.end();
+	}
+};
+
+
+#endif

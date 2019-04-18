@@ -21,6 +21,7 @@ cbuffer ConstantBuffer : register(b5)
     matrix lightViewMatrix;
     matrix lightProjectionMatrix;
     float3 lightPosition;
+    float bias;    
 }
 
 struct PixelShaderOutput

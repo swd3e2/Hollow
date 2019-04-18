@@ -1,25 +1,15 @@
 #pragma once
-#include "Hollow/Platform.h"
 
-namespace Hollow {
-	class ComponentManager;
+#ifndef HW_I_COMPONENT_H
+#define HW_I_COMPONENT_H
 
-	class HOLLOW_API IComponent
-	{
-		friend ComponentManager;
-	protected:
-		size_t ComponentID;
-		size_t EntityID;
-		size_t HashValue;
-		bool enabled;
-	public:
+class ComponentManager;
 
-		IComponent() : enabled(true) {}
-		virtual ~IComponent() {}
+class IComponent
+{
+	friend ComponentManager;
+protected:
+	size_t componentId;
+};
 
-		inline const size_t GetComponentID() { return this->ComponentID; }
-		inline const size_t GetOwner() { return this->EntityID; }
-		inline void SetActive(bool state) { this->enabled = state; }
-		inline bool IsActive() { return this->enabled; }
-	};
-}
+#endif

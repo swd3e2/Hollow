@@ -1,5 +1,6 @@
 #pragma once
 #include "Hollow/Platform.h"
+#include "Hollow/ECS/Component.h"
 
 struct PointLightStruct
 {
@@ -8,9 +9,10 @@ struct PointLightStruct
 	float color[3];
 	float pad;
 	float attenuation[3];
+	float pad1;
 };
 
-class HOLLOW_API PointLight
+class HOLLOW_API PointLight : public Component<PointLight>
 {
 public:
 	PointLightStruct data;
@@ -39,7 +41,7 @@ public:
 		data.position[1] = position[1];
 		data.position[2] = position[2];
 
-		lightIcon.renderable.transform->position = { position[0], position[1], position[2] };
+		//lightIcon.renderable.transform->position = { position[0], position[1], position[2] };
 	}
 
 	void setAttenuation(float attenuation[3])

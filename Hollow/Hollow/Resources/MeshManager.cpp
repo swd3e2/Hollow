@@ -30,8 +30,8 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 
 			if (data->objects[i]->has_texture) {
 				if (inversceTexCoords) {
-					vertex.texCoord.x = -data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
-					vertex.texCoord.y = -data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
+					vertex.texCoord.x = 1 - data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
+					vertex.texCoord.y = 1 - data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
 				} else {
 					vertex.texCoord.x = data->tex_coords[data->objects[i]->indices[j].tex_coord_index * 2];
 					vertex.texCoord.y = data->tex_coords[1 + data->objects[i]->indices[j].tex_coord_index * 2];
@@ -143,7 +143,12 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 
 		mesh->objects.push_back(meshModel);
 	}
-
 	delete data;
 	return mesh;
+}
+
+Mesh* MeshManager::CreateMeshI(std::string filename, bool inversceTexCoords)
+{
+	
+	return nullptr;
 }

@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_TIMER_H
+#define HW_TIMER_H
+
 #include <chrono>
 #include "Hollow/Platform.h"
 
@@ -16,3 +20,5 @@ private:
 	std::chrono::time_point<std::chrono::steady_clock> start;
 	std::chrono::time_point<std::chrono::steady_clock> stop;
 };
+
+#endif

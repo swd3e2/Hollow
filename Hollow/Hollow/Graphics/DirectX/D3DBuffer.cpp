@@ -26,3 +26,8 @@ D3DBuffer::D3DBuffer(ID3D11Device* device, void * data, UINT stride, UINT numVer
 		HW_ERROR("IndexBuffer: Cant create buffer!");
 	}
 }
+
+D3DBuffer::~D3DBuffer()
+{
+	SAFE_RELEASE(buffer);
+}

@@ -21,12 +21,6 @@
     <ClInclude Include="Hollow\Common\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\ECS\ComponentManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\ECS\EntityManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\ECS\SystemManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -34,30 +28,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Input\KeyCodes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\Allocators\BaseAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\Allocators\LinearAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\Allocators\PointerMathUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\Allocators\PoolAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\Allocators\StackAllocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\MemoryChunkManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\MemoryUser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Memory\StackMemoryManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Platform.h">
@@ -222,25 +192,10 @@
     <ClInclude Include="Hollow\Math\Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\ECS\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\ECS\IComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\ECS\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\ECS\IEntity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\ECS\ISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\ECS\System.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Containers\hash_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Containers\pair.h">
@@ -250,9 +205,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\SceneManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\DirectX\D3DGeometryShader.h">
@@ -277,9 +229,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Common\Console.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Common\FamilyTypeID.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Common\FileSystem.h">
@@ -315,6 +264,60 @@
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\EditorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Memory\PoolAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\EntityManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ApplicationLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Memory\AllocatorUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Memory\IAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\ComponentManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\IEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\IComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\RenderableComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\TransformComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\PointLightComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\ECS\MaterialComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Common\SaveHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -323,13 +326,7 @@
     <ClCompile Include="Hollow\Common\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\ECS\ComponentManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Input\InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Memory\StackMemoryManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp">
@@ -362,12 +359,6 @@
     <ClCompile Include="Hollow\Graphics\Window\Win32\Win32Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\IRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\ECS\EntityManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -392,9 +383,6 @@
     <ClCompile Include="Hollow\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Resources\MeshManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -408,9 +396,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Common\Console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Common\FamilyTypeID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

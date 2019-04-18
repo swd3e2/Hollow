@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_LOG_H
+#define HW_LOG_H
+
 #include <memory>
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
@@ -33,3 +37,5 @@ namespace Hollow {
 #define HW_WARN(...)     Hollow::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define HW_ERROR(...)    Hollow::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define HW_DEBUG(...)    Hollow::Log::GetCoreLogger()->debug(__VA_ARGS__)
+
+#endif

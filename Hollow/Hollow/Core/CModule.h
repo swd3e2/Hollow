@@ -1,6 +1,8 @@
 #pragma once
 #include "Hollow/Platform.h"
 #include <assert.h>
+#include <typeinfo>
+#include "Hollow/Common/Log.h"
 
 /* Base class for all core main engine systems */
 template <typename T>
@@ -24,11 +26,15 @@ protected:
 public:
 	static T* instance()
 	{
-		if (!isStartedUp())
-			assert(true && "Trying to create module without starting it up");
+		if (!isStartedUp()) {
+			Hollow::Log::GetCoreLogger()->critical("Trying to use module without starting it up, {}", typeid(T).name());
+			assert(false && "Trying to use module without starting it up");
+		}
 
-		if (isShutdown())
-			assert(true && "Module is already shutdown");
+		if (isShutdown()) {
+			Hollow::Log::GetCoreLogger()->critical("Module is shutdown, {}", typeid(T).name());
+			assert(false && "Module is shutdown");
+		}
 
 		return _instance;
 	}

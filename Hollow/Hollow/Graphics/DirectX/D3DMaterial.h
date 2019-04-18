@@ -8,9 +8,9 @@
 class D3DMaterial : public IMaterial
 {
 public:
-	D3DTexture* diffuseTexture;
-	D3DTexture* normalTexture;
-	D3DTexture* specularTexture;
+	std::shared_ptr<D3DTexture> diffuseTexture;
+	std::shared_ptr<D3DTexture> normalTexture;
+	std::shared_ptr<D3DTexture> specularTexture;
 	D3DPixelShader* pixelShader;
 	D3DVertexShader* vertexShader;
 public:
@@ -20,7 +20,7 @@ public:
 		pixelShader = ShaderManager::instance()->getPixelShader("ps");
 	}
 
-	void SetDiffuseTexture(D3DTexture* texture) { diffuseTexture = texture; }
-	void SetNormalTexture(D3DTexture* texture) { normalTexture = texture; }
-	void SetSpecularTexture(D3DTexture* texture) { specularTexture = texture; }
+	void SetDiffuseTexture(D3DTexture* texture) { diffuseTexture = std::make_shared<D3DTexture>(*texture); }
+	void SetNormalTexture(D3DTexture* texture) { normalTexture = std::make_shared<D3DTexture>(*texture); }
+	void SetSpecularTexture(D3DTexture* texture) { specularTexture = std::make_shared<D3DTexture>(*texture); }
 };
