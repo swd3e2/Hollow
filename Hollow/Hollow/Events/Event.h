@@ -1,6 +1,10 @@
 #pragma once
+
+#ifndef HW_EVENT_H
+#define HW_EVENT_H
+
 #include "IEvent.h"
-#include "Hollow/Common/FamilyTypeID.h"
+#include <typeinfo>
 
 template<class T>
 class Event : public IEvent
@@ -17,4 +21,6 @@ public:
 };
 
 template<class T>
-const eventId Event<T>::id = Hollow::Core::Utils::FamilyTypeID<IEvent>::template Get<T>();
+const eventId Event<T>::id = typeid(T).hash_code();
+
+#endif

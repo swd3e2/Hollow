@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_LIGHT_ICON_H
+#define HW_LIGHT_ICON_H
+
 #include "Hollow/Graphics/DirectX/D3DRenderable.h"
 #include "Hollow/Graphics/Vertex.h"
 #include "Hollow/Resources/TextureManager.h"
@@ -30,6 +34,8 @@ public:
 		object->name = "Icon";
 		object->buffer = new D3DBuffer(device, vertices, sizeof(Vertex), 6, D3D11_BIND_VERTEX_BUFFER);
 		renderable.renderableObjects.push_back(object);
-		renderable.transform->setScale(0.2f, 0.2f, 0.2f);
+		// renderable.transform->setScale(0.2f, 0.2f, 0.2f);
 	}
 };
+
+#endif

@@ -1,7 +1,8 @@
+#pragma once
+
 #ifndef HW_ARRAY_H
 #define HW_ARRAY_H
 
-#pragma once
 #include "Hollow/Memory/PoolAllocator.h"
 
 namespace Hollow {
@@ -37,14 +38,7 @@ namespace Hollow {
 		T* createObject(ARGS&& ...args)
 		{
 			if (currentSize + 1 > capacity) {
-				capacity = capacity * 2;
-				PoolAllocator* allocator = new PoolAllocator(capacity, sizeof(T), alignof(T));
-				memset(allocator->getFirstAddress(), 0, this->allocator->getSize());
-				memcpy(allocator->getFirstAddress(), this->allocator->getFirstAddress(), this->allocator->getSize());
-				allocator->pointer = (void**)((uintptr_t)allocator->getFirstAddress() + this->allocator->count * this->allocator->objectSize);
-				delete this->allocator;
-				this->allocator = allocator;
-				m_data = this->allocator->getFirstAddress();
+				this->resize(capacity * 2);
 			}
 
 			T* object = new (allocator->allocate()) T(std::forward<ARGS>(args)...);
@@ -55,12 +49,36 @@ namespace Hollow {
 			return object;
 		}
 
+		void clear()
+		{
+			currentSize = 0;
+			this->allocator->clear();
+		}
+
 		/*
 		 * Deallocate memory that was used by object
 		 */
 		void destroyObject(T* object)
 		{
 			allocator->deallocate(object);
+		}
+
+		void resize(size_t size)
+		{
+			capacity = size;
+			PoolAllocator* allocator = new PoolAllocator(capacity, sizeof(T), alignof(T));
+			memset(allocator->getFirstAddress(), 0, this->allocator->getSize());
+			memcpy(allocator->getFirstAddress(), this->allocator->getFirstAddress(), this->allocator->getSize());
+			allocator->pointer = (void**)((uintptr_t)allocator->getFirstAddress() + (this->allocator->count < this->capacity ? this->capacity : this->allocator->count) * this->allocator->objectSize);
+			clear();
+			delete this->allocator;
+			this->allocator = allocator;
+			m_data = this->allocator->getFirstAddress();
+		}
+
+		size_t getSize()
+		{
+			return currentSize;
 		}
 
 		/*

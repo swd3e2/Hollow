@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_SYSTEM_MANAGER_H
+#define HW_SYSTEM_MANAGER_H
+
 #include "ISystem.h"
 #include <list>
 #include "Hollow/Platform.h"
@@ -44,7 +48,7 @@ namespace Hollow {
 		void PostUpdateSystems(float dt)
 		{
 			for (auto& it : m_Systems)
-				it->PreUpdate(dt);
+				it->PostUpdate(dt);
 		}
 
 		void UpdateSystems(float dt)
@@ -54,3 +58,5 @@ namespace Hollow {
 		}
 	};
 }
+
+#endif

@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_MESH_MANAGER_H
+#define HW_MESH_MANAGER_H
+
 #include "Hollow/Platform.h"
 #include "Hollow/Core/CModule.h"
 #include "Utils/ObjParser.h"
@@ -19,3 +23,5 @@ public:
 	Mesh* CreateMesh(std::string filename, bool inversceTexCoords = false);
 	Mesh* CreateMeshI(std::string filename, bool inversceTexCoords = false);
 };
+
+#endif

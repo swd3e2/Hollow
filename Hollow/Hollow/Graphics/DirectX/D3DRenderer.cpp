@@ -40,10 +40,12 @@ D3DRenderer::D3DRenderer(int width, int height, HWND* hwnd)
 
 	m_rasterizerState = new D3DRasterizerState(m_Device);
 	this->m_DeviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
+	setStartedUp();
 }
 
 D3DRenderer::~D3DRenderer()
 {
+	setShutdown();
 	SAFE_RELEASE(m_Device);
 	SAFE_RELEASE(m_DeviceContext);
 	SAFE_RELEASE(m_SwapChain);

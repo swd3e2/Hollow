@@ -2,15 +2,17 @@
 
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
+
 #include <unordered_map>
 
 #include "Hollow/Containers/array.h"
 #include "Hollow/Core/CModule.h"
+#include "Hollow/Platform.h"
 #include "Entity.h"
 
 #define DEFAULT_ENTITY_CONTAINER_GROW_SIZE 2048
 
-class EntityManager : public CModule<EntityManager>
+class HOLLOW_API EntityManager : public CModule<EntityManager>
 {
 private:
 	class IEntityContainer {};
@@ -31,7 +33,7 @@ public:
 	}
 
 	template<class T>
-	EntityContainer<T>* getEntityContainer()
+	EntityContainer<T>* getContainer()
 	{
 		size_t entityTypeId = T::staticGetTypeId();
 
@@ -50,7 +52,7 @@ public:
 	template<class T, typename ...ARGS>
 	T* createEntity(ARGS&& ...args)
 	{
-		EntityContainer<T>* container = getEntityContainer<T>();
+		EntityContainer<T>* container = getContainer<T>();
 		T* entity = container->entityList.createObject(std::forward(args)...);
 		entity->entityId = getNextEntityId();
 		
@@ -68,13 +70,13 @@ public:
 	template<class E>
 	typename Hollow::array<E>::iterator& begin()
 	{
-		return getEntityContainer<E>()->entityList.begin();
+		return getContainer<E>()->entityList.begin();
 	}
 
 	template<class E>
 	typename Hollow::array<E>::iterator& end()
 	{
-		return getEntityContainer<E>()->entityList.end();
+		return getContainer<E>()->entityList.end();
 	}
 };
 

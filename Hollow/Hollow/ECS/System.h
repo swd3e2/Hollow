@@ -1,7 +1,11 @@
 #pragma once
-#include "Hollow/Common/FamilyTypeID.h"
+
+#ifndef HW_SYSTEM_H
+#define HW_SYSTEM_H
+
 #include "Hollow/Platform.h"
 #include "ISystem.h"
+#include <typeinfo>
 
 namespace Hollow {
 
@@ -14,12 +18,10 @@ namespace Hollow {
 		//SystemManager* m_SystemManagerInstance;
 	protected:
 		System()
-		{
-		}
+		{}
 	public:
 		virtual ~System()
-		{
-		}
+		{}
 		
 		virtual inline const SystemTypeID GetStaticSystemTypeID() const { return STATIC_SYSTEM_TYPE_ID; }
 		
@@ -46,5 +48,7 @@ namespace Hollow {
 	};
 
 	template<class T>
-	const SystemTypeID System<T>::STATIC_SYSTEM_TYPE_ID = Core::Utils::FamilyTypeID<ISystem>::Get<System>();
+	const SystemTypeID System<T>::STATIC_SYSTEM_TYPE_ID = typeid(T).hash_code();
 }
+
+#endif

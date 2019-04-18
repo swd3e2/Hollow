@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_VECTOR_H
+#define HW_VECTOR_H
+
 #include <iterator>
 #include <assert.h>
 #include <vector>
@@ -117,3 +121,5 @@ namespace Hollow { namespace Containers {
 	};
 
 } }
+
+#endif

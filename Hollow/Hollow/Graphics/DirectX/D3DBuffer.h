@@ -12,6 +12,7 @@ private:
 	UINT bufferSize = 0;
 public:
 	D3DBuffer(ID3D11Device* device, void* data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag);
+	~D3DBuffer();
 	ID3D11Buffer * Get() { return buffer; }
 	ID3D11Buffer ** GetAddressOf() { return &buffer; }
 	virtual size_t BufferSize() const override { return bufferSize; }

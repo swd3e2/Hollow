@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_MESH_H
+#define HW_MESH_H
+
 #include "Hollow/Graphics/Vertex.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Graphics/IMaterial.h"
@@ -40,3 +44,5 @@ struct Mesh
 	Hollow::Containers::Vector<MeshModel*> objects;
 	std::string name;
 };
+
+#endif

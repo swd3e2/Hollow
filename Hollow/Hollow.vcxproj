@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hollow\Application.h" />
+    <ClInclude Include="Hollow\Common\SaveHelper.h" />
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\DummyConsoleListener.h" />
@@ -22,7 +23,11 @@
     <ClInclude Include="Hollow\ECS\GameObject.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />
-    <ClInclude Include="Hollow\ECS\MeshComponent.h" />
+    <ClInclude Include="Hollow\ECS\Light.h" />
+    <ClInclude Include="Hollow\ECS\MaterialComponent.h" />
+    <ClInclude Include="Hollow\ECS\PointLightComponent.h" />
+    <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
+    <ClInclude Include="Hollow\ECS\TransformComponent.h" />
     <ClInclude Include="Hollow\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
@@ -71,7 +76,6 @@
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
     <ClInclude Include="Hollow\Resources\MeshManager.h" />
     <ClInclude Include="Hollow\Resources\TextureManager.h" />
-    <ClInclude Include="Hollow\Graphics\Transform.h" />
     <ClInclude Include="Hollow\ImGuiLayer.h" />
     <ClInclude Include="Hollow\Layer.h" />
     <ClInclude Include="Hollow\LayerStack.h" />
@@ -80,7 +84,6 @@
     <ClInclude Include="Hollow\SceneManager.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />
-    <ClInclude Include="Hollow\Containers\hash_map.h" />
     <ClInclude Include="Hollow\Containers\pair.h" />
     <ClInclude Include="Hollow\Containers\vector.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DDepthStencil.h" />
@@ -94,7 +97,6 @@
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow\Resources\AudioEngine.h" />
     <ClInclude Include="Hollow\Common\Console.h" />
-    <ClInclude Include="Hollow\Common\FamilyTypeID.h" />
     <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBuffer.h" />
@@ -113,7 +115,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Application.cpp" />
-    <ClCompile Include="Hollow\ECS\ComponentManager.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DDepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />
@@ -125,18 +126,15 @@
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Hollow\Graphics\IRenderer.cpp" />
     <ClCompile Include="Hollow\Resources\MaterialManager.cpp" />
     <ClCompile Include="Hollow\Resources\MeshManager.cpp" />
     <ClCompile Include="Hollow\Resources\TextureManager.cpp" />
-    <ClCompile Include="Hollow\Graphics\Transform.cpp" />
     <ClCompile Include="Hollow\Graphics\Window\IWindow.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp" />
     <ClCompile Include="Hollow\SceneManager.cpp" />
     <ClCompile Include="Hollow\Common\Console.cpp" />
-    <ClCompile Include="Hollow\Common\FamilyTypeID.cpp" />
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Graphics\Window\Win32\Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />

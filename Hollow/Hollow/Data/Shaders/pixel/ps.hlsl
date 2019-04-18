@@ -57,11 +57,12 @@ struct PointLight
     float3 color;
     float pad;
     float3 attenuation;
+    float pad1;
 };
 
 cbuffer LightBuffer : register(b3)
 {
-    PointLight pointLight;
+    PointLight pointLight[1];
 }
 
 cbuffer MateriaBuffer : register(b4)
@@ -77,6 +78,12 @@ cbuffer ConstantBuffer : register(b5)
     float bias;    
 }
 
+cbuffer ConstantBuffer : register(b6)
+{
+    PointLight pointLights[10];
+    float pointLightCount;
+}
+
 Texture2D ambient_map   : TEXUTRE : register(t0);
 Texture2D normal_map    : TEXUTRE : register(t1);
 Texture2D specular_map  : TEXUTRE : register(t2);
@@ -85,29 +92,29 @@ Texture2D shadow_map : TEXUTRE : register(t3);
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);
 
-float4 addAmbientColor(float3 normal, float4 position, float2 texCoords)
+float4 addPointLight(PointLight light, float3 normal, float4 position, float2 texCoords)
 {
     float4 color = float4(0.f, 0.f, 0.f, 0.f);
 
     // point light
-    float4 pointLightPosition = float4(pointLight.position, 0.0f);
+    float4 pointLightPosition = float4(light.position, 0.0f);
     float3 lightToPixel = pointLightPosition - position;
   
     float lenght = length(lightToPixel);
     // normalize vector
     lightToPixel /= lenght;
   
-    if (lenght > pointLight.range)
+    if (lenght > light.range)
     {
         return color;
     }
 
     float howMuchLight = dot(lightToPixel, normal);
 
-    color += float4(pointLight.color, 1.0f) * 
-    saturate(1 / pointLight.attenuation[0] + 
-    (pointLight.attenuation[1] * lenght) + 
-    (pointLight.attenuation[2] * (lenght * lenght)));
+    color += float4(light.color, 1.0f) *
+    saturate(1 / light.attenuation[0] +
+    (light.attenuation[1] * lenght) +
+    (light.attenuation[2] * (lenght * lenght)));
     
     float4 specularIntensity = float4(1.0f, 1.0f, 1.0f, 0.0f);
     if (material.hasSpecularMap)
@@ -154,25 +161,19 @@ float4 PSMain(PixelShaderInput input) : SV_TARGET
     float2 projectTexCoord;
 
     // Calculate the projected texture coordinates.
-    float result = 0;
-    for (int j = -1; j <= 1; j++)
+    projectTexCoord.x = (input.lightViewPosition.x) / input.lightViewPosition.w * 0.5f + 0.5f;
+    projectTexCoord.y = (-input.lightViewPosition.y) / input.lightViewPosition.w * 0.5f + 0.5f;
+
+    if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
     {
-        for (int i = -1; i <= 1; i++)
-        {
-            projectTexCoord.x = (input.lightViewPosition.x ) / input.lightViewPosition.w * 0.5f + 0.5f;
-            projectTexCoord.y = (-input.lightViewPosition.y) / input.lightViewPosition.w * 0.5f + 0.5f;
-
-            if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
-            {
-                float4 shadowMap = shadow_map.Sample(SampleTypeClamp, float2(projectTexCoord.x, projectTexCoord.y));
-                result += shadowMap.r < input.lightViewPosition.z / input.lightViewPosition.w ? 1.0f : 0.0f;
-            }
-
-        }
+        float4 shadowMap = shadow_map.Sample(SampleTypeClamp, float2(projectTexCoord.x, projectTexCoord.y));
+        color -= shadowMap.r < input.lightViewPosition.z / input.lightViewPosition.w ? 0.3f : 0.0f;
     }
-    color -= (result / 9.0f);
-            
-    color += addAmbientColor(input.normal, input.worldPos, input.texCoord);
+           
+    for (int i = 0; i < 2; i++)
+    {
+        color += addPointLight(pointLights[i], input.normal, input.worldPos, input.texCoord);
+    }
 
     return color;
 }

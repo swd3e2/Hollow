@@ -12,6 +12,11 @@
 #include "Hollow/Resources/ShaderManager.h"
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/Graphics/ForwardRenderPass.h"
+#include "Hollow/ECS/EntityManager.h"
+#include "Hollow/ECS/PointLightComponent.h"
+#include "Hollow/Common/SaveHelper.h"
+#include "Hollow/Platform.h"
+#include <fstream>
 
 enum MenuAction
 {
@@ -20,8 +25,8 @@ enum MenuAction
 
 class ImGuiLayer : public Layer
 {
-private:
-	D3DRenderable* selected;
+public:
+	IEntity* selected;
 	RenderableObject* selectedObject;
 	float currentPosition[3] = {};
 	float currentRotation[3] = {};
@@ -55,15 +60,14 @@ private:
 
 	std::vector<IRenderable*>* list;
 	const char* current_item = NULL;
-	PointLight* light;
 	Win32Window* window;
 	Camera* mainCamera;
 	ShadowMap* shadowMap;
 	ForwardRenderPass* renderPass;
 
 public:
-	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, std::vector<IRenderable*>* list, PointLight* light, Camera* mainCamera) :
-		renderer(renderer), renderPass(renderPass), list(list), light(light), mainCamera(mainCamera), shadowMap(shadowMap)
+	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, std::vector<IRenderable*>* list, Camera* mainCamera) :
+		renderer(renderer), renderPass(renderPass), list(list), mainCamera(mainCamera), shadowMap(shadowMap)
 	{
 		bool result = true;
 		IMGUI_CHECKVERSION();
@@ -120,9 +124,16 @@ public:
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Menu"))
+			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("Save")) {
+					SaveHelper::instance()->save();
+				}
+				if (ImGui::MenuItem("Load")) {
+					SaveHelper::instance()->load();
+				}
 				if (ImGui::MenuItem("Exit")) {
+					window->setIsClosed(true);
 				}
 				ImGui::EndMenu();
 			}
@@ -197,36 +208,42 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("Lights");
-		ImGui::Text("Ambient");
-		ImGui::Spacing();
+		if (EntityManager::instance()->getContainer<Light>()->entityList.getSize()) {
+			Light* lightEntity = EntityManager::instance()->getContainer<Light>()->entityList[0];
+			if (lightEntity->hasComponent<PointLightComponent>()) {
+				PointLightComponent* lightComponent = lightEntity->getComponent<PointLightComponent>();
+				ImGui::Text("Ambient");
+				ImGui::Spacing();
 
-		ImGui::Text("Ambient Light color");
-		ImGui::ColorEdit3("###", ambientLightColor);
-		ImGui::Spacing();
+				ImGui::Text("Ambient Light color");
+				ImGui::ColorEdit3("###", ambientLightColor);
+				ImGui::Spacing();
 
-		ImGui::Text("Ambient Light direction");
-		ImGui::DragFloat3("###", ambientLightDirection, 0.01f, -1.0f, 1.0f);
-		ImGui::Spacing();
+				ImGui::Text("Ambient Light direction");
+				ImGui::DragFloat3("###", ambientLightDirection, 0.01f, -1.0f, 1.0f);
+				ImGui::Spacing();
 
-		ImGui::Text("Point");
-		ImGui::ColorEdit3("Point Light color", pointLightColor);
-		ImGui::DragFloat3("Point Light position", pointLightPosition, 0.1f, -30.0f, 30.0f);
-		ImGui::DragFloat3("Point Light attenuation", light->data.attenuation, 0.01f, -30.0f, 30.0f);
-		ImGui::DragFloat("Range", &light->data.range, 0.1f, -30.0f, 30.0f);
+				ImGui::Text("Point");
+				ImGui::ColorEdit3("Point Light color", pointLightColor);
+				ImGui::DragFloat3("Point Light position", pointLightPosition, 0.1f, -30.0f, 30.0f);
+				ImGui::DragFloat3("Point Light attenuation", lightComponent->light.data.attenuation, 0.01f, -30.0f, 30.0f);
+				ImGui::DragFloat("Range", &lightComponent->light.data.range, 0.1f, -30.0f, 30.0f);
 
-		if (light != nullptr) {
-			light->setColor(pointLightColor);
-			light->setPosition(pointLightPosition);
+				lightComponent->light.setColor(pointLightColor);
+				lightComponent->light.setPosition(pointLightPosition);
+			}
 		}
+		
 		ImGui::End();
 
 		ImGui::Begin("Scene objects");
-		for (auto& it : *list)
+		for (auto& it : EntityManager::instance()->getContainer<GameObject>()->entityList)
 		{
-			D3DRenderable* renderable = (D3DRenderable*)it;
-			if (ImGui::Selectable(renderable->name.c_str()))
+			std::string	name = "Entity";
+			name += std::to_string(it.getId());
+			if (ImGui::Selectable(name.c_str()))
 			{
-				selected = renderable;
+				selected = &it;
 			}
 		}
 		ImGui::End();
@@ -234,36 +251,43 @@ public:
 		ImGui::Begin("Object properties");
 		if (selected != nullptr)
 		{
-			currentPosition[0] = selected->transform->position.x;
-			currentPosition[1] = selected->transform->position.y;
-			currentPosition[2] = selected->transform->position.z;
-
-			currentRotation[0] = selected->transform->rotation.x;
-			currentRotation[1] = selected->transform->rotation.y;
-			currentRotation[2] = selected->transform->rotation.z;
-
-			currentScale[0] = selected->transform->scale.x;
-			currentScale[1] = selected->transform->scale.y;
-			currentScale[2] = selected->transform->scale.z;
-
-			ImGui::Text("Position: x | y | z");
-			ImGui::DragFloat3("##position", currentPosition, 0.1f);
-			ImGui::Text("Rotation");
-			ImGui::DragFloat3("##rotation", currentRotation, 0.1f);
-			ImGui::Text("Scale: x | y | z");
-			ImGui::DragFloat3("##scale", currentScale, 0.1f);
-
-			selected->transform->setPosition(currentPosition[0], currentPosition[1], currentPosition[2]);
-			selected->transform->setRotation(currentRotation[0], currentRotation[1], currentRotation[2]);
-			selected->transform->setScale(currentScale[0], currentScale[1], currentScale[2]);
-
-			ImGui::Spacing();
-
-			for (auto& it : selected->renderableObjects)
+			if (selected->hasComponent<TransformComponent>())
 			{
-				if (ImGui::Selectable(it->name.c_str()))
+				TransformComponent* transform = selected->getComponent<TransformComponent>();
+				currentPosition[0] = transform->position.x;
+				currentPosition[1] = transform->position.y;
+				currentPosition[2] = transform->position.z;
+
+				currentRotation[0] = transform->rotation.x;
+				currentRotation[1] = transform->rotation.y;
+				currentRotation[2] = transform->rotation.z;
+
+				currentScale[0] = transform->scale.x;
+				currentScale[1] = transform->scale.y;
+				currentScale[2] = transform->scale.z;
+
+				ImGui::Text("Position: x | y | z");
+				ImGui::DragFloat3("##position", currentPosition, 0.1f);
+				ImGui::Text("Rotation");
+				ImGui::DragFloat3("##rotation", currentRotation, 0.1f);
+				ImGui::Text("Scale: x | y | z");
+				ImGui::DragFloat3("##scale", currentScale, 0.1f);
+
+				transform->setPosition(currentPosition[0], currentPosition[1], currentPosition[2]);
+				transform->setRotation(currentRotation[0], currentRotation[1], currentRotation[2]);
+				transform->setScale(currentScale[0], currentScale[1], currentScale[2]);
+
+				ImGui::Spacing();
+			}
+
+			if (selected->hasComponent<RenderableComponent>()) {
+				RenderableComponent* renderable = selected->getComponent<RenderableComponent>();
+				for (auto& it : renderable->renderable.renderableObjects)
 				{
-					selectedObject = it;
+					if (ImGui::Selectable(it->name.c_str()))
+					{
+						selectedObject = it;
+					}
 				}
 			}
 		}
@@ -319,8 +343,8 @@ public:
 			{
 				for (auto& it : *TextureManager::instance()->getTexuresList())
 				{
-					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->diffuseTexture == it.second)) {
-						selectedObject->material->diffuseTexture = it.second;
+					if (ImGui::Selectable(it.first.c_str(), &(*selectedObject->material->diffuseTexture) == it.second)) {
+						selectedObject->material->diffuseTexture = std::make_shared<D3DTexture>(*it.second);
 						selectedObject->material->materialData.hasDiffuseTexture = true;
 					}
 				}
@@ -332,8 +356,8 @@ public:
 			{
 				for (auto& it : *TextureManager::instance()->getTexuresList())
 				{
-					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->normalTexture == it.second)) {
-						selectedObject->material->normalTexture = it.second;
+					if (ImGui::Selectable(it.first.c_str(), &(*selectedObject->material->normalTexture) == it.second)) {
+						selectedObject->material->normalTexture = std::make_shared<D3DTexture>(*it.second);
 						selectedObject->material->materialData.hasNormalMap = true;
 					}
 				}
@@ -345,8 +369,8 @@ public:
 			{
 				for (auto& it : *TextureManager::instance()->getTexuresList())
 				{
-					if (ImGui::Selectable(it.first.c_str(), selectedObject->material->specularTexture == it.second)) {
-						selectedObject->material->specularTexture = it.second;
+					if (ImGui::Selectable(it.first.c_str(), &(*selectedObject->material->specularTexture) == it.second)) {
+						selectedObject->material->specularTexture = std::make_shared<D3DTexture>(*it.second);
 						selectedObject->material->materialData.hasSpecularMap = true;
 					}
 				}

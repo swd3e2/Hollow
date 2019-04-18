@@ -2,56 +2,30 @@
 #include "Hollow/Application.h"
 #include "Hollow/Graphics/PointLight.h"
 #include "Hollow/ECS/GameObject.h"
-#include "Hollow/ECS/MeshComponent.h"
+#include "Hollow/ECS/RenderableComponent.h"
+#include "Hollow/ECS/TransformComponent.h"
+#include "Hollow/ECS/PointLightComponent.h"
+#include "Hollow/ECS/Light.h"
 
 using namespace DirectX;
 
 class MyApp : public Application
 {
 private:
-	/*MoveSystem*				m_MoveSystem;
-	CollisionSystem*		m_CollisionSystem;*/
 public:
-	MyApp()
+	void onStartUp()
 	{
-		/*m_MoveSystem = new MoveSystem();
-		m_CollisionSystem = new CollisionSystem();
-		systemManager.AddSystem(m_MoveSystem);
-		systemManager.AddSystem(m_CollisionSystem);*/ 
-		GameObject* object = entityManager.createEntity<GameObject>();
-		GameObject* object2 = entityManager.createEntity<GameObject>();
-		GameObject* object3 = entityManager.createEntity<GameObject>();
+		Light* light = entityManager.createEntity<Light>();
+		light->addComponent<PointLightComponent, ID3D11Device*>(m_Renderer->getDevice());
+		light->addComponent<TransformComponent, DirectX::XMFLOAT3&&, DirectX::XMFLOAT3 &&, DirectX::XMFLOAT3 &&>
+			({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 
-		MeshComponent* component = componentManager.create<MeshComponent>(object);
-		object->destroyComponent<MeshComponent>();
+		Light* light2 = entityManager.createEntity<Light>();
+		light2->addComponent<PointLightComponent, ID3D11Device*>(m_Renderer->getDevice());
+		light2->addComponent<TransformComponent, DirectX::XMFLOAT3&&, DirectX::XMFLOAT3 &&, DirectX::XMFLOAT3 &&>
+			({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 
-		sceneManager.CreateSceneObject(
-			((D3DRenderer*)m_Renderer)->getDevice(),
-			meshManager.CreateMesh("Sandbox/Resources/Meshes/gwen.obj", true),
-			new Transform({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
-		);
-
-		sceneManager.CreateSceneObject(
-			((D3DRenderer*)m_Renderer)->getDevice(),
-			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj", true),
-			new Transform({ -10.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
-		);
-
-		sceneManager.CreateSceneObject(
-			((D3DRenderer*)m_Renderer)->getDevice(),
-			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj", true),
-			new Transform({ 5.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
-		);
-
-		sceneManager.CreateSceneObject(
-			((D3DRenderer*)m_Renderer)->getDevice(),
-			meshManager.CreateMesh("Sandbox/Resources/Meshes/Metal.obj", true),
-			new Transform({ 10.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
-		);
-		sceneManager.CreateSceneObject(
-			((D3DRenderer*)m_Renderer)->getDevice(),
-			meshManager.CreateMesh("Sandbox/Resources/Meshes/test.obj", true),
-			new Transform({ 0.0f, -0.898f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f })
-		);
+		light2->getComponent<PointLightComponent>()->light.data.color[2] = 1.0f;
+		light2->getComponent<PointLightComponent>()->light.data.range = 5.f;
 	}
 };

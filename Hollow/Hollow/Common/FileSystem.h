@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_FILE_SYSTEM_H
+#define HW_FILE_SYSTEM_H
+
 #include <iostream>
 #include <windows.h>
 #include <vector>
@@ -85,3 +89,5 @@ namespace Hollow
 	};
 
 }
+
+#endif

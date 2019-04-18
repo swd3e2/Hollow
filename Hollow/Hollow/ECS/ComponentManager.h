@@ -2,14 +2,17 @@
 
 #ifndef HW_COMPONENT_MANAGER_H
 #define HW_COMPONENT_MANAGER_H
-#include "Hollow/Core/CModule.h"
+
 #include <unordered_map>
+
+#include "Hollow/Core/CModule.h"
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Containers/array.h"
+#include "Hollow/Platform.h"
 #include "IEntity.h"
 #include "Component.h"
 
-class ComponentManager : public CModule<ComponentManager>
+class HOLLOW_API ComponentManager : public CModule<ComponentManager>
 {
 private:
 	class IComponentContainer {};
@@ -57,7 +60,7 @@ public:
 		size_t componentTypeId = T::staticGetTypeId();
 		// todo: maybe no need in delete component if trying to add one
 		destroy<T>(entity);
-		
+
 		ComponentContainer<T>* container = getContainer<T>();
 		T* component = container->componentList.createObject(std::move(args)...);
 		componentMap[entity->entityId][componentTypeId] = component;
@@ -68,7 +71,7 @@ public:
 	template<class T>
 	void destroy(IEntity* entity)
 	{
-		if (has<T>(entity)) 
+		if (has<T>(entity))
 		{
 			size_t componentTypeId = T::staticGetTypeId();
 
@@ -90,6 +93,20 @@ public:
 			}
 		}
 		return false;
+	}
+
+	template<class T>
+	T* get(IEntity* entity)
+	{
+		if (has<T>(entity))
+		{
+			size_t componentTypeId = T::staticGetTypeId();
+
+			ComponentContainer<T>* container = getContainer<T>();
+			return (T*)componentMap[entity->entityId][componentTypeId];
+		}
+
+		return nullptr;
 	}
 
 	void startUp() { setStartedUp(); }

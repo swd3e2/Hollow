@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_D3D_RENDERER_H
+#define HW_D3D_RENDERER_H
+
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
 #include "D3DRenderTarget.h"
@@ -23,9 +27,10 @@
 #include "Hollow/Graphics/DirectionalLight.h"
 #include "Hollow/Graphics/ShadowMap.h"
 #include "D3DMaterial.h"
+#include "Hollow/Core/CModule.h"
 
 // Simple directx renderer
-class HOLLOW_API D3DRenderer : public IRenderer
+class HOLLOW_API D3DRenderer : public IRenderer, public CModule<D3DRenderer>
 {
 public:
 	bool vSync = true;
@@ -111,3 +116,5 @@ public:
 
 	void toggleVSync() { vSync = !vSync; }
 };
+
+#endif

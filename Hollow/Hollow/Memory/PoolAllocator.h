@@ -34,7 +34,6 @@ public:
 		this->memory = _aligned_malloc(size, alignment);
 
 		this->clear();
-		this->pointer = (void**)this->memory;
 	}
 
 	~PoolAllocator()
@@ -95,6 +94,7 @@ public:
 			*p = (void*)((uintptr_t)p + objectSize);
 			p = (void**)*p;
 		}
+		this->pointer = (void**)this->memory;
 	}
 };
 

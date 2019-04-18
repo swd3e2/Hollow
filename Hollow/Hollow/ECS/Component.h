@@ -2,6 +2,7 @@
 
 #ifndef HW_COMPONENT_H
 #define HW_COMPONENT_H
+
 #include "IComponent.h"
 
 template<class T>

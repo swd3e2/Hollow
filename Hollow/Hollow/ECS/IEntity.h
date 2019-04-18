@@ -2,6 +2,7 @@
 
 #ifndef HW_I_ENTITY_H
 #define HW_I_ENTITY_H
+
 #include <utility>
 
 class ComponentManager;
@@ -11,10 +12,15 @@ class IEntity
 protected:
 	size_t entityId;
 public:
-	template<class T, class ...ARGS>
-	void addComponent(ARGS&& ...args)
+	size_t getId()
 	{
-		ComponentManager::instance()->create(this, std::move(args)...);
+		return entityId;
+	}
+
+	template<class T, class ...ARGS>
+	T* addComponent(ARGS&& ...args)
+	{
+		return ComponentManager::instance()->create<T>(this, std::move(args)...);
 	}
 
 	template<class T>
@@ -24,9 +30,15 @@ public:
 	}
 
 	template<class T>
-	void hasComponent()
+	T* getComponent()
 	{
-		ComponentManager::instance()->has<T>(this);
+		return ComponentManager::instance()->get<T>(this);
+	}
+
+	template<class T>
+	bool hasComponent()
+	{
+		return ComponentManager::instance()->has<T>(this);
 	}
 };
 

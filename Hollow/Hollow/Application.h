@@ -16,6 +16,7 @@
 #include "Resources/ShaderManager.h"
 #include "Resources/MeshManager.h"
 #include "Graphics/ForwardRenderPass.h"
+#include "Common/SaveHelper.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -39,6 +40,7 @@ protected:
 	MeshManager						meshManager;
 	InputManager					inputManager;
 	ForwardRenderPass*				renderPass;
+	SaveHelper						saveHelper;
 	std::shared_ptr<Win32Window>	window;
 
 	double dt;
@@ -70,19 +72,20 @@ public:
 		
 		textureManager.startUp(m_Renderer->getDevice(), m_Renderer->getDeviceContext());
 		shaderManager.startUp(m_Renderer->getDevice());
-
-		PointLight* light = new PointLight(m_Renderer->getDevice());
-
+		saveHelper.startUp();
 
 		renderPass = new ForwardRenderPass(m_Renderer);
 		renderPass->m_Camera = camera;
-		renderPass->pointLight = light;
 		
-		m_LayerStack.AddLayer(new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, sceneManager.GetSceneObjects(), light, camera));
+		systemManager.AddSystem(renderPass);
+		ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, sceneManager.GetSceneObjects(), camera);
+		layer->window = &*window;
+		m_LayerStack.AddLayer(layer);
 	}
 
 	~Application()
 	{
+		saveHelper.shutdown();
 		meshManager.shutdown();
 		shaderManager.shutdown();
 		textureManager.shutdown();
@@ -107,22 +110,18 @@ public:
 
 			renderPass->shadowMap->camera.Update(dt);
 			camera->Update(dt);
-			renderPass->PreUpdateFrame();
 
-			systemManager.PreUpdateSystems(dt);
 			m_LayerStack.PreUpdate(dt);
+			systemManager.PreUpdateSystems(dt);
 
-			m_LayerStack.Update(dt);
 			systemManager.UpdateSystems(dt);
-			renderPass->Update(sceneManager.GetSceneObjects());
+			m_LayerStack.Update(dt);
 
-			systemManager.PostUpdateSystems(dt);
 			m_LayerStack.PostUpdate(dt);
+			systemManager.PostUpdateSystems(dt);
 
 			eventSystem.dispatch();
 			inputManager.Clear();
-
-			renderPass->PostUpdateFrame();
 
 			m_Timer.Stop();
 		}

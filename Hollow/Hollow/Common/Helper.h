@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_HELPER_H
+#define HW_HELPER_H
+
 #include "Hollow/Platform.h"
 #include <string>
 
@@ -50,3 +54,4 @@ namespace Hollow {
 	};
 }
 
+#endif
