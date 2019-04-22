@@ -1,12 +1,23 @@
 #pragma once
+#include <math.h>
 
 class Math
 {
 public:
-	static constexpr float PI = 3.1459;
+	static constexpr double PI = 3.141592653589793238463;
+	static constexpr float  PI_F = 3.14159265358979f;
 
-	static float toRadians(float val)
+	static float toRadians(float degrees)
 	{
-		return val * 180 / PI;
+		return degrees * 180 / PI_F;
+	}
+
+	static float toDegrees(float rads)
+	{
+		return rads * PI_F / 180;
+	}
+
+	static double cotan(double val) { 
+		return(1 / tan(val));
 	}
 };

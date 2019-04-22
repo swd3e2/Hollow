@@ -34,6 +34,9 @@ public:
 		eventListeners.push_back(delegate);
 	}
 
+	/*
+	 * todo: make event creation with move semantic
+	 */
 	void addEvent(IEvent* event)
 	{
 		events.push_back(event);

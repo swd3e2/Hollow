@@ -61,12 +61,12 @@ public:
 	std::vector<IRenderable*>* list;
 	const char* current_item = NULL;
 	Win32Window* window;
-	Camera* mainCamera;
+	MyCamera* mainCamera;
 	ShadowMap* shadowMap;
 	ForwardRenderPass* renderPass;
 
 public:
-	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, std::vector<IRenderable*>* list, Camera* mainCamera) :
+	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, std::vector<IRenderable*>* list, MyCamera* mainCamera) :
 		renderer(renderer), renderPass(renderPass), list(list), mainCamera(mainCamera), shadowMap(shadowMap)
 	{
 		bool result = true;
@@ -205,6 +205,23 @@ public:
 		}
 		ImGui::DragFloat("Bias", &renderPass->shadowMap->bias, 0.001f, 0.0f, 1.0f);
 		ImGui::Image(renderPass->m_ShadowDepthStencil->GetDepthStencilResource(), ImVec2(200, 200));
+		if (ImGui::CollapsingHeader("Camera")) {
+			for (int i = 0; i < 16; i++)
+			{
+				ImGui::Text(std::to_string(mainCamera->GetProjectionMatrix().m[i]).c_str());
+				if (i == 0 || (i + 1) % 4 != 0) {
+					ImGui::SameLine();
+				}
+			}
+			ImGui::Spacing();
+			for (int i = 0; i < 16; i++)
+			{
+				ImGui::Text(std::to_string(mainCamera->GetViewMatrix().m[i]).c_str());
+				if (i == 0 || (i + 1) % 4 != 0) {
+					ImGui::SameLine();
+				}
+			}
+		}
 		ImGui::End();
 
 		ImGui::Begin("Lights");

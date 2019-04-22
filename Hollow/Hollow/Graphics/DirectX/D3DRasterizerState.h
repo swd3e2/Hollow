@@ -13,7 +13,7 @@ public:
 
 		D3D11_RASTERIZER_DESC rasterizerDesc;
 		rasterizerDesc.AntialiasedLineEnable = false;
-		rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
+		rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
 		rasterizerDesc.DepthBias = 0.0001f;
 		rasterizerDesc.DepthBiasClamp = 0;
 		rasterizerDesc.DepthClipEnable = true;

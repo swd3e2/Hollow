@@ -17,9 +17,10 @@
 #include "Resources/MeshManager.h"
 #include "Graphics/ForwardRenderPass.h"
 #include "Common/SaveHelper.h"
+#include "Graphics/MyCamera.h"
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 2560
+#define SCREEN_HEIGHT 1440
 
 class HOLLOW_API Application
 {
@@ -33,7 +34,10 @@ protected:
 	EventSystem						eventSystem;
 	D3DRenderer*					m_Renderer;
 	LayerStack						m_LayerStack;
+
 	Camera*							camera;
+	MyCamera*						camera2;
+
 	SceneManager					sceneManager;
 	TextureManager					textureManager;
 	ShaderManager					shaderManager;
@@ -59,13 +63,15 @@ public:
 		camera = new Camera(true);
 		camera->SetProjectionValues(75.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
+		camera2 = new MyCamera(true);
+		camera2->SetProjectionValues(75.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
+
 		eventSystem.startUp();
 		inputManager.startUp();
 		componentManager.startUp();
 		entityManager.startUp();
 		sceneManager.startUp();
 		systemManager.startUp();
-		
 		meshManager.startUp();
 		
 		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
@@ -75,10 +81,10 @@ public:
 		saveHelper.startUp();
 
 		renderPass = new ForwardRenderPass(m_Renderer);
-		renderPass->m_Camera = camera;
-		
+		renderPass->m_Camera = camera2;
+
 		systemManager.AddSystem(renderPass);
-		ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, sceneManager.GetSceneObjects(), camera);
+		ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, sceneManager.GetSceneObjects(), camera2);
 		layer->window = &*window;
 		m_LayerStack.AddLayer(layer);
 	}
@@ -110,6 +116,7 @@ public:
 
 			renderPass->shadowMap->camera.Update(dt);
 			camera->Update(dt);
+			camera2->Update(dt);
 
 			m_LayerStack.PreUpdate(dt);
 			systemManager.PreUpdateSystems(dt);

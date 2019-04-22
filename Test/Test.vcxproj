@@ -73,21 +73,25 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>C:\dev\Hollow Engine\Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\dev\Hollow Engine\Hollow;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>C:\dev\Hollow Engine\Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\dev\Hollow Engine\Hollow;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>C:\dev\Hollow Engine\Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\dev\Hollow Engine\Hollow;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>C:\dev\Hollow Engine\Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\dev\Hollow Engine\Hollow;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

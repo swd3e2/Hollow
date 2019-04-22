@@ -7,34 +7,36 @@
 #include "Hollow/ECS/GameObject.h"
 #include "Hollow/ECS/Light.h"
 #include "Hollow/ECS/PointLightComponent.h"
+#include "Hollow/Math/Matrix4.h"
+#include "Hollow/Graphics/MyCamera.h"
 
 using namespace DirectX;
 
 struct WVP
 {
-	XMMATRIX WVP;
+	Matrix4 WVP;
 };
 
 struct WorldViewProjection
 {
-	XMMATRIX World;
-	XMMATRIX View;
-	XMMATRIX Projection;
-	XMFLOAT3 cameraPosition;
+	Matrix4 World;
+	Matrix4 View;
+	Matrix4 Projection;
+	Vector3 cameraPosition;
 };
 
 
 struct LightMatrices
 {
-	XMMATRIX View;
-	XMMATRIX Projection;
-	XMFLOAT3 lightPosition;
+	Matrix4 View;
+	Matrix4 Projection;
+	Vector3 lightPosition;
 	float bias;
 };
 
 struct TransformBuff
 {
-	XMMATRIX transform;
+	Matrix4 transform;
 };
 
 struct LightInfo
@@ -50,7 +52,8 @@ public:
 	PointLight*				pointLight;
 	D3DRenderTarget*		m_SecondRenderTarget;
 	ShadowMap*				shadowMap;
-	Camera*					m_Camera;
+	MyCamera*				m_Camera;
+	MyCamera*				m_Camera2;
 	D3DDepthStencil*		m_ShadowDepthStencil;
 private:
 	D3DRenderer* renderer;
@@ -92,11 +95,11 @@ private:
 public:
 	ForwardRenderPass(D3DRenderer* renderer) : renderer(renderer)
 	{
-		m_RenderTarget = new D3DRenderTarget(renderer->getDevice(), renderer->getDeviceContext(), 1920, 1080, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, renderer->getSwapChain());
-		m_DepthStencil = new D3DDepthStencil(renderer->getDevice(), 1920, 1080, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_RenderTarget = new D3DRenderTarget(renderer->getDevice(), renderer->getDeviceContext(), 2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, renderer->getSwapChain());
+		m_DepthStencil = new D3DDepthStencil(renderer->getDevice(), 2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_ShadowDepthStencil = new D3DDepthStencil(renderer->getDevice(), 1920, 1080, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
-		m_SecondRenderTarget = new D3DRenderTarget(renderer->getDevice(), renderer->getDeviceContext(), 1920, 1080, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		m_ShadowDepthStencil = new D3DDepthStencil(renderer->getDevice(), 2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_SecondRenderTarget = new D3DRenderTarget(renderer->getDevice(), renderer->getDeviceContext(), 2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
 		m_BlendStateTransparancy = new D3DBlendState(renderer->getDevice());
 		m_rasterizerState = new D3DRasterizerState(renderer->getDevice());
@@ -116,8 +119,8 @@ public:
 
 		shadowMap = new ShadowMap(renderer->getDevice(), renderer->getDeviceContext(), 8192, 8192);
 
-		vp.Width = (float)1920;
-		vp.Height = (float)1080;
+		vp.Width = (float)2560;
+		vp.Height = (float)1440;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
@@ -170,7 +173,7 @@ public:
 		//this->m_DeviceContext->GSSetShader(shaderManager->getGeometryShader("gs")->GetShader(), NULL, 0);
 
 		// todo: wtf
-		m_worldViewProjection.cameraPosition = m_Camera->GetPositionFloat3();
+		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
 	}
 
 	virtual void Update(float_t dt)
@@ -201,22 +204,10 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 
-				transformBuff.transform = XMMatrixTranspose(
-					(XMMatrixTranslation(
-						transform->position.x,
-						transform->position.y,
-						transform->position.z) *
-						XMMatrixScaling(
-							transform->scale.x,
-							transform->scale.y,
-							transform->scale.z
-						)) *
-					XMMatrixRotationRollPitchYaw(
-						transform->rotation.x,
-						transform->rotation.y,
-						transform->rotation.z
-					)
-				);
+				transformBuff.transform = 
+					(Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
+						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
+						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)).Transpose();
 
 				m_TransformConstantBuffer->Update(&transformBuff);
 				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
@@ -239,12 +230,12 @@ public:
 			if (it.hasComponent<PointLightComponent>() && it.hasComponent<TransformComponent>()) {
 				PointLightComponent* light = it.getComponent<PointLightComponent>();
 				TransformComponent* transform = it.getComponent<TransformComponent>();
-				transform->rotation = m_Camera->GetRotationFloat3();
+				transform->rotation = m_Camera->GetRotationVec3();
 
-				transformBuff.transform = XMMatrixTranspose(
-					(XMMatrixRotationRollPitchYaw(transform->rotation.x, transform->rotation.y, transform->rotation.z) *
-						XMMatrixScaling(transform->scale.x, transform->scale.y, transform->scale.z)) *
-					XMMatrixTranslation(transform->position.x, transform->position.y, transform->position.z));
+				transformBuff.transform =
+					(Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
+						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
+						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)).Transpose();
 
 				m_TransformConstantBuffer->Update(&transformBuff);
 				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
@@ -264,9 +255,9 @@ public:
 	void DrawShadowMap()
 	{
 		// Update light wvp matrix
-		lightMatrices.Projection = XMMatrixTranspose(shadowMap->camera.GetProjectionMatrix());
-		lightMatrices.View = XMMatrixTranspose(shadowMap->camera.GetViewMatrix());
-		lightMatrices.lightPosition = shadowMap->camera.GetPositionFloat3();
+		lightMatrices.Projection = Matrix4::Transpose(shadowMap->camera.GetProjectionMatrix());
+		lightMatrices.View = Matrix4::Transpose(shadowMap->camera.GetViewMatrix());
+		lightMatrices.lightPosition = shadowMap->camera.GetPositionVec3();
 		lightMatrices.bias = shadowMap->bias;
 		lightMatricesConstantBuffer->Update(&lightMatrices);
 		renderer->SetContantBuffer(5, lightMatricesConstantBuffer);
@@ -290,23 +281,11 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 
-				transformBuff.transform = XMMatrixTranspose(
-					(XMMatrixTranslation(
-						transform->position.x,
-						transform->position.y,
-						transform->position.z) *
-						XMMatrixScaling(
-							transform->scale.x,
-							transform->scale.y,
-							transform->scale.z
-						)) *
-					XMMatrixRotationRollPitchYaw(
-						transform->rotation.x,
-						transform->rotation.y,
-						transform->rotation.z
-					)
-				);
-
+				transformBuff.transform =
+					(Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
+						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
+						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)).Transpose();
+				
 				m_TransformConstantBuffer->Update(&transformBuff);
 				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
@@ -322,19 +301,16 @@ public:
 	}
 
 	// Update world view projection matrix
-	void updateWVP(Camera* camera)
+	void updateWVP(MyCamera* camera)
 	{
-		m_wvp.WVP = XMMatrixTranspose(
-			camera->GetViewMatrix()
-			* camera->GetProjectionMatrix()
-		);
+		m_wvp.WVP = Matrix4::Transpose(camera->GetProjectionMatrix()) * camera->GetViewMatrix();
 
 		m_WVPConstantBuffer->Update(&m_wvp);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
 
-		m_worldViewProjection.World = XMMatrixIdentity();
-		m_worldViewProjection.View = XMMatrixTranspose(camera->GetViewMatrix());
-		m_worldViewProjection.Projection = XMMatrixTranspose(camera->GetProjectionMatrix());
+		m_worldViewProjection.World = Matrix4::Identity();
+		m_worldViewProjection.View = Matrix4::Transpose(camera->GetViewMatrix());
+		m_worldViewProjection.Projection = Matrix4::Transpose(camera->GetProjectionMatrix());
 		m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
 	}
