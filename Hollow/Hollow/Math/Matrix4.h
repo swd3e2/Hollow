@@ -60,20 +60,24 @@ public:
 	static Matrix4 Translation(float x, float y, float z);
 	static Matrix4 Scaling(float x, float y, float z);
 
+	static Matrix4 Rotation(const Vector4& vec);
 	static Matrix4 Rotation(float x, float y, float z);
 
 	static Matrix4 RotationX(float x);
 	static Matrix4 RotationY(float y);
 	static Matrix4 RotationZ(float z);
 
-	Matrix4 operator*(const Matrix4& other);
+	Matrix4 operator*(const Matrix4& other) const;
 
 	static Matrix4 Projection(float fov, float aspect, float n, float f);
-	static Matrix4 LookAt(Vector4& eyePosition, Vector4& eyeDirection, Vector4& upVector);
-	static Matrix4 LookAtDx(Vector4& eyePosition, Vector4& eyeDirection, Vector4& upVector);
+	static Matrix4 LookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector);
+
+	void SetTranslation(const Vector4& vecPos);
+	Vector4 GetTranslation() const;
+
+	Matrix4 InvertedTR() const;
 };
 
 Vector4 operator*(const Vector4& vec, const Matrix4& mat);
-Matrix4 operator*(const Matrix4& vec, const Matrix4& mat);
 
 #endif

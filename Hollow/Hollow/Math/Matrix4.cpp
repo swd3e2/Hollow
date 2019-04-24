@@ -1,22 +1,5 @@
 #include "Matrix4.h"
 
-Vector4 operator*(const Vector4 & vec, const Matrix4 & mat)
-{
-	float x = vec.x * mat.md[0][0] + vec.x * mat.md[1][0] + vec.x * mat.md[2][0] + vec.x * mat.md[3][0];
-	float y = vec.y * mat.md[0][1] + vec.y * mat.md[1][1] + vec.y * mat.md[2][1] + vec.y * mat.md[3][1];
-	float z = vec.z * mat.md[0][2] + vec.z * mat.md[1][2] + vec.z * mat.md[2][2] + vec.z * mat.md[3][2];
-	float w = vec.w * mat.md[0][3] + vec.w * mat.md[1][3] + vec.w * mat.md[2][3] + vec.w * mat.md[3][3];
-
-	return Vector4(x, y, z, w);
-}
-
-Matrix4 operator*(const Matrix4& left, const Matrix4 & right)
-{
-	Matrix4 temp = left;
-	temp = temp * right;
-	return temp;
-}
-
 Matrix4::Matrix4()
 {
 	for (int i = 0; i < 16; i++)
@@ -86,6 +69,15 @@ Matrix4 Matrix4::Scaling(float x, float y, float z)
 	matrix.m[15] = 1.0f;
 
 	return std::move(matrix);
+}
+
+Matrix4 Matrix4::Rotation(const Vector4& vec)
+{
+	Matrix4 M = RotationX(vec.x);
+	Matrix4 M1 = RotationY(vec.y);
+	Matrix4 M2 = RotationZ(vec.z);
+
+	return M * M1* M2;
 }
 
 Matrix4 Matrix4::Rotation(float x, float y, float z)
@@ -211,29 +203,29 @@ Matrix4 Matrix4::Transpose(const Matrix4& matrix)
 	return result;
 }
 
-Matrix4 Matrix4::operator*(const Matrix4 & other)
+Matrix4 Matrix4::operator*(const Matrix4 & other) const
 {
 	Matrix4 matrix;
 
-	matrix.m[0] = m[0] * other.m[0] + m[1] * other.m[4] + m[2] * other.m[8] + m[3] * other.m[12];
-	matrix.m[1] = m[0] * other.m[1] + m[1] * other.m[5] + m[2] * other.m[9] + m[3] * other.m[13];
-	matrix.m[2] = m[0] * other.m[2] + m[1] * other.m[6] + m[2] * other.m[10] + m[3] * other.m[14];
-	matrix.m[3] = m[0] * other.m[3] + m[1] * other.m[7] + m[2] * other.m[11] + m[3] * other.m[15];
+	matrix.md[0][0] = (md[0][0] * other.md[0][0]) + (md[0][1] * other.md[1][0]) + (md[0][2] * other.md[2][0]) + (md[0][3] * other.md[3][0]);
+	matrix.md[0][1] = (md[0][0] * other.md[0][1]) + (md[0][1] * other.md[1][1]) + (md[0][2] * other.md[2][1]) + (md[0][3] * other.md[3][1]);
+	matrix.md[0][2] = (md[0][0] * other.md[0][2]) + (md[0][1] * other.md[1][2]) + (md[0][2] * other.md[2][2]) + (md[0][3] * other.md[3][2]);
+	matrix.md[0][3] = (md[0][0] * other.md[0][3]) + (md[0][1] * other.md[1][3]) + (md[0][2] * other.md[2][3]) + (md[0][3] * other.md[3][3]);
 
-	matrix.m[4] = m[4] * other.m[0] + m[5] * other.m[4] + m[6] * other.m[8] + m[7] * other.m[12];
-	matrix.m[5] = m[4] * other.m[1] + m[5] * other.m[5] + m[6] * other.m[9] + m[7] * other.m[13];
-	matrix.m[6] = m[4] * other.m[2] + m[5] * other.m[6] + m[6] * other.m[10] + m[7] * other.m[14];
-	matrix.m[7] = m[4] * other.m[3] + m[5] * other.m[7] + m[6] * other.m[11] + m[7] * other.m[15];
+	matrix.md[1][0] = (md[1][0] * other.md[0][0]) + (md[1][1] * other.md[1][0]) + (md[1][2] * other.md[2][0]) + (md[1][3] * other.md[3][0]);
+	matrix.md[1][1] = (md[1][0] * other.md[0][1]) + (md[1][1] * other.md[1][1]) + (md[1][2] * other.md[2][1]) + (md[1][3] * other.md[3][1]);
+	matrix.md[1][2] = (md[1][0] * other.md[0][2]) + (md[1][1] * other.md[1][2]) + (md[1][2] * other.md[2][2]) + (md[1][3] * other.md[3][2]);
+	matrix.md[1][3] = (md[1][0] * other.md[0][3]) + (md[1][1] * other.md[1][3]) + (md[1][2] * other.md[2][3]) + (md[1][3] * other.md[3][3]);
 
-	matrix.m[8] = m[8] * other.m[0] + m[9] * other.m[4] + m[10] * other.m[8] + m[11] * other.m[12];
-	matrix.m[9] = m[8] * other.m[1] + m[9] * other.m[5] + m[10] * other.m[9] + m[11] * other.m[13];
-	matrix.m[10] = m[8] * other.m[2] + m[9] * other.m[6] + m[10] * other.m[10] + m[11] * other.m[14];
-	matrix.m[11] = m[8] * other.m[3] + m[9] * other.m[7] + m[10] * other.m[11] + m[11] * other.m[15];
+	matrix.md[2][0] = (md[2][0] * other.md[0][0]) + (md[2][1] * other.md[1][0]) + (md[2][2] * other.md[2][0]) + (md[2][3] * other.md[3][0]);
+	matrix.md[2][1] = (md[2][0] * other.md[0][1]) + (md[2][1] * other.md[1][1]) + (md[2][2] * other.md[2][1]) + (md[2][3] * other.md[3][1]);
+	matrix.md[2][2] = (md[2][0] * other.md[0][2]) + (md[2][1] * other.md[1][2]) + (md[2][2] * other.md[2][2]) + (md[2][3] * other.md[3][2]);
+	matrix.md[2][3] = (md[2][0] * other.md[0][3]) + (md[2][1] * other.md[1][3]) + (md[2][2] * other.md[2][3]) + (md[2][3] * other.md[3][3]);
 
-	matrix.m[12] = m[12] * other.m[0] + m[13] * other.m[4] + m[14] * other.m[8] + m[15] * other.m[12];
-	matrix.m[13] = m[12] * other.m[1] + m[13] * other.m[5] + m[14] * other.m[9] + m[15] * other.m[13];
-	matrix.m[14] = m[12] * other.m[2] + m[13] * other.m[6] + m[14] * other.m[10] + m[15] * other.m[14];
-	matrix.m[15] = m[12] * other.m[3] + m[13] * other.m[7] + m[14] * other.m[11] + m[15] * other.m[15];
+	matrix.md[3][0] = (md[3][0] * other.md[0][0]) + (md[3][1] * other.md[1][0]) + (md[3][2] * other.md[2][0]) + (md[3][3] * other.md[3][0]);
+	matrix.md[3][1] = (md[3][0] * other.md[0][1]) + (md[3][1] * other.md[1][1]) + (md[3][2] * other.md[2][1]) + (md[3][3] * other.md[3][1]);
+	matrix.md[3][2] = (md[3][0] * other.md[0][2]) + (md[3][1] * other.md[1][2]) + (md[3][2] * other.md[2][2]) + (md[3][3] * other.md[3][2]);
+	matrix.md[3][3] = (md[3][0] * other.md[0][3]) + (md[3][1] * other.md[1][3]) + (md[3][2] * other.md[2][3]) + (md[3][3] * other.md[3][3]);
 
 	return matrix;
 }
@@ -241,15 +233,6 @@ Matrix4 Matrix4::operator*(const Matrix4 & other)
 Matrix4 Matrix4::Projection(float fov, float aspect, float n, float f)
 {
 	Matrix4 projection;
-
-	/*float temp = tanf(fov / 2 * Math::PI_F / 180.0f);
-
-	projection.md[0][0] = temp;
-	projection.md[1][1] = temp;
-	projection.md[2][2] = -((f) / (f - n));
-	projection.md[2][3] = -1.0f;
-	projection.md[3][2] = -((f * n) / (f - n));
-	projection.md[3][3] = 0;*/
 
 	float temp = Math::cotan(fov / 2);
 
@@ -263,7 +246,7 @@ Matrix4 Matrix4::Projection(float fov, float aspect, float n, float f)
 	return projection;
 }
 
-Matrix4 Matrix4::LookAt(Vector4 & eyePosition, Vector4 & eyeDirection, Vector4 & upVector)
+Matrix4 Matrix4::LookAt(const Vector4 & eyePosition, const Vector4 & eyeDirection, const Vector4 & upVector)
 {
 	Vector4 forward = Vector4::Normalize(eyePosition - eyeDirection);
 	Vector4 right = Vector4::Cross(upVector, forward);
@@ -272,56 +255,61 @@ Matrix4 Matrix4::LookAt(Vector4 & eyePosition, Vector4 & eyeDirection, Vector4 &
 	Matrix4 camToWorld;
 
 	camToWorld.md[0][0] = right.x;
-	camToWorld.md[0][1] = right.y;
-	camToWorld.md[0][2] = right.z;
-	camToWorld.md[0][3] = 0;
+	camToWorld.md[1][0] = right.y;
+	camToWorld.md[2][0] = right.z;
+	camToWorld.md[3][0] = 0;
 
-	camToWorld.md[1][0] = up.x;
+	camToWorld.md[0][1] = up.x;
 	camToWorld.md[1][1] = up.y;
-	camToWorld.md[1][2] = up.z;
-	camToWorld.md[1][3] = 0;
+	camToWorld.md[2][1] = up.z;
+	camToWorld.md[3][1] = 0;
 
-	camToWorld.md[2][0] = forward.x;
-	camToWorld.md[2][1] = forward.y;
+	camToWorld.md[0][2] = forward.x;
+	camToWorld.md[1][2] = forward.y;
 	camToWorld.md[2][2] = forward.z;
-	camToWorld.md[2][3] = 0;
+	camToWorld.md[3][2] = 0;
 
-	camToWorld.md[3][0] = eyePosition.x;
-	camToWorld.md[3][1] = eyePosition.y;
-	camToWorld.md[3][2] = eyePosition.z;
+	camToWorld.md[0][3] = -eyePosition.x;
+	camToWorld.md[1][3] = -eyePosition.y;
+	camToWorld.md[2][3] = -eyePosition.z;
 	camToWorld.md[3][3] = 1.0f;
 
-	Matrix4 negatePosition = Identity();
-	camToWorld.md[0][3] = -eyePosition.x;
-	camToWorld.md[1][3] = -eyePosition.x;
-	camToWorld.md[2][3] = -eyePosition.x;
-
-	Matrix4 res = camToWorld * negatePosition;
-	res.Transpose();
-
-	return res;
+	return camToWorld;
 }
 
-Matrix4 Matrix4::LookAtDx(Vector4 & eyePosition, Vector4 & eyeDirection, Vector4 & upVector)
+
+void Matrix4::SetTranslation(const Vector4& vecPos)
 {
-	Vector4 forward = Vector4::Normalize(eyePosition - eyeDirection);
-	Vector4 right = Vector4::Cross(upVector, forward);
-	Vector4 up = Vector4::Cross(forward, right);
-	Vector4 negatePosition = Vector4::Negatate(eyePosition);
-	
-	
-	Vector4 D0 = Vector4::Dot(right, negatePosition);
-	Vector4 D1 = Vector4::Dot(up, negatePosition);
-	Vector4 D2 = Vector4::Dot(forward, negatePosition);
+	md[3][0] = vecPos.x;
+	md[3][1] = vecPos.y;
+	md[3][2] = vecPos.z;
+}
 
+Vector4 Matrix4::GetTranslation() const
+{
+	return Vector4(md[3][0], md[3][1], md[3][2], 0.0f);
+}
+
+Matrix4 Matrix4::InvertedTR() const
+{
 	Matrix4 M;
-	Vector4 select(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000);
-	M.v.v1 = Vector4::Select(D0, right, select);
-	M.v.v2 = Vector4::Select(D1, up, select);
-	M.v.v3 = Vector4::Select(D2, forward, select);
-	M.v.v4 = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	M = M.Transpose();
+	// Create the transposed upper 3x3 matrix
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			M.md[i][j] = md[j][i];
+
+	// The new matrix translation = -Rt
+	M.SetTranslation(Vector4::Negatate(GetTranslation() * M));
 
 	return M;
+}
+
+Vector4 operator*(const Vector4& vec, const Matrix4& mat)
+{
+	float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0];
+	float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1];
+	float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2];
+
+	return Vector4(x, y, z, vec.w);
 }

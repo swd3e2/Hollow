@@ -25,9 +25,9 @@ namespace Hollow {
 			if (currentSize + 1 > capacity) {
 				capacity = capacity * 2;
 				PoolAllocator* allocator = new PoolAllocator(capacity, sizeof(T), alignof(T));
-				memset(allocator->firstAddress, 0, this->allocator->size);
-				memcpy(allocator->firstAddress, this->allocator->firstAddress, this->allocator->size);
-				allocator->pointer = (void**)((uintptr_t)allocator->firstAddress + this->allocator->count * this->allocator->objectSize);
+				memset(allocator->getFirstAddress(), 0, this->allocator->size);
+				memcpy(allocator->getFirstAddress(), this->allocator->getFirstAddress(), this->allocator->size);
+				allocator->pointer = (void**)((uintptr_t)allocator->getFirstAddress() + this->allocator->count * this->allocator->objectSize);
 				delete this->allocator;
 				this->allocator = allocator;
 				m_data = this->allocator->getFirstAddress();

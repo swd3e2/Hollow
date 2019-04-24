@@ -205,21 +205,23 @@ public:
 		}
 		ImGui::DragFloat("Bias", &renderPass->shadowMap->bias, 0.001f, 0.0f, 1.0f);
 		ImGui::Image(renderPass->m_ShadowDepthStencil->GetDepthStencilResource(), ImVec2(200, 200));
-		if (ImGui::CollapsingHeader("Camera")) {
-			for (int i = 0; i < 16; i++)
-			{
-				ImGui::Text(std::to_string(mainCamera->GetProjectionMatrix().m[i]).c_str());
-				if (i == 0 || (i + 1) % 4 != 0) {
-					ImGui::SameLine();
-				}
+		ImGui::DragFloat3("Position", (float*)&mainCamera->position, 0.01f);
+		ImGui::DragFloat3("Rotation", (float*)& mainCamera->rotation, 0.01f);
+		ImGui::DragFloat3("Target", (float*)& mainCamera->camTarget, 0.01f);
+
+		for (int i = 0; i < 16; i++)
+		{
+			ImGui::Text(std::to_string(mainCamera->GetProjectionMatrix().m[i]).c_str());
+			if (i == 0 || (i + 1) % 4 != 0) {
+				ImGui::SameLine();
 			}
-			ImGui::Spacing();
-			for (int i = 0; i < 16; i++)
-			{
-				ImGui::Text(std::to_string(mainCamera->GetViewMatrix().m[i]).c_str());
-				if (i == 0 || (i + 1) % 4 != 0) {
-					ImGui::SameLine();
-				}
+		}
+		ImGui::Spacing();
+		for (int i = 0; i < 16; i++)
+		{
+			ImGui::Text(std::to_string(mainCamera->GetViewMatrix().m[i]).c_str());
+			if (i == 0 || (i + 1) % 4 != 0) {
+				ImGui::SameLine();
 			}
 		}
 		ImGui::End();

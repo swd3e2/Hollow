@@ -55,6 +55,7 @@
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
+    <ClInclude Include="Hollow\Math\EAngle.h" />
     <ClInclude Include="Hollow\Math\Matrix4.h" />
     <ClInclude Include="Hollow\Math\Quaternion.h" />
     <ClInclude Include="Hollow\Math\Vec2.h" />
@@ -158,21 +159,21 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{7A539AFC-8BB5-4385-B38B-862BB095EDF6}</ProjectGuid>
     <RootNamespace>HollowEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Hollow</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>

@@ -7,6 +7,8 @@
 #include "Vector3.h"
 #include "Hollow/Platform.h"
 
+class Matrix4;
+
 class HOLLOW_API Vector4
 {
 public:
@@ -19,13 +21,11 @@ public:
 	Vector4(float x, float y, float z, float w);
 	Vector4(const Vector3& other);
 
-	Vector4(Vector4&) = default;
+	Vector4(const Vector4&) = default;
 	Vector4(Vector4&&) = default;
 
 	Vector4& operator=(const Vector4& other);
 	Vector4& operator=(Vector4&& other);
-
-	Vector4(std::initializer_list<float>& l);
 
 	Vector4 operator*(float val);
 	float operator*(const Vector4& other);
@@ -36,13 +36,11 @@ public:
 	Vector4 operator+(const Vector4& other);
 	void operator+=(const Vector4& other);
 
-	Vector4 operator-(const Vector4& other);
+	Vector4 operator-(const Vector4& other) const;
 	void operator-=(const Vector4& other);
 	
 	static Vector4 Normalize(const Vector4& vector);
 	static Vector4 Negatate(const Vector4& vector);
-	static Vector4 Dot(const Vector4& left, const Vector4& rigth);
-	static Vector4 Select(const Vector4& v1, const Vector4& v2, const Vector4& control);
 };
 
 #endif

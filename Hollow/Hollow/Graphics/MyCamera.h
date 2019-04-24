@@ -4,7 +4,7 @@
 #include "Hollow/Math/Vector3.h"
 #include "Hollow/Input/InputManager.h"
 #include <DirectXMAth.h>
-#include "Hollow/Common/Timer.h"
+#include "Hollow/Math/EAngle.h"
 
 class MyCamera
 {
@@ -44,13 +44,20 @@ public:
 	void Update(double dt);
 public:
 	bool mainCamera;
-private:
+public:
 	void UpdateViewMatrix();
 	Vector4 position;
 	Vector4 rotation;
 	Vector4 camTarget;
-	Timer timer;
 	Matrix4 viewMatrix;
 	Matrix4 projectionMatrix;
+	
+	EAngle angView;
 
+	Vector4 forwardVec;
+	Vector4 rightVec;
+	Vector4 backVec;
+	Vector4 leftVec;
+
+	const float cameraMoveSpeed = 0.002f;
 };
