@@ -4,16 +4,16 @@
 #define HW_TRANSFORM_COMPONENT_H
 
 #include "Component.h"
-#include <DirectXMath.h>
+#include "Hollow/Math/Vector3.h"
 
 class TransformComponent : public Component<TransformComponent>
 {
 public:
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT3 scale;
-	DirectX::XMFLOAT3 rotation;
+	Vector3 position;
+	Vector3 scale;
+	Vector3 rotation;
 public:
-	TransformComponent(DirectX::XMFLOAT3 && position, DirectX::XMFLOAT3 && scale, DirectX::XMFLOAT3 && rotation) :
+	TransformComponent(Vector3 && position, Vector3 && scale, Vector3 && rotation) :
 		position(position), scale(scale), rotation(rotation)
 	{}
 
@@ -24,9 +24,17 @@ public:
 
 	TransformComponent()
 	{
-		position = DirectX::XMFLOAT3(0.f, 0.f, 0.f);
-		scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-		rotation = DirectX::XMFLOAT3(0.f, 0.f, 0.f);
+		position.x = 0.0f;
+		position.y = 0.0f;
+		position.z = 0.0f;
+
+		scale.x = 1.0f;
+		scale.y = 1.0f;
+		scale.z = 1.0f;
+
+		rotation.x = 0.0f;
+		rotation.y = 0.0f;
+		rotation.z = 0.0f;
 	}
 
 	void setPosition(float px, float py, float pz)

@@ -4,6 +4,8 @@
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Math/Math.h"
+#include "Hollow/Math/Matrix4.h"
+#include "Hollow/Math/Vector4.h"
 
 using namespace DirectX;
 

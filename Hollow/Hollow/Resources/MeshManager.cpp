@@ -58,7 +58,7 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 			Vertex* thirdVertex = &(*vertices)[j + 2];
 
 			//Get the vector describing one edge of our triangle (edge 0,2)
-			XMVECTOR edge1 = XMVectorSet(
+			Vector4 edge1 (
 				secondVertex->pos.x - firstVertex->pos.x,
 				secondVertex->pos.y - firstVertex->pos.y,
 				secondVertex->pos.z - firstVertex->pos.z,
@@ -66,7 +66,7 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 			);    //Create our first edge
 
 			//Get the vector describing another edge of our triangle (edge 2,1)
-			XMVECTOR edge2 = XMVectorSet(
+			Vector4 edge2(
 				thirdVertex->pos.x - firstVertex->pos.x,
 				thirdVertex->pos.y - firstVertex->pos.y,
 				thirdVertex->pos.z - firstVertex->pos.z,
@@ -85,14 +85,14 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 			XMFLOAT3 tangent = XMFLOAT3(0.0f, 0.0f, 0.0f);
 			float r = 1.0f / (deltaUV1x * deltaUV2y - deltaUV2x * deltaUV1y);
 
-			tangent.x = (deltaUV2y * XMVectorGetX(edge1) - deltaUV1y * XMVectorGetX(edge2)) * r;
-			tangent.y = (deltaUV2y * XMVectorGetY(edge1) - deltaUV1y * XMVectorGetY(edge2)) * r;
-			tangent.z = (deltaUV2y * XMVectorGetZ(edge1) - deltaUV1y * XMVectorGetZ(edge2)) * r;
+			tangent.x = (deltaUV2y * edge1.x - deltaUV1y * edge2.x) * r;
+			tangent.y = (deltaUV2y * edge1.y - deltaUV1y * edge2.y) * r;
+			tangent.z = (deltaUV2y * edge1.z - deltaUV1y * edge2.z) * r;
 
 			XMFLOAT3 bitangent = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			bitangent.x = (deltaUV1x * XMVectorGetX(edge2) - deltaUV2x * XMVectorGetX(edge1)) * r;
-			bitangent.y = (deltaUV1x * XMVectorGetY(edge2) - deltaUV2x * XMVectorGetY(edge1)) * r;
-			bitangent.z = (deltaUV1x * XMVectorGetZ(edge2) - deltaUV2x * XMVectorGetZ(edge1)) * r;
+			bitangent.x = (deltaUV1x * edge2.x - deltaUV2x * edge1.x) * r;
+			bitangent.y = (deltaUV1x * edge2.y - deltaUV2x * edge1.y) * r;
+			bitangent.z = (deltaUV1x * edge2.z - deltaUV2x * edge1.z) * r;
 
 			firstVertex->tangent = tangent;
 			secondVertex->tangent = tangent;

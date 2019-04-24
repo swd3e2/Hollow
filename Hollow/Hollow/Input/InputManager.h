@@ -91,13 +91,13 @@ public:
 
 	static void GetMousePosition(XMMATRIX projectionMatrix, XMMATRIX viewMatrix)
 	{
-		float x, y, xOffset = 0, yOffset = 0;
+		float xOffset = 0, yOffset = 0;
 		int border_thickness;
 
 		if (false)
 		{
-			int centerScreenX = GetSystemMetrics(SM_CXSCREEN) / 2 - 1600 / 2;
-			int centerScreenY = GetSystemMetrics(SM_CYSCREEN) / 2 - 800 / 2;
+			float centerScreenX = GetSystemMetrics(SM_CXSCREEN) / 2 - 1600 / 2;
+			float centerScreenY = GetSystemMetrics(SM_CYSCREEN) / 2 - 800 / 2;
 			border_thickness = GetSystemMetrics(SM_CYCAPTION);
 
 			xOffset = centerScreenX;

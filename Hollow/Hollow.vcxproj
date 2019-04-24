@@ -44,15 +44,23 @@
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h" />
     <ClInclude Include="Hollow\Graphics\DirectionalLight.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBlendState.h" />
+    <ClInclude Include="Hollow\Graphics\DirectX\D3DContext.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DGeometryShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DMaterial.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DRasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
+    <ClInclude Include="Hollow\Graphics\IContext.h" />
     <ClInclude Include="Hollow\Graphics\ForwardRenderPass.h" />
+    <ClInclude Include="Hollow\Graphics\MyCamera.h" />
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
+    <ClInclude Include="Hollow\Math\EAngle.h" />
+    <ClInclude Include="Hollow\Math\Matrix4.h" />
+    <ClInclude Include="Hollow\Math\Quaternion.h" />
     <ClInclude Include="Hollow\Math\Vec2.h" />
+    <ClInclude Include="Hollow\Math\Vector3.h" />
+    <ClInclude Include="Hollow\Math\Vector4.h" />
     <ClInclude Include="Hollow\Memory\AllocatorUtils.h" />
     <ClInclude Include="Hollow\Memory\IAllocator.h" />
     <ClInclude Include="Hollow\Memory\PoolAllocator.h" />
@@ -120,6 +128,12 @@
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DBuffer.cpp" />
+    <ClCompile Include="Hollow\Graphics\MyCamera.cpp" />
+    <ClCompile Include="Hollow\Graphics\OpenGL\OGLContext.h" />
+    <ClCompile Include="Hollow\Math\Matrix3.h" />
+    <ClCompile Include="Hollow\Math\Matrix4.cpp" />
+    <ClCompile Include="Hollow\Math\Vector3.cpp" />
+    <ClCompile Include="Hollow\Math\Vector4.cpp" />
     <ClCompile Include="Hollow\Resources\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_draw.cpp" />
@@ -145,21 +159,21 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{7A539AFC-8BB5-4385-B38B-862BB095EDF6}</ProjectGuid>
     <RootNamespace>HollowEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Hollow</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
@@ -193,12 +207,12 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
@@ -214,12 +228,12 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engin
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;D3DCompiler.lib;dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"

@@ -12,7 +12,7 @@ Camera::Camera(bool mainCamera)
 
 void Camera::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
 {
-	float fovRadians = (fovDegrees / 360.0f) * XM_2PI;
+	float fovRadians = fovDegrees / 360.0f * XM_2PI;
 	this->projectionMatrix = XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
 }
 
@@ -205,7 +205,7 @@ void Camera::UpdateViewMatrix() //Updates view matrix and also updates the movem
 	XMVECTOR upDir = XMVector3TransformCoord(this->DEFAULT_UP_VECTOR, camRotationMatrix);
 	//Rebuild view matrix
 	this->viewMatrix = XMMatrixLookAtLH(this->posVector, camTarget, upDir);
-
+	viewMatrix * camRotationMatrix;
 	XMMATRIX vecRotationMatrix = XMMatrixRotationRollPitchYaw(0.0f, rot.y, 0.0f);
 	vec_forward = XMVector3TransformCoord(this->DEFAULT_FORWARD_VECTOR, vecRotationMatrix);
 	vec_backward = XMVector3TransformCoord(this->DEFAULT_BACKWARD_VECTOR, vecRotationMatrix);

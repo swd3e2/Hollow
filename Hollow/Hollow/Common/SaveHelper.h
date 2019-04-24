@@ -110,7 +110,7 @@ public:
 				(
 					D3DRenderer::instance()->getDevice(),
 					D3DRenderer::instance()->getDeviceContext(), 
-					MeshManager::instance()->CreateMesh(filename)
+					MeshManager::instance()->CreateMesh(filename, true)
 				);
 			delete filename;
 		}
