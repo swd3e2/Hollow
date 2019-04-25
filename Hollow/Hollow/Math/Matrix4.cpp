@@ -248,29 +248,31 @@ Matrix4 Matrix4::Projection(float fov, float aspect, float n, float f)
 Matrix4 Matrix4::LookAt(const Vector4 & eyePosition, const Vector4 & eyeDirection, const Vector4 & upVector)
 {
 	Vector4 forward = Vector4::Normalize(eyeDirection - eyePosition);
-	Vector4 right = Vector4::Cross(upVector, forward);
-	Vector4 up = Vector4::Cross(forward, right);
+	Vector4 right = Vector4::Normalize(Vector4::Cross(upVector, forward));
+	Vector4 up = Vector4::Normalize(Vector4::Cross(forward, right));
 
 	Matrix4 camToWorld;
 
+	Vector4 negativePosition = Vector4::Negate(eyePosition);
+
 	camToWorld.md[0][0] = right.x;
-	camToWorld.md[1][0] = right.y;
-	camToWorld.md[2][0] = right.z;
-	camToWorld.md[3][0] = 0;
+	camToWorld.md[0][1] = right.y;
+	camToWorld.md[0][2] = right.z;
+	camToWorld.md[0][3] = Vector4::Dot(right, negativePosition);
 
-	camToWorld.md[0][1] = up.x;
+	camToWorld.md[1][0] = up.x;
 	camToWorld.md[1][1] = up.y;
-	camToWorld.md[2][1] = up.z;
-	camToWorld.md[3][1] = 0;
+	camToWorld.md[1][2] = up.z;
+	camToWorld.md[1][3] = Vector4::Dot(up, negativePosition);
 
-	camToWorld.md[0][2] = forward.x;
-	camToWorld.md[1][2] = forward.y;
+	camToWorld.md[2][0] = forward.x;
+	camToWorld.md[2][1] = forward.y;
 	camToWorld.md[2][2] = forward.z;
-	camToWorld.md[3][2] = 0;
+	camToWorld.md[2][3] = Vector4::Dot(forward, negativePosition);
 
-	camToWorld.md[0][3] = -Vector4::Dot(right, eyePosition);
-	camToWorld.md[1][3] = -Vector4::Dot(up, eyePosition);
-	camToWorld.md[2][3] = -Vector4::Dot(forward, eyePosition);
+	camToWorld.md[3][0] = 0.0f;
+	camToWorld.md[3][1] = 0.0f;
+	camToWorld.md[3][2] = 0.0f;
 	camToWorld.md[3][3] = 1.0f;
 
 	return camToWorld;

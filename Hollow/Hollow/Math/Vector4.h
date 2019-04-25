@@ -42,7 +42,7 @@ public:
 	void operator-=(const Vector4& other);
 	
 	static Vector4 Normalize(const Vector4& vector);
-	static Vector4 Negative(const Vector4& vector);
+	static Vector4 Negate(const Vector4& vector);
 };
 
 #endif

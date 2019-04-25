@@ -256,7 +256,7 @@ public:
 	{
 		// Update light wvp matrix
 		lightMatrices.Projection = Matrix4::Transpose(shadowMap->camera.GetProjectionMatrix());
-		lightMatrices.View = Matrix4::Transpose(shadowMap->camera.GetViewMatrix());
+		lightMatrices.View = shadowMap->camera.GetViewMatrix();
 		lightMatrices.lightPosition = shadowMap->camera.GetPositionVec3();
 		lightMatrices.bias = shadowMap->bias;
 		lightMatricesConstantBuffer->Update(&lightMatrices);
@@ -303,13 +303,13 @@ public:
 	// Update world view projection matrix
 	void updateWVP(MyCamera* camera)
 	{
-		m_wvp.WVP = Matrix4::Transpose(camera->GetProjectionMatrix()) * camera->GetViewMatrix();
+		m_wvp.WVP = camera->GetViewMatrix() * camera->GetProjectionMatrix() ;
 
 		m_WVPConstantBuffer->Update(&m_wvp);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
 
 		m_worldViewProjection.World = Matrix4::Identity();
-		m_worldViewProjection.View = Matrix4::Transpose(camera->GetViewMatrix());
+		m_worldViewProjection.View = camera->GetViewMatrix();
 		m_worldViewProjection.Projection = Matrix4::Transpose(camera->GetProjectionMatrix());
 		m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);

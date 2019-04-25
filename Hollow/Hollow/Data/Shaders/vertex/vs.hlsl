@@ -53,7 +53,10 @@ PixelShaderOutput VSMain(VertexShaderInput input)
     output.pos = mul(output.pos, transform);
     output.worldPos = output.pos;
 
-    output.pos = mul(output.pos, WVP);
+    output.pos = mul(output.pos, World);
+	output.pos = mul(output.pos, View);
+	output.pos = mul(output.pos, Projection);
+
     output.normal = mul(input.normal, transform);
     output.texCoord = input.texCoord;
 
