@@ -201,9 +201,6 @@
     <ClInclude Include="Hollow\Containers\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\SceneManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\DirectX\D3DGeometryShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -396,9 +393,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Window\IWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Resources\MeshManager.cpp">

@@ -89,7 +89,6 @@
     <ClInclude Include="Hollow\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\MaterialManager.h" />
     <ClInclude Include="Hollow\Resources\Mesh.h" />
-    <ClInclude Include="Hollow\SceneManager.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />
     <ClInclude Include="Hollow\Containers\pair.h" />
@@ -146,7 +145,6 @@
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp" />
-    <ClCompile Include="Hollow\SceneManager.cpp" />
     <ClCompile Include="Hollow\Common\Console.cpp" />
     <ClCompile Include="Hollow\Graphics\Window\Win32\Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
