@@ -29,25 +29,25 @@ void MyCamera::Update(double dt)
 	if (mainCamera) {
 		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_W) == true)
 		{
-			position += forwardVec * dt * cameraMoveSpeed;
+			position -= forwardVec * dt * cameraMoveSpeed;
 			UpdateViewMatrix();
 		}
 
 		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_S) == true)
 		{
-			position += backVec * dt * cameraMoveSpeed;
+			position -= backVec * dt * cameraMoveSpeed;
 			UpdateViewMatrix();
 		}
 
 		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_A) == true)
 		{
-			position += leftVec * dt * cameraMoveSpeed;
+			position -= leftVec * dt * cameraMoveSpeed;
 			UpdateViewMatrix();
 		}
 
 		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_D) == true)
 		{
-			position += rightVec * dt * cameraMoveSpeed;
+			position -= rightVec * dt * cameraMoveSpeed;
 			UpdateViewMatrix();
 		}
 
@@ -56,28 +56,37 @@ void MyCamera::Update(double dt)
 			angView.pitch += InputManager::my * 0.06f * dt;
 			angView.yaw += InputManager::mx * 0.06f * dt;;
 
-			//rotation.x += InputManager::my * 0.06f;
+			rotation.z += InputManager::my * 0.0006f * dt;
 			rotation.y += InputManager::mx * 0.0006f * dt;
 			UpdateViewMatrix();
 		}
+		UpdateViewMatrix();
+
 	}
 }
 
 void MyCamera::UpdateViewMatrix()
 {
-	Vector4 upVec(0.0f, 1.0f, 0.0f, 0.0f);
 	Vector4 fVec(0.0f, 0.0f, 1.0f, 0.0f);
-
 	Matrix4 rotation = Matrix4::Rotation(this->rotation.x, this->rotation.y, 0.0f);
-	camTarget = fVec * rotation;
+	camTarget = Vector4::Normalize(fVec * rotation);
 	camTarget = camTarget + position;
+	viewMatrix = Matrix4::LookAt(position, camTarget, Vector4(0.0f, 1.0f, 0.0f, 0.0f));
 
-	Matrix4 temp = Matrix4::RotationY(this->rotation.y);
-	
-	forwardVec = Vector4 (0.0f, 0.0f, 1.0f, 0.0f);
-	backVec = Vector4(0.0f, 0.0f, -1.0f, 0.0f);
-	rightVec = Vector4(1.0f, 0.0f, 0.0f, 0.0f);
-	leftVec = Vector4(-1.0f, 0.0f, 0.0f, 0.0f);
+	Matrix4 temp = Matrix4::RotationY(-this->rotation.y);
+	forwardVec = Vector4(0.0f, 0.0f, 1.0f, 0.0f) * temp;
+	backVec = Vector4(0.0f, 0.0f, -1.0f, 0.0f) * temp;
+	rightVec = Vector4(1.0f, 0.0f, 0.0f, 0.0f) * temp;
+	leftVec = Vector4(-1.0f, 0.0f, 0.0f, 0.0f) * temp;
+/*
+	Matrix4 temp = Matrix4::RotationY(-this->rotation.y);
+	temp = temp * Matrix4::RotationX(-this->rotation.z) * Matrix4::RotationZ(this->rotation.z);
 
-	viewMatrix = Matrix4::LookAt(position, camTarget, upVec);
+	forwardVec = Vector4(0.0f, 0.0f, 1.0f, 0.0f) * temp;
+	backVec = Vector4(0.0f, 0.0f, -1.0f, 0.0f) * temp;
+	rightVec = Vector4(1.0f, 0.0f, 0.0f, 0.0f) * temp;
+	leftVec = Vector4(-1.0f, 0.0f, 0.0f, 0.0f) * temp;
+
+	viewMatrix = ((Matrix4::Translation(position) * Matrix4::RotationY(this->rotation.y)) 
+		* Matrix4::RotationX(this->rotation.z)).Transpose();*/
 }

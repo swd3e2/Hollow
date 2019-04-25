@@ -60,6 +60,11 @@ Vector4 Vector4::Cross(const Vector4 & left, const Vector4 & right)
 	return Vector4(x, y, z, 1.0f);
 }
 
+float Vector4::Dot(const Vector4& left, const Vector4& right)
+{
+	return left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w;
+}
+
 Vector4 Vector4::operator+(const Vector4 & other)
 {
 	return Vector4(x + other.x, y + other.y, z + other.z, 1.0f);
@@ -90,7 +95,7 @@ Vector4 Vector4::Normalize(const Vector4 & vector)
 	return Vector4(vector.x / length, vector.y / length, vector.z / length, vector.w / length);
 }
 
-Vector4 Vector4::Negatate(const Vector4 & vector)
+Vector4 Vector4::Negative(const Vector4 & vector)
 {
 	return Vector4(-vector.x, -vector.y, -vector.z, -vector.w);
 }

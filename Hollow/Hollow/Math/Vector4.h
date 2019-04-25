@@ -33,6 +33,8 @@ public:
 	Vector4 Cross(const Vector4& other);
 	static Vector4 Cross(const Vector4& left, const Vector4& right);
 
+	static float Dot(const Vector4& left, const Vector4& right);
+
 	Vector4 operator+(const Vector4& other);
 	void operator+=(const Vector4& other);
 
@@ -40,7 +42,7 @@ public:
 	void operator-=(const Vector4& other);
 	
 	static Vector4 Normalize(const Vector4& vector);
-	static Vector4 Negatate(const Vector4& vector);
+	static Vector4 Negative(const Vector4& vector);
 };
 
 #endif

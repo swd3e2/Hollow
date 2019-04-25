@@ -58,7 +58,10 @@ public:
 	static Matrix4 Transpose(const Matrix4& matrix);
 
 	static Matrix4 Translation(float x, float y, float z);
+	static Matrix4 Translation(const Vector4& vec);
+
 	static Matrix4 Scaling(float x, float y, float z);
+	static Matrix4 Scaling(const Vector4& vec);
 
 	static Matrix4 Rotation(const Vector4& vec);
 	static Matrix4 Rotation(float x, float y, float z);
@@ -74,8 +77,6 @@ public:
 
 	void SetTranslation(const Vector4& vecPos);
 	Vector4 GetTranslation() const;
-
-	Matrix4 InvertedTR() const;
 };
 
 Vector4 operator*(const Vector4& vec, const Matrix4& mat);
