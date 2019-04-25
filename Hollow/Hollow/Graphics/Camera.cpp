@@ -59,7 +59,6 @@ void Camera::Update(double dt)
 			UpdateViewMatrix();
 		}
 		UpdateViewMatrix();
-
 	}
 }
 
