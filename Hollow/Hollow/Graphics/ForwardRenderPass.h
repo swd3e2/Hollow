@@ -8,7 +8,7 @@
 #include "Hollow/ECS/Light.h"
 #include "Hollow/ECS/PointLightComponent.h"
 #include "Hollow/Math/Matrix4.h"
-#include "Hollow/Graphics/MyCamera.h"
+#include "Hollow/Graphics/Camera.h"
 
 using namespace DirectX;
 
@@ -52,8 +52,7 @@ public:
 	PointLight*				pointLight;
 	D3DRenderTarget*		m_SecondRenderTarget;
 	ShadowMap*				shadowMap;
-	MyCamera*				m_Camera;
-	MyCamera*				m_Camera2;
+	Camera*					m_Camera;
 	D3DDepthStencil*		m_ShadowDepthStencil;
 private:
 	D3DRenderer* renderer;
@@ -255,7 +254,7 @@ public:
 	void DrawShadowMap()
 	{
 		// Update light wvp matrix
-		lightMatrices.Projection = Matrix4::Transpose(shadowMap->camera.GetProjectionMatrix());
+		lightMatrices.Projection = shadowMap->camera.GetProjectionMatrix();
 		lightMatrices.View = shadowMap->camera.GetViewMatrix();
 		lightMatrices.lightPosition = shadowMap->camera.GetPositionVec3();
 		lightMatrices.bias = shadowMap->bias;
@@ -301,16 +300,16 @@ public:
 	}
 
 	// Update world view projection matrix
-	void updateWVP(MyCamera* camera)
+	void updateWVP(Camera* camera)
 	{
-		m_wvp.WVP = camera->GetViewMatrix() * camera->GetProjectionMatrix() ;
+		m_wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
 
 		m_WVPConstantBuffer->Update(&m_wvp);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
 
 		m_worldViewProjection.World = Matrix4::Identity();
 		m_worldViewProjection.View = camera->GetViewMatrix();
-		m_worldViewProjection.Projection = Matrix4::Transpose(camera->GetProjectionMatrix());
+		m_worldViewProjection.Projection = camera->GetProjectionMatrix();
 		m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
 	}

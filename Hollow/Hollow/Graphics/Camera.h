@@ -1,66 +1,60 @@
 #pragma once
-#include <iostream>
-#include "DirectXMath.h"
-#include "Hollow/Input/InputManager.h"
-#include "Hollow/Platform.h"
-#include "Hollow/Math/Math.h"
 #include "Hollow/Math/Matrix4.h"
 #include "Hollow/Math/Vector4.h"
+#include "Hollow/Math/Vector3.h"
+#include "Hollow/Input/InputManager.h"
+#include <DirectXMAth.h>
+#include "Hollow/Math/EAngle.h"
 
-using namespace DirectX;
-
-class HOLLOW_API Camera
+class Camera
 {
 public:
 	Camera(bool mainCamera);
+
 	void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ);
-	void SetProjectionValues();
 
-	const XMMATRIX & GetViewMatrix() const;
-	const XMMATRIX & GetProjectionMatrix() const;
+	const Matrix4& GetViewMatrix() const;
+	const Matrix4& GetProjectionMatrix() const;
 
-	XMMATRIX GetViewMatrixCopy();
-	XMMATRIX GetProjectionMatrixCopy();
+	const Vector4& GetPosition() const { return position; }
+	const Vector4& GetRotation() const { return rotation; }
 
-	const XMVECTOR & GetPositionVector() const;
-	const XMFLOAT3 & GetPositionFloat3() const;
-	const XMVECTOR & GetRotationVector() const;
-	const XMFLOAT3 & GetRotationFloat3() const;
+	Vector3 GetPositionVec3() const
+	{ 
+		Vector3 temp;
 
-	void SetPosition(const XMVECTOR & pos);
-	void SetPosition(float x, float y, float z);
-	void AdjustPosition(const XMVECTOR & pos);
-	void AdjustPosition(float x, float y, float z);
-	void SetRotation(const XMVECTOR & pos);
-	void SetRotation(float x, float y, float z);
-	void AdjustRotation(const XMVECTOR & pos);
-	void AdjustRotation(float x, float y, float z);
-	void SetLookAtPos(XMFLOAT3 lookAtPos);
+		temp.x = position.x;
+		temp.y = position.y;
+		temp.z = position.z;
+
+		return temp;
+	}
+
+	Vector3 GetRotationVec3() const
+	{ 
+		Vector3 temp;
+
+		temp.x = position.x;
+		temp.y = position.y;
+		temp.z = position.z;
+		
+		return temp;
+	}
 
 	void Update(double dt);
-	XMVECTOR & getLookAtVector();
 public:
-	float cameraRotationSpeed = 0.008f;
-	float cameraMoveSpeed = 0.002f;
 	bool mainCamera;
-private:
+public:
 	void UpdateViewMatrix();
-	XMVECTOR posVector;
-	XMVECTOR rotVector;
-	XMFLOAT3 pos;
-	XMFLOAT3 rot;
-	XMMATRIX viewMatrix;
-	XMMATRIX projectionMatrix;
+	Vector4 position;
+	Vector4 rotation;
+	Vector4 camTarget;
 
-	const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	const XMVECTOR DEFAULT_UP_VECTOR = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	const XMVECTOR DEFAULT_BACKWARD_VECTOR = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
-	const XMVECTOR DEFAULT_LEFT_VECTOR = XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
-	const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	Vector4 forwardVec;
+	Vector4 rightVec;
 
-	XMVECTOR camTarget;
-	XMVECTOR vec_forward;
-	XMVECTOR vec_left;
-	XMVECTOR vec_right;
-	XMVECTOR vec_backward;
+	Matrix4 viewMatrix;
+	Matrix4 projectionMatrix;
+
+	const float cameraMoveSpeed = 0.002f;
 };

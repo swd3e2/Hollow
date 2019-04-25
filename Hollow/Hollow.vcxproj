@@ -51,7 +51,7 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DSamplerState.h" />
     <ClInclude Include="Hollow\Graphics\IContext.h" />
     <ClInclude Include="Hollow\Graphics\ForwardRenderPass.h" />
-    <ClInclude Include="Hollow\Graphics\MyCamera.h" />
+    <ClInclude Include="Hollow\Graphics\Camera.h" />
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
@@ -108,7 +108,6 @@
     <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\Camera.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DIShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DPixelShader.h" />
     <ClInclude Include="Hollow\Graphics\DirectX\D3DVertexShader.h" />
@@ -128,7 +127,7 @@
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderer.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\DirectX\D3DBuffer.cpp" />
-    <ClCompile Include="Hollow\Graphics\MyCamera.cpp" />
+    <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Graphics\OpenGL\OGLContext.h" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
@@ -149,7 +148,6 @@
     <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp" />
     <ClCompile Include="Hollow\SceneManager.cpp" />
     <ClCompile Include="Hollow\Common\Console.cpp" />
-    <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Graphics\Window\Win32\Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />

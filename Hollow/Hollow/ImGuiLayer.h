@@ -58,16 +58,15 @@ public:
 
 	bool* p_open;
 
-	std::vector<IRenderable*>* list;
 	const char* current_item = NULL;
 	Win32Window* window;
-	MyCamera* mainCamera;
+	Camera* mainCamera;
 	ShadowMap* shadowMap;
 	ForwardRenderPass* renderPass;
 
 public:
-	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, std::vector<IRenderable*>* list, MyCamera* mainCamera) :
-		renderer(renderer), renderPass(renderPass), list(list), mainCamera(mainCamera), shadowMap(shadowMap)
+	ImGuiLayer(D3DRenderer* renderer, ForwardRenderPass* renderPass, Camera* mainCamera) :
+		renderer(renderer), renderPass(renderPass), mainCamera(mainCamera), shadowMap(shadowMap)
 	{
 		bool result = true;
 		IMGUI_CHECKVERSION();
@@ -208,35 +207,7 @@ public:
 		ImGui::DragFloat3("Position", (float*)&mainCamera->position, 0.01f);
 		ImGui::DragFloat3("Rotation", (float*)& mainCamera->rotation, 0.01f);
 		ImGui::DragFloat3("Target", (float*)& mainCamera->camTarget, 0.01f);
-		ImGui::Spacing();
-		ImGui::Text("My look at");
 
-		Matrix4 transposeView = mainCamera->GetViewMatrix();
-		for (int i = 0; i < 16; i++)
-		{
-			ImGui::Text(std::to_string(transposeView.m[i]).c_str());
-			if (i == 0 || (i + 1) % 4 != 0) {
-				ImGui::SameLine();
-			}
-		}
-		XMVECTOR EyePosition{ mainCamera->position.x, mainCamera->position.y, mainCamera->position.z, mainCamera->position.w };
-		XMVECTOR FocusPosition{ mainCamera->camTarget.x, mainCamera->camTarget.y, mainCamera->camTarget.z, mainCamera->camTarget.w };
-		XMVECTOR EyeDirection = XMVectorSubtract(FocusPosition, EyePosition);
-
-		XMMATRIX m = XMMatrixLookAtLH(
-			EyePosition,
-			FocusPosition,
-			{ 0.0f, 1.0f, 0.0f, 0.0f }
-		);
-		ImGui::Spacing();
-		ImGui::Text("Directx look at");
-		for (int i = 0; i < 16; i++)
-		{
-			ImGui::Text(std::to_string(*((float*)& m + i)).c_str());
-			if (i == 0 || (i + 1) % 4 != 0) {
-				ImGui::SameLine();
-			}
-		}
 		ImGui::End();
 
 		ImGui::Begin("Lights");
@@ -329,7 +300,7 @@ public:
 		if (ImGui::CollapsingHeader("Textures")) {
 			for (auto& it : *TextureManager::instance()->getTexuresList())
 			{
-				ImGui::Image(it.second->m_TextureShaderResource, ImVec2(100, 100));
+				ImGui::Image(it.second->m_TextureShaderResource, ImVec2(200, 200));
 				ImGui::Text(it.first.c_str());
 			}
 		}

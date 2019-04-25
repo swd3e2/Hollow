@@ -53,16 +53,13 @@ PixelShaderOutput VSMain(VertexShaderInput input)
     output.pos = mul(output.pos, transform);
     output.worldPos = output.pos;
 
-    output.pos = mul(output.pos, World);
-	output.pos = mul(output.pos, View);
-	output.pos = mul(output.pos, Projection);
+    output.pos = mul(output.pos, WVP);
 
     output.normal = mul(input.normal, transform);
     output.texCoord = input.texCoord;
 
     output.lightViewPosition = float4(input.pos, 1.0f);
     output.lightViewPosition = mul(output.lightViewPosition, transform);
-    output.lightViewPosition = mul(output.lightViewPosition, World);
     output.lightViewPosition = mul(output.lightViewPosition, lightViewMatrix);
     output.lightViewPosition = mul(output.lightViewPosition, lightProjectionMatrix);
 

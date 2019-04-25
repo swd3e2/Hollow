@@ -66,9 +66,6 @@
     <ClInclude Include="Hollow\Graphics\DirectX\D3DConstantBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -336,10 +333,10 @@
     <ClInclude Include="Hollow\Math\Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\MyCamera.h">
+    <ClInclude Include="Hollow\Math\EAngle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Math\EAngle.h">
+    <ClInclude Include="Hollow\Graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -366,9 +363,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\DirectX\D3DRenderTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Application.cpp">
@@ -428,9 +422,6 @@
     <ClCompile Include="Hollow\Graphics\OpenGL\OGLContext.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\MyCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Math\Vector4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -438,6 +429,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Math\Vector3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

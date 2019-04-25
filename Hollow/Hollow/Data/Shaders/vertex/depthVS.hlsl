@@ -26,7 +26,6 @@ cbuffer ConstantBuffer : register(b5)
 struct VertexShaderOutput
 {
     float4 pos : SV_POSITION;
-    float4 depthPosition : DEPTH_POSITION;
 };
 
 struct VertexShaderInput
@@ -42,7 +41,6 @@ VertexShaderOutput VSMain(VertexShaderInput input)
     output.pos = mul(output.pos, transform);
     output.pos = mul(output.pos, lightViewMatrix);
     output.pos = mul(output.pos, lightProjectionMatrix);
-    output.depthPosition = output.pos;
 
     return output;
 }

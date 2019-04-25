@@ -238,8 +238,8 @@ Matrix4 Matrix4::Projection(float fov, float aspect, float n, float f)
 	projection.md[0][0] = temp / aspect;
 	projection.md[1][1] = temp;
 	projection.md[2][2] = (f + n) / (f - n);
-	projection.md[2][3] = 1.0f;
-	projection.md[3][2] = -((f * n) / (f - n));
+	projection.md[3][2] = 1.0f;
+	projection.md[2][3] = -((f * n) / (f - n));
 	projection.md[3][3] = 0;
 
 	return projection;

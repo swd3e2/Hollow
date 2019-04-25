@@ -1,7 +1,6 @@
 struct PixelShaderInput
 {
     float4 pos : SV_POSITION;
-    float4 depthPosition : DEPTH_POSITION;
 };
 
 float4 PSMain(PixelShaderInput input) : SV_TARGET
