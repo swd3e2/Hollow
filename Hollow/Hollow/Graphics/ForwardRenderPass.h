@@ -1,5 +1,5 @@
 #pragma once
-#include "DirectX/D3DRenderer.h"
+#include "Renderer/DirectX/D3D11RenderApi.h"
 #include "Hollow/ECS/RenderableComponent.h"
 #include "Hollow/ECS/TransformComponent.h"
 #include "Hollow/ECS/System.h"
@@ -50,35 +50,34 @@ class ForwardRenderPass : public Hollow::System<ForwardRenderPass>
 public:
 	LightInfo				pointLights;
 	PointLight*				pointLight;
-	D3DRenderTarget*		m_SecondRenderTarget;
+	D3D11RenderTarget*		m_SecondRenderTarget;
 	ShadowMap*				shadowMap;
 	Camera*					m_Camera;
-	D3DDepthStencil*		m_ShadowDepthStencil;
+	D3D11DepthStencil*		m_ShadowDepthStencil;
 private:
-	D3DRenderer* renderer;
+	D3D11RenderApi* renderer;
 private:
 	WVP						m_wvp;
 	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
-	D3DRasterizerState*		m_rasterizerState;
+	D3D11RasterizerState*		m_rasterizerState;
 	// light sources
-	DirectionalLight*		directionaltLight;
 	LightMatrices			lightMatrices;
 
-	D3DBlendState*			m_BlendStateTransparancy;
-	D3DSamplerState*		m_SamplerStateWrap;
-	D3DSamplerState*		m_SamplerStateClamp;
-	D3DRenderTarget*		m_RenderTarget;
-	D3DDepthStencil*		m_DepthStencil;
+	D3D11BlendState*			m_BlendStateTransparancy;
+	D3D11SamplerState*		m_SamplerStateWrap;
+	D3D11SamplerState*		m_SamplerStateClamp;
+	D3D11RenderTarget*		m_RenderTarget;
+	D3D11DepthStencil*		m_DepthStencil;
 
 	// constant buffers
-	D3DConstantBuffer*		m_LightBuffer;
-	D3DConstantBuffer*		m_WVPConstantBuffer;
-	D3DConstantBuffer*		m_WorldViewProjectionBuffer;
-	D3DConstantBuffer*		m_TransformConstantBuffer;
-	D3DConstantBuffer*		materialConstantBuffer;
-	D3DConstantBuffer*		lightMatricesConstantBuffer;
-	D3DConstantBuffer*		lightInfoBuffer;
+	D3D11ConstantBuffer*		m_LightBuffer;
+	D3D11ConstantBuffer*		m_WVPConstantBuffer;
+	D3D11ConstantBuffer*		m_WorldViewProjectionBuffer;
+	D3D11ConstantBuffer*		m_TransformConstantBuffer;
+	D3D11ConstantBuffer*		materialConstantBuffer;
+	D3D11ConstantBuffer*		lightMatricesConstantBuffer;
+	D3D11ConstantBuffer*		lightInfoBuffer;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -92,29 +91,29 @@ private:
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 public:
-	ForwardRenderPass(D3DRenderer* renderer) : renderer(renderer)
+	ForwardRenderPass(D3D11RenderApi* renderer) : renderer(renderer)
 	{
-		m_RenderTarget = new D3DRenderTarget(2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, renderer->getSwapChain());
-		m_DepthStencil = new D3DDepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_RenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, renderer->getSwapChain());
+		m_DepthStencil = new D3D11DepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_ShadowDepthStencil = new D3DDepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
-		m_SecondRenderTarget = new D3DRenderTarget(2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		m_ShadowDepthStencil = new D3D11DepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_SecondRenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
-		m_BlendStateTransparancy = new D3DBlendState();
-		m_rasterizerState = new D3DRasterizerState();
+		m_BlendStateTransparancy = new D3D11BlendState();
+		m_rasterizerState = new D3D11RasterizerState();
 
-		m_SamplerStateWrap = new D3DSamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
-		m_SamplerStateClamp = new D3DSamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
+		m_SamplerStateWrap = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
+		m_SamplerStateClamp = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
 
-		m_ShadowDepthStencil = new D3DDepthStencil(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_ShadowDepthStencil = new D3D11DepthStencil(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_WVPConstantBuffer = new D3DConstantBuffer(sizeof(WVP));
-		m_TransformConstantBuffer = new D3DConstantBuffer(sizeof(TransformBuff));
-		m_LightBuffer = new D3DConstantBuffer(sizeof(PointLightStruct));
-		lightMatricesConstantBuffer = new D3DConstantBuffer(sizeof(LightMatrices));
-		m_WorldViewProjectionBuffer = new D3DConstantBuffer(sizeof(WorldViewProjection));
-		materialConstantBuffer = new D3DConstantBuffer(sizeof(MaterialData));
-		lightInfoBuffer = new D3DConstantBuffer(sizeof(LightInfo));
+		m_WVPConstantBuffer = new D3D11ConstantBuffer(sizeof(WVP));
+		m_TransformConstantBuffer = new D3D11ConstantBuffer(sizeof(TransformBuff));
+		m_LightBuffer = new D3D11ConstantBuffer(sizeof(PointLightStruct));
+		lightMatricesConstantBuffer = new D3D11ConstantBuffer(sizeof(LightMatrices));
+		m_WorldViewProjectionBuffer = new D3D11ConstantBuffer(sizeof(WorldViewProjection));
+		materialConstantBuffer = new D3D11ConstantBuffer(sizeof(MaterialData));
+		lightInfoBuffer = new D3D11ConstantBuffer(sizeof(LightInfo));
 
 		shadowMap = new ShadowMap(renderer->getContext(), 8192, 8192);
 

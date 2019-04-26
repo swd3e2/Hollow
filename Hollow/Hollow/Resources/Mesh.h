@@ -5,7 +5,7 @@
 
 #include "Hollow/Graphics/Vertex.h"
 #include "Hollow/Containers/vector.h"
-#include "Hollow/Graphics/IMaterial.h"
+#include "Hollow/Graphics/Renderer/Base/IMaterial.h"
 #include "Hollow/Platform.h"
 
 struct MeshModel {

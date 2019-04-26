@@ -8,16 +8,17 @@
 #include "Common/Console.h"
 #include "ECS/SystemManager.h"
 #include <thread>
-#include "Hollow/ImGuiLayer.h"
+//#include "Hollow/ImGuiLayer.h"
 #include "LayerStack.h"
 #include "Graphics/Camera.h"
 #include "Resources/TextureManager.h"
-#include "Resources/ShaderManager.h"
 #include "Resources/MeshManager.h"
 #include "Graphics/ForwardRenderPass.h"
 #include "Common/SaveHelper.h"
 #include "Graphics/Camera.h"
-#include "Graphics/OpenGL/OGLRenderer.h"
+#include "Graphics/Renderer/OpenGL/OGLRenderer.h"
+#include "Graphics/Renderer/DirectX/D3D11RenderApi.h"
+#include "Graphics/Window/Win32/Win32Window.h"
 
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
@@ -32,13 +33,9 @@ protected:
 	Hollow::SystemManager           systemManager;
 	Timer							m_Timer;
 	EventSystem						eventSystem;
-	IRenderer*						m_Renderer;
 	LayerStack						m_LayerStack;
-
 	Camera*							camera;
-	
 	TextureManager					textureManager;
-	ShaderManager					shaderManager;
 	MeshManager						meshManager;
 	InputManager					inputManager;
 	ForwardRenderPass*				renderPass;
@@ -68,27 +65,25 @@ public:
 		systemManager.startUp();
 		meshManager.startUp();
 		
-		//m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
-		m_Renderer = new OGLRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
+		//m_Renderer = new OGLRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
 
 		/*textureManager.startUp(m_Renderer->getContext(), m_Renderer->getDeviceContext());
 		shaderManager.startUp(m_Renderer->getDevice());*/
 		saveHelper.startUp();
 
-		renderPass = new ForwardRenderPass((D3DRenderer*)(m_Renderer));
+		renderPass = new ForwardRenderPass(new D3D11RenderApi(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND()));
 		renderPass->m_Camera = camera;
 
 		systemManager.AddSystem(renderPass);
-		ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, camera);
+		/*ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, camera);
 		layer->window = &*window;
-		m_LayerStack.AddLayer(layer);
+		m_LayerStack.AddLayer(layer);*/
 	}
 
 	~Application()
 	{
 		saveHelper.shutdown();
 		meshManager.shutdown();
-		shaderManager.shutdown();
 		textureManager.shutdown();
 		systemManager.shutdown();
 		entityManager.shutdown();
