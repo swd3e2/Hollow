@@ -10,7 +10,6 @@
 #include "Mesh.h"
 
 using namespace Hollow;
-using namespace DirectX;
 
 class HOLLOW_API MeshManager : public CModule<MeshManager>
 {

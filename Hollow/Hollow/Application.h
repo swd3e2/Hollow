@@ -17,6 +17,7 @@
 #include "Graphics/ForwardRenderPass.h"
 #include "Common/SaveHelper.h"
 #include "Graphics/Camera.h"
+#include "Graphics/OpenGL/OGLRenderer.h"
 
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
@@ -31,7 +32,7 @@ protected:
 	Hollow::SystemManager           systemManager;
 	Timer							m_Timer;
 	EventSystem						eventSystem;
-	D3DRenderer*					m_Renderer;
+	IRenderer*						m_Renderer;
 	LayerStack						m_LayerStack;
 
 	Camera*							camera;
@@ -54,8 +55,8 @@ public:
 
 		window = std::make_shared<Win32Window>(GetModuleHandle(NULL), SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		Hollow::Console::RedirectIOToConsole();
-		Hollow::Log::Init();
+		/*Hollow::Console::RedirectIOToConsole();
+		Hollow::Log::Init();*/
 
 		camera = new Camera(true);
 		camera->SetProjectionValues(100.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
@@ -67,13 +68,14 @@ public:
 		systemManager.startUp();
 		meshManager.startUp();
 		
-		m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
-		
-		textureManager.startUp(m_Renderer->getDevice(), m_Renderer->getDeviceContext());
-		shaderManager.startUp(m_Renderer->getDevice());
+		//m_Renderer = new D3DRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
+		m_Renderer = new OGLRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
+
+		/*textureManager.startUp(m_Renderer->getContext(), m_Renderer->getDeviceContext());
+		shaderManager.startUp(m_Renderer->getDevice());*/
 		saveHelper.startUp();
 
-		renderPass = new ForwardRenderPass(m_Renderer);
+		renderPass = new ForwardRenderPass((D3DRenderer*)(m_Renderer));
 		renderPass->m_Camera = camera;
 
 		systemManager.AddSystem(renderPass);

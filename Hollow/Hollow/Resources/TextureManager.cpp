@@ -21,7 +21,7 @@ D3DTexture * TextureManager::CreateTexture(std::string filename, bool loadFromDe
 
 	D3DTexture* tex = new D3DTexture();
 
-	tex->CreateTexture(device, deviceContext, filename, data->width, data->height, data->data, data->pitch);
+	tex->CreateTexture(context, filename, data->width, data->height, data->data, data->pitch);
 	textureList[filename] = tex;
 
 	delete data;

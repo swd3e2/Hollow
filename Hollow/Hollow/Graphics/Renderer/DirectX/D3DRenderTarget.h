@@ -2,8 +2,10 @@
 #include <d3d11.h>
 #include "Hollow/Platform.h"
 #include "Hollow/Common/Log.h"
+#include "D3DContext.h"
+#include "D3DRenderer.h"
 
-enum RenderTargetType
+enum HOLLOW_API RenderTargetType
 {
 	MAIN,
 	SECONDARY
@@ -12,8 +14,7 @@ enum RenderTargetType
 class HOLLOW_API D3DRenderTarget
 {
 public:
-	D3DRenderTarget(ID3D11Device* device, 
-		ID3D11DeviceContext* deviceContext, 
+	D3DRenderTarget(
 		int width, 
 		int height, 
 		RenderTargetType type, 

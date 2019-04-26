@@ -2,11 +2,13 @@
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
+#include "D3DContext.h"
+#include "D3DRenderApi.h"
 
 class HOLLOW_API D3DDepthStencil
 {
 public:
-	D3DDepthStencil(ID3D11Device * device, int width, int height, DXGI_FORMAT format, int samplecount);
+	D3DDepthStencil(int width, int height, DXGI_FORMAT format, int samplecount);
 	~D3DDepthStencil();
 	inline ID3D11DepthStencilView * GetDepthStencilView() { return m_DepthStencilView; }
 	inline ID3D11DepthStencilView ** GetAddressOfDepthStencilView() { return &m_DepthStencilView; }

@@ -1,8 +1,10 @@
 #include "D3DDepthStencil.h"
 
-D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, DXGI_FORMAT format, int samplecount)
+D3DDepthStencil::D3DDepthStencil(int width, int height, DXGI_FORMAT format, int samplecount)
 {
 	HRESULT hr = S_OK;
+
+	D3DContext context = D3DRenderer::instance()->getContext();
 
 	DXGI_FORMAT resformat = GetDepthResourceFormat(format);
 	DXGI_FORMAT srvformat = GetDepthSRVFormat(format);
@@ -20,7 +22,7 @@ D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, D
 	desc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 	desc.Width = width;
 
-	hr = device->CreateTexture2D(&desc, NULL, &m_DepthStencilBuffer);
+	hr = context.device->CreateTexture2D(&desc, NULL, &m_DepthStencilBuffer);
 	if (hr != S_OK) {
 		HW_ERROR("DepthStencil: Cant create Texture2D!");
 	}
@@ -31,7 +33,7 @@ D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, D
 	ddesc.ViewDimension = samplecount > 1 ? D3D11_DSV_DIMENSION_TEXTURE2DMS : D3D11_DSV_DIMENSION_TEXTURE2D;
 	ddesc.Texture2D.MipSlice = 0;
 
-	hr = device->CreateDepthStencilView(m_DepthStencilBuffer, &ddesc, &m_DepthStencilView);
+	hr = context.device->CreateDepthStencilView(m_DepthStencilBuffer, &ddesc, &m_DepthStencilView);
 	if (hr != S_OK) {
 		HW_ERROR("DepthStencil: Cant create DepthStencilView!");
 	}
@@ -43,7 +45,7 @@ D3DDepthStencil::D3DDepthStencil(ID3D11Device * device, int width, int height, D
 	srvd.Texture2D.MipLevels = 1;
 	srvd.Texture2D.MostDetailedMip = 0;
 
-	hr = device->CreateShaderResourceView(m_DepthStencilBuffer, &srvd, &mDepthResourceView);
+	hr = context.device->CreateShaderResourceView(m_DepthStencilBuffer, &srvd, &mDepthResourceView);
 	if (hr != S_OK) {
 		HW_ERROR("DepthStencil: Cant create ShaderResourceView!");
 	}

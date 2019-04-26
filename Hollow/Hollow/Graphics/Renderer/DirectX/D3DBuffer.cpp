@@ -1,6 +1,6 @@
 #include "D3DBuffer.h"
 
-D3DBuffer::D3DBuffer(ID3D11Device* device, void * data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag)
+D3DBuffer::D3DBuffer(void * data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag)
 {
 	HRESULT hr = S_OK;
 
@@ -19,7 +19,7 @@ D3DBuffer::D3DBuffer(ID3D11Device* device, void * data, UINT stride, UINT numVer
 	bufferData.SysMemPitch = 0;
 	bufferData.SysMemSlicePitch = 0;
 
-	hr = device->CreateBuffer(&bufferDesc, &bufferData, &buffer);
+	hr = D3DRenderer::instance()->getContext().device->CreateBuffer(&bufferDesc, &bufferData, &buffer);
 
 	if (hr != S_OK)
 	{

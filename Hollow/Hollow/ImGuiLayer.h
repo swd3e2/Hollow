@@ -77,7 +77,7 @@ public:
 
 		result = ImGui_ImplWin32_Init(*((Win32Window*)Win32Window::instance())->getHWND());
 		if (!result) HW_ERROR("Can't init imgui_win32");
-		result = ImGui_ImplDX11_Init(renderer->getDevice(), renderer->getDeviceContext());
+		result = ImGui_ImplDX11_Init(renderer->getContext().device, renderer->getContext().deviceContext);
 		if (!result) HW_ERROR("Can't init imgui_dx11");
 		ImGui::StyleColorsDark();
 		p_open = new bool;

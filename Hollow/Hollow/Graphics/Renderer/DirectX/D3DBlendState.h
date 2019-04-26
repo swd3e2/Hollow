@@ -2,15 +2,18 @@
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
+#include "D3DRenderer.h"
 
 class D3DBlendState
 {
 private:
 	ID3D11BlendState* m_BlendState;
 public:
-	D3DBlendState(ID3D11Device* device)
+	D3DBlendState()
 	{
 		HRESULT hr = S_OK;
+
+		D3DContext context = D3DRenderer::instance()->getContext();
 
 		D3D11_RENDER_TARGET_BLEND_DESC blendingTragetDesc = { 0 };
 
@@ -28,7 +31,7 @@ public:
 		blendDesc.AlphaToCoverageEnable = false;
 		blendDesc.RenderTarget[0] = blendingTragetDesc;
 
-		hr = device->CreateBlendState(&blendDesc, &m_BlendState);
+		hr = context.device->CreateBlendState(&blendDesc, &m_BlendState);
 
 		if (hr != S_OK) {
 			HW_ERROR("RenderSystem: Cant create blend state!");

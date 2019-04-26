@@ -16,7 +16,7 @@ private:
 public:
 	void onStartUp()
 	{
-		Light* light = entityManager.createEntity<Light>();
+		/*Light* light = entityManager.createEntity<Light>();
 		light->addComponent<PointLightComponent>(m_Renderer->getDevice());
 		light->addComponent<TransformComponent, Vector3&&, Vector3 &&, Vector3 &&>
 			({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
@@ -27,6 +27,6 @@ public:
 			({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 
 		light2->getComponent<PointLightComponent>()->light.data.color[2] = 1.0f;
-		light2->getComponent<PointLightComponent>()->light.data.range = 5.f;
+		light2->getComponent<PointLightComponent>()->light.data.range = 5.f;*/
 	}
 };

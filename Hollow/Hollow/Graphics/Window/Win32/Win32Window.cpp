@@ -14,7 +14,7 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 	windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	windowClass.hbrBackground = nullptr;
 	windowClass.lpszMenuName = nullptr;
-	windowClass.lpszClassName = "DirectXAppClassName";
+	windowClass.lpszClassName = "HollowAppClass";
 	RegisterClassEx(&windowClass);
 
 	// Center positions
@@ -29,7 +29,7 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 	windowRect.bottom = height + windowRect.top;
 	AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	hWnd = CreateWindow("DirectXAppClassName", "Hollow", WS_POPUP,
+	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUP,
 		windowRect.left, windowRect.top,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 		nullptr, nullptr, hInst, this);

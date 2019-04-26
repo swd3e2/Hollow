@@ -3,7 +3,8 @@
 #include <string>
 #include "Hollow/Platform.h"
 #include "Hollow/Common/Log.h"
-#include "Hollow/Graphics/ITexture.h"
+#include "Hollow/Graphics/Renderer/Base/ITexture.h"
+#include "D3DContext.h"
 
 class D3DTexture : public ITexture
 {
@@ -13,7 +14,7 @@ public:
 		SAFE_RELEASE(m_TextureShaderResource);
 	}
 
-	void CreateTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename, int width, int height, void* data, int pitch)
+	void CreateTexture(std::string filename, int width, int height, void* data, int pitch)
 	{
 		active = true;
 
@@ -38,7 +39,7 @@ public:
 
 		ID3D11Texture2D * m_texture;
 		// Create the empty texture.
-		if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
+		if (FAILED(context.device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
 			HW_ERROR("D3DTexture: Can't create 2D texture");
 		}
 
@@ -50,7 +51,7 @@ public:
 		srvDesc.Texture2D.MipLevels = 1;
 
 		// Create the shader resource view for the texture.
-		if (FAILED(device->CreateShaderResourceView(m_texture, &srvDesc, &m_TextureShaderResource))) {
+		if (FAILED(context.device->CreateShaderResourceView(m_texture, &srvDesc, &m_TextureShaderResource))) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 		}
 	}

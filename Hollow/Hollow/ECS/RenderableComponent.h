@@ -9,8 +9,8 @@
 class RenderableComponent : public Component<RenderableComponent>
 {
 public:
-	RenderableComponent(ID3D11Device* device, ID3D11DeviceContext* deviceContext, Mesh* mesh)
-		: renderable(device, deviceContext, mesh)
+	RenderableComponent(Mesh* mesh)
+		: renderable(mesh)
 	{}
 
 	D3DRenderable renderable;

@@ -3,7 +3,6 @@
 #include "Hollow/Math/Vector4.h"
 #include "Hollow/Math/Vector3.h"
 #include "Hollow/Input/InputManager.h"
-#include <DirectXMAth.h>
 #include "Hollow/Math/EAngle.h"
 
 class Camera

@@ -1,13 +1,14 @@
 #pragma once
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
+#include "D3DRenderer.h"
 
 class D3DRasterizerState
 {
 private:
 	ID3D11RasterizerState* m_RasterizerState;
 public:
-	D3DRasterizerState(ID3D11Device* device)
+	D3DRasterizerState()
 	{
 		HRESULT hr = S_OK;
 
@@ -23,7 +24,7 @@ public:
 		rasterizerDesc.ScissorEnable = false;
 		rasterizerDesc.SlopeScaledDepthBias = 2.0f;
 
-		hr = device->CreateRasterizerState(&rasterizerDesc, &m_RasterizerState);
+		hr = D3DRenderer::instance()->getContext().device->CreateRasterizerState(&rasterizerDesc, &m_RasterizerState);
 
 		if (hr != S_OK) {
 			HW_ERROR("RenderSystem: Cant create RasterizerState!");

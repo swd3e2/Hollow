@@ -2,15 +2,19 @@
 #include <d3d11.h>
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
+#include "D3DRenderer.h"
+#include "Hollow/Graphics/Renderer/Base/ISamplerState.h"
 
-class D3DSamplerState
+class HOLLOW_API D3DSamplerState : public ISamplerState
 {
 private:
 	ID3D11SamplerState* m_SamplerState;
 public:
-	D3DSamplerState(ID3D11Device* device, D3D11_TEXTURE_ADDRESS_MODE mode)
+	D3DSamplerState(D3D11_TEXTURE_ADDRESS_MODE mode)
 	{
 		HRESULT hr = S_OK;
+
+		D3DContext context = D3DRenderer::instance()->getContext();
 
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(samplerDesc));
@@ -21,7 +25,7 @@ public:
 		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 		samplerDesc.MinLOD = 0;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-		hr = device->CreateSamplerState(&samplerDesc, &m_SamplerState);
+		hr = context.device->CreateSamplerState(&samplerDesc, &m_SamplerState);
 
 		if (hr != S_OK) {
 			HW_ERROR("RenderSystem: Cant create sampler state!");

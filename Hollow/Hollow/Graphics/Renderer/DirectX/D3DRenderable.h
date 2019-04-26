@@ -8,14 +8,12 @@
 #include "Hollow/Resources/Mesh.h"
 #include "D3DBuffer.h"
 #include "D3DMaterial.h"
-
-#include <d3d11.h>
 #include "Hollow/Resources/TextureManager.h"
 
 struct RenderableObject
 {
 	RenderableObject(std::string name = "") :
-		name(name)
+		name(name), buffer(nullptr), material(nullptr)
 	{}
 
 	~RenderableObject()
@@ -35,12 +33,12 @@ public:
 	Hollow::Containers::Vector<RenderableObject*> renderableObjects;
 	std::string name;
 public:
-	D3DRenderable(ID3D11Device* device, ID3D11DeviceContext* deviceContext, Mesh* mesh) :
+	D3DRenderable(Mesh* mesh) :
 		name(mesh->name)
 	{
 		for (auto& it : mesh->objects) {
 			RenderableObject* object = new RenderableObject(it->name);
-			object->buffer = new D3DBuffer(device, it->data, sizeof(Vertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
+			object->buffer = new D3DBuffer(it->data, sizeof(Vertex), it->numVertices, D3D11_BIND_VERTEX_BUFFER);
 			D3DMaterial* mat = new D3DMaterial();
 			if (it->material.materialData.hasDiffuseTexture) {
 				D3DTexture* tex = TextureManager::instance()->CreateTexture(it->material.diffuse_texture);

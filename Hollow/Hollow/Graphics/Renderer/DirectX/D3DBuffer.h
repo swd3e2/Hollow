@@ -3,6 +3,7 @@
 #include "Hollow/Common/Log.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/IBuffer.h"
+#include "D3DRenderer.h"
 
 class HOLLOW_API D3DBuffer : public IBuffer
 {
@@ -11,7 +12,7 @@ private:
 	UINT stride;
 	UINT bufferSize = 0;
 public:
-	D3DBuffer(ID3D11Device* device, void* data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag);
+	D3DBuffer(void* data, UINT stride, UINT numVertices, D3D11_BIND_FLAG bindFlag);
 	~D3DBuffer();
 	ID3D11Buffer * Get() { return buffer; }
 	ID3D11Buffer ** GetAddressOf() { return &buffer; }

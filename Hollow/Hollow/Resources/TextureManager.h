@@ -5,6 +5,7 @@
 #include "Hollow/Common/Log.h"
 #include "FreeImage.h"
 #include "Hollow/Core/CModule.h"
+#include "Hollow/Graphics/DirectX/D3DContext.h"
 
 struct TextureData
 {
@@ -24,15 +25,13 @@ class HOLLOW_API TextureManager : public CModule<TextureManager>
 {
 private:
 	std::unordered_map<std::string, D3DTexture*> textureList;
-	ID3D11Device* device;
-	ID3D11DeviceContext* deviceContext;
+	D3DContext* context;
 	static TextureManager* _instance;
 	std::string baseTexturePapth = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/";
 public:
-	void startUp(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+	void startUp(D3DContext& context)
 	{
-		this->device = device;
-		this->deviceContext = deviceContext;
+		this->context = &context;
 		setStartedUp();
 	}
 

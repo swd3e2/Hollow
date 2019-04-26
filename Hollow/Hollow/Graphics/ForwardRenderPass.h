@@ -94,29 +94,29 @@ private:
 public:
 	ForwardRenderPass(D3DRenderer* renderer) : renderer(renderer)
 	{
-		m_RenderTarget = new D3DRenderTarget(renderer->getDevice(), renderer->getDeviceContext(), 2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, renderer->getSwapChain());
-		m_DepthStencil = new D3DDepthStencil(renderer->getDevice(), 2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_RenderTarget = new D3DRenderTarget(2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT, renderer->getSwapChain());
+		m_DepthStencil = new D3DDepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_ShadowDepthStencil = new D3DDepthStencil(renderer->getDevice(), 2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
-		m_SecondRenderTarget = new D3DRenderTarget(renderer->getDevice(), renderer->getDeviceContext(), 2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		m_ShadowDepthStencil = new D3DDepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_SecondRenderTarget = new D3DRenderTarget(2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
-		m_BlendStateTransparancy = new D3DBlendState(renderer->getDevice());
-		m_rasterizerState = new D3DRasterizerState(renderer->getDevice());
+		m_BlendStateTransparancy = new D3DBlendState();
+		m_rasterizerState = new D3DRasterizerState();
 
-		m_SamplerStateWrap = new D3DSamplerState(renderer->getDevice(), D3D11_TEXTURE_ADDRESS_WRAP);
-		m_SamplerStateClamp = new D3DSamplerState(renderer->getDevice(), D3D11_TEXTURE_ADDRESS_CLAMP);
+		m_SamplerStateWrap = new D3DSamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
+		m_SamplerStateClamp = new D3DSamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
 
-		m_ShadowDepthStencil = new D3DDepthStencil(renderer->getDevice(), 8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
+		m_ShadowDepthStencil = new D3DDepthStencil(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_WVPConstantBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(WVP));
-		m_TransformConstantBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(TransformBuff));
-		m_LightBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(PointLightStruct));
-		lightMatricesConstantBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(LightMatrices));
-		m_WorldViewProjectionBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(WorldViewProjection));
-		materialConstantBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(MaterialData));
-		lightInfoBuffer = new D3DConstantBuffer(renderer->getDevice(), renderer->getDeviceContext(), sizeof(LightInfo));
+		m_WVPConstantBuffer = new D3DConstantBuffer(sizeof(WVP));
+		m_TransformConstantBuffer = new D3DConstantBuffer(sizeof(TransformBuff));
+		m_LightBuffer = new D3DConstantBuffer(sizeof(PointLightStruct));
+		lightMatricesConstantBuffer = new D3DConstantBuffer(sizeof(LightMatrices));
+		m_WorldViewProjectionBuffer = new D3DConstantBuffer(sizeof(WorldViewProjection));
+		materialConstantBuffer = new D3DConstantBuffer(sizeof(MaterialData));
+		lightInfoBuffer = new D3DConstantBuffer(sizeof(LightInfo));
 
-		shadowMap = new ShadowMap(renderer->getDevice(), renderer->getDeviceContext(), 8192, 8192);
+		shadowMap = new ShadowMap(renderer->getContext(), 8192, 8192);
 
 		vp.Width = (float)2560;
 		vp.Height = (float)1440;
@@ -132,7 +132,7 @@ public:
 		svp.TopLeftX = 0;
 		svp.TopLeftY = 0;
 
-		renderer->getDeviceContext()->RSSetViewports(1, &vp);
+		renderer->SetViewPort(1, &vp);
 	}
 
 	virtual void PreUpdate(float_t dt)
@@ -146,7 +146,7 @@ public:
 		renderer->SetSampler(1, m_SamplerStateWrap);
 
 		// Setting states 
-		renderer->getDeviceContext()->RSSetState(m_rasterizerState->GetRasterizerState());
+		renderer->SetRasterizerState(m_rasterizerState);
 		renderer->SetDepthStencil(m_DepthStencil);
 
 		int j = 0;
@@ -184,7 +184,7 @@ public:
 
 	virtual void PostUpdate(float_t dt)
 	{
-		renderer->getSwapChain()->Present(renderer->vSync, 0);
+		renderer->Present();
 	}
 
 	void DrawScene()
@@ -240,12 +240,12 @@ public:
 				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
 				static float blendFactor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-				renderer->getDeviceContext()->OMSetBlendState(m_BlendStateTransparancy->GetBlendState(), blendFactor, 0xffffffff);
+				renderer->SetBlendState(m_BlendStateTransparancy, blendFactor, 0xffffffff);
 
 				renderer->SetPixelShader(ShaderManager::instance()->getPixelShader("light"));
 				DrawObject(light->light.lightIcon.renderable.renderableObjects[0]);
 				
-				renderer->getDeviceContext()->OMSetBlendState(0, 0, 0xffffffff);
+				renderer->SetBlendState(nullptr, 0, 0xffffffff);
 			}
 		}
 	}
@@ -259,13 +259,14 @@ public:
 		lightMatrices.lightPosition = shadowMap->camera.GetPositionVec3();
 		lightMatrices.bias = shadowMap->bias;
 		lightMatricesConstantBuffer->Update(&lightMatrices);
+
 		renderer->SetContantBuffer(5, lightMatricesConstantBuffer);
 
 		// Set new viewport coz shadow map is bigger than vp
-		renderer->getDeviceContext()->RSSetViewports(1, &svp);
+		renderer->SetViewPort(1, &svp);
 		renderer->ClearRenderTargetView(&shadowMap->shadowRenderTarget, (float*)ShadowClearColor);
 		// Shadow map drawing
-		renderer->getDeviceContext()->ClearDepthStencilView(m_ShadowDepthStencil->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		renderer->ClearDepthStencilView(m_ShadowDepthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
 		renderer->SetRenderTarget(&shadowMap->shadowRenderTarget, m_ShadowDepthStencil);
 
 		updateWVP(&shadowMap->camera);
@@ -296,7 +297,7 @@ public:
 			}
 		}
 		// Set viewprort to default
-		renderer->getDeviceContext()->RSSetViewports(1, &vp);
+		renderer->SetViewPort(1, &vp);
 	}
 
 	// Update world view projection matrix
