@@ -36,9 +36,6 @@
     <ClInclude Include="Hollow\Resources\AudioEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Resources\Utils\ObjParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Resources\Sound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -49,9 +46,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Window\Win32\Win32Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Resources\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h">
@@ -99,9 +93,6 @@
     <ClInclude Include="Hollow\Events\IEventListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\DummyConsoleListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,12 +129,6 @@
     <ClInclude Include="Hollow\Core\CModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Resources\MeshManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Resources\MaterialManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Common\Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -165,16 +150,10 @@
     <ClInclude Include="Hollow\Graphics\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Math\Vec2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\ShadowMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Containers\array.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\ForwardRenderPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h">
@@ -228,12 +207,6 @@
     <ClInclude Include="Hollow\ECS\PointLightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\ECS\MaterialComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Common\SaveHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Math\Matrix4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -285,9 +258,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11IShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -295,9 +265,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11RasterizerState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Renderable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderApi.h">
@@ -333,9 +300,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\IHardwareBufferManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -363,10 +327,52 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTarget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\TextureManager.h">
+    <ClInclude Include="Hollow\Importer\FreeImgImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Importer\FreeImgImporter.h">
+    <ClInclude Include="Hollow\Graphics\Renderer\Base\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Importer\MeshImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Resources\Mesh\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Resources\Mesh\SubMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Core\CoreThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Core\SimulationThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Core\Task.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Core\TaskList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Core\TaskManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\ForwardRenderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\TextureManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\HardwareBufferManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\ShaderManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -384,9 +390,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Resources\Sound.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Resources\Utils\ObjParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Application.cpp">
@@ -414,12 +417,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Window\IWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Resources\MeshManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Resources\MaterialManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Common\Console.cpp">
@@ -470,10 +467,43 @@
     <ClCompile Include="Hollow\Graphics\Renderer\Base\SamplerState.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Renderer\TextureManager.cpp">
+    <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp">
+    <ClCompile Include="Hollow\Importer\MeshImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RasterizerState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11IndexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstantBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11BlendState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Core\TaskManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\HardwareBufferManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\ShaderManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

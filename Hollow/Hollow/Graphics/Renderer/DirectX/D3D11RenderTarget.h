@@ -1,7 +1,10 @@
 #pragma once
+
+#ifndef HW_D3D11_RENDER_TARGET_H
+#define HW_D3D11_RENDER_TARGET_H
+
 #include "Hollow/Platform.h"
-#include "Hollow/Common/Log.h"
-#include "D3D11RenderApi.h"
+#include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/RenderTarget.h"
 
 enum HOLLOW_API RenderTargetType
@@ -17,8 +20,7 @@ public:
 		int width, 
 		int height, 
 		RenderTargetType type, 
-		DXGI_FORMAT format, 
-		IDXGISwapChain* swapChain = nullptr
+		DXGI_FORMAT format
 	);
 
 	~D3D11RenderTarget();
@@ -31,3 +33,5 @@ private:
 	ID3D11Texture2D*			m_BackBuffer;
 	ID3D11ShaderResourceView*	m_ShaderResourceView;
 };
+
+#endif

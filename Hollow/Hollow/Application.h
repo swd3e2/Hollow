@@ -11,14 +11,13 @@
 //#include "Hollow/ImGuiLayer.h"
 #include "LayerStack.h"
 #include "Graphics/Camera.h"
-#include "Resources/TextureManager.h"
-#include "Resources/MeshManager.h"
-#include "Graphics/ForwardRenderPass.h"
-#include "Common/SaveHelper.h"
+#include "Graphics/ForwardRenderSystem.h"
+//#include "Common/SaveHelper.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Renderer/OpenGL/OGLRenderer.h"
 #include "Graphics/Renderer/DirectX/D3D11RenderApi.h"
 #include "Graphics/Window/Win32/Win32Window.h"
+#include "Core/TaskManager.h"
 
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
@@ -35,13 +34,13 @@ protected:
 	EventSystem						eventSystem;
 	LayerStack						m_LayerStack;
 	Camera*							camera;
-	TextureManager					textureManager;
-	MeshManager						meshManager;
+	//MeshManager						meshManager;
 	InputManager					inputManager;
-	ForwardRenderPass*				renderPass;
-	SaveHelper						saveHelper;
+	ForwardRenderSystem*			renderPass;
+	//SaveHelper						saveHelper;
+	TaskManager						taskManager;
 	std::shared_ptr<Win32Window>	window;
-
+	RenderApi* m_Renderer;
 	double dt;
 	static Application* _instance;
 public:
@@ -63,28 +62,27 @@ public:
 		componentManager.startUp();
 		entityManager.startUp();
 		systemManager.startUp();
-		meshManager.startUp();
+		//meshManager.startUp();
 		
+		m_Renderer = new D3D11RenderApi(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
 		//m_Renderer = new OGLRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND());
 
-		/*textureManager.startUp(m_Renderer->getContext(), m_Renderer->getDeviceContext());
-		shaderManager.startUp(m_Renderer->getDevice());*/
-		saveHelper.startUp();
+		//saveHelper.startUp();
 
-		renderPass = new ForwardRenderPass(new D3D11RenderApi(SCREEN_WIDTH, SCREEN_HEIGHT, window->getHWND()));
+		renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
 		renderPass->m_Camera = camera;
 
 		systemManager.AddSystem(renderPass);
 		/*ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, camera);
 		layer->window = &*window;
 		m_LayerStack.AddLayer(layer);*/
+
+
 	}
 
 	~Application()
 	{
-		saveHelper.shutdown();
-		meshManager.shutdown();
-		textureManager.shutdown();
+		//saveHelper.shutdown();
 		systemManager.shutdown();
 		entityManager.shutdown();
 		componentManager.shutdown();
@@ -103,7 +101,7 @@ public:
 			m_Timer.Restart();
 			window->ProcessMessage();
 
-			renderPass->shadowMap->camera.Update(dt);
+			//renderPass->shadowMap->camera.Update(dt);
 			camera->Update(dt);
 
 			m_LayerStack.PreUpdate(dt);
@@ -117,7 +115,7 @@ public:
 
 			eventSystem.dispatch();
 			inputManager.Clear();
-
+			
 			m_Timer.Stop();
 		}
 	}

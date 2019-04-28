@@ -1,13 +1,16 @@
 #include "D3D11RenderTarget.h"
+#include "D3D11RenderApi.h"
+#include "D3D11Context.h"
 
-D3D11RenderTarget::D3D11RenderTarget(int width, int height, RenderTargetType type, DXGI_FORMAT format, IDXGISwapChain * swapChain)
+D3D11RenderTarget::D3D11RenderTarget(int width, int height, RenderTargetType type, DXGI_FORMAT format)
 {
 	HRESULT hr = S_OK;
 	// Create deafult render target view
 	ID3D11Texture2D * backBuffer = {};
 
-	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(IRenderApi::instance());
-	ID3D11Device* device = r->getContext()->device;
+	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+	ID3D11Device* device = r->getContext().getDevice();
+	IDXGISwapChain* swapChain = r->getContext().getSwapChain();
 
 	if (type == RenderTargetType::MAIN)
 	{
@@ -15,7 +18,7 @@ D3D11RenderTarget::D3D11RenderTarget(int width, int height, RenderTargetType typ
 
 		hr = device->CreateRenderTargetView(backBuffer, NULL, &renderTarget);
 		if (hr != S_OK) {
-			HW_ERROR("RenderTarget: Cant create RenderTargetView!");
+			//HW_ERROR("RenderTarget: Cant create RenderTargetView!");
 		}
 	} else if (type == RenderTargetType::SECONDARY) {
 		// Create second render target view
@@ -33,7 +36,7 @@ D3D11RenderTarget::D3D11RenderTarget(int width, int height, RenderTargetType typ
 
 		hr = device->CreateTexture2D(&textureDesc, NULL, &m_BackBuffer);
 		if (hr != S_OK) {
-			HW_ERROR("RenderTarget: Cant create Texture2D!");
+			//HW_ERROR("RenderTarget: Cant create Texture2D!");
 		}
 
 		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -43,7 +46,7 @@ D3D11RenderTarget::D3D11RenderTarget(int width, int height, RenderTargetType typ
 
 		hr = device->CreateRenderTargetView(m_BackBuffer, &renderTargetViewDesc, &renderTarget);
 		if (hr != S_OK) {
-			HW_ERROR("RenderTarget: Cant create RenderTargetView!");
+			//HW_ERROR("RenderTarget: Cant create RenderTargetView!");
 		}
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
@@ -54,7 +57,7 @@ D3D11RenderTarget::D3D11RenderTarget(int width, int height, RenderTargetType typ
 
 		hr = device->CreateShaderResourceView(m_BackBuffer, &shaderResourceViewDesc, &m_ShaderResourceView);
 		if (hr != S_OK) {
-			HW_ERROR("RenderTarget: Cant create ShaderResourceView!");
+			//HW_ERROR("RenderTarget: Cant create ShaderResourceView!");
 		}
 	}
 }

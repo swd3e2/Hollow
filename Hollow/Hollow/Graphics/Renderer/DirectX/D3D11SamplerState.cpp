@@ -1,11 +1,13 @@
 #include "D3D11SamplerState.h"
+#include "D3D11RenderApi.h"
+#include "D3D11Context.h"
 
 D3D11SamplerState::D3D11SamplerState(D3D11_TEXTURE_ADDRESS_MODE mode)
 {
 	HRESULT hr = S_OK;
 
-	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(IRenderApi::instance());
-	ID3D11Device* device = r->getContext()->device;
+	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+	ID3D11Device* device = r->getContext().getDevice();
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
@@ -19,7 +21,7 @@ D3D11SamplerState::D3D11SamplerState(D3D11_TEXTURE_ADDRESS_MODE mode)
 	hr = device->CreateSamplerState(&samplerDesc, &m_SamplerState);
 
 	if (hr != S_OK) {
-		HW_ERROR("RenderSystem: Cant create sampler state!");
+		//HW_ERROR("RenderSystem: Cant create sampler state!");
 	}
 }
 

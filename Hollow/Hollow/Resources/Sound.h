@@ -1,7 +1,6 @@
 #pragma once
 #include <XAudio2.h>
 #include "Hollow/Platform.h"
-#include "Hollow/Common/Log.h"
 
 namespace Hollow {
 	class HOLLOW_API Sound

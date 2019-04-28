@@ -1,5 +1,9 @@
 #pragma once
-#include <d3d11.h>
+
+#ifndef HW_D3D11_I_ShADER_H
+#define HW_D3D11_I_ShADER_H
+
+#include "D3D11Prerequisites.h"
 #include <d3dcompiler.h>
 #include <string>
 #include "Hollow/Platform.h"
@@ -41,3 +45,5 @@ protected:
 public:
 	inline std::string getName() { return name; }
 };
+
+#endif

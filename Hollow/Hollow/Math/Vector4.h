@@ -7,8 +7,6 @@
 #include "Vector3.h"
 #include "Hollow/Platform.h"
 
-class Matrix4;
-
 class HOLLOW_API Vector4
 {
 public:

@@ -1,9 +1,8 @@
 #pragma once
 
-#ifndef HW_D3D_RENDERER_H
-#define HW_D3D_RENDERER_H
+#ifndef HW_D3D11_RENDER_API_H
+#define HW_D3D11_RENDER_API_H
 
-#include <d3d11.h>
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include "D3D11Prerequisites.h"
 
@@ -14,8 +13,15 @@ public:
 private:					
 	D3D11Context*				context;
 	D3D11RasterizerState*		m_rasterizerState;
-	int						width;
-	int						height;
+	int							width;
+	int							height;
+
+	D3D11SamplerState*			m_SamplerStateWrap;
+	D3D11SamplerState*			m_SamplerStateClamp;
+
+	D3D11TextureManager*		textureManager;
+	D3D11HardwareBufferManager* hardwareBufferManager;
+	D3D11ShaderManager*			shaderManager;
 
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
@@ -25,17 +31,21 @@ private:
 public:
 	D3D11RenderApi(int width, int height, HWND* hwnd);
 	~D3D11RenderApi();
+	
+	virtual void SetIndexBuffer(IndexBuffer* buffer) override;
+	virtual void SetVertexBuffer(VertexBuffer* buffer) override;
+	virtual void SetTexture(UINT slot, Texture* texture) override;
+	virtual void SetTexture(UINT slot, RenderTarget* renderTarget) override;
+	virtual void SetShader(Shader* shader) override;
 
-	void SetShaderResource(UINT slot, ID3D11ShaderResourceView* shaderResourceView);
-		
+	void ClearRenderTargetView(D3D11RenderTarget* renderTarget, float* color);
+
 	void FreeShaderResource(UINT slot);
 
 	void SetVertexShader(D3D11VertexShader* vs);
 	void SetPixelShader(D3D11PixelShader* ps);
 	void ClearDepthStencilView(D3D11DepthStencil* ds, int flag);
 	void SetContantBuffer(UINT slot, D3D11ConstantBuffer* cb);
-	void SetVertexBuffer(VertexBuffer* buffer);
-	void ClearRenderTargetView(D3D11RenderTarget* renderTarget, float* color);
 	void SetSampler(int slot, D3D11SamplerState* sampler);
 	void SetDepthStencil(D3D11DepthStencil* depthStencil);
 	void SetRenderTarget(D3D11RenderTarget* renderTarget, D3D11DepthStencil* depthStencil);
@@ -45,8 +55,8 @@ public:
 	void SetBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
 	void DrawIndexed(UINT count);
 	void Draw(UINT count);
-	
-	D3D11Context* getContext();
+	void Present();
+	D3D11Context& getContext() { return *context; }
 
 	void toggleVSync() { vSync = !vSync; }
 };

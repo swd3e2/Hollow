@@ -16,9 +16,9 @@ class HOLLOW_API PointLight : public Component<PointLight>
 {
 public:
 	PointLightStruct data;
-	LightIcon lightIcon;
+	//LightIcon lightIcon;
 public:
-	PointLight(ID3D11Device* device) : lightIcon (device) 
+	PointLight()
 	{
 		data.color[0] = 1.0f;
 		data.color[1] = 1.0f;

@@ -5,8 +5,7 @@
 
 #include "D3D11Texture.h"
 #include "Hollow/Platform.h"
-#include "Hollow/Common/Log.h"
-#include "Hollow/Graphics/Renderer/TextureManager.h"
+#include "Hollow/Graphics/TextureManager.h"
 
 class HOLLOW_API D3D11TextureManager : public TextureManager
 {

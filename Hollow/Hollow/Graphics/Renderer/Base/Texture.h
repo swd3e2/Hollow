@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 class TEXTURE_DESC
 {
 public:

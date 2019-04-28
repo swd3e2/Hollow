@@ -53,7 +53,7 @@ public:
 	T* createEntity(ARGS&& ...args)
 	{
 		EntityContainer<T>* container = getContainer<T>();
-		T* entity = container->entityList.createObject(std::forward(args)...);
+		T* entity = container->entityList.createObject(std::forward<ARGS>(args)...);
 		entity->entityId = getNextEntityId();
 		
 		return entity;

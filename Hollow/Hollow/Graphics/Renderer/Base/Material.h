@@ -1,5 +1,11 @@
 #pragma once
+
+#ifndef HW_MATERIAL_H
+#define HW_MATERIAL_H
+
 #include <string>
+#include "Texture.h"
+#include "Hollow/Graphics/ShaderManager.h"
 
 struct MaterialData
 {
@@ -22,9 +28,21 @@ class Material
 public:
 	bool active = false;
 	std::string name;
-	std::string diffuse_texture;
-	std::string normal_texture;
-	std::string specular_texture;
+	std::string diffuse_texture_name;
+	std::string normal_texture_name;
+	std::string specular_texture_name;
 
 	MaterialData materialData;
+
+	Texture* diffuse_texture;
+	Texture* normal_texture;
+	Texture* specular_texture;
+	Shader* shader;
+
+	Material()
+	{
+		shader = ShaderManager::instance()->getShader("default");
+	}
 };
+
+#endif

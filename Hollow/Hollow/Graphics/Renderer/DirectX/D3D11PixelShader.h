@@ -1,22 +1,21 @@
 #pragma once
-#include "D3D11IShader.h"
-#include <d3d11.h>
-#include <string>
 
-class D3D11PixelShader : public D3D11IShader
+#ifndef HW_D3D11_PIXEL_SHADER_H
+#define HW_D3D11_PIXEL_SHADER_H
+
+#include "D3D11IShader.h"
+#include <string>
+#include "D3D11Prerequisites.h"
+#include "Hollow/Platform.h"
+
+class HOLLOW_API D3D11PixelShader : public D3D11IShader
 {
 public:
-	D3D11PixelShader(ID3D11Device * device, std::string filename)
-	{
-		HRESULT hr = CompileShader(filename, "PSMain", "ps_5_0", &pixelShaderBlob);
-		hr = device->CreatePixelShader(pixelShaderBlob->GetBufferPointer(),
-			pixelShaderBlob->GetBufferSize(), NULL, &pixelShader);
-	}
-	ID3D11PixelShader * GetShader()
-	{
-		return pixelShader;
-	}
+	D3D11PixelShader(const std::string filename);
+	ID3D11PixelShader* GetShader();
 private:
 	ID3D11PixelShader* pixelShader;
 	ID3DBlob* pixelShaderBlob;
 };
+
+#endif

@@ -1,16 +1,18 @@
 #include "D3D11Texture.h"
+#include "D3D11RenderApi.h"
+#include "D3D11Context.h"
 
 D3D11Texture::~D3D11Texture()
 {
 	SAFE_RELEASE(m_TextureShaderResource);
 }
 
-void D3D11Texture::CreateTexture(std::string filename, int width, int height, void* data, int pitch)
+void D3D11Texture::CreateTexture(int width, int height, void* data, int pitch)
 {
 	active = true;
 
 	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
-	ID3D11Device* device = r->getContext()->device;
+	ID3D11Device* device = r->getContext().getDevice();
 
 	D3D11_TEXTURE2D_DESC textureDesc = {};
 	textureDesc.Height = height;
@@ -34,7 +36,7 @@ void D3D11Texture::CreateTexture(std::string filename, int width, int height, vo
 	ID3D11Texture2D* m_texture;
 	// Create the empty texture.
 	if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
-		HW_ERROR("D3DTexture: Can't create 2D texture");
+		//HW_ERROR("D3DTexture: Can't create 2D texture");
 	}
 
 	// Setup the shader resource view description.
@@ -46,7 +48,7 @@ void D3D11Texture::CreateTexture(std::string filename, int width, int height, vo
 
 	// Create the shader resource view for the texture.
 	if (FAILED(device->CreateShaderResourceView(m_texture, &srvDesc, &m_TextureShaderResource))) {
-		HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
+		//HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 	}
 }
 

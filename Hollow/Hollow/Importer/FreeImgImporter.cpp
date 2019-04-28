@@ -17,7 +17,7 @@ TEXTURE_DESC* FreeImgImporter::import(const char* filename)
 		fif = FreeImage_GetFIFFromFilename(filename);
 	//if still unkown, return failure
 	if (fif == FIF_UNKNOWN) {
-		HW_ERROR("Texture manager: unknown file format, file {}", filename);
+		//HW_ERROR("Texture manager: unknown file format, file {}", filename);
 		return nullptr;
 	}
 
@@ -26,7 +26,7 @@ TEXTURE_DESC* FreeImgImporter::import(const char* filename)
 		dib = FreeImage_Load(fif, filename);
 	//if the image failed to load, return failure
 	if (!dib) {
-		HW_ERROR("Texture manager: failed to load image, file {}", filename);
+		//HW_ERROR("Texture manager: failed to load image, file {}", filename);
 		return nullptr;
 	}
 
@@ -56,7 +56,7 @@ TEXTURE_DESC* FreeImgImporter::import(const char* filename)
 
 	//if this somehow one of these failed (they shouldn't), return failure
 	if ((textureData->width == 0) || (textureData->height == 0)) {
-		HW_ERROR("Texture manager: file loaded with erorr's, can't get height and width, file {}", filename);
+		//HW_ERROR("Texture manager: file loaded with erorr's, can't get height and width, file {}", filename);
 		return nullptr;
 	}
 

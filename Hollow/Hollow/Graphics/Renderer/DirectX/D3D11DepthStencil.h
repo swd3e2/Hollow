@@ -1,8 +1,10 @@
 #pragma once
-#include <d3d11.h>
-#include "Hollow/Common/Log.h"
+
+#ifndef HW_D3D11_DEPTH_STENCIL_H
+#define HW_D3D11_DEPTH_STENCIL_H
+
+#include "D3D11Prerequisites.h"
 #include "Hollow/Platform.h"
-#include "D3D11RenderApi.h"
 
 class HOLLOW_API D3D11DepthStencil
 {
@@ -25,3 +27,5 @@ private:
 	ID3D11DepthStencilState*	m_DepthStencilState;
 	ID3D11ShaderResourceView*	mDepthResourceView;
 };
+
+#endif

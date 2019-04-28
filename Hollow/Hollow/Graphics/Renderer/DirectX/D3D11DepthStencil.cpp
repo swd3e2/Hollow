@@ -1,12 +1,14 @@
 #include "D3D11DepthStencil.h"
+#include "D3D11RenderApi.h"
+#include "D3D11Context.h"
 
 D3D11DepthStencil::D3D11DepthStencil(int width, int height, DXGI_FORMAT format, int samplecount)
 {
 	HRESULT hr = S_OK;
 
-	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(IRenderApi::instance());
-	ID3D11Device* device = r->getContext()->device;
-
+	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+	ID3D11Device* device = r->getContext().getDevice();
+	
 	DXGI_FORMAT resformat = GetDepthResourceFormat(format);
 	DXGI_FORMAT srvformat = GetDepthSRVFormat(format);
 
@@ -25,7 +27,7 @@ D3D11DepthStencil::D3D11DepthStencil(int width, int height, DXGI_FORMAT format, 
 
 	hr = device->CreateTexture2D(&desc, NULL, &m_DepthStencilBuffer);
 	if (hr != S_OK) {
-		HW_ERROR("DepthStencil: Cant create Texture2D!");
+		//HW_ERROR("DepthStencil: Cant create Texture2D!");
 	}
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC ddesc;
@@ -36,7 +38,7 @@ D3D11DepthStencil::D3D11DepthStencil(int width, int height, DXGI_FORMAT format, 
 
 	hr = device->CreateDepthStencilView(m_DepthStencilBuffer, &ddesc, &m_DepthStencilView);
 	if (hr != S_OK) {
-		HW_ERROR("DepthStencil: Cant create DepthStencilView!");
+		//HW_ERROR("DepthStencil: Cant create DepthStencilView!");
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
@@ -48,7 +50,7 @@ D3D11DepthStencil::D3D11DepthStencil(int width, int height, DXGI_FORMAT format, 
 
 	hr = device->CreateShaderResourceView(m_DepthStencilBuffer, &srvd, &mDepthResourceView);
 	if (hr != S_OK) {
-		HW_ERROR("DepthStencil: Cant create ShaderResourceView!");
+		//HW_ERROR("DepthStencil: Cant create ShaderResourceView!");
 	}
 }
 

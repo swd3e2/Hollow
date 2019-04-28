@@ -9,6 +9,7 @@
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
+#include <memory>
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

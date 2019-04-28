@@ -1,6 +1,5 @@
 #pragma once
 #include <XAudio2.h>
-#include "Hollow/Common/Log.h"
 #include <wrl/client.h>
 #include "Hollow/Platform.h"
 #include "Sound.h"
@@ -13,7 +12,6 @@
 #define fourccDPDS 'sdpd'
 
 namespace Hollow {
-
 	class HOLLOW_API AudioEngine
 	{
 	private:
@@ -27,7 +25,4 @@ namespace Hollow {
 		Sound* CreateSoundResource(const char * strFileName);
 		~AudioEngine();
 	};
-
-	
-
 }
