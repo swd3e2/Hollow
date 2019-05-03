@@ -45,7 +45,7 @@
     <ClInclude Include="Hollow\ApplicationLayer.h" />
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h" />
     <ClInclude Include="Hollow\Graphics\DirectionalLight.h" />
-    <ClInclude Include="Hollow\Graphics\ForwardRenderSystem.h" />
+    <ClInclude Include="Hollow\Graphics\RenderApiManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\IndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTarget.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Shader.h" />
@@ -63,6 +63,11 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Shader.h" />
     <ClInclude Include="Hollow\Graphics\HardwareBufferManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11WindowManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLPrerequisites.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLWindowManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.h" />
     <ClInclude Include="Hollow\Graphics\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderer.h" />
@@ -71,6 +76,7 @@
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLVertexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\ShadowMap.h" />
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
+    <ClInclude Include="Hollow\Graphics\WindowManager.h" />
     <ClInclude Include="Hollow\Importer\FreeImgImporter.h" />
     <ClInclude Include="Hollow\Importer\MeshImporter.h" />
     <ClInclude Include="Hollow\Math\EAngle.h" />
@@ -85,14 +91,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\Icons\LightIcon.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_internal.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_textedit.h" />
-    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Buffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Material.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderApi.h" />
@@ -124,8 +122,8 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
     <ClInclude Include="Hollow\Resources\Mesh\SubMesh.h" />
-    <ClInclude Include="Hollow\Graphics\Window\IWindow.h" />
-    <ClInclude Include="Hollow\Graphics\Window\Win32\Win32Window.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\Base\Window.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.h" />
     <ClInclude Include="Hollow\Common\Log.h" />
     <ClInclude Include="Hollow\Common\Timer.h" />
     <ClInclude Include="Hollow\Resources\Sound.h" />
@@ -152,6 +150,8 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.cpp" />
     <ClCompile Include="Hollow\Graphics\HardwareBufferManager.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLContext.h" />
@@ -162,17 +162,11 @@
     <ClCompile Include="Hollow\Math\Vector3.cpp" />
     <ClCompile Include="Hollow\Math\Vector4.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderManager.cpp" />
-    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
-    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.cpp" />
-    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11TextureManager.cpp" />
-    <ClCompile Include="Hollow\Graphics\Window\IWindow.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Common\Console.cpp" />
-    <ClCompile Include="Hollow\Graphics\Window\Win32\Win32Window.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
@@ -237,7 +231,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtd.lib;IrrXMLd.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtd.lib;IrrXMLd.lib;zlibstatic.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -260,7 +254,7 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engin
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtr.lib;zlibstatic.lib;IrrXMLr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtr.lib;zlibstatic.lib;IrrXMLr.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"

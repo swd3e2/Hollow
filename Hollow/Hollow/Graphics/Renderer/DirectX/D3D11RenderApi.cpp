@@ -16,8 +16,19 @@
 #include "D3D11HardwareBufferManager.h"
 #include "D3D11ShaderManager.h"
 #include "D3D11Shader.h"
+#include "D3D11WindowManager.h"
 
-D3D11RenderApi::D3D11RenderApi(int width, int height, HWND* hwnd)
+D3D11RenderApi::D3D11RenderApi(int width, int height)
+{
+	windowManager = new D3D11WindowManager();
+}
+
+D3D11RenderApi::~D3D11RenderApi()
+{
+	setShutdown();
+}
+
+void D3D11RenderApi::startUp()
 {
 	HRESULT hr = S_OK;
 	RECT rc;
@@ -39,8 +50,8 @@ D3D11RenderApi::D3D11RenderApi(int width, int height, HWND* hwnd)
 	swapChainDesc.Windowed = TRUE;
 	swapChainDesc.SampleDesc.Quality = 0;
 	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.OutputWindow = *hwnd;
-		
+	swapChainDesc.OutputWindow = *(static_cast<D3D11Win32Window*>(WindowManager::instance()->getWindow())->getHWND());
+
 	D3D_FEATURE_LEVEL featureLevels[] = {
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0
@@ -52,22 +63,17 @@ D3D11RenderApi::D3D11RenderApi(int width, int height, HWND* hwnd)
 	hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, creationFlags,
 		featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION, &swapChainDesc, &swapChain,
 		&device, &m_featureLevel, &deviceContext);
-	
+
 
 	if (hr != S_OK) {
 		//HW_ERROR("RenderSystem: Can't create DeviceAndSwapChain!");
 	}
-		
 
 	context = new D3D11Context(device, deviceContext, swapChain);
 
-	setStartedUp();
-
 	deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	textureManager = new D3D11TextureManager();
-	hardwareBufferManager = new D3D11HardwareBufferManager();
-	shaderManager = new D3D11ShaderManager();
+	setStartedUp();
 
 	m_rasterizerState = new D3D11RasterizerState();
 	deviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
@@ -77,11 +83,10 @@ D3D11RenderApi::D3D11RenderApi(int width, int height, HWND* hwnd)
 
 	SetSampler(0, m_SamplerStateClamp);
 	SetSampler(1, m_SamplerStateWrap);
-}
 
-D3D11RenderApi::~D3D11RenderApi()
-{
-	setShutdown();
+	textureManager = new D3D11TextureManager();
+	hardwareBufferManager = new D3D11HardwareBufferManager();
+	shaderManager = new D3D11ShaderManager();
 }
 
 void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)

@@ -4,7 +4,6 @@
 #define HW_D3D11_DEPTH_STENCIL_H
 
 #include "D3D11Prerequisites.h"
-#include "Hollow/Platform.h"
 
 class HOLLOW_API D3D11DepthStencil
 {

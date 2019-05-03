@@ -6,7 +6,6 @@
 #include "D3D11IShader.h"
 #include <wrl/client.h>
 #include <string>
-#include "Hollow/Platform.h"
 #include "D3D11Prerequisites.h"
 
 class D3D11VertexShader : public D3D11IShader

@@ -4,20 +4,20 @@
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Platform.h"
 #include <Windowsx.h>
-#include "Hollow/Graphics/Window/IWindow.h"
 #include "Hollow/Events/WindowCreateEvent.h"
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
+#include "Hollow/Graphics/Renderer/Base/Window.h"
 #include <memory>
+#include "../OGLPrerequisites.h"
+#include "../GL/wglext.h"
 
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-class HOLLOW_API Win32Window : public IWindow
+class HOLLOW_API OGLWin32Window : public Window
 {
 public:
-	Win32Window(HINSTANCE hInst, int width, int height);
-	bool ProcessMessage();
+	OGLWin32Window(HINSTANCE hInst, int width, int height);
+	virtual bool ProcessMessage() override;
 	static LRESULT WINAPI _HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT WINAPI _HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT WINAPI HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

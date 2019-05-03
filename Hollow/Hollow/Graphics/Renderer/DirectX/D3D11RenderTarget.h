@@ -3,7 +3,6 @@
 #ifndef HW_D3D11_RENDER_TARGET_H
 #define HW_D3D11_RENDER_TARGET_H
 
-#include "Hollow/Platform.h"
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/RenderTarget.h"
 

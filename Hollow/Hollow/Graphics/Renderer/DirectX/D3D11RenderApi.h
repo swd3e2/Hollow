@@ -6,7 +6,7 @@
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include "D3D11Prerequisites.h"
 
-class D3D11RenderApi : public RenderApi
+class HOLLOW_API D3D11RenderApi : public RenderApi
 {
 public:
 	bool vSync = true;
@@ -22,6 +22,7 @@ private:
 	D3D11TextureManager*		textureManager;
 	D3D11HardwareBufferManager* hardwareBufferManager;
 	D3D11ShaderManager*			shaderManager;
+	D3D11WindowManager*			windowManager;
 
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
@@ -29,7 +30,7 @@ private:
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 private:
 public:
-	D3D11RenderApi(int width, int height, HWND* hwnd);
+	D3D11RenderApi(int width, int height);
 	~D3D11RenderApi();
 	
 	virtual void SetIndexBuffer(IndexBuffer* buffer) override;
@@ -37,6 +38,8 @@ public:
 	virtual void SetTexture(UINT slot, Texture* texture) override;
 	virtual void SetTexture(UINT slot, RenderTarget* renderTarget) override;
 	virtual void SetShader(Shader* shader) override;
+
+	virtual void startUp() override;
 
 	void ClearRenderTargetView(D3D11RenderTarget* renderTarget, float* color);
 

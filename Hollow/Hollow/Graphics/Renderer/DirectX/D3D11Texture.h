@@ -4,7 +4,6 @@
 #define HW_D3D11_TEXTURE_H
 
 #include <string>
-#include "Hollow/Platform.h"
 #include "Hollow/Graphics/Renderer/Base/Texture.h"
 #include "D3D11Prerequisites.h"
 

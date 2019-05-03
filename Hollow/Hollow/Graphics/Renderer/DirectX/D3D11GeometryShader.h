@@ -3,7 +3,6 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <string>
-#include "Hollow/Platform.h"
 
 class D3D11GeometryShader : D3D11IShader
 {

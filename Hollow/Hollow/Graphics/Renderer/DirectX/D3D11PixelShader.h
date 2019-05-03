@@ -6,7 +6,6 @@
 #include "D3D11IShader.h"
 #include <string>
 #include "D3D11Prerequisites.h"
-#include "Hollow/Platform.h"
 
 class HOLLOW_API D3D11PixelShader : public D3D11IShader
 {

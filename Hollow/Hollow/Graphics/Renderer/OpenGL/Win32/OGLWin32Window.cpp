@@ -1,6 +1,6 @@
-#include "Win32Window.h"
+#include "OGLWin32Window.h"
 
-Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
+OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
 	: hInst(hInst)
 {
 	// Creating window class
@@ -29,7 +29,7 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 	windowRect.bottom = height + windowRect.top;
 	AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUP,
+	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUPWINDOW, /* WS_POPUP*/
 		windowRect.left, windowRect.top,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 		nullptr, nullptr, hInst, this);
@@ -43,22 +43,88 @@ Win32Window::Win32Window(HINSTANCE hInst, int width, int height)
 
 	RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 
+	PIXELFORMATDESCRIPTOR pfd =
+	{
+		sizeof(PIXELFORMATDESCRIPTOR),
+		1,
+		PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    //Flags
+		PFD_TYPE_RGBA,        // The kind of framebuffer. RGBA or palette.
+		32,                   // Colordepth of the framebuffer.
+		0, 0, 0, 0, 0, 0,
+		0,
+		0,
+		0,
+		0, 0, 0, 0,
+		24,                   // Number of bits for the depthbuffer
+		8,                    // Number of bits for the stencilbuffer
+		0,                    // Number of Aux buffers in the framebuffer.
+		PFD_MAIN_PLANE,
+		0,
+		0, 0, 0
+	};
+
+	HDC hdc = GetDC(hWnd);
+
+	int  suggestedPixelFormatIndex = 0;
+	GLuint extendedPick = 0;
+	suggestedPixelFormatIndex = ChoosePixelFormat(hdc, &pfd);
+
+	PIXELFORMATDESCRIPTOR suggestedPixelFormat = {};
+	DescribePixelFormat(hdc, suggestedPixelFormatIndex, sizeof(PIXELFORMATDESCRIPTOR), &suggestedPixelFormat);
+	SetPixelFormat(hdc, suggestedPixelFormatIndex, &suggestedPixelFormat);
+
+	HGLRC hrc = wglCreateContext(hdc);
+	if (wglMakeCurrent(hdc, hrc))
+	{
+		PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+
+		int IntAttribList[] = {
+			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+			WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+			WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+			WGL_PIXEL_TYPE_ARB, WGL_PIXEL_TYPE_ARB,
+			0
+		};
+
+		float floatAttribList[] = { 0 };
+		wglChoosePixelFormatARB(hdc, IntAttribList, floatAttribList, 1, &suggestedPixelFormatIndex, &extendedPick);
+
+		PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+
+		GLint context_attributes[] = {
+		   WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+		   WGL_CONTEXT_MINOR_VERSION_ARB, 6,
+		   WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+		   0
+		};
+
+		hrc = wglCreateContextAttribsARB(hdc, 0, context_attributes);
+		wglMakeCurrent(hdc, hrc);
+	}
+
+	GLenum error;
+	if (error = glewInit())
+	{
+		HW_ERROR("{}", glewGetErrorString(error));
+	}
+
 	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 	UpdateWindow(hWnd);
 }
 
-LRESULT WINAPI Win32Window::_HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI OGLWin32Window::_HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// use create parameter passed in from CreateWindow() to store window class pointer at WinAPI side
 	if (msg == WM_NCCREATE)
 	{
 		// extract ptr to window class from creation data
 		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
-		Win32Window* const pWnd = reinterpret_cast<Win32Window*>(pCreate->lpCreateParams);
+		OGLWin32Window* const pWnd = reinterpret_cast<OGLWin32Window*>(pCreate->lpCreateParams);
 		// set WinAPI-managed user data to store ptr to window class
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		// set message proc to normal (non-setup) handler now that setup is finished
-		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Win32Window::_HandleMsgThunk));
+		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&OGLWin32Window::_HandleMsgThunk));
 		// forward message to window class handler
 		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 	}
@@ -66,19 +132,19 @@ LRESULT WINAPI Win32Window::_HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT WINAPI Win32Window::_HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI OGLWin32Window::_HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// retrieve ptr to window class
-	Win32Window* const pWnd = reinterpret_cast<Win32Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+	OGLWin32Window* const pWnd = reinterpret_cast<OGLWin32Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	// forward message to window class handler
 	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
 }
 
-LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT OGLWin32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-		return true;
-
+	/*if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;*/
+	
 	LRESULT result = 0;
 	switch (msg)
 	{
@@ -149,7 +215,7 @@ LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	return result;
 }
 
-bool Win32Window::ProcessMessage()
+bool OGLWin32Window::ProcessMessage()
 {
 	MSG message;
 	while (PeekMessage(&message, *getHWND(), 0, 0, PM_REMOVE))
@@ -160,12 +226,12 @@ bool Win32Window::ProcessMessage()
 	return true;
 }
 
-HWND * Win32Window::getHWND()
+HWND * OGLWin32Window::getHWND()
 {
 	return &hWnd;
 }
 
-void Win32Window::m_UpdateWindowState()
+void OGLWin32Window::m_UpdateWindowState()
 {
 
 }

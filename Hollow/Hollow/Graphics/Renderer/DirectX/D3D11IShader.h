@@ -6,7 +6,6 @@
 #include "D3D11Prerequisites.h"
 #include <d3dcompiler.h>
 #include <string>
-#include "Hollow/Platform.h"
 #include "Hollow/Common/Helper.h"
 
 class D3D11IShader

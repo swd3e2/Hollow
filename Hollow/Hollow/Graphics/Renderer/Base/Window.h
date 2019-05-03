@@ -1,22 +1,19 @@
 #pragma once
-#include "Hollow/Platform.h"
 
-class HOLLOW_API IWindow
+#include "Hollow/Platform.h"
+#include "Hollow/Core/CModule.h"
+
+class HOLLOW_API Window : public CModule<Window>
 {
 private:
 	bool _isClosed;
 protected:
-	static IWindow* _instance;
 public:
-	IWindow() : 
+	Window() : 
 		_isClosed(false)
-	{
-		if (_instance == nullptr)
-			_instance = this;
-	}
+	{}
 
-	static IWindow* instance() { return _instance; }
-	
 	bool isClosed() { return _isClosed; }
 	void setIsClosed(bool status) { _isClosed = status; }
+	virtual bool ProcessMessage() = 0;
 };

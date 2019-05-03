@@ -16,12 +16,11 @@ private:
 public:
 	void onStartUp()
 	{
-		GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
-
+		/*GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
 
 		entity->addComponent<TransformComponent, const Vector3&, const Vector3&, const Vector3&>
 			(Vector3( 0.0f, 0.0f, 0.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
 		
-		entity->addComponent<RenderableComponent>(MeshImporter::import("gwen.obj"));
+		entity->addComponent<RenderableComponent>(MeshImporter::import("gwen.obj"));*/
 	}
 };
