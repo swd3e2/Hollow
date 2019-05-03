@@ -82,14 +82,14 @@ Mesh* MeshManager::CreateMesh(std::string filename, bool inversceTexCoords)
 			float deltaUV2y = thirdVertex->texCoord.y - firstVertex->texCoord.y;
 
 			//Find tangent using both tex coord edges and position edges
-			XMFLOAT3 tangent = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			Vector3 tangent(0.0f, 0.0f, 0.0f);
 			float r = 1.0f / (deltaUV1x * deltaUV2y - deltaUV2x * deltaUV1y);
 
 			tangent.x = (deltaUV2y * edge1.x - deltaUV1y * edge2.x) * r;
 			tangent.y = (deltaUV2y * edge1.y - deltaUV1y * edge2.y) * r;
 			tangent.z = (deltaUV2y * edge1.z - deltaUV1y * edge2.z) * r;
 
-			XMFLOAT3 bitangent = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			Vector3 bitangent(0.0f, 0.0f, 0.0f);
 			bitangent.x = (deltaUV1x * edge2.x - deltaUV2x * edge1.x) * r;
 			bitangent.y = (deltaUV1x * edge2.y - deltaUV2x * edge1.y) * r;
 			bitangent.z = (deltaUV1x * edge2.z - deltaUV2x * edge1.z) * r;

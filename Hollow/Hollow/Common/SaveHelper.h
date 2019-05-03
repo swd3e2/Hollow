@@ -108,8 +108,7 @@ public:
 			file.read((char*)filename, sizeof(char) * lenght);
 			entity->addComponent<RenderableComponent, ID3D11Device*, ID3D11DeviceContext*, Mesh*>
 				(
-					D3DRenderer::instance()->getDevice(),
-					D3DRenderer::instance()->getDeviceContext(), 
+					D3DRenderer::instance()->getContext(),
 					MeshManager::instance()->CreateMesh(filename, true)
 				);
 			delete filename;

@@ -6,7 +6,7 @@
 #include "Hollow/ECS/TransformComponent.h"
 #include "Hollow/ECS/PointLightComponent.h"
 #include "Hollow/ECS/Light.h"
-#include "Hollow/Math/Vector3.h"
+#include "Hollow/Importer/MeshImporter.h"
 
 using namespace DirectX;
 
@@ -16,17 +16,11 @@ private:
 public:
 	void onStartUp()
 	{
-		Light* light = entityManager.createEntity<Light>();
-		light->addComponent<PointLightComponent>(m_Renderer->getDevice());
-		light->addComponent<TransformComponent, Vector3&&, Vector3 &&, Vector3 &&>
-			({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		/*GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
 
-		Light* light2 = entityManager.createEntity<Light>();
-		light2->addComponent<PointLightComponent>(m_Renderer->getDevice());
-		light2->addComponent<TransformComponent, Vector3&&, Vector3 &&, Vector3 &&>
-			({ 0.0f, 2.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-
-		light2->getComponent<PointLightComponent>()->light.data.color[2] = 1.0f;
-		light2->getComponent<PointLightComponent>()->light.data.range = 5.f;
+		entity->addComponent<TransformComponent, const Vector3&, const Vector3&, const Vector3&>
+			(Vector3( 0.0f, 0.0f, 0.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+		
+		entity->addComponent<RenderableComponent>(MeshImporter::import("gwen.obj"));*/
 	}
 };

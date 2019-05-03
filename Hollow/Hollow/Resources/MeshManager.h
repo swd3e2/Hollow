@@ -7,10 +7,8 @@
 #include "Hollow/Core/CModule.h"
 #include "Utils/ObjParser.h"
 #include "Hollow/Math/Vector4.h"
-#include "Mesh.h"
 
 using namespace Hollow;
-using namespace DirectX;
 
 class HOLLOW_API MeshManager : public CModule<MeshManager>
 {

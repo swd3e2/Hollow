@@ -18,9 +18,9 @@ public:
 	}
 
 	template<class T, class ...ARGS>
-	T* addComponent(ARGS&& ...args)
+	T* addComponent(ARGS&& ... args)
 	{
-		return ComponentManager::instance()->create<T>(this, std::move(args)...);
+		return ComponentManager::instance()->create<T>(this, (std::forward<ARGS>(args), ...));
 	}
 
 	template<class T>

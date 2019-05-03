@@ -62,7 +62,7 @@ public:
 		destroy<T>(entity);
 
 		ComponentContainer<T>* container = getContainer<T>();
-		T* component = container->componentList.createObject(std::move(args)...);
+		T* component = container->componentList.createObject(std::forward<ARGS>(args)...);
 		componentMap[entity->entityId][componentTypeId] = component;
 
 		return component;

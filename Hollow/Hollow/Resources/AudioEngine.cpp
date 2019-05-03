@@ -74,10 +74,14 @@ namespace Hollow {
 		pXAudio2 = nullptr;
 		HRESULT hr;
 		if (FAILED(hr = XAudio2Create(&pXAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR)))
-			HW_ERROR("Audio Engine: can't create XAudio2 device!");
+		{
+			//HW_ERROR("Audio Engine: can't create XAudio2 device!");
+		}
 
 		if (FAILED(hr = pXAudio2->CreateMasteringVoice(&masteringVoice)))
-			HW_ERROR("Audio Engine: can't create mastering voice!");
+		{
+			//HW_ERROR("Audio Engine: can't create mastering voice!");
+		}
 	}
 
 	Sound* AudioEngine::CreateSoundResource(const char * strFileName)
@@ -126,7 +130,7 @@ namespace Hollow {
 		IXAudio2SourceVoice* pSourceVoice;
 
 		if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx)))
-			HW_ERROR("Audio Engine: can't create source voice!");
+			//HW_ERROR("Audio Engine: can't create source voice!");
 
 		// failing here :(
 		/*if (FAILED(hr = pSourceVoice->SubmitSourceBuffer(&buffer)))

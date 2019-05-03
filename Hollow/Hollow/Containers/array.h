@@ -40,7 +40,6 @@ namespace Hollow {
 			if (currentSize + 1 > capacity) {
 				this->resize(capacity * 2);
 			}
-
 			T* object = new (allocator->allocate()) T(std::forward<ARGS>(args)...);
 			if (object != nullptr) {
 				currentSize++;
