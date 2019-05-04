@@ -198,11 +198,10 @@ public:
 
 				if (renderable->mesh->getReady())
 				{
-					/*transformBuff.transform =
-					(Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
+					transformBuff.transform =
+					Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
 						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
-						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)).Transpose();*/
-					transformBuff.transform = Matrix4::Identity();
+						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z);
 					m_TransformConstantBuffer->Update(&transformBuff);
 					renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 

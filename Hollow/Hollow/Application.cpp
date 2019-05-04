@@ -18,10 +18,10 @@ Application::Application()
 	window = WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	m_Renderer->startUp();
 
-	renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
+	/*renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
 	renderPass->m_Camera = camera;
 
-	systemManager.AddSystem(renderPass);
+	systemManager.AddSystem(renderPass);*/
 	/*ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, camera);
 	layer->window = &*window;
 	m_LayerStack.AddLayer(layer);*/
@@ -45,8 +45,8 @@ void Application::Run()
 		dt = m_Timer.GetMilisecondsElapsed();
 		m_Timer.Restart();
 		window->ProcessMessage();
-		//static_cast<OGLRenderApi*>(m_Renderer)->clear();
-		renderPass->shadowMap->camera.Update(dt);
+		static_cast<OGLRenderApi*>(m_Renderer)->clear();
+		//renderPass->shadowMap->camera.Update(dt);
 		camera->Update(dt);
 
 		m_LayerStack.PreUpdate(dt);

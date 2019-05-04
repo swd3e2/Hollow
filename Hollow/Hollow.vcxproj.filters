@@ -72,12 +72,6 @@
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Layer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\LayerStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -129,9 +123,6 @@
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\EditorLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Memory\PoolAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -139,9 +130,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\ECS\EntityManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\ApplicationLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Memory\AllocatorUtils.h">
@@ -369,6 +357,21 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Graphics\ForwardRenderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Layers\ApplicationLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Layers\EditorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Layers\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Layers\LayerStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -488,5 +491,9 @@
     <ClCompile Include="Hollow\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

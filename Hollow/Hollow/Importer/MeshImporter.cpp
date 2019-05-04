@@ -37,8 +37,8 @@ Mesh* MeshImporter::import(const char* filename)
 
 				if (scene->mMeshes[i]->HasTextureCoords(0))
 				{
-					vertex.texCoord.x = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].x;
-					vertex.texCoord.y = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].y;
+					vertex.texCoord.x = scene->mMeshes[i]->mTextureCoords[0][j].x;
+					vertex.texCoord.y = scene->mMeshes[i]->mTextureCoords[0][j].y;
 				}
 				vertexData.push_back(vertex);
 			}

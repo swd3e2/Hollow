@@ -1,5 +1,17 @@
 #include "OGLWin32Window.h"
 
+void GLAPIENTRY
+MessageCallback(GLenum source,
+	GLenum type,
+	GLuint id,
+	GLenum severity,
+	GLsizei length,
+	const GLchar* message,
+	const void* userParam)
+{
+	HW_ERROR("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+}
+
 OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
 	: hInst(hInst)
 {
@@ -72,42 +84,71 @@ OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
 	PIXELFORMATDESCRIPTOR suggestedPixelFormat = {};
 	DescribePixelFormat(hdc, suggestedPixelFormatIndex, sizeof(PIXELFORMATDESCRIPTOR), &suggestedPixelFormat);
 	SetPixelFormat(hdc, suggestedPixelFormatIndex, &suggestedPixelFormat);
+	
 
-	HGLRC hrc = wglCreateContext(hdc);
-	if (wglMakeCurrent(hdc, hrc))
-	{
-		PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-
-		int IntAttribList[] = {
-			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-			WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-			WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
-			WGL_PIXEL_TYPE_ARB, WGL_PIXEL_TYPE_ARB,
-			0
-		};
-
-		float floatAttribList[] = { 0 };
-		wglChoosePixelFormatARB(hdc, IntAttribList, floatAttribList, 1, &suggestedPixelFormatIndex, &extendedPick);
-
-		PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-
-		GLint context_attributes[] = {
-		   WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-		   WGL_CONTEXT_MINOR_VERSION_ARB, 6,
-		   WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-		   0
-		};
-
-		hrc = wglCreateContextAttribsARB(hdc, 0, context_attributes);
-		wglMakeCurrent(hdc, hrc);
-	}
+	HGLRC tempContext = wglCreateContext(hdc);
+	wglMakeCurrent(hdc, tempContext);
 
 	GLenum error;
 	if (error = glewInit())
 	{
 		HW_ERROR("{}", glewGetErrorString(error));
 	}
+
+	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(tempContext);
+
+	DestroyWindow(hWnd);
+
+	const int pixelAttribs[] = {
+		WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+		WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+		WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+		WGL_COLOR_BITS_ARB, 32,
+		WGL_ALPHA_BITS_ARB, 8,
+		WGL_DEPTH_BITS_ARB, 24,
+		WGL_STENCIL_BITS_ARB, 8,
+		WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
+		WGL_SAMPLES_ARB, 4,
+		0
+	};
+
+	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUPWINDOW, /* WS_POPUP*/
+		windowRect.left, windowRect.top,
+		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
+		nullptr, nullptr, hInst, this);
+	
+	hdc = GetDC(hWnd);
+
+	int pixelFormatID;
+	UINT numFormats;
+	bool status = wglChoosePixelFormatARB(hdc, pixelAttribs, NULL, 1, &pixelFormatID, &numFormats);
+	PIXELFORMATDESCRIPTOR PFD;
+	DescribePixelFormat(hdc, pixelFormatID, sizeof(PFD), &PFD);
+	SetPixelFormat(hdc, pixelFormatID, &PFD);
+
+	int attribs[] =
+	{
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 6,
+		WGL_CONTEXT_FLAGS_ARB, 0,
+		0
+	};
+
+	HGLRC hrc = wglCreateContextAttribsARB(hdc, 0, attribs);
+
+	wglMakeCurrent(hdc, hrc);
+
+	const GLubyte* GLVersionString = glGetString(GL_VERSION);
+	const GLubyte* extensions_string = glGetString(GL_EXTENSIONS);
+	
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(MessageCallback, 0);
 
 	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 	UpdateWindow(hWnd);

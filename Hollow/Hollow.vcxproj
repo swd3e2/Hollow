@@ -30,7 +30,7 @@
     <ClInclude Include="Hollow\ECS\PointLightComponent.h" />
     <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
     <ClInclude Include="Hollow\ECS\TransformComponent.h" />
-    <ClInclude Include="Hollow\EditorLayer.h" />
+    <ClInclude Include="Hollow\Layers\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
     <ClInclude Include="Hollow\Events\Event.h" />
@@ -42,9 +42,10 @@
     <ClInclude Include="Hollow\Events\IEventListener.h" />
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
-    <ClInclude Include="Hollow\ApplicationLayer.h" />
+    <ClInclude Include="Hollow\Layers\ApplicationLayer.h" />
     <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h" />
     <ClInclude Include="Hollow\Graphics\DirectionalLight.h" />
+    <ClInclude Include="Hollow\Graphics\ForwardRenderSystem.h" />
     <ClInclude Include="Hollow\Graphics\RenderApiManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\IndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTarget.h" />
@@ -97,8 +98,8 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Renderable.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Texture.h" />
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
-    <ClInclude Include="Hollow\Layer.h" />
-    <ClInclude Include="Hollow\LayerStack.h" />
+    <ClInclude Include="Hollow\Layers\Layer.h" />
+    <ClInclude Include="Hollow\Layers\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />
@@ -171,6 +172,10 @@
     <ClCompile Include="Hollow\Common\Timer.cpp" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{7A539AFC-8BB5-4385-B38B-862BB095EDF6}</ProjectGuid>
@@ -225,7 +230,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -248,7 +253,7 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engin
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

@@ -6,12 +6,15 @@
 #include "OGLPrerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include <iostream>
+#include "Hollow/Common/Log.h"
 
 class HOLLOW_API OGLRenderApi : public RenderApi
 {
 private:
 	HWND* hwnd;
 	OGLWindowManager* windowManager;
+	unsigned int shaderProgram;
+	unsigned int VAO;
 public:
 	OGLRenderApi(int width, int height);
 
@@ -22,13 +25,7 @@ public:
 	virtual void SetTexture(UINT, RenderTarget*) override {}
 	virtual void SetShader(Shader*) override {}
 
-	void clear() 
-	{
-		glViewport(0, 0, 2560, 1440);
-		glClearColor(1.0f, 0.0f, 1.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		SwapBuffers(GetDC(*hwnd));
-	}
+	void clear();
 };
 
 #endif
