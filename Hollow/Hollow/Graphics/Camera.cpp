@@ -20,7 +20,7 @@ const Matrix4& Camera::GetViewMatrix() const
 	return viewMatrix;
 }
 
-const Matrix4 & Camera::GetProjectionMatrix() const
+const Matrix4& Camera::GetProjectionMatrix() const
 {
 	return projectionMatrix;
 }

@@ -52,6 +52,14 @@ D3D11DepthStencil::D3D11DepthStencil(int width, int height, DXGI_FORMAT format, 
 	if (hr != S_OK) {
 		//HW_ERROR("DepthStencil: Cant create ShaderResourceView!");
 	}
+
+	D3D11_DEPTH_STENCIL_DESC dssDesc;
+	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	dssDesc.DepthEnable = true;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	device->CreateDepthStencilState(&dssDesc, &m_DepthStencilState);
 }
 
 D3D11DepthStencil::~D3D11DepthStencil()

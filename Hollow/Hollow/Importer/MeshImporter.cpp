@@ -1,6 +1,6 @@
 #include "MeshImporter.h"
 
-Mesh* MeshImporter::import(const char* filename)
+Mesh* MeshImporter::import(const char* filename, bool async)
 {
 	Mesh* mesh = new Mesh();
 	mesh->filename = filename;
@@ -37,8 +37,8 @@ Mesh* MeshImporter::import(const char* filename)
 
 				if (scene->mMeshes[i]->HasTextureCoords(0))
 				{
-					vertex.texCoord.x = scene->mMeshes[i]->mTextureCoords[0][j].x;
-					vertex.texCoord.y = scene->mMeshes[i]->mTextureCoords[0][j].y;
+					vertex.texCoord.x = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].x;
+					vertex.texCoord.y = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].y;
 				}
 				vertexData.push_back(vertex);
 			}
@@ -82,8 +82,12 @@ Mesh* MeshImporter::import(const char* filename)
 		mesh->mNumSubmeshes = mesh->subMeshes.size();
 		mesh->setReady(true);
 	};
-
-	TaskManager::instance()->add(task);
+	if (async) {
+		TaskManager::instance()->add(task);
+	}
+	else {
+		task();
+	}
 
 	return mesh;
 }

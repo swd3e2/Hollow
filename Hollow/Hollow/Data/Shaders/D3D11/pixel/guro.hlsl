@@ -70,10 +70,10 @@ cbuffer MateriaBuffer : register(b4)
     Material material;
 }
 
-Texture2D ambient_map   : TEXUTRE : register(t0);
-Texture2D normal_map    : TEXUTRE : register(t1);
-Texture2D specular_map  : TEXUTRE : register(t2);
-Texture2D shadow_map : TEXUTRE : register(t3);
+Texture2D ambient_map   : TEXTUTRE : register(t0);
+Texture2D normal_map    : TEXTUTRE : register(t1);
+Texture2D specular_map  : TEXTUTRE : register(t2);
+Texture2D shadow_map	: TETXUTRE : register(t3);
 
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);

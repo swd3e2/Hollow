@@ -11,8 +11,6 @@ class HOLLOW_API D3D11Texture : public Texture
 {
 public:
 	~D3D11Texture();
-
-	void CreateTexture(int width, int height, void* data, int pitch);
 	void SetShaderResource(ID3D11ShaderResourceView* textureShaderResource);
 public:
 	ID3D11ShaderResourceView* m_TextureShaderResource;

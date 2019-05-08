@@ -6,12 +6,15 @@
 #include "D3D11Texture.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/TextureManager.h"
+#include "D3D11Context.h"
 
 class HOLLOW_API D3D11TextureManager : public TextureManager
 {
 public:
-	virtual Texture* CreateTextureInternal(TEXTURE_DESC*) override;
+	virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;
+	virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override;
 private:
+	D3D11_SRV_DIMENSION getTextureType(TextureType type);
 };
 
 #endif

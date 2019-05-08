@@ -23,9 +23,9 @@ public:
 		this->position.y = 0.0f;
 		this->position.z = 0.0f;
 
-		scale.x = 0.01f;
-		scale.y = 0.01f;
-		scale.z = 0.01f;
+		scale.x = 1.0f;
+		scale.y = 1.0f;
+		scale.z = 1.0f;
 
 		rotation.x = 0.0f;
 		rotation.y = 0.0f;

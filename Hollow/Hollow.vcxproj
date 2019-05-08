@@ -30,6 +30,8 @@
     <ClInclude Include="Hollow\ECS\PointLightComponent.h" />
     <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
     <ClInclude Include="Hollow\ECS\TransformComponent.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
+    <ClInclude Include="Hollow\Graphics\SkyMap.h" />
     <ClInclude Include="Hollow\Layers\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
@@ -230,7 +232,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>

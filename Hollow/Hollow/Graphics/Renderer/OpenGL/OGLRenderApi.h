@@ -7,6 +7,8 @@
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include <iostream>
 #include "Hollow/Common/Log.h"
+#include "Hollow/Math/Matrix4.h"
+#include "Hollow/Graphics/Camera.h"
 
 class HOLLOW_API OGLRenderApi : public RenderApi
 {
@@ -15,6 +17,11 @@ private:
 	OGLWindowManager* windowManager;
 	unsigned int shaderProgram;
 	unsigned int VAO;
+
+	int viewMatrixUniformId;
+	int projectionMatrixUniformId;
+public:
+	Camera* camera;
 public:
 	OGLRenderApi(int width, int height);
 

@@ -2,6 +2,12 @@
 
 #include <memory>
 
+enum TextureType
+{
+	TEXTURE2D,
+	TEXTURE_CUBE
+};
+
 class TEXTURE_DESC
 {
 public:

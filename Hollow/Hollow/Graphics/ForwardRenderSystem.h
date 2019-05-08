@@ -20,6 +20,7 @@
 #include "Hollow/Resources/Mesh/Mesh.h"
 #include "Renderer/DirectX/D3D11Context.h"
 #include "ShaderManager.h"
+#include "SkyMap.h"
 
 using namespace DirectX;
 
@@ -65,6 +66,7 @@ public:
 	ShadowMap*				shadowMap;
 	Camera*					m_Camera;
 	D3D11DepthStencil*		m_ShadowDepthStencil;
+	SkyMap*					skyMap;
 private:
 	D3D11RenderApi* renderer;
 private:
@@ -187,6 +189,17 @@ public:
 	void DrawScene()
 	{
 		renderer->SetRenderTarget(m_RenderTarget, m_DepthStencil);
+
+		Matrix4 viewMatrx = m_Camera->GetViewMatrix();
+		viewMatrx.md[0][3] = 0.0f;
+		viewMatrx.md[1][3] = 0.0f;
+		viewMatrx.md[2][3] = 0.0f;
+		m_wvp.WVP = m_Camera->GetProjectionMatrix() * viewMatrx;
+
+		m_WVPConstantBuffer->Update(&m_wvp);
+		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
+		DrawObject(skyMap->mesh->subMeshes[0]);
+
 		updateWVP(m_Camera);
 
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList)

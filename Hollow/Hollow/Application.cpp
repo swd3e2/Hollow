@@ -6,7 +6,7 @@ Application::Application()
 	Hollow::Log::Init();
 
 	camera = new Camera(true);
-	camera->SetProjectionValues(100.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
+	camera->SetProjectionValues(90.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
 	eventSystem.startUp();
 	inputManager.startUp();
@@ -16,15 +16,20 @@ Application::Application()
 
 	m_Renderer = renderApiManager.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	window = WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	static_cast<OGLRenderApi*>(m_Renderer)->camera = camera;
 	m_Renderer->startUp();
-
-	/*renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
+#ifdef D3D11
+	renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
 	renderPass->m_Camera = camera;
+	systemManager.AddSystem(renderPass);
+#endif
 
-	systemManager.AddSystem(renderPass);*/
 	/*ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, camera);
 	layer->window = &*window;
 	m_LayerStack.AddLayer(layer);*/
+
+	
+	renderPass->skyMap = new SkyMap(10, 10);
 }
 
 Application::~Application()
@@ -45,8 +50,12 @@ void Application::Run()
 		dt = m_Timer.GetMilisecondsElapsed();
 		m_Timer.Restart();
 		window->ProcessMessage();
+#ifdef OPENGL
 		static_cast<OGLRenderApi*>(m_Renderer)->clear();
-		//renderPass->shadowMap->camera.Update(dt);
+#endif
+#ifdef D3D11
+		renderPass->shadowMap->camera.Update(dt);
+#endif
 		camera->Update(dt);
 
 		m_LayerStack.PreUpdate(dt);
@@ -64,3 +73,4 @@ void Application::Run()
 		m_Timer.Stop();
 	}
 }
+

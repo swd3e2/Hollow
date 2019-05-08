@@ -20,7 +20,9 @@ public:
 	~TextureManager();
 
 	Texture* CreateTextureFromFile(const std::string& filename);
-	virtual Texture* CreateTextureInternal(TEXTURE_DESC*) = 0;
+
+	virtual Texture* Create2dTexture(TEXTURE_DESC* desc) = 0;
+	virtual Texture* Create3dTexture(TEXTURE_DESC** desc) = 0;
 };
 
 #endif

@@ -78,8 +78,8 @@ void D3D11RenderApi::startUp()
 	m_rasterizerState = new D3D11RasterizerState();
 	deviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
 
-	m_SamplerStateWrap = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
 	m_SamplerStateClamp = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
+	m_SamplerStateWrap = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
 
 	SetSampler(0, m_SamplerStateClamp);
 	SetSampler(1, m_SamplerStateWrap);
@@ -166,6 +166,7 @@ void D3D11RenderApi::SetDepthStencil(D3D11DepthStencil* depthStencil)
 void D3D11RenderApi::SetRenderTarget(D3D11RenderTarget* renderTarget, D3D11DepthStencil* depthStencil)
 {
 	context->getDeviceContext()->OMSetRenderTargets(1, renderTarget->GetAddressOfRenderTaget(), depthStencil->GetDepthStencilView());
+	context->getDeviceContext()->OMSetDepthStencilState(depthStencil->GetDepthStencilState(), 0);
 }
 
 void D3D11RenderApi::SetViewPort(int numViewPorts, D3D11_VIEWPORT* vp)

@@ -18,7 +18,7 @@
 class HOLLOW_API MeshImporter
 {
 public:
-	static Mesh* import(const char* filename);
+	static Mesh* import(const char* filename, bool async = true);
 };
 
 #endif

@@ -16,7 +16,7 @@ Texture* TextureManager::CreateTextureFromFile(const std::string& filename)
 		return textureList[filename];
 	}
 
-		std::string pathToFile = filename;
+	std::string pathToFile = filename;
 	pathToFile = baseTexturePapth + filename;
 
 	TEXTURE_DESC* textureDesc = FreeImgImporter::import(pathToFile.c_str());
@@ -25,7 +25,7 @@ Texture* TextureManager::CreateTextureFromFile(const std::string& filename)
 		return nullptr;
 	}
 
-	Texture* tex = CreateTextureInternal(textureDesc);
+	Texture* tex = Create2dTexture(textureDesc);
 
 	textureList[filename] = tex;
 
