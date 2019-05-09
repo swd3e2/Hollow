@@ -6,6 +6,7 @@
 #include "RenderTarget.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "ShaderProgram.h"
 
 class HOLLOW_API RenderApi : public CModule<RenderApi>
 {
@@ -16,5 +17,5 @@ public:
 	virtual void SetVertexBuffer(VertexBuffer*) = 0;
 	virtual void SetTexture(UINT, Texture*) = 0;
 	virtual void SetTexture(UINT, RenderTarget*) = 0;
-	virtual void SetShader(Shader*) = 0;
+	virtual void SetShader(ShaderProgram*) = 0;
 };

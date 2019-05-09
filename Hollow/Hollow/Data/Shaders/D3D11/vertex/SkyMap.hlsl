@@ -24,7 +24,7 @@ struct VertexShaderInput
 	float3 bitangent : BITANGENT;
 };
 
-SKYMAP_VS_OUTPUT VSMain(VertexShaderInput input)
+SKYMAP_VS_OUTPUT main(VertexShaderInput input)
 {
 	SKYMAP_VS_OUTPUT output = (SKYMAP_VS_OUTPUT)0;
 	

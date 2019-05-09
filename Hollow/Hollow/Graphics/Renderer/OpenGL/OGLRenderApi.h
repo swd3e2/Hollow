@@ -30,7 +30,7 @@ public:
 	virtual void SetVertexBuffer(VertexBuffer*) override {}
 	virtual void SetTexture(UINT, Texture*) override {}
 	virtual void SetTexture(UINT, RenderTarget*) override {}
-	virtual void SetShader(Shader*) override {}
+	virtual void SetShader(ShaderProgram*) override {}
 
 	void clear();
 };

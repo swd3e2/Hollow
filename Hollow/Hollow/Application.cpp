@@ -30,6 +30,7 @@ Application::Application()
 
 	
 	renderPass->skyMap = new SkyMap(10, 10);
+	renderPass->water = new Water();
 }
 
 Application::~Application()

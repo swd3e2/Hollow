@@ -12,7 +12,8 @@ Mesh* MeshImporter::import(const char* filename, bool async)
 			aiProcess_CalcTangentSpace |
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
-			aiProcess_SortByPType);
+			aiProcess_SortByPType | 
+			aiProcess_CalcTangentSpace);
 
 		if (!scene) return;
 
@@ -39,6 +40,15 @@ Mesh* MeshImporter::import(const char* filename, bool async)
 				{
 					vertex.texCoord.x = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].x;
 					vertex.texCoord.y = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].y;
+				}
+				if (scene->mMeshes[i]->HasTangentsAndBitangents())
+				{
+					vertex.tangent.x = scene->mMeshes[i]->mTangents[j].x;
+					vertex.tangent.y = scene->mMeshes[i]->mTangents[j].y;
+					vertex.tangent.z = scene->mMeshes[i]->mTangents[j].z;
+					vertex.bitangent.x = scene->mMeshes[i]->mBitangents[j].x;
+					vertex.bitangent.y = scene->mMeshes[i]->mBitangents[j].y;
+					vertex.bitangent.z = scene->mMeshes[i]->mBitangents[j].z;
 				}
 				vertexData.push_back(vertex);
 			}

@@ -21,12 +21,18 @@
 #include "Renderer/DirectX/D3D11Context.h"
 #include "ShaderManager.h"
 #include "SkyMap.h"
+#include "Water.h"
+#include "Renderer/DirectX/D3D11ShaderManager.h"
 
 using namespace DirectX;
 
 struct WVP
 {
 	Matrix4 WVP;
+	float gMaxTessDistance;
+	float gMinTessDistance;
+	float gMinTessFactor;
+	float gMaxTessFactor;
 };
 
 struct WorldViewProjection
@@ -35,6 +41,7 @@ struct WorldViewProjection
 	Matrix4 View;
 	Matrix4 Projection;
 	Vector3 cameraPosition;
+	float offset;
 };
 
 
@@ -60,6 +67,7 @@ struct LightInfo
 class ForwardRenderSystem : public Hollow::System<ForwardRenderSystem>
 {
 public:
+	Water*					water;
 	LightInfo				pointLights;
 	PointLight*				pointLight;
 	D3D11RenderTarget*		m_SecondRenderTarget;
@@ -142,6 +150,8 @@ public:
 		svp.TopLeftY = 0;
 
 		renderer->SetViewPort(1, &vp);
+
+		m_worldViewProjection.offset = 0.0f;
 	}
 
 	virtual void PreUpdate(float_t dt)
@@ -174,10 +184,18 @@ public:
 		renderer->SetContantBuffer(6, lightInfoBuffer);
 
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
+
+		renderer->SetRenderTarget(m_RenderTarget, m_DepthStencil);
 	}
 
 	virtual void Update(float_t dt)
 	{
+		m_worldViewProjection.offset += dt * 0.00001f;
+		m_worldViewProjection.offset = fmod(m_worldViewProjection.offset, 1);
+		DrawSkyMap();
+		updateWVP(m_Camera);
+
+		DrawWater();
 		DrawScene();
 	}
 
@@ -188,20 +206,6 @@ public:
 
 	void DrawScene()
 	{
-		renderer->SetRenderTarget(m_RenderTarget, m_DepthStencil);
-
-		Matrix4 viewMatrx = m_Camera->GetViewMatrix();
-		viewMatrx.md[0][3] = 0.0f;
-		viewMatrx.md[1][3] = 0.0f;
-		viewMatrx.md[2][3] = 0.0f;
-		m_wvp.WVP = m_Camera->GetProjectionMatrix() * viewMatrx;
-
-		m_WVPConstantBuffer->Update(&m_wvp);
-		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
-		DrawObject(skyMap->mesh->subMeshes[0]);
-
-		updateWVP(m_Camera);
-
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList)
 		{
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<RenderableComponent>())
@@ -253,13 +257,13 @@ public:
 				renderer->FreeShaderResource(0);
 			}
 			if (object->material->normal_texture != nullptr) {
-				renderer->SetTexture(0, object->material->normal_texture);
+				renderer->SetTexture(1, object->material->normal_texture);
 			}
 			else {
 				renderer->FreeShaderResource(1);
 			}
 			if (object->material->specular_texture != nullptr) {
-				renderer->SetTexture(0, object->material->specular_texture);
+				renderer->SetTexture(2, object->material->specular_texture);
 			}
 			else {
 				renderer->FreeShaderResource(2);
@@ -276,5 +280,31 @@ public:
 		renderer->SetVertexBuffer(object->vBuffer);
 		renderer->SetIndexBuffer(object->iBuffer);
 		renderer->DrawIndexed(object->iBuffer->getSize());
+	}
+
+	void DrawSkyMap()
+	{
+		Matrix4 viewMatrx = m_Camera->GetViewMatrix();
+		viewMatrx.md[0][3] = 0.0f;
+		viewMatrx.md[1][3] = 0.0f;
+		viewMatrx.md[2][3] = 0.0f;
+		m_wvp.WVP = m_Camera->GetProjectionMatrix() * viewMatrx;
+
+		m_WVPConstantBuffer->Update(&m_wvp);
+		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
+		DrawObject(skyMap->mesh->subMeshes[0]);
+	}
+
+	void DrawWater()
+	{
+		D3D11Context& context = renderer->getContext();
+		context.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+		context.getDeviceContext()->HSSetShader(static_cast<D3D11HullShader*>(water->mesh->subMeshes[0]->material->shader->getHullShader())->GetShader(), NULL, 0);
+		context.getDeviceContext()->DSSetShader(static_cast<D3D11DomainShader*>(water->mesh->subMeshes[0]->material->shader->getDomainShader())->GetShader(), NULL, 0);
+		context.getDeviceContext()->GSSetShader(NULL, NULL, 0);
+		DrawObject(water->mesh->subMeshes[0]);
+		context.getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		context.getDeviceContext()->HSSetShader(NULL, NULL, 0);
+		context.getDeviceContext()->DSSetShader(NULL, NULL, 0);
 	}
 };

@@ -11,7 +11,6 @@ private:
 	ID3D11RasterizerState* m_RasterizerState;
 public:
 	D3D11RasterizerState();
-
 	ID3D11RasterizerState* GetRasterizerState();
 };
 

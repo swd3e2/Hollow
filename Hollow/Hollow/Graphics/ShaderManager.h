@@ -7,16 +7,18 @@
 #include "Renderer/Base/Shader.h"
 #include <unordered_map>
 #include "Hollow/Platform.h"
+#include "Renderer/Base/ShaderProgram.h"
 
 class ShaderManager : public CModule<ShaderManager>
 {
 protected:
-	std::unordered_map<std::string, Shader*> shaders;
+	std::unordered_map<std::string, ShaderProgram*> shaders;
 public:
 	ShaderManager();
 	~ShaderManager();
 
-	Shader* getShader(const std::string& name) { return shaders[name]; }
+	ShaderProgram* getShader(const std::string& name) { return shaders[name]; }
+	virtual Shader* compileShader(ShaderType type, const std::string& path) = 0;
 };
 
 #endif

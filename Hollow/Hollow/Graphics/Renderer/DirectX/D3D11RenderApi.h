@@ -37,7 +37,7 @@ public:
 	virtual void SetVertexBuffer(VertexBuffer* buffer) override;
 	virtual void SetTexture(UINT slot, Texture* texture) override;
 	virtual void SetTexture(UINT slot, RenderTarget* renderTarget) override;
-	virtual void SetShader(Shader* shader) override;
+	virtual void SetShader(ShaderProgram* shader) override;
 
 	virtual void startUp() override;
 

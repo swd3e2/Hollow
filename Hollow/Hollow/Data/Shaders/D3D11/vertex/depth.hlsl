@@ -34,7 +34,7 @@ struct VertexShaderInput
 };
 
 
-VertexShaderOutput VSMain(VertexShaderInput input)
+VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
     output.pos = float4(input.pos, 1.0f);

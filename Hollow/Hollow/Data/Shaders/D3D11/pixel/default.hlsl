@@ -12,8 +12,7 @@ Texture2D specular_map  : TEXUTRE: register(t2);
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);
 
-float4 PSMain(PixelShaderInput input) : SV_TARGET
+float4 main(PixelShaderInput input) : SV_TARGET
 {
-	float4 color = ambient_map.Sample(SampleTypeWrap, input.texCoord);
-	return color;
+	return ambient_map.Sample(SampleTypeWrap, input.texCoord);
 }

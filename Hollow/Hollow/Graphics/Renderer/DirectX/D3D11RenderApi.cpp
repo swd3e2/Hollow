@@ -93,6 +93,7 @@ void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)
 {
 	D3D11Texture* d3dTexture = static_cast<D3D11Texture*>(texture);
 	context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
+	context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 }
 
 void D3D11RenderApi::SetTexture(UINT slot, RenderTarget* renderTarget)
@@ -101,12 +102,11 @@ void D3D11RenderApi::SetTexture(UINT slot, RenderTarget* renderTarget)
 	context->getDeviceContext()->PSSetShaderResources(slot, 1, d3dRenderTarget->GetAddressOfShaderResourceView());
 }
 
-void D3D11RenderApi::SetShader(Shader* shader)
+void D3D11RenderApi::SetShader(ShaderProgram* shader)
 {
-	D3D11Shader* d3dShader = static_cast<D3D11Shader*>(shader);
-	context->getDeviceContext()->VSSetShader(d3dShader->getVertexShader()->GetShader(), NULL, 0);
-	context->getDeviceContext()->IASetInputLayout(d3dShader->getVertexShader()->GetInputLayout());
-	context->getDeviceContext()->PSSetShader(d3dShader->getPixelShader()->GetShader(), NULL, 0);
+	context->getDeviceContext()->VSSetShader(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetShader(), NULL, 0);
+	context->getDeviceContext()->IASetInputLayout(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetInputLayout());
+	context->getDeviceContext()->PSSetShader(static_cast<D3D11PixelShader*>(shader->getPixelShader())->GetShader(), NULL, 0);
 }
 
 void D3D11RenderApi::FreeShaderResource(UINT slot)
@@ -134,6 +134,8 @@ void D3D11RenderApi::SetContantBuffer(UINT slot, D3D11ConstantBuffer* cb)
 {
 	context->getDeviceContext()->VSSetConstantBuffers(slot, 1, cb->GetAddressOf());
 	context->getDeviceContext()->PSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+	context->getDeviceContext()->HSSetConstantBuffers(slot, 1, cb->GetAddressOf());
+	context->getDeviceContext()->DSSetConstantBuffers(slot, 1, cb->GetAddressOf());
 }
 
 void D3D11RenderApi::SetIndexBuffer(IndexBuffer* buffer)
@@ -156,6 +158,7 @@ void D3D11RenderApi::ClearRenderTargetView(D3D11RenderTarget* renderTarget, floa
 void D3D11RenderApi::SetSampler(int slot, D3D11SamplerState* sampler)
 {
 	context->getDeviceContext()->PSSetSamplers(slot, 1, sampler->GetSamplerState());
+	context->getDeviceContext()->DSSetSamplers(slot, 1, sampler->GetSamplerState());
 }
 
 void D3D11RenderApi::SetDepthStencil(D3D11DepthStencil* depthStencil)

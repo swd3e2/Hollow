@@ -66,7 +66,7 @@ struct VertexShaderInput
     float3 bitangent : BITANGENT;
 };
 
-PixelShaderOutput VSMain(VertexShaderInput input)
+PixelShaderOutput main(VertexShaderInput input)
 {
     PixelShaderOutput output;
 

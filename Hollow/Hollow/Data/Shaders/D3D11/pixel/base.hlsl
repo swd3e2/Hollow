@@ -141,7 +141,7 @@ float3 calculateNormals(float2 texCoord, float3 normal, float3 tangent, float3 b
     return mul(normalMap, texSpace);
 }
 
-float4 PSMain(PixelShaderInput input) : SV_TARGET
+float4 main(PixelShaderInput input) : SV_TARGET
 {
     float4 color;
     if (material.hasDiffuseTexture) {

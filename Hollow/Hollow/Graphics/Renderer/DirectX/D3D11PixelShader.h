@@ -3,18 +3,27 @@
 #ifndef HW_D3D11_PIXEL_SHADER_H
 #define HW_D3D11_PIXEL_SHADER_H
 
-#include "D3D11IShader.h"
 #include <string>
 #include "D3D11Prerequisites.h"
+#include "Hollow/Graphics/Renderer/Base/Shader.h"
 
-class HOLLOW_API D3D11PixelShader : public D3D11IShader
+class HOLLOW_API D3D11PixelShader : public Shader
 {
-public:
-	D3D11PixelShader(const std::string filename);
-	ID3D11PixelShader* GetShader();
 private:
-	ID3D11PixelShader* pixelShader;
-	ID3DBlob* pixelShaderBlob;
+	friend class D3D11ShaderManager;
+public:
+	D3D11PixelShader() :
+		Shader(ShaderType::PIXEL)
+	{}
+
+	~D3D11PixelShader() { 
+		SAFE_RELEASE(m_Shader);
+		SAFE_RELEASE(m_ShaderBlob);
+	}
+	inline ID3D11PixelShader* GetShader() { return m_Shader; }
+private:
+	ID3D11PixelShader* m_Shader;
+	ID3DBlob* m_ShaderBlob;
 };
 
 #endif

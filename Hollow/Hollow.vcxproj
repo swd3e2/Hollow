@@ -30,6 +30,12 @@
     <ClInclude Include="Hollow\ECS\PointLightComponent.h" />
     <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
     <ClInclude Include="Hollow\ECS\TransformComponent.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ComputeShader.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11DomainShader.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11GeometryShader.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11HullShader.h" />
+    <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
     <ClInclude Include="Hollow\Graphics\SkyMap.h" />
     <ClInclude Include="Hollow\Layers\EditorLayer.h" />
@@ -55,7 +61,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\VertexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11BlendState.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Context.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11GeometryShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11HardwareBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11IndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Prerequisites.h" />
@@ -64,7 +69,6 @@
     <ClInclude Include="Hollow\Graphics\Camera.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Shader.h" />
     <ClInclude Include="Hollow\Graphics\HardwareBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11WindowManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLPrerequisites.h" />
@@ -120,7 +124,6 @@
     <ClInclude Include="Hollow\Common\Console.h" />
     <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstantBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11IShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
@@ -143,7 +146,6 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11DepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11HardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11IndexBuffer.cpp" />
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RasterizerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderApi.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTarget.cpp" />
@@ -151,7 +153,6 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11SamplerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.cpp" />
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.cpp" />
     <ClCompile Include="Hollow\Graphics\HardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />

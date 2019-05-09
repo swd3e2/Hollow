@@ -78,7 +78,7 @@ Texture2D shadow_map	: TETXUTRE : register(t3);
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);
 
-float4 PSMain(PixelShaderInput input) : SV_TARGET
+float4 main(PixelShaderInput input) : SV_TARGET
 {
     float4 color;
     if (material.hasDiffuseTexture) {

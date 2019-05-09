@@ -37,7 +37,7 @@ public:
 	Texture* diffuse_texture;
 	Texture* normal_texture;
 	Texture* specular_texture;
-	Shader* shader;
+	ShaderProgram* shader;
 
 	Material()
 	{
