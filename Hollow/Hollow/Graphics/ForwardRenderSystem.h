@@ -23,6 +23,8 @@
 #include "SkyMap.h"
 #include "Water.h"
 #include "Renderer/DirectX/D3D11ShaderManager.h"
+#include "Renderer/DirectX/D3D11Texture.h"
+#include "Hollow/Input/InputManager.h"
 
 using namespace DirectX;
 
@@ -81,7 +83,10 @@ private:
 	WVP						m_wvp;
 	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
-	D3D11RasterizerState*	m_rasterizerState;
+	D3D11RasterizerState* m_cullNone;
+	D3D11RasterizerState* m_Wireframe;
+	D3D11RasterizerState* m_cullBack;
+
 	// light sources
 	LightMatrices			lightMatrices;
 
@@ -107,7 +112,12 @@ private:
 	D3D11_VIEWPORT vp;
 	D3D11_VIEWPORT svp;
 
-	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
+	const UINT uavs = 0;
+
+	ID3D11UnorderedAccessView* const uav[1] = { NULL };
+
+	int rasterizer = 0;
+
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -121,7 +131,10 @@ public:
 		m_SecondRenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
 		m_BlendStateTransparancy = new D3D11BlendState();
-		m_rasterizerState = new D3D11RasterizerState();
+
+		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
+		m_Wireframe = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_WIREFRAME);
+		m_cullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
 		m_ShadowDepthStencil = new D3D11DepthStencil(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
@@ -152,17 +165,29 @@ public:
 		renderer->SetViewPort(1, &vp);
 
 		m_worldViewProjection.offset = 0.0f;
+		renderer->SetRasterizerState(m_cullNone);
 	}
 
 	virtual void PreUpdate(float_t dt)
 	{
+		if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F1))
+		{
+			renderer->SetRasterizerState(m_cullBack);
+		}
+		else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F2))
+		{
+			renderer->SetRasterizerState(m_cullNone);
+		}
+		else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F3))
+		{
+			renderer->SetRasterizerState(m_Wireframe);
+		}
 		renderer->ClearRenderTargetView(m_RenderTarget, (float*)ClearColor);
 		renderer->ClearRenderTargetView(&shadowMap->shadowRenderTarget, (float*)ClearColor);
 
 		renderer->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
 
 		// Setting states 
-		renderer->SetRasterizerState(m_rasterizerState);
 		renderer->SetDepthStencil(m_DepthStencil);
 
 		int j = 0;
@@ -298,11 +323,23 @@ public:
 	void DrawWater()
 	{
 		D3D11Context& context = renderer->getContext();
-		context.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+		context.getDeviceContext()->CSSetShader(static_cast<D3D11ComputeShader*>(water->computeShader)->GetShader(), NULL, 0);
+		
+		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, &static_cast<D3D11Texture*>(water->tex)->m_UnorderedAccessView, &uavs);
+		context.getDeviceContext()->Dispatch(12, 1, 1);
+		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, uav, &uavs);
+
+		context.getDeviceContext()->PSSetShaderResources(5, 1, &static_cast<D3D11Texture*>(water->tex)->m_TextureShaderResource);
+
+		/*context.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 		context.getDeviceContext()->HSSetShader(static_cast<D3D11HullShader*>(water->mesh->subMeshes[0]->material->shader->getHullShader())->GetShader(), NULL, 0);
 		context.getDeviceContext()->DSSetShader(static_cast<D3D11DomainShader*>(water->mesh->subMeshes[0]->material->shader->getDomainShader())->GetShader(), NULL, 0);
-		context.getDeviceContext()->GSSetShader(NULL, NULL, 0);
+		context.getDeviceContext()->GSSetShader(NULL, NULL, 0);*/
+
 		DrawObject(water->mesh->subMeshes[0]);
+
+		renderer->FreeShaderResource(5);
+
 		context.getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		context.getDeviceContext()->HSSetShader(NULL, NULL, 0);
 		context.getDeviceContext()->DSSetShader(NULL, NULL, 0);

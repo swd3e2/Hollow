@@ -34,6 +34,7 @@ VertexShaderOutput main(VertexShaderInput input)
 	VertexShaderOutput output;
 
 	output.pos = float4(input.pos, 1.0f);
+	output.pos = mul(output.pos, WVP);
 	output.texCoord = input.texCoord;
 
 	return output;

@@ -12,7 +12,7 @@ public:
 	bool vSync = true;
 private:					
 	D3D11Context*				context;
-	D3D11RasterizerState*		m_rasterizerState;
+
 	int							width;
 	int							height;
 

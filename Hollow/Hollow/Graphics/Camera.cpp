@@ -55,10 +55,16 @@ void Camera::Update(double dt)
 		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT))
 		{
 			rotation.x -= InputManager::my * 0.0006f * dt;
+			if (rotation.x > Math::HALF_PI - bias)
+			{	
+				rotation.x = Math::HALF_PI - bias;
+			} else if (rotation.x < -Math::HALF_PI + bias)
+			{
+				rotation.x = -Math::HALF_PI + bias;
+			}
 			rotation.y -= InputManager::mx * 0.0006f * dt;
 			UpdateViewMatrix();
 		}
-		UpdateViewMatrix();
 	}
 }
 

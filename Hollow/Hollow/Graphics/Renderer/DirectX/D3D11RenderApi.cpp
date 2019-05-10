@@ -75,9 +75,6 @@ void D3D11RenderApi::startUp()
 
 	setStartedUp();
 
-	m_rasterizerState = new D3D11RasterizerState();
-	deviceContext->RSSetState(m_rasterizerState->GetRasterizerState());
-
 	m_SamplerStateClamp = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
 	m_SamplerStateWrap = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
 
@@ -94,6 +91,7 @@ void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)
 	D3D11Texture* d3dTexture = static_cast<D3D11Texture*>(texture);
 	context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 	context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
+	context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
 }
 
 void D3D11RenderApi::SetTexture(UINT slot, RenderTarget* renderTarget)

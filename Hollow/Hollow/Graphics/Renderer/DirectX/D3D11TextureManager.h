@@ -13,8 +13,6 @@ class HOLLOW_API D3D11TextureManager : public TextureManager
 public:
 	virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;
 	virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override;
-private:
-	D3D11_SRV_DIMENSION getTextureType(TextureType type);
 };
 
 #endif

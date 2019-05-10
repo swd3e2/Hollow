@@ -53,9 +53,9 @@ DomainOut main(PatchTess patchTess,
 		BarycentricCoordinates.z * TrianglePatch[2].pos;
 
 	dout.texCoord = BarycentricCoordinates.x * TrianglePatch[0].texCoord + BarycentricCoordinates.y * TrianglePatch[1].texCoord + BarycentricCoordinates.z * TrianglePatch[2].texCoord;
-	dout.texCoord += offset;
-	float fDisplacement = normal_map.SampleLevel(SamplerTypeWrap, dout.texCoord, 0).r;
-	vWorldPos += float4(0.0f, -1.0f, 0.0f, 0.0f) * fDisplacement;
+	//dout.texCoord += offset;
+	/*float fDisplacement = normal_map.SampleLevel(SamplerTypeWrap, dout.texCoord, 0).r;
+	vWorldPos += float4(0.0f, -1.0f, 0.0f, 0.0f) * fDisplacement;*/
 	dout.pos = mul(float4( vWorldPos.xyz, 1.0f ), WVP);
 
 	return dout;

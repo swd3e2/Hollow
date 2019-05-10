@@ -23,15 +23,39 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	textureDesc.CPUAccessFlags = 0;
 	textureDesc.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = desc->mInitialData;
-	initData.SysMemPitch = desc->pitch;
-	initData.SysMemSlicePitch = 0;
+	// If texture is created for compute shader
+	if (desc->unorderedAccess)
+	{
+		textureDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
+	}
 
-	ID3D11Texture2D* m_texture;
-	// Create the empty texture.
-	if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
-		//HW_ERROR("D3DTexture: Can't create 2D texture");
+	ID3D11Texture2D* m_texture = nullptr;
+
+	if (desc->mInitialData != nullptr) {
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = desc->mInitialData;
+		initData.SysMemPitch = desc->pitch;
+		initData.SysMemSlicePitch = 0;
+
+		if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
+			//HW_ERROR("D3DTexture: Can't create 2D texture");
+		}
+	} else {
+		if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &m_texture))) {
+			//HW_ERROR("D3DTexture: Can't create 2D texture");
+		}
+	}
+
+	if (desc->unorderedAccess)
+	{
+		D3D11_UNORDERED_ACCESS_VIEW_DESC descUAV;
+		ZeroMemory(&descUAV, sizeof(descUAV));
+		descUAV.Format = textureDesc.Format;
+		descUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+		descUAV.Texture2D.MipSlice = 0;
+		if (FAILED(device->CreateUnorderedAccessView(m_texture, &descUAV, &texture->m_UnorderedAccessView))) {
+			//HW_ERROR("D3DTexture: Can't create unorderered access view");
+		}
 	}
 
 	// Setup the shader resource view description.
@@ -41,7 +65,6 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	// Create the shader resource view for the texture.
 	if (device->CreateShaderResourceView(m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 		//HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 	}

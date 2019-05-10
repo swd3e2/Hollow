@@ -13,12 +13,12 @@ cbuffer ConstantBuffer : register(b1)
 	float offset;
 }
 
-Texture2D normal_map    : TEXTUTRE: register(t0);
-SamplerState SamplerTypeWrap : register(s1);
+Texture2D normal_map    : TEXTUTRE: register(t5);
+SamplerState SamplerTypeWrap : register(s0);
 
 float4 main(DomainOut input) : SV_TARGET
 {
-	float displacment = normal_map.SampleLevel(SamplerTypeWrap, input.texCoord + offset, 0).r;
+	float displacment = normal_map.Sample(SamplerTypeWrap, input.texCoord);
 
-	return float4(displacment,0.0f,0.0f,0.0f);
+	return displacment;
 }

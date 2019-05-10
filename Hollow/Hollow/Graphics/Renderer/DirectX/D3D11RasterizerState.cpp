@@ -2,17 +2,17 @@
 #include "D3D11RenderApi.h"
 #include "D3D11Context.h"
 
-D3D11RasterizerState::D3D11RasterizerState()
+D3D11RasterizerState::D3D11RasterizerState(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode)
 {
 	HRESULT hr = S_OK;
 
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	rasterizerDesc.AntialiasedLineEnable = false;
-	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	rasterizerDesc.CullMode = cullMode;
 	rasterizerDesc.DepthBias = 0.0001f;
 	rasterizerDesc.DepthBiasClamp = 0;
 	rasterizerDesc.DepthClipEnable = true;
-	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rasterizerDesc.FillMode = fillMode;
 	rasterizerDesc.FrontCounterClockwise = false;
 	rasterizerDesc.MultisampleEnable = false;
 	rasterizerDesc.ScissorEnable = false;

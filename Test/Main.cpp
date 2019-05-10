@@ -1,14 +1,11 @@
 #include <windows.h>
-#include <cmath>
 #include <iostream>
-#include "Hollow/Math/Matrix3.h"
-#include "Hollow/Math/Matrix4.h"
-#include "Hollow/Math/Vector4.h"
-
+#include "fft.h"
 
 int main() 
 {
-
+	cFFT fft(16);
+	fft.reverse();
 	system("pause");
 	return 0;
 }
