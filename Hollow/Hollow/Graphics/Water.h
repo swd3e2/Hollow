@@ -50,6 +50,7 @@ public:
 		desc2.height = 256;
 		desc2.width  = 256;
 		desc2.unorderedAccess = true;
+		desc2.format = TextureFormat::FORMAT_R32G32B32A32;
 
 		tex = TextureManager::instance()->Create2dTexture(&desc2);
 	}

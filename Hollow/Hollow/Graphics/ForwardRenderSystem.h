@@ -104,6 +104,7 @@ private:
 	D3D11ConstantBuffer*	materialConstantBuffer;
 	D3D11ConstantBuffer*	lightMatricesConstantBuffer;
 	D3D11ConstantBuffer*	lightInfoBuffer;
+	D3D11ConstantBuffer*	boneInfo;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -145,6 +146,7 @@ public:
 		m_WorldViewProjectionBuffer = new D3D11ConstantBuffer(sizeof(WorldViewProjection));
 		materialConstantBuffer = new D3D11ConstantBuffer(sizeof(MaterialData));
 		lightInfoBuffer = new D3D11ConstantBuffer(sizeof(LightInfo));
+		boneInfo = new D3D11ConstantBuffer(sizeof(Matrix4) * 100);
 
 		shadowMap = new ShadowMap(8192, 8192);
 
@@ -241,11 +243,18 @@ public:
 				if (renderable->mesh->getReady())
 				{
 					transformBuff.transform =
-					Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
+						Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
 						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
 						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z);
 					m_TransformConstantBuffer->Update(&transformBuff);
 					renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
+
+					if (renderable->mesh->hasAnimation())
+					{
+						renderable->mesh->animate(10, renderable->mesh->rootBone, Matrix4::Identity());
+						boneInfo->Update(renderable->mesh->boneInfo);
+						renderer->SetContantBuffer(7, boneInfo);
+					}
 
 					for (auto& subMesh : renderable->mesh->subMeshes)
 					{
@@ -323,11 +332,11 @@ public:
 	void DrawWater()
 	{
 		D3D11Context& context = renderer->getContext();
-		context.getDeviceContext()->CSSetShader(static_cast<D3D11ComputeShader*>(water->computeShader)->GetShader(), NULL, 0);
+		/*context.getDeviceContext()->CSSetShader(static_cast<D3D11ComputeShader*>(water->computeShader)->GetShader(), NULL, 0);
 		
 		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, &static_cast<D3D11Texture*>(water->tex)->m_UnorderedAccessView, &uavs);
-		context.getDeviceContext()->Dispatch(12, 1, 1);
-		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, uav, &uavs);
+		context.getDeviceContext()->Dispatch(16, 16, 1);
+		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, uav, &uavs);*/
 
 		context.getDeviceContext()->PSSetShaderResources(5, 1, &static_cast<D3D11Texture*>(water->tex)->m_TextureShaderResource);
 

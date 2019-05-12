@@ -112,17 +112,6 @@ void D3D11RenderApi::FreeShaderResource(UINT slot)
 	context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
 }
 
-void D3D11RenderApi::SetVertexShader(D3D11VertexShader* vs)
-{
-	context->getDeviceContext()->VSSetShader(vs->GetShader(), NULL, 0);
-	context->getDeviceContext()->IASetInputLayout(vs->GetInputLayout());
-}
-
-void D3D11RenderApi::SetPixelShader(D3D11PixelShader* ps)
-{
-	context->getDeviceContext()->PSSetShader(ps->GetShader(), NULL, 0);
-}
-
 void D3D11RenderApi::ClearDepthStencilView(D3D11DepthStencil* ds, int flag)
 {
 	context->getDeviceContext()->ClearDepthStencilView(ds->GetDepthStencilView(), flag, 1.0f, 0);

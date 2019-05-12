@@ -32,7 +32,7 @@ Vector4 & Vector4::operator=(Vector4 && other)
 	return *this;
 }
 
-Vector4 Vector4::operator*(float val)
+Vector4 Vector4::operator*(const float val)
 {
 	return Vector4(x *val, y * val, z * val, w);
 }

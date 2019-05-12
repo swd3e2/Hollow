@@ -18,6 +18,29 @@ Matrix4::Matrix4(Matrix4 && other)
 		m[i] = other.m[i];
 }
 
+Matrix4::Matrix4(const float* other, int size)
+{
+	switch (size)
+	{
+	case 16:
+		for (int i = 0; i < size; i++) m[i] = other[i];
+		break;
+	case 9:
+	{
+		int counter = 0;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				md[i][j] = other[counter++];
+			}
+		}
+	} break;
+	default:
+		break;
+	}
+}
+
 Matrix4 & Matrix4::operator=(const Matrix4& other)
 {
 	for (int i = 0; i < 16; i++)
@@ -289,6 +312,133 @@ void Matrix4::SetTranslation(const Vector4& vecPos)
 Vector4 Matrix4::GetTranslation() const
 {
 	return Vector4(md[3][0], md[3][1], md[3][2], 0.0f);
+}
+
+Matrix4 Matrix4::Inverse(const Matrix4& mat)
+{
+	float temp[16];
+
+	temp[0] = mat.m[5] * mat.m[10] * mat.m[15] -
+		mat.m[5] * mat.m[11] * mat.m[14] -
+		mat.m[9] * mat.m[6] * mat.m[15] +
+		mat.m[9] * mat.m[7] * mat.m[14] +
+		mat.m[13] * mat.m[6] * mat.m[11] -
+		mat.m[13] * mat.m[7] * mat.m[10];
+
+	temp[4] = -mat.m[4] * mat.m[10] * mat.m[15] +
+		mat.m[4] * mat.m[11] * mat.m[14] +
+		mat.m[8] * mat.m[6] * mat.m[15] -
+		mat.m[8] * mat.m[7] * mat.m[14] -
+		mat.m[12] * mat.m[6] * mat.m[11] +
+		mat.m[12] * mat.m[7] * mat.m[10];
+
+	temp[8] = mat.m[4] * mat.m[9] * mat.m[15] -
+		mat.m[4] * mat.m[11] * mat.m[13] -
+		mat.m[8] * mat.m[5] * mat.m[15] +
+		mat.m[8] * mat.m[7] * mat.m[13] +
+		mat.m[12] * mat.m[5] * mat.m[11] -
+		mat.m[12] * mat.m[7] * mat.m[9];
+
+	temp[12] = -mat.m[4] * mat.m[9] * mat.m[14] +
+		mat.m[4] * mat.m[10] * mat.m[13] +
+		mat.m[8] * mat.m[5] * mat.m[14] -
+		mat.m[8] * mat.m[6] * mat.m[13] -
+		mat.m[12] * mat.m[5] * mat.m[10] +
+		mat.m[12] * mat.m[6] * mat.m[9];
+
+	temp[1] = -mat.m[1] * mat.m[10] * mat.m[15] +
+		mat.m[1] * mat.m[11] * mat.m[14] +
+		mat.m[9] * mat.m[2] * mat.m[15] -
+		mat.m[9] * mat.m[3] * mat.m[14] -
+		mat.m[13] * mat.m[2] * mat.m[11] +
+		mat.m[13] * mat.m[3] * mat.m[10];
+
+	temp[5] = mat.m[0] * mat.m[10] * mat.m[15] -
+		mat.m[0] * mat.m[11] * mat.m[14] -
+		mat.m[8] * mat.m[2] * mat.m[15] +
+		mat.m[8] * mat.m[3] * mat.m[14] +
+		mat.m[12] * mat.m[2] * mat.m[11] -
+		mat.m[12] * mat.m[3] * mat.m[10];
+
+	temp[9] = -mat.m[0] * mat.m[9] * mat.m[15] +
+		mat.m[0] * mat.m[11] * mat.m[13] +
+		mat.m[8] * mat.m[1] * mat.m[15] -
+		mat.m[8] * mat.m[3] * mat.m[13] -
+		mat.m[12] * mat.m[1] * mat.m[11] +
+		mat.m[12] * mat.m[3] * mat.m[9];
+
+	temp[13] = mat.m[0] * mat.m[9] * mat.m[14] -
+		mat.m[0] * mat.m[10] * mat.m[13] -
+		mat.m[8] * mat.m[1] * mat.m[14] +
+		mat.m[8] * mat.m[2] * mat.m[13] +
+		mat.m[12] * mat.m[1] * mat.m[10] -
+		mat.m[12] * mat.m[2] * mat.m[9];
+
+	temp[2] = mat.m[1] * mat.m[6] * mat.m[15] -
+		mat.m[1] * mat.m[7] * mat.m[14] -
+		mat.m[5] * mat.m[2] * mat.m[15] +
+		mat.m[5] * mat.m[3] * mat.m[14] +
+		mat.m[13] * mat.m[2] * mat.m[7] -
+		mat.m[13] * mat.m[3] * mat.m[6];
+
+	temp[6] = -mat.m[0] * mat.m[6] * mat.m[15] +
+		mat.m[0] * mat.m[7] * mat.m[14] +
+		mat.m[4] * mat.m[2] * mat.m[15] -
+		mat.m[4] * mat.m[3] * mat.m[14] -
+		mat.m[12] * mat.m[2] * mat.m[7] +
+		mat.m[12] * mat.m[3] * mat.m[6];
+
+	temp[10] = mat.m[0] * mat.m[5] * mat.m[15] -
+		mat.m[0] * mat.m[7] * mat.m[13] -
+		mat.m[4] * mat.m[1] * mat.m[15] +
+		mat.m[4] * mat.m[3] * mat.m[13] +
+		mat.m[12] * mat.m[1] * mat.m[7] -
+		mat.m[12] * mat.m[3] * mat.m[5];
+
+	temp[14] = -mat.m[0] * mat.m[5] * mat.m[14] +
+		mat.m[0] * mat.m[6] * mat.m[13] +
+		mat.m[4] * mat.m[1] * mat.m[14] -
+		mat.m[4] * mat.m[2] * mat.m[13] -
+		mat.m[12] * mat.m[1] * mat.m[6] +
+		mat.m[12] * mat.m[2] * mat.m[5];
+
+	temp[3] = -mat.m[1] * mat.m[6] * mat.m[11] +
+		mat.m[1] * mat.m[7] * mat.m[10] +
+		mat.m[5] * mat.m[2] * mat.m[11] -
+		mat.m[5] * mat.m[3] * mat.m[10] -
+		mat.m[9] * mat.m[2] * mat.m[7] +
+		mat.m[9] * mat.m[3] * mat.m[6];
+
+	temp[7] = mat.m[0] * mat.m[6] * mat.m[11] -
+		mat.m[0] * mat.m[7] * mat.m[10] -
+		mat.m[4] * mat.m[2] * mat.m[11] +
+		mat.m[4] * mat.m[3] * mat.m[10] +
+		mat.m[8] * mat.m[2] * mat.m[7] -
+		mat.m[8] * mat.m[3] * mat.m[6];
+
+	temp[11] = -mat.m[0] * mat.m[5] * mat.m[11] +
+		mat.m[0] * mat.m[7] * mat.m[9] +
+		mat.m[4] * mat.m[1] * mat.m[11] -
+		mat.m[4] * mat.m[3] * mat.m[9] -
+		mat.m[8] * mat.m[1] * mat.m[7] +
+		mat.m[8] * mat.m[3] * mat.m[5];
+
+	temp[15] = mat.m[0] * mat.m[5] * mat.m[10] -
+		mat.m[0] * mat.m[6] * mat.m[9] -
+		mat.m[4] * mat.m[1] * mat.m[10] +
+		mat.m[4] * mat.m[2] * mat.m[9] +
+		mat.m[8] * mat.m[1] * mat.m[6] -
+		mat.m[8] * mat.m[2] * mat.m[5];
+
+	float determinant = mat.m[0] * temp[0] + mat.m[1] * temp[4] + mat.m[2] * temp[8] + mat.m[3] * temp[12];
+	determinant = 1.0f / determinant;
+
+	Matrix4 tempM;
+
+	for (int i = 0; i < 4 * 4; i++)
+		tempM.m[i] = temp[i] * determinant;
+
+	return tempM;
 }
 
 

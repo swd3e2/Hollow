@@ -5,7 +5,7 @@
 int main() 
 {
 	cFFT fft(16);
-	fft.reverse();
+	//fft.reverse();
 	system("pause");
 	return 0;
 }

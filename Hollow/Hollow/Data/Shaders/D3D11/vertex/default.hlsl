@@ -3,45 +3,14 @@ cbuffer ConstantBuffer : register(b0)
 	matrix WVP;
 }
 
-cbuffer ConstantBuffer : register(b1)
-{
-	matrix World;
-	matrix View;
-	matrix Projection;
-	float3 cameraPosition;
-}
-
 cbuffer ConstantBuffer : register(b2)
 {
 	matrix transform;
 }
 
-struct AmbientLight
+cbuffer ConstantBuffer : register(b7)
 {
-	float3 direction;
-	float pad;
-	float4 ambient;
-};
-
-struct PointLight
-{
-	float3 position;
-	float range;
-	float3 color;
-	float pad;
-	float3 attenuation;
-};
-
-cbuffer LightBuffer : register(b3)
-{
-	PointLight pointLight;
-}
-
-cbuffer ConstantBuffer : register(b5)
-{
-	matrix lightViewMatrix;
-	matrix lightProjectionMatrix;
-	float3 lightPosition;
+	matrix boneInfo[100];
 }
 
 struct PixelShaderOutput
@@ -53,22 +22,29 @@ struct PixelShaderOutput
 
 struct VertexShaderInput
 {
-	float3 pos : POSITION;
-	float2 texCoord : TEXCOORD;
-	float3 normal : NORMAL;
-	float3 tangent : TANGENT;
-	float3 bitangent : BITANGENT;
+	float3 pos			: POSITION;
+	float2 texCoord		: TEXCOORD;
+	float3 normal		: NORMAL;
+	float3 tangent		: TANGENT;
+	float3 bitangent	: BITANGENT;
+	int4 boneId			: BONEID;
+	float4 weight		: WEIGHT;
 };
 
 PixelShaderOutput main(VertexShaderInput input)
 {
 	PixelShaderOutput output;
 
+	matrix BoneTransform = boneInfo[input.boneId.x] * input.weight.x;
+	BoneTransform		+= boneInfo[input.boneId.y] * input.weight.y;
+	BoneTransform		+= boneInfo[input.boneId.z] * input.weight.z;
+	BoneTransform		+= boneInfo[input.boneId.w] * input.weight.w;
+
 	output.pos = float4(input.pos, 1.0f);
 
-	output.pos = mul(output.pos, transform);
+	output.pos = mul(output.pos, BoneTransform);
 	output.pos = mul(output.pos, WVP);
-	output.normal = input.normal;
+	output.normal = mul(input.normal, BoneTransform);
 	output.texCoord = input.texCoord;
 
 	return output;

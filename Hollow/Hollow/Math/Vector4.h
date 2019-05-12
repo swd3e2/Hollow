@@ -25,7 +25,7 @@ public:
 	Vector4& operator=(const Vector4& other);
 	Vector4& operator=(Vector4&& other);
 
-	Vector4 operator*(float val);
+	Vector4 operator*(const float val);
 	float operator*(const Vector4& other);
 
 	Vector4 Cross(const Vector4& other);

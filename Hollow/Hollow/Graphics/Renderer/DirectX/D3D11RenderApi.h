@@ -45,8 +45,6 @@ public:
 
 	void FreeShaderResource(UINT slot);
 
-	void SetVertexShader(D3D11VertexShader* vs);
-	void SetPixelShader(D3D11PixelShader* ps);
 	void ClearDepthStencilView(D3D11DepthStencil* ds, int flag);
 	void SetContantBuffer(UINT slot, D3D11ConstantBuffer* cb);
 	void SetSampler(int slot, D3D11SamplerState* sampler);

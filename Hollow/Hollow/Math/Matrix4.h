@@ -48,6 +48,7 @@ public:
 	Matrix4();
 	Matrix4(const Matrix4& other);
 	Matrix4(Matrix4&& other);
+	Matrix4(const float* other, int size);
 
 	Matrix4& operator=(const Matrix4& other);
 	Matrix4& operator=(Matrix4&& other);
@@ -77,6 +78,8 @@ public:
 
 	void SetTranslation(const Vector4& vecPos);
 	Vector4 GetTranslation() const;
+
+	static Matrix4 Inverse(const Matrix4& mat);
 };
 
 Vector4 operator*(const Vector4& vec, const Matrix4& mat);

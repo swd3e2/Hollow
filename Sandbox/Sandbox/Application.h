@@ -21,7 +21,7 @@ public:
 		entity->addComponent<TransformComponent, const Vector3&, const Vector3&, const Vector3&>
 			(Vector3( 0.0f, 0.0f, 0.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
 		
-		entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/gwen.obj", true));
+		entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/CharacterRunning.dae", false));
 
 		GameObject* entity2 = EntityManager::instance()->createEntity<GameObject>();
 

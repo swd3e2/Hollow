@@ -17,7 +17,7 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	textureDesc.ArraySize = 1;
 	textureDesc.SampleDesc.Count = 1;
 	textureDesc.SampleDesc.Quality = 0;
-	textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	textureDesc.Format = getFormat(desc->format);
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	textureDesc.CPUAccessFlags = 0;
@@ -112,7 +112,7 @@ Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
 
 	// Setup the shader resource view description.
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	srvDesc.Format = textureDesc.Format;
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
@@ -125,4 +125,20 @@ Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
 	textureList["0"] = texture;
 
 	return texture;
+}
+
+DXGI_FORMAT D3D11TextureManager::getFormat(TextureFormat format)
+{
+	switch (format)
+	{
+	case FORMAT_B8G8R8A8_UNORM:
+		return DXGI_FORMAT_B8G8R8A8_UNORM;
+		break;
+	case FORMAT_R32G32B32A32:
+		return DXGI_FORMAT_R32G32B32A32_FLOAT;
+		break;
+	default:
+		return DXGI_FORMAT_B8G8R8A8_UNORM;
+		break;
+	}
 }

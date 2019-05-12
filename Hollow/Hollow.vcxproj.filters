@@ -387,6 +387,15 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11HullShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Resources\Mesh\Bone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Resources\Mesh\KeyFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Resources\Mesh\BoneTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -500,9 +509,14 @@
     <ClCompile Include="Hollow\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
+    <ClCompile Include="Hollow\Resources\Mesh\Animation.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Resources\Mesh\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Resources\Mesh\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

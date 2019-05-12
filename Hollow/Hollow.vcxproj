@@ -106,6 +106,9 @@
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
     <ClInclude Include="Hollow\Layers\Layer.h" />
     <ClInclude Include="Hollow\Layers\LayerStack.h" />
+    <ClInclude Include="Hollow\Resources\Mesh\Bone.h" />
+    <ClInclude Include="Hollow\Resources\Mesh\BoneTransform.h" />
+    <ClInclude Include="Hollow\Resources\Mesh\KeyFrame.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />
@@ -173,11 +176,10 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />
+    <ClCompile Include="Hollow\Resources\Mesh\Animation.cpp" />
+    <ClCompile Include="Hollow\Resources\Mesh\Animation.h" />
+    <ClCompile Include="Hollow\Resources\Mesh\Mesh.cpp" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
