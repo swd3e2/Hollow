@@ -41,6 +41,7 @@ bool D3D11ConstantBuffer::Update(void* data)
 		//HW_ERROR("ConstantBuffer: cant update buffer.");
 		return false;
 	}
+
 	CopyMemory(mappedResource.pData, data, size);
 	context.getDeviceContext()->Unmap(m_Buffer, 0);
 	return true;

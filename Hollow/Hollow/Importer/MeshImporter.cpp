@@ -19,6 +19,11 @@ Mesh* MeshImporter::import(const char* filename, bool async)
 
 		if (!scene) return;
 
+		SetChilds(scene->mRootNode, mesh->bones);
+		aiNode* node = FindRootNode(scene->mRootNode, mesh->bones);
+		mesh->rootBone = mesh->bones[node->mName.C_Str()];
+		mesh->m_GlobalInverseTransform = Matrix4((const float*)&scene->mRootNode->mChildren[1]->mTransformation.Inverse(), 16);
+
 		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
 			SubMesh* sMesh = new SubMesh();
@@ -95,36 +100,22 @@ Mesh* MeshImporter::import(const char* filename, bool async)
 				for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
 				{
 					aiBone* aibone = scene->mMeshes[i]->mBones[j];
-					if (mesh->bones.find(aibone->mName.C_Str()) == mesh->bones.end())
-					{
-						Bone* bone = new Bone();
-						bone->id = j;
-						bone->name = std::string(aibone->mName.C_Str());
-						bone->localTransform = Matrix4((const float*)& aibone->mOffsetMatrix, 16);
-						mesh->bones[bone->name] = bone;
-					}
+					Bone* bone = mesh->bones[aibone->mName.C_Str()];
+
+					bone->localTransform = Matrix4((const float*)& aibone->mOffsetMatrix.Transpose(), 16);
 
 					for (int k = 0; k < aibone->mNumWeights; k++)
 					{
 						for (int l = 0; l < 4; l++) {
 							int vertexId = aibone->mWeights[k].mVertexId;
 							if (vertexData[vertexId].boneData.Weights[l] == 0.0) {
-								vertexData[vertexId].boneData.IDs[l] = j;
+								vertexData[vertexId].boneData.IDs[l] = bone->id;
 								vertexData[vertexId].boneData.Weights[l] = aibone->mWeights[j].mWeight;
 								break;
 							}
 						}
 					}
 				}
-			}
-
-			aiNode* node = FindRootNode(scene->mRootNode, mesh->bones);
-
-			if (node != nullptr) {
-				mesh->rootBone = mesh->bones[node->mName.C_Str()];
-				mesh->m_GlobalInverseTransform = Matrix4::Inverse(Matrix4((const float*)& node->mTransformation, 16));
-
-				SetChilds(node, mesh->bones);
 			}
 
 			sMesh->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(indices, size);
@@ -142,27 +133,33 @@ Mesh* MeshImporter::import(const char* filename, bool async)
 			for (int j = 0; j < animation->mNumChannels; j++)
 			{
 				aiNodeAnim* animNode = animation->mChannels[j];
-				std::vector<KeyFrame*>& frames = anim->keyFrames[animNode->mNodeName.C_Str()];
+				Bone* bone = mesh->bones[animNode->mNodeName.C_Str()];
+				
+				if (bone != nullptr) {
+					std::vector<KeyFrame*>& frames = anim->keyFrames[animNode->mNodeName.C_Str()];
 
-				for (int k = 0; k < animNode->mNumPositionKeys; k++)
-				{
-					KeyFrame* keyFrame = new KeyFrame();
-					keyFrame->transform.translate.x = animNode->mPositionKeys[k].mValue.x;
-					keyFrame->transform.translate.y = animNode->mPositionKeys[k].mValue.y;
-					keyFrame->transform.translate.z = animNode->mPositionKeys[k].mValue.z;
+					for (int k = 0; k < animNode->mNumPositionKeys; k++)
+					{
+						KeyFrame* keyFrame = new KeyFrame();
+						keyFrame->transform.translate.x = animNode->mPositionKeys[k].mValue.x;
+						keyFrame->transform.translate.y = animNode->mPositionKeys[k].mValue.y;
+						keyFrame->transform.translate.z = animNode->mPositionKeys[k].mValue.z;
 
-					keyFrame->transform.rotation.x = animNode->mRotationKeys[k].mValue.x;
-					keyFrame->transform.rotation.y = animNode->mRotationKeys[k].mValue.y;
-					keyFrame->transform.rotation.z = animNode->mRotationKeys[k].mValue.z;
+						keyFrame->transform.rotation.x = animNode->mRotationKeys[k].mValue.x;
+						keyFrame->transform.rotation.y = animNode->mRotationKeys[k].mValue.y;
+						keyFrame->transform.rotation.z = animNode->mRotationKeys[k].mValue.z;
 
-					keyFrame->transform.scale.x = animNode->mScalingKeys[k].mValue.x;
-					keyFrame->transform.scale.y = animNode->mScalingKeys[k].mValue.y;
-					keyFrame->transform.scale.z = animNode->mScalingKeys[k].mValue.z;
+						keyFrame->transform.scale.x = animNode->mScalingKeys[k].mValue.x;
+						keyFrame->transform.scale.y = animNode->mScalingKeys[k].mValue.y;
+						keyFrame->transform.scale.z = animNode->mScalingKeys[k].mValue.z;
 
-					keyFrame->time = animNode->mPositionKeys[k].mTime;
-					keyFrame->index = k;
-					frames.push_back(keyFrame);
+						keyFrame->time = animNode->mPositionKeys[k].mTime;
+						keyFrame->index = k;
+						keyFrame->boneId = bone->id;
+						frames.push_back(keyFrame);
+					}
 				}
+
 			}
 			mesh->animations.push_back(anim);
 		}
@@ -184,9 +181,8 @@ aiNode* MeshImporter::FindRootNode(aiNode* node, std::unordered_map<std::string,
 {
 	for (int j = 0; j < node->mNumChildren; j++)
 	{
-		if (bones.find(node->mChildren[j]->mName.C_Str()) != bones.end())
-		{
-			return node->mChildren[j];
+		if (bones.find(node->mChildren[j]->mName.C_Str()) != bones.end()) {
+			return node;
 		} else {
 			aiNode* rootNode = FindRootNode(node->mChildren[j], bones);
 			if (rootNode != nullptr) return rootNode;
@@ -198,14 +194,31 @@ aiNode* MeshImporter::FindRootNode(aiNode* node, std::unordered_map<std::string,
 void MeshImporter::SetChilds(aiNode* node, std::unordered_map<std::string, Bone*>& bones)
 {
 	Bone* rootBone = bones[node->mName.C_Str()];
+
+	if (rootBone == nullptr) {
+		rootBone = new Bone();
+		rootBone->name = node->mName.C_Str();
+		rootBone->id = bones.size();
+		rootBone->localTransform = Matrix4::Identity();
+		bones[node->mName.C_Str()] = rootBone;
+	}
+
 	for (int i = 0; i < node->mNumChildren; i++) 
 	{
 		Bone* bone = bones[node->mChildren[i]->mName.C_Str()];
-		if (bone != nullptr) {
-			bone->parent = rootBone;
-			rootBone->childs.push_back(bone);
-			SetChilds(node->mChildren[i], bones);
+
+		if (bone == nullptr) {
+			bone = new Bone();
+			bone->name = node->mChildren[i]->mName.C_Str();
+			bone->id = bones.size();
+			bone->localTransform = Matrix4::Identity();
+
+			bones[node->mChildren[i]->mName.C_Str()] = bone;
 		}
+
+		bone->parent = rootBone;
+		rootBone->childs.push_back(bone);
+		SetChilds(node->mChildren[i], bones);
 	}
 }
 

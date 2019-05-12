@@ -15,31 +15,41 @@ public:
 public:
 	inline KeyFrame* findKeyFrame(float time, std::string& bone)
 	{
+		KeyFrame* frame = nullptr;
 		if (keyFrames.find(bone) != keyFrames.end())
 		{
 			for (auto& it : keyFrames[bone])
 			{
 				if (it->time < time) {
-					return it;
+					frame = it;
 				}
 			}
-			return keyFrames[bone][keyFrames[bone].size() - 1];
+			if (frame == nullptr && keyFrames[bone].size()) {
+				keyFrames[bone][keyFrames[bone].size() - 1];
+			}
 		}
-		return nullptr;
+		
+		return frame;
 	}
 
 	inline KeyFrame* findKeyNextFrame(float time, std::string& bone)
 	{
+		KeyFrame* frame = nullptr;
+
 		if (keyFrames.find(bone) != keyFrames.end())
 		{
 			for (auto& it : keyFrames[bone])
 			{
 				if (it->time >= time) {
-					return it;
+					frame = it;
+					break;
 				}
 			}
-			return keyFrames[bone][keyFrames[bone].size() - 1];
+			if (frame == nullptr && keyFrames[bone].size()) {
+				keyFrames[bone][keyFrames[bone].size() - 1];
+			}
 		}
-		return nullptr;
+		
+		return frame;
 	}
 };

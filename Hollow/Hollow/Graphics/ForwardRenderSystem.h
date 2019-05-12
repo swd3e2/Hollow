@@ -251,7 +251,7 @@ public:
 
 					if (renderable->mesh->hasAnimation())
 					{
-						renderable->mesh->animate(10, renderable->mesh->rootBone, Matrix4::Identity());
+						renderable->mesh->animate(m_worldViewProjection.offset, renderable->mesh->rootBone, Matrix4::Identity());
 						boneInfo->Update(renderable->mesh->boneInfo);
 						renderer->SetContantBuffer(7, boneInfo);
 					}

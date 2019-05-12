@@ -7,11 +7,13 @@
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Math/Matrix4.h"
 #include "Animation.h"
+#include <assimp/scene.h>
+#include <atomic>
 
 class HOLLOW_API Mesh
 {
 private:
-	bool ready;
+	std::atomic_bool ready;
 public:
 	int mNumSubmeshes;
 	std::vector<SubMesh*> subMeshes;
@@ -33,6 +35,7 @@ public:
 	inline bool hasAnimation() { return animations.size() > 0; }
 	Matrix4 CalcInterpolatedScaling(KeyFrame* frame, KeyFrame* nextFrame, double time);
 	Matrix4 CalcInterpolatedRotation(KeyFrame* frame, KeyFrame* nextFrame, double time);
+	Matrix4 CalcInterpolatedPosition(KeyFrame* frame, KeyFrame* nextFrame, double time);
 };
 
 #endif

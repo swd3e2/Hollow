@@ -87,7 +87,7 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 HRESULT D3D11ShaderManager::CompileShaderInternal(const std::string& path, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
 {
-	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG; // | D3DCOMPILE_OPTIMIZATION_LEVEL0;
+	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION; 
 
 	ID3DBlob* shaderBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;

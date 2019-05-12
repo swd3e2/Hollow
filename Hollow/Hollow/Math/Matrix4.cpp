@@ -20,6 +20,11 @@ Matrix4::Matrix4(Matrix4 && other)
 
 Matrix4::Matrix4(const float* other, int size)
 {
+	Matrix4 identity = Matrix4::Identity();
+
+	for (int i = 0; i < 16; i++)
+		m[i] = identity.m[i];
+
 	switch (size)
 	{
 	case 16:
