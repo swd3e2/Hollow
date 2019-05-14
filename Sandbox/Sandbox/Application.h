@@ -19,10 +19,12 @@ public:
 		GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
 
 		entity->addComponent<TransformComponent, const Vector3&, const Vector3&, const Vector3&>
-			(Vector3( 0.0f, 0.0f, 0.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+			(Vector3( 0.0f, 33.0f, 22.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
 		
-		entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/CharacterRunning.dae", false));
+		//entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/model.dae", false));
+		//entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/astroboy_walk.dae", false));
 		//entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/boblampclean.md5mesh", false));
+		entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/sylvanas_fbx.fbx", false));
 
 		GameObject* entity2 = EntityManager::instance()->createEntity<GameObject>();
 

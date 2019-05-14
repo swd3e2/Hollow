@@ -31,7 +31,6 @@ SKYMAP_VS_OUTPUT main(VertexShaderInput input)
 	SKYMAP_VS_OUTPUT output;
 	
 	output.pos = float4(input.pos, 1.0f);
-	output.pos = mul(output.pos, transform);
 	output.pos = mul(output.pos, WVP).xyww;
 	output.texCoord = input.pos;
 

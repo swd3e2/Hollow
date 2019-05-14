@@ -20,9 +20,9 @@ class HOLLOW_API MeshImporter
 public:
 	static Mesh* import(const char* filename, bool async = true);
 private:
-	static aiNode* FindRootNode(aiNode* node, std::unordered_map<std::string, Bone*>& bones);
+	static aiNode* FindRootNode(aiNode* node, const std::string& name);
+	static aiNode* FindNode(aiNode* node, const std::string& name);
 	static void SetChilds(aiNode* node, std::unordered_map<std::string, Bone*>& bones);
-	Bone* FindBone(const std::string& boneName, Mesh* mesh);
 };
 
 #endif

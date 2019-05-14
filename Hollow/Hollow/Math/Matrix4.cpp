@@ -22,9 +22,6 @@ Matrix4::Matrix4(const float* other, int size)
 {
 	Matrix4 identity = Matrix4::Identity();
 
-	for (int i = 0; i < 16; i++)
-		m[i] = identity.m[i];
-
 	switch (size)
 	{
 	case 16:
@@ -32,6 +29,9 @@ Matrix4::Matrix4(const float* other, int size)
 		break;
 	case 9:
 	{
+		for (int i = 0; i < 16; i++)
+			m[i] = 0;
+		m[15] = 1.0f;
 		int counter = 0;
 		for (int i = 0; i < 3; i++)
 		{

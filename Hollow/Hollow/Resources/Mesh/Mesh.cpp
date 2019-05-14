@@ -16,11 +16,12 @@ void Mesh::animate(double time, Bone* bone, const Matrix4& ParentTransform)
 		Matrix4 Scaling = CalcInterpolatedScaling(frame, nextFrame, time);
 		Matrix4 Rotation = CalcInterpolatedRotation(frame, nextFrame, time);
 		Matrix4 Translation = CalcInterpolatedPosition(frame, nextFrame, time);
-		NodeTransformation = Translation * Rotation;
+		NodeTransformation = Matrix4::Transpose((Rotation) * Translation);
 	}
 
-	Matrix4 GlobalTransformation = NodeTransformation * ParentTransform;
-	boneInfo[bone->id] =  Matrix4::Transpose(bone->localTransform * GlobalTransformation) * m_GlobalInverseTransform;
+	Matrix4 GlobalTransformation = ParentTransform * NodeTransformation;
+
+	boneInfo[bone->id] = m_GlobalInverseTransform * GlobalTransformation * bone->localTransform;
 
 	for (auto& it : bone->childs)
 	{
@@ -46,13 +47,13 @@ Matrix4 Mesh::CalcInterpolatedRotation(KeyFrame* frame, KeyFrame* nextFrame, dou
 	float DeltaTime = (float)(nextFrame->time - frame->time);
 	float Factor = (time - (float)frame->time) / DeltaTime;
 	assert(Factor >= 0.0f && Factor <= 1.0f);
-	aiQuaternion StartRotationQ(frame->transform.rotation.x, frame->transform.rotation.y, frame->transform.rotation.z, 0.0f);
-	aiQuaternion EndRotationQ(nextFrame->transform.rotation.x, nextFrame->transform.rotation.y, nextFrame->transform.rotation.z, 0.0f);
+	aiQuaternion StartRotationQ(frame->transform.rotation.w, frame->transform.rotation.x, frame->transform.rotation.y, frame->transform.rotation.z);
+	aiQuaternion EndRotationQ(nextFrame->transform.rotation.w, nextFrame->transform.rotation.x, nextFrame->transform.rotation.y, nextFrame->transform.rotation.z);
 	aiQuaternion out;
 	aiQuaternion::Interpolate(out, StartRotationQ, EndRotationQ, Factor);
 	out = out.Normalize();
 
-	return Matrix4((const float*)&out.GetMatrix(), 9);
+	return Matrix4((const float*)&out.GetMatrix().Transpose(), 9);
 }
 
 Matrix4 Mesh::CalcInterpolatedPosition(KeyFrame* frame, KeyFrame* nextFrame, double time)

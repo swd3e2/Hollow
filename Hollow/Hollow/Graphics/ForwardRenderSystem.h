@@ -217,8 +217,8 @@ public:
 
 	virtual void Update(float_t dt)
 	{
-		m_worldViewProjection.offset += dt * 0.00001f;
-		m_worldViewProjection.offset = fmod(m_worldViewProjection.offset, 1);
+		m_worldViewProjection.offset += dt * 0.1f;
+		m_worldViewProjection.offset = fmod(m_worldViewProjection.offset, 139.0f);
 		DrawSkyMap();
 		updateWVP(m_Camera);
 
@@ -242,10 +242,11 @@ public:
 
 				if (renderable->mesh->getReady())
 				{
-					transformBuff.transform =
-						Matrix4::Translation(transform->position.x, transform->position.y, transform->position.z) *
+					transformBuff.transform = Matrix4::Transpose(
 						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
-						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z);
+						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)* 
+						Matrix4::Translation(33, 22, transform->position.z)
+					);
 					m_TransformConstantBuffer->Update(&transformBuff);
 					renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 

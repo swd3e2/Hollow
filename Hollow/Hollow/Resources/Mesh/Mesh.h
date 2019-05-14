@@ -20,6 +20,7 @@ public:
 
 	std::vector<Animation*> animations;
 	std::unordered_map<std::string, Bone*> bones;
+	std::unordered_map<std::string, Bone*> usableBones;
 
 	Bone* rootBone;
 	Matrix4 m_GlobalInverseTransform;
