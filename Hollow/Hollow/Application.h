@@ -22,6 +22,7 @@
 #include "Graphics/Renderer/OpenGL/OGLRenderApi.h"
 #include "Common/Log.h"
 #include "Graphics/SkyMap.h"
+#include "AnimationSystem.h"
 
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
@@ -39,6 +40,7 @@ protected:
 	Camera*							camera;
 	InputManager					inputManager;
 	ForwardRenderSystem*			renderPass;
+	Hollow::AnimationSystem*		animationSystem;
 	TaskManager						taskManager;
 	RenderApiManager				renderApiManager;
 	Window*							window;

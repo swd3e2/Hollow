@@ -7,7 +7,7 @@
 Mesh* getCube()
 {
 	Mesh* mesh = new Mesh();
-	SubMesh* sMesh = new SubMesh();
+	Model* model = new Model();
 
 	Vertex cube_vertices[] = {
 		// front
@@ -22,7 +22,7 @@ Mesh* getCube()
 		Vertex(-1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
 	};
 
-	sMesh->vBuffer = HardwareBufferManager::instance()->createVertexBuffer(cube_vertices, 8);
+	model->vBuffer = HardwareBufferManager::instance()->createVertexBuffer(cube_vertices, 8);
 
 	unsigned int cube_elements[] = {
 		// front
@@ -44,9 +44,8 @@ Mesh* getCube()
 		3, 2, 6,
 		6, 7, 3
 	};
-	sMesh->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(cube_elements, 36);
-	mesh->subMeshes.push_back(sMesh);
-	mesh->setReady(true);
+	model->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(cube_elements, 36);
+	mesh->models.push_back(model);
 
 	return mesh;
 }

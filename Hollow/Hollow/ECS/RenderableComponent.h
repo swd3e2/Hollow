@@ -9,13 +9,16 @@
 class RenderableComponent : public Component<RenderableComponent>
 {
 public:
+	Mesh* mesh;
+public:
 	RenderableComponent()
 	{}
-	RenderableComponent(Mesh* mesh) :
-		mesh(mesh)
-	{}
 
-	Mesh* mesh;
+	RenderableComponent(MeshData* data)
+	{
+		mesh = new Mesh(data);
+	}
+
 };
 
 #endif

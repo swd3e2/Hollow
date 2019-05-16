@@ -24,13 +24,11 @@ Application::Application()
 	systemManager.AddSystem(renderPass);
 #endif
 
-	/*ImGuiLayer* layer = new ImGuiLayer((D3DRenderer*)m_Renderer, renderPass, camera);
-	layer->window = &*window;
-	m_LayerStack.AddLayer(layer);*/
-
-	
 	renderPass->skyMap = new SkyMap(10, 10);
 	renderPass->water = new Water();
+
+	animationSystem = new Hollow::AnimationSystem();
+	systemManager.AddSystem(animationSystem);
 }
 
 Application::~Application()

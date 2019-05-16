@@ -8,13 +8,4 @@
 
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
-//#ifdef D3D11
-
-//#endif
-
-//#ifdef OPENGL
-
-//#endif
-
-
 using UINT = unsigned int;

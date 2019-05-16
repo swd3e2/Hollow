@@ -6,6 +6,7 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer ConstantBuffer : register(b2)
 {
 	matrix transform;
+	bool hasAnimation;
 }
 
 cbuffer ConstantBuffer : register(b7)
@@ -34,18 +35,20 @@ struct VertexShaderInput
 PixelShaderOutput main(VertexShaderInput input)
 {
 	PixelShaderOutput output;
-
-	matrix BoneTransform = boneInfo[input.boneId.x] * input.weight.x;
-	BoneTransform		+= boneInfo[input.boneId.y] * input.weight.y;
-	BoneTransform		+= boneInfo[input.boneId.z] * input.weight.z;
-	BoneTransform		+= boneInfo[input.boneId.w] * input.weight.w;
-
 	output.pos = float4(input.pos, 1.0f);
+	
+	if (hasAnimation) {
+		matrix BoneTransform = boneInfo[input.boneId.x] * input.weight.x;
+		BoneTransform += boneInfo[input.boneId.y] * input.weight.y;
+		BoneTransform += boneInfo[input.boneId.z] * input.weight.z;
+		BoneTransform += boneInfo[input.boneId.w] * input.weight.w;
 
-	output.pos = mul(output.pos, BoneTransform);
+		output.pos = mul(output.pos, BoneTransform);
+		output.normal = mul(input.normal, BoneTransform);
+	}
+	
+
 	output.pos = mul(output.pos, WVP);
-
-	output.normal = mul(input.normal, BoneTransform);
 	output.texCoord = input.texCoord;
 
 	return output;

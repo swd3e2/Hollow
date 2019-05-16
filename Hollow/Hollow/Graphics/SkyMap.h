@@ -37,8 +37,8 @@ public:
 		}
 
 		mesh = getCube();
-		mesh->subMeshes[0]->material = new Material();
-		mesh->subMeshes[0]->material->shader = ShaderManager::instance()->getShader("SkyMap");
-		mesh->subMeshes[0]->material->diffuse_texture = TextureManager::instance()->Create3dTexture(desc);
+		mesh->models[0]->material = new Material();
+		mesh->models[0]->material->shader = ShaderManager::instance()->getShader("SkyMap");
+		mesh->models[0]->material->diffuse_texture = TextureManager::instance()->Create3dTexture(desc);
 	}
 };

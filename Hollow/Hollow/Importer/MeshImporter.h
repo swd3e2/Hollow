@@ -14,11 +14,12 @@
 #include "Hollow/Graphics/TextureManager.h"
 #include "Hollow/Core/TaskManager.h"
 #include "Hollow/Platform.h"
+#include "MeshImportData.h"
 
 class HOLLOW_API MeshImporter
 {
 public:
-	static Mesh* import(const char* filename, bool async = true);
+	static void import(const char* filename, MeshImportData* data, bool async = true);
 private:
 	static aiNode* FindRootNode(aiNode* node, const std::string& name);
 	static aiNode* FindNode(aiNode* node, const std::string& name);

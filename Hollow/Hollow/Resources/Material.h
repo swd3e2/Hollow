@@ -4,7 +4,7 @@
 #define HW_MATERIAL_H
 
 #include <string>
-#include "Texture.h"
+#include "Hollow/Graphics/Renderer/Base/Texture.h"
 #include "Hollow/Graphics/ShaderManager.h"
 
 struct MaterialData

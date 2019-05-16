@@ -25,6 +25,7 @@
 #include "Renderer/DirectX/D3D11ShaderManager.h"
 #include "Renderer/DirectX/D3D11Texture.h"
 #include "Hollow/Input/InputManager.h"
+#include "Hollow/ECS/AnimationComponent.h"
 
 using namespace DirectX;
 
@@ -58,6 +59,7 @@ struct LightMatrices
 struct TransformBuff
 {
 	Matrix4 transform;
+	bool hasAnimation;
 };
 
 struct LightInfo
@@ -240,27 +242,28 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 
-				if (renderable->mesh->getReady())
+				transformBuff.transform = Matrix4::Transpose(
+					Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
+					Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)* 
+					Matrix4::Translation(33, 22, transform->position.z)
+				);
+					
+				if (entity.hasComponent<AnimationComponent>())
 				{
-					transformBuff.transform = Matrix4::Transpose(
-						Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
-						Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)* 
-						Matrix4::Translation(33, 22, transform->position.z)
-					);
-					m_TransformConstantBuffer->Update(&transformBuff);
-					renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
+					AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
+					transformBuff.hasAnimation = true;
+					boneInfo->Update(animationComponent->boneInfo);
+					renderer->SetContantBuffer(7, boneInfo);
+				} else {
+					transformBuff.hasAnimation = false;
+				}
 
-					if (renderable->mesh->hasAnimation())
-					{
-						renderable->mesh->animate(m_worldViewProjection.offset, renderable->mesh->rootBone, Matrix4::Identity());
-						boneInfo->Update(renderable->mesh->boneInfo);
-						renderer->SetContantBuffer(7, boneInfo);
-					}
+				m_TransformConstantBuffer->Update(&transformBuff);
+				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
-					for (auto& subMesh : renderable->mesh->subMeshes)
-					{
-						DrawObject(subMesh);
-					}
+				for (auto& model : renderable->mesh->models)
+				{
+					DrawObject(model);
 				}
 			}
 		}
@@ -281,7 +284,7 @@ public:
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
 	}
 
-	void DrawObject(SubMesh * object)
+	void DrawObject(Model * object)
 	{
 		if (object->material != nullptr)
 		{
@@ -327,7 +330,7 @@ public:
 
 		m_WVPConstantBuffer->Update(&m_wvp);
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
-		DrawObject(skyMap->mesh->subMeshes[0]);
+		DrawObject(skyMap->mesh->models[0]);
 	}
 
 	void DrawWater()
@@ -346,7 +349,7 @@ public:
 		context.getDeviceContext()->DSSetShader(static_cast<D3D11DomainShader*>(water->mesh->subMeshes[0]->material->shader->getDomainShader())->GetShader(), NULL, 0);
 		context.getDeviceContext()->GSSetShader(NULL, NULL, 0);*/
 
-		DrawObject(water->mesh->subMeshes[0]);
+		DrawObject(water->mesh->models[0]);
 
 		renderer->FreeShaderResource(5);
 

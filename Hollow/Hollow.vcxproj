@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hollow\AnimationSystem.h" />
     <ClInclude Include="Hollow\Application.h" />
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
@@ -19,6 +20,7 @@
     <ClInclude Include="Hollow\Core\Task.h" />
     <ClInclude Include="Hollow\Core\TaskList.h" />
     <ClInclude Include="Hollow\Core\TaskManager.h" />
+    <ClInclude Include="Hollow\ECS\AnimationComponent.h" />
     <ClInclude Include="Hollow\ECS\Component.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
     <ClInclude Include="Hollow\ECS\Entity.h" />
@@ -38,6 +40,9 @@
     <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
     <ClInclude Include="Hollow\Graphics\SkyMap.h" />
+    <ClInclude Include="Hollow\Importer\AnimationData.h" />
+    <ClInclude Include="Hollow\Importer\MeshData.h" />
+    <ClInclude Include="Hollow\Importer\MeshImportData.h" />
     <ClInclude Include="Hollow\Layers\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
@@ -106,6 +111,7 @@
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
     <ClInclude Include="Hollow\Layers\Layer.h" />
     <ClInclude Include="Hollow\Layers\LayerStack.h" />
+    <ClInclude Include="Hollow\Resources\Material.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Bone.h" />
     <ClInclude Include="Hollow\Resources\Mesh\BoneTransform.h" />
     <ClInclude Include="Hollow\Resources\Mesh\KeyFrame.h" />
@@ -130,6 +136,7 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
+    <ClInclude Include="Hollow\Resources\Mesh\Model.h" />
     <ClInclude Include="Hollow\Resources\Mesh\SubMesh.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Window.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.h" />
@@ -178,7 +185,6 @@
     <ClCompile Include="Hollow\Common\Timer.cpp" />
     <ClCompile Include="Hollow\Resources\Mesh\Animation.cpp" />
     <ClCompile Include="Hollow\Resources\Mesh\Animation.h" />
-    <ClCompile Include="Hollow\Resources\Mesh\Mesh.cpp" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

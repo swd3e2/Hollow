@@ -2,11 +2,9 @@
 
 #include "Hollow/Graphics/Renderer/Base/VertexBuffer.h"
 #include "Hollow/Graphics/Renderer/Base/IndexBuffer.h"
-#include "Hollow/Graphics/Renderer/Base/Material.h"
-#include "Bone.h"
-#include <unordered_map>
+#include "Hollow/Resources/Material.h"
 
-class HOLLOW_API SubMesh
+class HOLLOW_API Model
 {
 public:
 	VertexBuffer* vBuffer;

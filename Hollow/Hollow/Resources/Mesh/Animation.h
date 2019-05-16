@@ -20,7 +20,7 @@ public:
 		{
 			for (auto& it : keyFrames[bone])
 			{
-				if (it->time < time) {
+				if (it->time <= time) {
 					frame = it;
 				}
 			}
@@ -40,7 +40,7 @@ public:
 		{
 			for (auto& it : keyFrames[bone])
 			{
-				if (it->time >= time) {
+				if (it->time > time) {
 					frame = it;
 					break;
 				}
