@@ -12,7 +12,7 @@
 #include "Renderer/OpenGL/OGLRenderApi.h"
 #endif
 
-class HOLLOW_API RenderApiManager : public CModule<RenderApiManager>
+class RenderApiManager : public CModule<RenderApiManager>
 {
 public:
 	RenderApiManager()

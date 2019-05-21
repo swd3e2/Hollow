@@ -3,7 +3,7 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Core/CModule.h"
 
-class HOLLOW_API Window : public CModule<Window>
+class Window : public CModule<Window>
 {
 private:
 	bool _isClosed;

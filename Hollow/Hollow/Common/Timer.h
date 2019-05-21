@@ -6,7 +6,7 @@
 #include <chrono>
 #include "Hollow/Platform.h"
 
-class HOLLOW_API Timer
+class Timer
 {
 public:
 	Timer();

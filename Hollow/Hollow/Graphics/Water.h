@@ -4,7 +4,7 @@
 #include "Hollow/Test.h"
 #include "Hollow/Importer/FreeImgImporter.h"
 
-class HOLLOW_API Water
+class  Water
 {
 public:
 	Mesh* mesh;

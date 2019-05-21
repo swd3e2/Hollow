@@ -2,9 +2,8 @@
 
 #ifndef OGL_LIBS
 #define OGL_LIBS
-#pragma comment ( lib, "opengl32.lib" )
-#pragma comment ( lib, "glu32.lib" )
-//#pragma comment ( lib, "glew32s.lib" )
+	#pragma comment ( lib, "opengl32.lib" )
+	#pragma comment ( lib, "glu32.lib" )
 #endif
 
 #define GLEW_STATIC

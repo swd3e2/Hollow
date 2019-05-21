@@ -7,7 +7,7 @@
 #include <string>
 
 namespace Hollow {
-	class HOLLOW_API Helper
+	class  Helper
 	{
 	public:
 		inline static wchar_t* converToWideChar(const char* string)

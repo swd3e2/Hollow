@@ -7,10 +7,11 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/TextureManager.h"
 
-class HOLLOW_API OGLTextureManager : public TextureManager
+class OGLTextureManager : public TextureManager
 {
 public:
-	virtual Texture* CreateTextureInternal(TEXTURE_DESC*) override;
+	virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override { return nullptr; }
+	virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override { return nullptr; return nullptr;}
 private:
 };
 

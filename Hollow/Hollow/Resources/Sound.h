@@ -3,7 +3,7 @@
 #include "Hollow/Platform.h"
 
 namespace Hollow {
-	class HOLLOW_API Sound
+	class  Sound
 	{
 	public:
 		Sound(IXAudio2SourceVoice* sourceVoice);

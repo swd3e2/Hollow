@@ -10,7 +10,7 @@
 #include <string>
 #include "Hollow/Platform.h"
 
-class HOLLOW_API TextureManager : public CModule<TextureManager>
+class  TextureManager : public CModule<TextureManager>
 {
 public:
 	std::unordered_map<std::string, Texture*> textureList;

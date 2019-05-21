@@ -1,6 +1,8 @@
 #pragma once
 #include "Hollow/Platform.h"
+#define NOMINMAX
 #include <windows.h>
+#undef NOMINMAX
 #include <stdio.h>
 #include <fcntl.h>
 #include <io.h>
@@ -12,5 +14,5 @@
 
 namespace Hollow { namespace Console {
 	using namespace std;
-	HOLLOW_API inline void RedirectIOToConsole();
+	 void RedirectIOToConsole();
 }}

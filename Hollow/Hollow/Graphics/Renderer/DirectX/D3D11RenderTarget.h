@@ -6,13 +6,13 @@
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/RenderTarget.h"
 
-enum HOLLOW_API RenderTargetType
+enum  RenderTargetType
 {
 	MAIN,
 	SECONDARY
 };
 
-class HOLLOW_API D3D11RenderTarget : public RenderTarget
+class  D3D11RenderTarget : public RenderTarget
 {
 public:
 	D3D11RenderTarget(

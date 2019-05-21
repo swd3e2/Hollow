@@ -3,7 +3,7 @@
 #include "Hollow/Math/Vector4.h"
 #include "Hollow/Math/Quaternion.h"
 
-class HOLLOW_API BoneTransform
+class  BoneTransform
 {
 public:
 	Vector4 translate;

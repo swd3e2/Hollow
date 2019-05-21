@@ -3,7 +3,7 @@
 #include "BoneTransform.h"
 #include "Hollow/Platform.h"
 
-class HOLLOW_API KeyFrame
+class  KeyFrame
 {
 public:
 	int boneId;

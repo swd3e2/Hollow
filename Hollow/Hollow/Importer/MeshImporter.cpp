@@ -2,8 +2,10 @@
 
 #define INVALID_BONE_ID 99
 
-void MeshImporter::import(const char* filename, MeshImportData* data, bool async)
+MeshImportData* MeshImporter::import(const char* filename, bool async)
 {
+	MeshImportData* data = new MeshImportData();
+
 	data->filename = filename;
 
 	std::function<void()> task = [=]() {
@@ -212,6 +214,8 @@ void MeshImporter::import(const char* filename, MeshImportData* data, bool async
 	} else {
 		task();
 	}
+
+	return data;
 }
 
 aiNode* MeshImporter::FindRootNode(aiNode* node, const std::string& name)

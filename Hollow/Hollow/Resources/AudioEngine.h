@@ -12,7 +12,7 @@
 #define fourccDPDS 'sdpd'
 
 namespace Hollow {
-	class HOLLOW_API AudioEngine
+	class  AudioEngine
 	{
 	private:
 		IXAudio2MasteringVoice*		masteringVoice;

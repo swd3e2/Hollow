@@ -11,7 +11,7 @@
 #include "Hollow/Graphics/Renderer/Base/Window.h"
 #include <memory>
 
-class HOLLOW_API D3D11Win32Window : public Window
+class  D3D11Win32Window : public Window
 {
 public:
 	D3D11Win32Window(HINSTANCE hInst, int width, int height);

@@ -12,7 +12,7 @@
 
 #define DEFAULT_ENTITY_CONTAINER_GROW_SIZE 2048
 
-class HOLLOW_API EntityManager : public CModule<EntityManager>
+class EntityManager : public CModule<EntityManager>
 {
 private:
 	class IEntityContainer {};

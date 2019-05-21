@@ -1,6 +1,6 @@
 #include "Console.h"
 
-HOLLOW_API void Hollow::Console::RedirectIOToConsole()
+ void Hollow::Console::RedirectIOToConsole()
 {
 	int hConHandle;
 	long lStdHandle;

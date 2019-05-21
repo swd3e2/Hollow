@@ -9,11 +9,18 @@
 class D3D11IndexBuffer : public IndexBuffer
 {
 private:
+	friend class D3D11HardwareBufferManager;
 	ID3D11Buffer* buffer;
 public:
-	D3D11IndexBuffer(void* data, UINT stride, UINT numIndices);
-	~D3D11IndexBuffer();
-	
+	D3D11IndexBuffer(void* data, UINT stride, UINT numIndices) :
+		IndexBuffer(stride, numIndices)
+	{}
+
+	~D3D11IndexBuffer()
+	{
+		SAFE_RELEASE(buffer);
+	}
+
 	ID3D11Buffer* Get() { return buffer; }
 	ID3D11Buffer** GetAddressOf() { return &buffer; }
 };

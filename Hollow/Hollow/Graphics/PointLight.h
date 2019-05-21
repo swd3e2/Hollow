@@ -12,7 +12,7 @@ struct PointLightStruct
 	float pad1;
 };
 
-class HOLLOW_API PointLight : public Component<PointLight>
+class  PointLight : public Component<PointLight>
 {
 public:
 	PointLightStruct data;

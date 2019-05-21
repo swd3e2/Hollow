@@ -12,7 +12,7 @@
 #include "IEntity.h"
 #include "Component.h"
 
-class HOLLOW_API ComponentManager : public CModule<ComponentManager>
+class ComponentManager : public CModule<ComponentManager>
 {
 private:
 	class IComponentContainer {};

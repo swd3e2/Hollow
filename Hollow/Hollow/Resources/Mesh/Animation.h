@@ -7,7 +7,7 @@
 #include "Hollow/Platform.h"
 #include <string>
 
-class HOLLOW_API Animation
+class  Animation
 {
 public:
 	std::unordered_map<std::string, std::vector<KeyFrame*>> keyFrames;

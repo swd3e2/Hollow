@@ -11,7 +11,7 @@
 #include "Hollow/Graphics/HardwareBufferManager.h"
 #include "Hollow/Graphics/TextureManager.h"
 
-class HOLLOW_API Mesh
+class  Mesh
 {
 public:
 	int numModels;

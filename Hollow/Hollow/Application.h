@@ -1,5 +1,5 @@
 #pragma once
-#define D3D11
+#define OPENGL
 
 #include "Platform.h"
 #include "ECS/ComponentManager.h"
@@ -23,11 +23,12 @@
 #include "Common/Log.h"
 #include "Graphics/SkyMap.h"
 #include "AnimationSystem.h"
+#include "Graphics/OGLRenderSystem.h"
 
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
 
-class HOLLOW_API Application
+class Application
 {
 protected:
 	HWND*							m_HWND;
@@ -40,6 +41,7 @@ protected:
 	Camera*							camera;
 	InputManager					inputManager;
 	ForwardRenderSystem*			renderPass;
+	OGLRenderSystem*				oglRenderSystem;
 	Hollow::AnimationSystem*		animationSystem;
 	TaskManager						taskManager;
 	RenderApiManager				renderApiManager;

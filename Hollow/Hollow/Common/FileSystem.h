@@ -4,15 +4,18 @@
 #define HW_FILE_SYSTEM_H
 
 #include <iostream>
+#define NOMINMAX
 #include <windows.h>
+#undef NOMINMAX
 #include <vector>
 #include <string>
 #include "Log.h"
 #include "Hollow/Platform.h"
+#include <fstream>
 
 namespace Hollow
 {
-	class HOLLOW_API FileSystem
+	class  FileSystem
 	{
 	private:
 		using stringvec = std::vector<std::string>;
@@ -85,6 +88,27 @@ namespace Hollow
 				fullFilePath.append(it);
 
 			return fullFilePath;
+		}
+
+		static std::string getFileContent(const std::string& filepath)
+		{
+			std::string content;
+			std::ifstream fileStream(filepath, std::ios::in);
+
+			if (!fileStream.is_open()) {
+				HW_DEBUG("FileSystem: can't open file {}", filepath.c_str());
+				return "";
+			}
+
+			std::string line = "";
+			while (!fileStream.eof()) {
+				std::getline(fileStream, line);
+				content.append(line + "\n");
+			}
+
+			fileStream.close();
+			std::cout << "'" << content << "'" << std::endl;
+			return content.c_str();
 		}
 	};
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include "Hollow/Platform.h"
 
-class HOLLOW_API LayerStack
+class  LayerStack
 {
 private:
 	std::vector<Layer*> layers;

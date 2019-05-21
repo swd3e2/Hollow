@@ -5,7 +5,7 @@
 
 #include "D3D11Prerequisites.h"
 
-class HOLLOW_API D3D11DepthStencil
+class  D3D11DepthStencil
 {
 public:
 	D3D11DepthStencil(int width, int height, DXGI_FORMAT format, int samplecount);

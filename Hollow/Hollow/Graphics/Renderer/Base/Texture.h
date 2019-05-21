@@ -15,7 +15,7 @@ enum TextureType
 	TEXTURE_CUBE
 };
 
-class HOLLOW_API TEXTURE_DESC
+class  TEXTURE_DESC
 {
 public:
 	int width;

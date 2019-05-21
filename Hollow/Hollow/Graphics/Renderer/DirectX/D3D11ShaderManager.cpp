@@ -113,25 +113,17 @@ HRESULT D3D11ShaderManager::CompileShaderInternal(const std::string& path, LPCST
 	return hr;
 }
 
+ShaderProgram* D3D11ShaderManager::createShader(Shader* vertexShader, Shader* pixelShader)
+{
+	return new ShaderProgram(vertexShader, pixelShader);
+}
+
 D3D11ShaderManager::D3D11ShaderManager()
 {
 	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 	device = r->getContext().getDevice();
 
-	std::vector<std::string>* shaders;
-
-	shaders = fs.read_directory("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/");
-
-	for (auto& it : *shaders)
-	{
-		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
-		{
-			ShaderProgram* shader = new ShaderProgram();
-			shader->setPixelShader(compileShader(ShaderType::PIXEL, "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/" + it));
-			shader->setVertexShader(compileShader(ShaderType::VERTEX, "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/" + it));
-			this->shaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = shader;
-		}
-	}
+	shaderTypeFolder = "D3D11";
 }
 
 D3D11ShaderManager::~D3D11ShaderManager()

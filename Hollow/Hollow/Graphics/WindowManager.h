@@ -4,7 +4,7 @@
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Platform.h"
 
-class HOLLOW_API WindowManager : public CModule<WindowManager>
+class WindowManager : public CModule<WindowManager>
 {
 private:
 	Window* window;

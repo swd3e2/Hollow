@@ -9,7 +9,7 @@
 #include "Hollow/Core/CModule.h"
 
 namespace Hollow {
-	class HOLLOW_API SystemManager : public CModule<SystemManager>
+	class  SystemManager : public CModule<SystemManager>
 	{
 	private:
 		std::list<ISystem*> m_Systems;

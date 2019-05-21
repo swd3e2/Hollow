@@ -5,7 +5,7 @@
 
 #include "D3D11Prerequisites.h"
 
-class HOLLOW_API D3D11ConstantBuffer
+class  D3D11ConstantBuffer
 {
 private:
 	D3D11ConstantBuffer(const D3D11ConstantBuffer &rhs);

@@ -4,7 +4,7 @@
 #include "Hollow/Graphics/Renderer/Base/IndexBuffer.h"
 #include "Hollow/Resources/Material.h"
 
-class HOLLOW_API Model
+class  Model
 {
 public:
 	VertexBuffer* vBuffer;

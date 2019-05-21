@@ -8,7 +8,7 @@
 #include "Hollow/Graphics/TextureManager.h"
 #include "D3D11Context.h"
 
-class HOLLOW_API D3D11TextureManager : public TextureManager
+class  D3D11TextureManager : public TextureManager
 {
 public:
 	virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;

@@ -7,7 +7,7 @@
 #include "Hollow/Graphics/Renderer/Base/Texture.h"
 #include "D3D11Prerequisites.h"
 
-class HOLLOW_API D3D11Texture : public Texture
+class  D3D11Texture : public Texture
 {
 public:
 	~D3D11Texture();

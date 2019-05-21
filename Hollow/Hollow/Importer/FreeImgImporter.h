@@ -5,7 +5,7 @@
 #include "FreeImage.h"
 //#include "Hollow/Common/Log.h"
 
-class HOLLOW_API FreeImgImporter
+class  FreeImgImporter
 {
 public:
 	static TEXTURE_DESC* import(const char* filename);

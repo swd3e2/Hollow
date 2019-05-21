@@ -9,10 +9,17 @@
 class D3D11VertexBuffer : public VertexBuffer
 {
 private:
+	friend class D3D11HardwareBufferManager;
 	ID3D11Buffer* buffer;
 public:
-	D3D11VertexBuffer(void* data, UINT stride, UINT numVertices);
-	~D3D11VertexBuffer();
+	D3D11VertexBuffer(void* data, UINT stride, UINT numVertices) :
+		VertexBuffer(stride, numVertices)
+	{}
+
+	~D3D11VertexBuffer()
+	{
+		SAFE_RELEASE(buffer);
+	}
 	
 	ID3D11Buffer* Get() { return buffer; }
 	ID3D11Buffer** GetAddressOf() { return &buffer; }

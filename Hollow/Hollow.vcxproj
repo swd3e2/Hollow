@@ -32,11 +32,18 @@
     <ClInclude Include="Hollow\ECS\PointLightComponent.h" />
     <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
     <ClInclude Include="Hollow\ECS\TransformComponent.h" />
+    <ClInclude Include="Hollow\Graphics\OGLRenderSystem.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ComputeShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11DomainShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11GeometryShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11HullShader.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLIndexBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShader.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
     <ClInclude Include="Hollow\Graphics\SkyMap.h" />
@@ -155,16 +162,16 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstantBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11DepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11HardwareBufferManager.cpp" />
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11IndexBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RasterizerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderApi.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11SamplerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.cpp" />
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\HardwareBufferManager.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
@@ -186,6 +193,7 @@
     <ClCompile Include="Hollow\Resources\Mesh\Animation.cpp" />
     <ClCompile Include="Hollow\Resources\Mesh\Animation.h" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
+    <ClCompile Include="Hollow\Test.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -196,14 +204,14 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -225,13 +233,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(SolutionDir)Hollow\vendor\lib\debug;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(SolutionDir)Hollow\vendor\lib\release;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -241,19 +249,23 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtd.lib;IrrXMLd.lib;zlibstatic.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Test"
-copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Debug-x64\Sandbox"</Command>
+      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"</Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -264,8 +276,9 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engin
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HOLLOW_BUILD_DLL;_CRT_SECURE_NO_WARNINGS;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -273,9 +286,12 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engin
       <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtr.lib;zlibstatic.lib;IrrXMLr.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Test"
-copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.dll" "C:\dev\Hollow Engine\bin\Release-x64\Sandbox"</Command>
+      <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\release"</Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

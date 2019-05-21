@@ -1,7 +1,9 @@
 #pragma once
 #include "Hollow/Platform.h"
 #include "KeyCodes.h"
+#define NOMINMAX
 #include <windows.h>
+#undef NOMINMAX
 #include "DirectXMath.h"
 #include "Hollow/Events/IEventListener.h"
 #include "Hollow/Events/EventSystem.h"
@@ -21,7 +23,7 @@ struct SimpleFieldVertex
 	XMFLOAT4 third;
 };
 
-class HOLLOW_API InputManager : IEventListener, public CModule<InputManager>
+class  InputManager : IEventListener, public CModule<InputManager>
 {
 private:
 	static bool KeyboardKeys[256];

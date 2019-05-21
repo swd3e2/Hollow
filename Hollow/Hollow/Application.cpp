@@ -16,16 +16,24 @@ Application::Application()
 
 	m_Renderer = renderApiManager.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	window = WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+#ifdef OPENGL
 	static_cast<OGLRenderApi*>(m_Renderer)->camera = camera;
+
+	oglRenderSystem = new OGLRenderSystem();
+	oglRenderSystem->renderer = static_cast<OGLRenderApi*>(m_Renderer);
+	oglRenderSystem->camera = camera;
+#endif
 	m_Renderer->startUp();
+
 #ifdef D3D11
 	renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
 	renderPass->m_Camera = camera;
 	systemManager.AddSystem(renderPass);
-#endif
 
 	renderPass->skyMap = new SkyMap(10, 10);
 	renderPass->water = new Water();
+#endif
 
 	animationSystem = new Hollow::AnimationSystem();
 	systemManager.AddSystem(animationSystem);

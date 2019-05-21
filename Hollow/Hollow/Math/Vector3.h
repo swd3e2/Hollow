@@ -5,7 +5,7 @@
 
 #include "Hollow/Platform.h"
 
-class HOLLOW_API Vector3
+class  Vector3
 {
 public:
 	float x;

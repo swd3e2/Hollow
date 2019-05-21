@@ -7,7 +7,7 @@
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/Shader.h"
 
-class HOLLOW_API D3D11PixelShader : public Shader
+class  D3D11PixelShader : public Shader
 {
 private:
 	friend class D3D11ShaderManager;

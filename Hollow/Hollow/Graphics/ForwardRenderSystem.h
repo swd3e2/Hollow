@@ -113,7 +113,6 @@ private:
 	int spotLifhtNum = 0;
 
 	D3D11_VIEWPORT vp;
-	D3D11_VIEWPORT svp;
 
 	const UINT uavs = 0;
 
@@ -130,7 +129,6 @@ public:
 		m_RenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		m_DepthStencil = new D3D11DepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_ShadowDepthStencil = new D3D11DepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 		m_SecondRenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
 		m_BlendStateTransparancy = new D3D11BlendState();
@@ -159,13 +157,6 @@ public:
 		vp.TopLeftX = 0;
 		vp.TopLeftY = 0;
 
-		svp.Width = (float)8192;
-		svp.Height = (float)8192;
-		svp.MinDepth = 0.0f;
-		svp.MaxDepth = 1.0f;
-		svp.TopLeftX = 0;
-		svp.TopLeftY = 0;
-
 		renderer->SetViewPort(1, &vp);
 
 		m_worldViewProjection.offset = 0.0f;
@@ -174,16 +165,11 @@ public:
 
 	virtual void PreUpdate(float_t dt)
 	{
-		if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F1))
-		{
+		if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F1)) {
 			renderer->SetRasterizerState(m_cullBack);
-		}
-		else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F2))
-		{
+		} else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F2)) {
 			renderer->SetRasterizerState(m_cullNone);
-		}
-		else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F3))
-		{
+		} else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F3)) {
 			renderer->SetRasterizerState(m_Wireframe);
 		}
 		renderer->ClearRenderTargetView(m_RenderTarget, (float*)ClearColor);
@@ -195,8 +181,7 @@ public:
 		renderer->SetDepthStencil(m_DepthStencil);
 
 		int j = 0;
-		for (auto& it : EntityManager::instance()->getContainer<Light>()->entityList)
-		{
+		for (auto& it : EntityManager::instance()->getContainer<Light>()->entityList) {
 			if (it.hasComponent<PointLightComponent>() && it.getComponent<TransformComponent>()) {
 				TransformComponent* transform = it.getComponent<TransformComponent>();
 				PointLightComponent* light = it.getComponent<PointLightComponent>();
@@ -235,10 +220,8 @@ public:
 
 	void DrawScene()
 	{
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList)
-		{
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<RenderableComponent>())
-			{
+		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<RenderableComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 
@@ -248,8 +231,7 @@ public:
 					Matrix4::Translation(33, 22, transform->position.z)
 				);
 					
-				if (entity.hasComponent<AnimationComponent>())
-				{
+				if (entity.hasComponent<AnimationComponent>()) {
 					AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
 					transformBuff.hasAnimation = true;
 					boneInfo->Update(animationComponent->boneInfo);
@@ -261,8 +243,7 @@ public:
 				m_TransformConstantBuffer->Update(&transformBuff);
 				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
 
-				for (auto& model : renderable->mesh->models)
-				{
+				for (auto& model : renderable->mesh->models) {
 					DrawObject(model);
 				}
 			}
@@ -281,29 +262,26 @@ public:
 		m_worldViewProjection.View = camera->GetViewMatrix();
 		m_worldViewProjection.Projection = camera->GetProjectionMatrix();
 		m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
+
 		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
 	}
 
 	void DrawObject(Model * object)
 	{
-		if (object->material != nullptr)
-		{
+		if (object->material != nullptr) {
 			if (object->material->diffuse_texture != nullptr) {
 				renderer->SetTexture(0, object->material->diffuse_texture);
-			}
-			else {
+			} else {
 				renderer->FreeShaderResource(0);
 			}
 			if (object->material->normal_texture != nullptr) {
 				renderer->SetTexture(1, object->material->normal_texture);
-			}
-			else {
+			} else {
 				renderer->FreeShaderResource(1);
 			}
 			if (object->material->specular_texture != nullptr) {
 				renderer->SetTexture(2, object->material->specular_texture);
-			}
-			else {
+			} else {
 				renderer->FreeShaderResource(2);
 			}
 
@@ -311,8 +289,7 @@ public:
 			renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, materialConstantBuffer);
 
 			renderer->SetShader(object->material->shader);
-		}
-		else {
+		} else {
 			renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		}
 		renderer->SetVertexBuffer(object->vBuffer);
@@ -352,9 +329,5 @@ public:
 		DrawObject(water->mesh->models[0]);
 
 		renderer->FreeShaderResource(5);
-
-		context.getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		context.getDeviceContext()->HSSetShader(NULL, NULL, 0);
-		context.getDeviceContext()->DSSetShader(NULL, NULL, 0);
 	}
 };

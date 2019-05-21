@@ -13,7 +13,7 @@
 #include "../OGLPrerequisites.h"
 #include "../GL/wglext.h"
 
-class HOLLOW_API OGLWin32Window : public Window
+class OGLWin32Window : public Window
 {
 public:
 	OGLWin32Window(HINSTANCE hInst, int width, int height);

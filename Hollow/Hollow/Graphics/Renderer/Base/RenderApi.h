@@ -8,7 +8,7 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 
-class HOLLOW_API RenderApi : public CModule<RenderApi>
+class RenderApi : public CModule<RenderApi>
 {
 protected:
 public:
@@ -18,4 +18,7 @@ public:
 	virtual void SetTexture(UINT, Texture*) = 0;
 	virtual void SetTexture(UINT, RenderTarget*) = 0;
 	virtual void SetShader(ShaderProgram*) = 0;
+	virtual void Draw(UINT count) = 0;
+	virtual void DrawIndexed(UINT count) = 0;
+	virtual void Present() = 0;
 };

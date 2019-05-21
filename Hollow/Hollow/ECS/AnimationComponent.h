@@ -13,7 +13,7 @@ public:
 		animations = data->animations;
 		globalInverse = data->globalInverse;
 
-		boneInfo = new Matrix4[bones.size()];
+		boneInfo = new Matrix4[100];
 		time = 0.0f;
 	}
 

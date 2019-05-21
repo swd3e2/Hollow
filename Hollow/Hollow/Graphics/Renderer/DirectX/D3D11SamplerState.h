@@ -7,7 +7,7 @@
 #include "Hollow/Platform.h"
 #include "D3D11Prerequisites.h"
 
-class HOLLOW_API D3D11SamplerState : public SamplerState
+class  D3D11SamplerState : public SamplerState
 {
 private:
 	ID3D11SamplerState* m_SamplerState;

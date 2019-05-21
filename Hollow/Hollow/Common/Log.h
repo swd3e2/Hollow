@@ -9,7 +9,7 @@
 #include "Hollow/Platform.h"
 
 namespace Hollow {
-	class HOLLOW_API Log
+	class Log
 	{
 	private:
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;

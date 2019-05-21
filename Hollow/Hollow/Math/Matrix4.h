@@ -8,7 +8,7 @@
 #include "Vector4.h"
 #include "Hollow/Platform.h"
 
-class HOLLOW_API Matrix4
+class  Matrix4
 {
 public:
 	union

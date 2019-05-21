@@ -6,7 +6,7 @@
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include "D3D11Prerequisites.h"
 
-class HOLLOW_API D3D11RenderApi : public RenderApi
+class  D3D11RenderApi : public RenderApi
 {
 public:
 	bool vSync = true;
@@ -38,6 +38,9 @@ public:
 	virtual void SetTexture(UINT slot, Texture* texture) override;
 	virtual void SetTexture(UINT slot, RenderTarget* renderTarget) override;
 	virtual void SetShader(ShaderProgram* shader) override;
+	virtual void Present() override;
+	virtual void Draw(UINT count) override;
+	virtual void DrawIndexed(UINT count) override;
 
 	virtual void startUp() override;
 
@@ -54,9 +57,6 @@ public:
 	void SetRasterizerState(D3D11RasterizerState* rasterizer);
 	void SwapBuffers();
 	void SetBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
-	void DrawIndexed(UINT count);
-	void Draw(UINT count);
-	void Present();
 	D3D11Context& getContext() { return *context; }
 
 	void toggleVSync() { vSync = !vSync; }

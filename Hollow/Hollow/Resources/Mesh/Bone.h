@@ -4,7 +4,7 @@
 #include "Hollow/Math/Matrix4.h"
 #include <vector>
 
-class HOLLOW_API Bone
+class  Bone
 {
 public:
 	int id;
