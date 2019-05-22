@@ -10,14 +10,14 @@ void OGLRenderApi::startUp()
 {
 	hardwareBufferManager = new OGLHardwareBufferManager();
 	textureManager = new OGLTextureManager();
-
+	shaderManager = new OGLShaderManager();
 	hwnd = static_cast<OGLWin32Window*>(windowManager->getWindow())->getHWND();
 }
 
 void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 {
 	OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBuffer->VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBuffer->VBO);
 }
 
 void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
@@ -43,8 +43,6 @@ void OGLRenderApi::clear()
 	glViewport(0, 0, 2560, 1440);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	SwapBuffers(GetDC(*hwnd));
 }
 
 void OGLRenderApi::DrawIndexed(UINT count)
@@ -54,4 +52,5 @@ void OGLRenderApi::DrawIndexed(UINT count)
 
 void OGLRenderApi::Present()
 {
+	SwapBuffers(GetDC(*hwnd));
 }

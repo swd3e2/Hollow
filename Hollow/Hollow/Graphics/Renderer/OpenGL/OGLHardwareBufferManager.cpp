@@ -28,18 +28,12 @@ VertexBuffer* OGLHardwareBufferManager::createVertexBuffer(Vertex* data, unsigne
 
 IndexBuffer* OGLHardwareBufferManager::createIndexBuffer(unsigned int* data, unsigned int numIndices)
 {
-	OGLIndexBuffer* buffer = new OGLIndexBuffer(sizeof(Vertex), numIndices);
-
-	glGenVertexArrays(1, &buffer->VAO);
-	glBindVertexArray(buffer->VAO);
+	OGLIndexBuffer* buffer = new OGLIndexBuffer(sizeof(unsigned int), numIndices);
 
 	glGenBuffers(1, &buffer->VBO);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->VBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int), data, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 
 	return buffer;
 }

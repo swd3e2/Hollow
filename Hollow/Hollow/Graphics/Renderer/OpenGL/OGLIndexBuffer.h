@@ -8,7 +8,6 @@
 class OGLIndexBuffer : public IndexBuffer
 {
 public:
-	unsigned int VAO;
 	unsigned int VBO;
 public:
 	OGLIndexBuffer(unsigned int stride, unsigned int numIndices) :

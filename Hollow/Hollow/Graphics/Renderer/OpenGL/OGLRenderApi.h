@@ -12,6 +12,7 @@
 #include "OGLHardwareBufferManager.h"
 #include "OGLTextureManager.h"
 #include "OGLShaderProgram.h"
+#include "OGLShaderManager.h"
 
 class OGLRenderApi : public RenderApi
 {
@@ -19,10 +20,9 @@ private:
 	HWND* hwnd;
 	OGLWindowManager* windowManager;
 public:
-	// for test
-	Camera* camera;
 	OGLHardwareBufferManager*	hardwareBufferManager;
 	OGLTextureManager*			textureManager;
+	OGLShaderManager*			shaderManager;
 public:
 	OGLRenderApi(int width, int height);
 
@@ -34,7 +34,6 @@ public:
 	virtual void SetShader(ShaderProgram*) override;
 
 	void clear();
-
 	
 	virtual void Draw(UINT count)override {}
 	virtual void DrawIndexed(UINT count) override;

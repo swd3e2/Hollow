@@ -17,15 +17,11 @@ Application::Application()
 	m_Renderer = renderApiManager.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	window = WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-#ifdef OPENGL
-	static_cast<OGLRenderApi*>(m_Renderer)->camera = camera;
-
-	oglRenderSystem = new OGLRenderSystem();
-	oglRenderSystem->renderer = static_cast<OGLRenderApi*>(m_Renderer);
-	oglRenderSystem->camera = camera;
-#endif
 	m_Renderer->startUp();
-
+#ifdef OPENGL
+	oglRenderSystem = new OGLRenderSystem(static_cast<OGLRenderApi*>(m_Renderer), camera);
+	systemManager.AddSystem(oglRenderSystem);
+#endif
 #ifdef D3D11
 	renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
 	renderPass->m_Camera = camera;
@@ -57,9 +53,7 @@ void Application::Run()
 		dt = m_Timer.GetMilisecondsElapsed();
 		m_Timer.Restart();
 		window->ProcessMessage();
-#ifdef OPENGL
-		static_cast<OGLRenderApi*>(m_Renderer)->clear();
-#endif
+
 #ifdef D3D11
 		renderPass->shadowMap->camera.Update(dt);
 #endif

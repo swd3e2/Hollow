@@ -56,5 +56,5 @@ public:
 	Matrix4 projectionMatrix;
 
 	const float bias = 0.000001f;
-	const float cameraMoveSpeed = 0.05f;
+	const float cameraMoveSpeed = 0.005f;
 };

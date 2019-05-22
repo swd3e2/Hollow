@@ -18,12 +18,10 @@ namespace Hollow
 	class  FileSystem
 	{
 	private:
-		using stringvec = std::vector<std::string>;
 		std::vector<std::string> pathHistory;
 		std::string fullFilePath;
-		stringvec* v;
 
-		void read_directory(const std::string& name, stringvec* v)
+		void read_directory(const std::string& name, std::vector<std::string>& v)
 		{
 			std::string pattern(name);
 			pattern.append("*");
@@ -31,7 +29,7 @@ namespace Hollow
 			HANDLE hFind;
 			if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
 				do {
-					v->push_back(data.cFileName);
+					v.push_back(data.cFileName);
 				} while (FindNextFile(hFind, &data) != 0);
 				FindClose(hFind);
 			} else {
@@ -43,11 +41,12 @@ namespace Hollow
 	public:
 		FileSystem()
 		{
-			v = new stringvec();
 		}
 
-		stringvec* read_next_directory(std::string filepath)
+		std::vector<std::string> read_next_directory(std::string filepath)
 		{	
+			std::vector<std::string> v;
+
 			if (filepath != "." && filepath != "..") {
 				if (pathHistory.size() == 0) {
 					filepath.append(":\\");
@@ -60,24 +59,26 @@ namespace Hollow
 				pathHistory.pop_back();
 			}
 
-			v->clear();
+			v.clear();
 			read_directory(get_current_file_path(), v);
 			return v;
 		}
 
-		stringvec* read_directory(std::string filepath)
+		std::vector<std::string> read_directory(std::string filepath)
 		{
-			v->clear();
+			std::vector<std::string> v;
+
 			std::string pattern(filepath);
 			pattern.append("*");
 			WIN32_FIND_DATA data;
 			HANDLE hFind;
 			if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
 				do {
-					v->push_back(data.cFileName);
+					v.push_back(data.cFileName);
 				} while (FindNextFile(hFind, &data) != 0);
 				FindClose(hFind);
 			}
+
 			return v;
 		}
 
