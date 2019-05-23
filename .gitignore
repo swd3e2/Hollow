@@ -9,8 +9,6 @@ Hollow/Debug
 Hollow/x64
 !.gitignore
 Sandbox/imgui.ini
-Hollow/vendor/lib/assimp-vc140-mtd.lib
-Hollow/vendor/lib/assimp-vc140-mtr.lib
-/Sandbox/gwen.obj
-/Sandbox/gwen.mtl
-/Sandbox/cube.obj
+Hollow/vendor/lib/*
+Hollow/vendor/lib/*
+Sandbox\vendor

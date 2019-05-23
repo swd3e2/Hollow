@@ -17,16 +17,16 @@ private:
 public:
 	void onStartUp()
 	{
-		//GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
+		GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
 
-		//entity->addComponent<TransformComponent, const Vector3&, const Vector3&, const Vector3&>
-		//	(Vector3( 0.0f, 33.0f, 22.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
-		//
-		////entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/astroboy_walk.dae", false));
-		////entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/boblampclean.md5mesh", false));
-		//MeshImportData* mesh1 = MeshImporter::import("Sandbox/Resources/Meshes/astroboy_walk.dae", false);
-		//
-		//entity->addComponent<RenderableComponent>(mesh1->meshData);
+		entity->addComponent<TransformComponent, const Vector3&, const Vector3&, const Vector3&>
+			(Vector3( 0.0f, 33.0f, 22.0f ), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+		
+		//entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/astroboy_walk.dae", false));
+		//entity->addComponent<RenderableComponent>(MeshImporter::import("Sandbox/Resources/Meshes/boblampclean.md5mesh", false));
+		MeshImportData* mesh1 = MeshImporter::import("Sandbox/Resources/Meshes/astroboy_walk.dae", false);
+		
+		entity->addComponent<RenderableComponent>(mesh1->meshData);
 		//if (mesh1->hasAnimation()) {
 		//	entity->addComponent<AnimationComponent>(mesh1->animationData);
 		//}

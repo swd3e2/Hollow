@@ -263,7 +263,7 @@
       <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -289,7 +289,7 @@
       <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\release"</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
