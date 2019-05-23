@@ -17,13 +17,13 @@ void OGLRenderApi::startUp()
 void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 {
 	OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBuffer->VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBuffer->IBO);
 }
 
 void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 {
 	glBindVertexArray(static_cast<OGLVertexBuffer*>(buffer)->VAO);
-
+	//glBindBuffer(GL_ARRAY_BUFFER, static_cast<OGLVertexBuffer*>(buffer)->VBO);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);

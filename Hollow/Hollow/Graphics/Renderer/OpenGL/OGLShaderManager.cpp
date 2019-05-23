@@ -26,6 +26,9 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 	int  success;
 	char infoLog[512];
 
+	std::string fileContent = Hollow::FileSystem::getFileContent(path);
+	const char* shaderContent = fileContent.c_str();
+
 	switch (type)
 	{
 	case VERTEX:
@@ -33,8 +36,7 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 		shader = new OGLShader(ShaderType::VERTEX);
 
 		shader->shaderId = glCreateShader(GL_VERTEX_SHADER);
-		std::string fileContent = Hollow::FileSystem::getFileContent(path);
-		const char* shaderContent = fileContent.c_str();
+		
 		glShaderSource(shader->shaderId, 1, &shaderContent, NULL);
 		glCompileShader(shader->shaderId);
 
@@ -50,8 +52,6 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 		shader = new OGLShader(ShaderType::PIXEL);
 
 		shader->shaderId = glCreateShader(GL_FRAGMENT_SHADER);
-		std::string fileContent = Hollow::FileSystem::getFileContent(path);
-		const char* shaderContent = fileContent.c_str();
 		glShaderSource(shader->shaderId, 1, &shaderContent, NULL);
 		glCompileShader(shader->shaderId);
 
