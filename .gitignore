@@ -11,4 +11,4 @@ Hollow/x64
 Sandbox/imgui.ini
 Hollow/vendor/lib/*
 Hollow/vendor/lib/*
-Sandbox\vendor
+Sandbox/vendor/*
