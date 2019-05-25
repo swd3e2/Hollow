@@ -43,7 +43,6 @@ public:
 		buffer = GPUBufferManager::instance()->create(0, sizeof(OGLWVP));
 
 		glEnable(GL_DEPTH_TEST);
-		glCullFace(GL_CULL_FACE);
 	}	
 
 
@@ -79,6 +78,18 @@ public:
 
 	void DrawObject(Model* model)
 	{
+		if (model->material != nullptr) {
+			if (model->material->diffuse_texture != nullptr) {
+				renderer->SetTexture(0, model->material->diffuse_texture);
+			}
+			if (model->material->normal_texture != nullptr) {
+				renderer->SetTexture(1, model->material->normal_texture);
+			}
+			if (model->material->specular_texture != nullptr) {
+				renderer->SetTexture(2, model->material->specular_texture);
+			}
+		}
+
 		renderer->SetVertexBuffer(model->vBuffer);
 		renderer->SetIndexBuffer(model->iBuffer);
 		renderer->DrawIndexed(model->iBuffer->getSize());

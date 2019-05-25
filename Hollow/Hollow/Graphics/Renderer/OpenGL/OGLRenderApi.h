@@ -30,7 +30,7 @@ public:
 	virtual void startUp() override;
 	virtual void SetIndexBuffer(IndexBuffer*) override;
 	virtual void SetVertexBuffer(VertexBuffer*) override;
-	virtual void SetTexture(UINT, Texture*) override {}
+	virtual void SetTexture(UINT, Texture*) override;
 	virtual void SetTexture(UINT, RenderTarget*) override {}
 	virtual void SetShader(ShaderProgram*) override;
 	virtual void SetGpuBuffer(GPUBuffer*) override;

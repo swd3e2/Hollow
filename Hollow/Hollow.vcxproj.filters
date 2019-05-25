@@ -581,5 +581,8 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11GPUBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -32,7 +32,7 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 	switch (type)
 	{
 	case VERTEX:
-	{
+	{ 
 		shader = new OGLShader(ShaderType::VERTEX);
 
 		shader->shaderId = glCreateShader(GL_VERTEX_SHADER);
@@ -102,6 +102,16 @@ ShaderProgram* OGLShaderManager::createShader(Shader* vertexShader, Shader* pixe
 		glGetProgramInfoLog(shaderProgram->shaderId, 512, NULL, infoLog);
 		HW_ERROR("{}", infoLog);
 	}
+
+	int tex0 = glGetUniformLocation(shaderProgram->shaderId, "ambient_map");
+	int tex1 = glGetUniformLocation(shaderProgram->shaderId, "normal_map");
+	int tex2 = glGetUniformLocation(shaderProgram->shaderId, "specular_map");
+	int tex3 = glGetUniformLocation(shaderProgram->shaderId, "shadow_map");
+
+	glUniform1i(tex0, 0);
+	glUniform1i(tex1, 1);
+	glUniform1i(tex2, 2);
+	glUniform1i(tex3, 3);
 
 	glDeleteShader(static_cast<OGLShader*>(vertexShader)->shaderId);
 	glDeleteShader(static_cast<OGLShader*>(pixelShader)->shaderId);

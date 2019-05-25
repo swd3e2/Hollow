@@ -10,8 +10,12 @@ in VS_OUT
 	vec3 bitangent;
 } fs_in;
 
+uniform sampler2D ambient_map;
+uniform sampler2D normal_map;
+uniform sampler2D specular_map;
+uniform sampler2D shadow_map;
+
 void main()
 {
-	FragColor = vec4(fs_in.normal.x, fs_in.normal.y, fs_in.normal.z, 0.0f);
-
+	FragColor = texture(ambient_map, fs_in.texCoord);
 }

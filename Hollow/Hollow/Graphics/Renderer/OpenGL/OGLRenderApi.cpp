@@ -24,7 +24,7 @@ void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 {
 	glBindVertexArray(static_cast<OGLVertexBuffer*>(buffer)->VAO);
-	//glBindBuffer(GL_ARRAY_BUFFER, static_cast<OGLVertexBuffer*>(buffer)->VBO);
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
@@ -32,6 +32,13 @@ void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 	glEnableVertexAttribArray(4);
 	glEnableVertexAttribArray(5);
 	glEnableVertexAttribArray(6);
+}
+
+void OGLRenderApi::SetTexture(UINT location, Texture* texture)
+{
+	OGLTexture* oglTexture = static_cast<OGLTexture*>(texture);
+	glActiveTexture(location + 0x84C0);
+	glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
 }
 
 void OGLRenderApi::SetShader(ShaderProgram* shader)
@@ -49,7 +56,7 @@ void OGLRenderApi::SetGpuBuffer(GPUBuffer* buffer)
 void OGLRenderApi::clear()
 {
 	glViewport(0, 0, 2560, 1440);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

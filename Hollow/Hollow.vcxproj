@@ -179,6 +179,7 @@
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />

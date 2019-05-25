@@ -7,7 +7,10 @@
 
 class OGLTexture : public Texture
 {
-
+public:
+	unsigned int textureId;
+public:
+	OGLTexture(int width, int height) : Texture(width, height), textureId(0) {}
 };
 
 #endif

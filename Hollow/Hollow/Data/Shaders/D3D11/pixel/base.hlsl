@@ -87,7 +87,7 @@ cbuffer ConstantBuffer : register(b6)
 Texture2D ambient_map   : TEXUTRE : register(t0);
 Texture2D normal_map    : TEXUTRE : register(t1);
 Texture2D specular_map  : TEXUTRE : register(t2);
-Texture2D shadow_map : TEXUTRE : register(t3);
+Texture2D shadow_map	: TEXUTRE : register(t3);
 
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);

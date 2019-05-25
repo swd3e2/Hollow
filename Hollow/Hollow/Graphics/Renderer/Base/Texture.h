@@ -39,5 +39,10 @@ public:
 
 class Texture
 {
-
+public:
+	int width;
+	int height;
+public:
+	Texture(int width, int height) : width(width), height(height) {}
+	Texture() : width(0), height(0) {}
 };

@@ -16,7 +16,9 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
+#ifdef D3D11
 			aiProcess_MakeLeftHanded | 
+#endif
 			aiProcess_GenNormals
 		);
 
@@ -140,8 +142,13 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 					}
 
 					if (scene->mMeshes[i]->HasTextureCoords(0)) {
+#ifdef D3D11
 						vertex.texCoord.x = scene->mMeshes[i]->mTextureCoords[0][j].x;
 						vertex.texCoord.y = scene->mMeshes[i]->mTextureCoords[0][j].y;
+#else
+						vertex.texCoord.x = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].x;
+						vertex.texCoord.y = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].y;
+#endif
 					}
 
 					if (scene->mMeshes[i]->HasTangentsAndBitangents()) {
