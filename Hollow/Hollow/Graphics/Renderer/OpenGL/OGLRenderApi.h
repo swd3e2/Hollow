@@ -13,16 +13,17 @@
 #include "OGLTextureManager.h"
 #include "OGLShaderProgram.h"
 #include "OGLShaderManager.h"
+#include "OGLGPUBufferManager.h"
 
 class OGLRenderApi : public RenderApi
 {
 private:
 	HWND* hwnd;
 	OGLWindowManager* windowManager;
-public:
 	OGLHardwareBufferManager*	hardwareBufferManager;
 	OGLTextureManager*			textureManager;
 	OGLShaderManager*			shaderManager;
+	OGLGPUBufferManager*		gpuBufferManager;
 public:
 	OGLRenderApi(int width, int height);
 
@@ -32,6 +33,7 @@ public:
 	virtual void SetTexture(UINT, Texture*) override {}
 	virtual void SetTexture(UINT, RenderTarget*) override {}
 	virtual void SetShader(ShaderProgram*) override;
+	virtual void SetGpuBuffer(GPUBuffer*) override;
 
 	void clear();
 	

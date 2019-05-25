@@ -10,14 +10,14 @@
 struct MaterialData
 {
 	// constant illumination color
-	float Ka[3] = {};
-	float Ns;
-	float Kd[3] = {};
-	float pad;
-	float Ks[3] = {};
-	float pad2;
-	float Ke[3] = {};
-	float pad3;
+	float Ka[3] = {0};
+	float Ns = 0;
+	float Kd[3] = {0};
+	float pad = 0;
+	float Ks[3] = {0};
+	float pad2 = 0;
+	float Ke[3] = {0};
+	float pad3 = 0;
 	int hasDiffuseTexture = 0;
 	int hasNormalMap = 0;
 	int hasSpecularMap = 0;
@@ -28,9 +28,6 @@ class Material
 public:
 	bool active = false;
 	std::string name;
-	std::string diffuse_texture_name;
-	std::string normal_texture_name;
-	std::string specular_texture_name;
 
 	MaterialData materialData;
 
@@ -39,7 +36,8 @@ public:
 	Texture* specular_texture;
 	ShaderProgram* shader;
 
-	Material()
+	Material() :
+		diffuse_texture(nullptr), normal_texture(nullptr), specular_texture(nullptr), shader(nullptr)
 	{
 		shader = ShaderManager::instance()->getShader("default");
 	}

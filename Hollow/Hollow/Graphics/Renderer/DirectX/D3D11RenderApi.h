@@ -23,6 +23,7 @@ private:
 	D3D11HardwareBufferManager* hardwareBufferManager;
 	D3D11ShaderManager*			shaderManager;
 	D3D11WindowManager*			windowManager;
+	D3D11BufferManager*			gpuBufferManager;
 
 	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
 	const UINT offset = 0;
@@ -41,6 +42,7 @@ public:
 	virtual void Present() override;
 	virtual void Draw(UINT count) override;
 	virtual void DrawIndexed(UINT count) override;
+	virtual void SetGpuBuffer(GPUBuffer*) override;
 
 	virtual void startUp() override;
 

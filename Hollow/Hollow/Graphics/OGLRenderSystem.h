@@ -10,6 +10,12 @@
 #include "Hollow/ECS/TransformComponent.h"
 #include "Hollow/ECS/GameObject.h"
 
+struct OGLWVP
+{
+	Matrix4 WVP;
+	Vector3 cameraPosition;
+};
+
 class OGLRenderSystem : public Hollow::System<OGLRenderSystem>
 {
 public:
@@ -19,35 +25,40 @@ public:
 	unsigned int projectionMatrixUniformId;
 
 	Camera* camera;
-	GLuint VAO;
-	GLuint shaderProgram;
+	unsigned int VAO;
+	unsigned int shaderProgram;
+	unsigned int UBO;
 
 	VertexBuffer* vBuffer;
 	IndexBuffer* iBuffer;
 	Mesh* mesh;
+	OGLWVP wvp;
+	GPUBuffer* buffer;
 public:
 	OGLRenderSystem(OGLRenderApi* api, Camera* camera) :
 		camera(camera), renderer(api)
 	{
-		int shaderProgramId = static_cast<OGLShaderProgram*>(ShaderManager::instance()->getShader("default"))->shaderId;
+		wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
 
-		projectionMatrixUniformId = glGetUniformLocation(shaderProgramId, "projectionMatrix");
-		glUniformMatrix4fv(projectionMatrixUniformId, 1, false, (float*)& camera->GetProjectionMatrix());
+		buffer = GPUBufferManager::instance()->create(0, sizeof(OGLWVP));
 
-		viewMatrixUniformId = glGetUniformLocation(shaderProgramId, "viewMatrix");
-		glUniformMatrix4fv(viewMatrixUniformId, 1, false, (float*)& camera->GetViewMatrix());
+		glEnable(GL_DEPTH_TEST);
+		glCullFace(GL_CULL_FACE);
 	}	
 
 
-	virtual void PreUpdate(float_t dt) override
+	virtual void PreUpdate(double dt) override
 	{
 		renderer->clear();
 		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 
-		glUniformMatrix4fv(viewMatrixUniformId, 1, false, (float*)& camera->GetViewMatrix());
+		wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
+
+		buffer->update(&wvp);
+		renderer->SetGpuBuffer(buffer);
 	}
 
-	virtual void Update(float_t dt) override
+	virtual void Update(double dt) override
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<RenderableComponent>()) {
@@ -61,7 +72,7 @@ public:
 		}
 	}
 
-	virtual void PostUpdate(float_t dt) override
+	virtual void PostUpdate(double dt) override
 	{
 		renderer->Present();
 	}

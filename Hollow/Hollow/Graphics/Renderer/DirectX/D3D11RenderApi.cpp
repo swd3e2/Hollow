@@ -17,6 +17,7 @@
 #include "D3D11ShaderManager.h"
 #include "D3D11Shader.h"
 #include "D3D11WindowManager.h"
+#include "D3D11GPUBufferManager.h"
 
 D3D11RenderApi::D3D11RenderApi(int width, int height)
 {
@@ -84,6 +85,7 @@ void D3D11RenderApi::startUp()
 	textureManager = new D3D11TextureManager();
 	hardwareBufferManager = new D3D11HardwareBufferManager();
 	shaderManager = new D3D11ShaderManager();
+	gpuBufferManager = new D3D11BufferManager();
 }
 
 void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)
@@ -182,6 +184,15 @@ void D3D11RenderApi::SetBlendState(D3D11BlendState* blend, float* factor, unsign
 void D3D11RenderApi::DrawIndexed(UINT count)
 {
 	context->getDeviceContext()->DrawIndexed(count, 0, 0);
+}
+
+void D3D11RenderApi::SetGpuBuffer(GPUBuffer* buffer)
+{
+	D3D11GPUBuffer* gpuBuffer = static_cast<D3D11GPUBuffer*>(buffer);
+	context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+	context->getDeviceContext()->PSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+	context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+	context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 }
 
 void D3D11RenderApi::Draw(UINT count)

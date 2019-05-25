@@ -9,7 +9,6 @@
 #include "Hollow/Containers/vector.h"
 #include "Hollow/Containers/array.h"
 #include "Hollow/Platform.h"
-#include "IEntity.h"
 #include "Component.h"
 
 class ComponentManager : public CModule<ComponentManager>
@@ -21,7 +20,7 @@ private:
 	class ComponentContainer : public IComponentContainer
 	{
 	public:
-		Hollow::array<T> componentList;
+		Hollow::array<T, 10> componentList;
 	};
 
 	std::unordered_map<size_t, IComponentContainer*> componentContainers;
@@ -55,39 +54,46 @@ public:
 		return container;
 	}
 
-	template<class T, typename ...ARGS>
-	T* create(IEntity* entity, ARGS&& ... args) {
+	template<typename ... ARGS>
+	void create1(ARGS&& ... args)
+	{
+
+	}
+
+	template<class T, typename ... ARGS>
+	T* create(size_t entityId, ARGS&& ... args) 
+	{
 		size_t componentTypeId = T::staticGetTypeId();
-		// todo: maybe no need in delete component if trying to add one
-		destroy<T>(entity);
+		// todo: maybe don't need delete component if trying to add one
+		destroy<T>(entityId);
 
 		ComponentContainer<T>* container = getContainer<T>();
 		T* component = container->componentList.createObject(std::forward<ARGS>(args)...);
-		componentMap[entity->entityId][componentTypeId] = component;
+		componentMap[entityId][componentTypeId] = component;
 
 		return component;
 	}
 
 	template<class T>
-	void destroy(IEntity* entity)
+	void destroy(size_t entityId)
 	{
-		if (has<T>(entity))
+		if (has<T>(entityId))
 		{
 			size_t componentTypeId = T::staticGetTypeId();
 
 			ComponentContainer<T>* container = getContainer<T>();
-			container->componentList.destroyObject((T*)componentMap[entity->entityId][componentTypeId]);
+			container->componentList.destroyObject((T*)componentMap[entityId][componentTypeId]);
 		}
 	}
 
 	template<class T>
-	bool has(IEntity* entity)
+	bool has(size_t entityId)
 	{
 		size_t componentTypeId = T::staticGetTypeId();
 
-		if (componentMap.find(entity->entityId) != componentMap.end())
+		if (componentMap.find(entityId) != componentMap.end())
 		{
-			if (componentMap[entity->entityId].find(componentTypeId) != componentMap[entity->entityId].end())
+			if (componentMap[entityId].find(componentTypeId) != componentMap[entityId].end())
 			{
 				return true;
 			}
@@ -96,14 +102,14 @@ public:
 	}
 
 	template<class T>
-	T* get(IEntity* entity)
+	T* get(size_t entityId)
 	{
-		if (has<T>(entity))
+		if (has<T>(entityId))
 		{
 			size_t componentTypeId = T::staticGetTypeId();
 
 			ComponentContainer<T>* container = getContainer<T>();
-			return (T*)componentMap[entity->entityId][componentTypeId];
+			return (T*)componentMap[entityId][componentTypeId];
 		}
 
 		return nullptr;

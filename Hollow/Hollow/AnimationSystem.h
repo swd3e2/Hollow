@@ -9,9 +9,9 @@ namespace Hollow {
 	class AnimationSystem : public System<AnimationSystem>
 	{
 	public:
-		virtual void PreUpdate(float_t dt) override {}
+		virtual void PreUpdate(double dt) override {}
 
-		virtual void Update(float_t dt) override
+		virtual void Update(double dt) override
 		{
 			for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList)
 			{
@@ -24,7 +24,7 @@ namespace Hollow {
 			}
 		}
 
-		virtual void PostUpdate(float_t dt) override {}
+		virtual void PostUpdate(double dt) override {}
 
 		void animate(double time, Bone* bone, const Matrix4& ParentTransform, AnimationComponent* component)
 		{

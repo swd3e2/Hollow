@@ -42,7 +42,9 @@ public:
 	AnimationData* animationData;
 	std::string filename;
 public:
-	MeshImportData() {}
+	MeshImportData() :
+		meshData(nullptr), animationData(nullptr) 
+	{}
 	inline bool hasAnimation() { return animationData != nullptr; }
 	inline bool hasMesh() { return meshData != nullptr; }
 };

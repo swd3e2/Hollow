@@ -39,19 +39,19 @@ namespace Hollow {
 			}
 		}
 
-		void PreUpdateSystems(float dt)
+		void PreUpdateSystems(double dt)
 		{
 			for (auto& it : m_Systems)
 				it->PreUpdate(dt);
 		}
 
-		void PostUpdateSystems(float dt)
+		void PostUpdateSystems(double dt)
 		{
 			for (auto& it : m_Systems)
 				it->PostUpdate(dt);
 		}
 
-		void UpdateSystems(float dt)
+		void UpdateSystems(double dt)
 		{
 			for (auto& it : m_Systems)
 				it->Update(dt);

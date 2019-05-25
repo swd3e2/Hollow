@@ -13,7 +13,7 @@ public:
 	std::unordered_map<std::string, std::vector<KeyFrame*>> keyFrames;
 	double duration;
 public:
-	inline KeyFrame* findKeyFrame(float time, std::string& bone)
+	inline KeyFrame* findKeyFrame(double time, std::string& bone)
 	{
 		KeyFrame* frame = nullptr;
 		if (keyFrames.find(bone) != keyFrames.end())
@@ -32,7 +32,7 @@ public:
 		return frame;
 	}
 
-	inline KeyFrame* findKeyNextFrame(float time, std::string& bone)
+	inline KeyFrame* findKeyNextFrame(double time, std::string& bone)
 	{
 		KeyFrame* frame = nullptr;
 

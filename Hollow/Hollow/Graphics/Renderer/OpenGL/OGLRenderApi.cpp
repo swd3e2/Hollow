@@ -11,6 +11,7 @@ void OGLRenderApi::startUp()
 	hardwareBufferManager = new OGLHardwareBufferManager();
 	textureManager = new OGLTextureManager();
 	shaderManager = new OGLShaderManager();
+	gpuBufferManager = new OGLGPUBufferManager();
 	hwnd = static_cast<OGLWin32Window*>(windowManager->getWindow())->getHWND();
 }
 
@@ -36,6 +37,13 @@ void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 void OGLRenderApi::SetShader(ShaderProgram* shader)
 {
 	glUseProgram(static_cast<OGLShaderProgram*>(shader)->shaderId);
+}
+
+void OGLRenderApi::SetGpuBuffer(GPUBuffer* buffer)
+{
+	OGLGpuBuffer* gpuBuffer = static_cast<OGLGpuBuffer*>(buffer);
+	glBindBufferBase(GL_UNIFORM_BUFFER, gpuBuffer->getLocation(), gpuBuffer->UBO);
+
 }
 
 void OGLRenderApi::clear()

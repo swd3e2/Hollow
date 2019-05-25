@@ -16,21 +16,6 @@ public:
 	TransformComponent(const Vector3& position, const Vector3& scale, const Vector3& rotation) :
 		position(position), scale(scale), rotation(rotation)
 	{}
-	TransformComponent(const Vector3& position) :
-		position(position)
-	{
-		this->position.x = 0.0f;
-		this->position.y = 0.0f;
-		this->position.z = 0.0f;
-
-		scale.x = 1.0f;
-		scale.y = 1.0f;
-		scale.z = 1.0f;
-
-		rotation.x = 0.0f;
-		rotation.y = 0.0f;
-		rotation.z = 0.0f;
-	}
 	TransformComponent(float * position, float * scale, float * rotation)
 	{
 		this->setTransform(position, scale, rotation);

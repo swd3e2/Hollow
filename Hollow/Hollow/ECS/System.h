@@ -37,13 +37,13 @@ namespace Hollow {
 			//this->m_SystemManagerInstance->AddSystemDependency(this, std::forward<Dependencies>(dependencies)...);
 		}
 
-		virtual void PreUpdate(float_t dt) override
+		virtual void PreUpdate(double dt) override
 		{}
 
-		virtual void Update(float_t dt) override
+		virtual void Update(double dt) override
 		{}
 
-		virtual void PostUpdate(float_t dt) override
+		virtual void PostUpdate(double dt) override
 		{}
 	};
 

@@ -34,9 +34,9 @@ namespace Hollow {
 		virtual inline const SystemTypeID GetStaticSystemTypeID() const = 0;
 		virtual inline const char* GetSystemTypeName() const = 0;
 
-		virtual void PreUpdate(float_t dt) = 0;
-		virtual void Update(float_t dt) = 0;
-		virtual void PostUpdate(float_t dt) = 0;
+		virtual void PreUpdate(double dt) = 0;
+		virtual void Update(double dt) = 0;
+		virtual void PostUpdate(double dt) = 0;
 	};
 
 }

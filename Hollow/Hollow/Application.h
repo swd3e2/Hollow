@@ -1,5 +1,5 @@
 #pragma once
-#define OPENGL
+#define D3D11
 
 #include "Platform.h"
 #include "ECS/ComponentManager.h"
@@ -10,11 +10,9 @@
 #include "Common/Console.h"
 #include "ECS/SystemManager.h"
 #include <thread>
-//#include "Hollow/ImGuiLayer.h"
 #include "Layers/LayerStack.h"
 #include "Graphics/Camera.h"
 #include "Graphics/ForwardRenderSystem.h"
-//#include "Common/SaveHelper.h"
 #include "Graphics/Camera.h"
 #include "Graphics/WindowManager.h"
 #include "Core/TaskManager.h"
@@ -24,13 +22,15 @@
 #include "Graphics/SkyMap.h"
 #include "AnimationSystem.h"
 #include "Graphics/OGLRenderSystem.h"
+#include "Importer/FreeImgImporter.h"
+#include "Importer/MeshImporter.h"
 
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
 
 class Application
 {
-protected:
+public:
 	HWND*							m_HWND;
 	EntityManager					entityManager;
 	ComponentManager				componentManager;
@@ -47,6 +47,8 @@ protected:
 	RenderApiManager				renderApiManager;
 	Window*							window;
 	RenderApi*						m_Renderer;
+	MeshImporter*					meshImporter;
+	FreeImgImporter*				imgImporter;
 	double							dt;
 public:
 	Application();

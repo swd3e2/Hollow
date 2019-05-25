@@ -26,6 +26,7 @@
 #include "Renderer/DirectX/D3D11Texture.h"
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/ECS/AnimationComponent.h"
+#include "GPUBufferManager.h"
 
 using namespace DirectX;
 
@@ -99,14 +100,12 @@ private:
 	D3D11DepthStencil*		m_DepthStencil;
 
 	// constant buffers
-	D3D11ConstantBuffer*	m_LightBuffer;
-	D3D11ConstantBuffer*	m_WVPConstantBuffer;
-	D3D11ConstantBuffer*	m_WorldViewProjectionBuffer;
-	D3D11ConstantBuffer*	m_TransformConstantBuffer;
-	D3D11ConstantBuffer*	materialConstantBuffer;
-	D3D11ConstantBuffer*	lightMatricesConstantBuffer;
-	D3D11ConstantBuffer*	lightInfoBuffer;
-	D3D11ConstantBuffer*	boneInfo;
+	GPUBuffer*	m_WVPConstantBuffer;
+	GPUBuffer*	m_WorldViewProjectionBuffer;
+	GPUBuffer*	m_TransformConstantBuffer;
+	GPUBuffer*	materialConstantBuffer;
+	GPUBuffer*	lightInfoBuffer;
+	GPUBuffer*	boneInfo;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -139,14 +138,12 @@ public:
 
 		m_ShadowDepthStencil = new D3D11DepthStencil(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
 
-		m_WVPConstantBuffer = new D3D11ConstantBuffer(sizeof(WVP));
-		m_TransformConstantBuffer = new D3D11ConstantBuffer(sizeof(TransformBuff));
-		m_LightBuffer = new D3D11ConstantBuffer(sizeof(PointLightStruct));
-		lightMatricesConstantBuffer = new D3D11ConstantBuffer(sizeof(LightMatrices));
-		m_WorldViewProjectionBuffer = new D3D11ConstantBuffer(sizeof(WorldViewProjection));
-		materialConstantBuffer = new D3D11ConstantBuffer(sizeof(MaterialData));
-		lightInfoBuffer = new D3D11ConstantBuffer(sizeof(LightInfo));
-		boneInfo = new D3D11ConstantBuffer(sizeof(Matrix4) * 100);
+		m_WVPConstantBuffer			= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_WVP_SLOT, sizeof(WVP));
+		m_TransformConstantBuffer	= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, sizeof(TransformBuff));
+		m_WorldViewProjectionBuffer	= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, sizeof(WorldViewProjection));
+		materialConstantBuffer		= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, sizeof(MaterialData));
+		lightInfoBuffer				= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
+		boneInfo					= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
 		shadowMap = new ShadowMap(8192, 8192);
 
@@ -163,7 +160,7 @@ public:
 		renderer->SetRasterizerState(m_cullNone);
 	}
 
-	virtual void PreUpdate(float_t dt)
+	virtual void PreUpdate(double dt)
 	{
 		if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F1)) {
 			renderer->SetRasterizerState(m_cullBack);
@@ -194,15 +191,15 @@ public:
 				j++;
 			}
 		}
-		lightInfoBuffer->Update(&pointLights);
-		renderer->SetContantBuffer(6, lightInfoBuffer);
+		lightInfoBuffer->update(&pointLights);
+		renderer->SetGpuBuffer(lightInfoBuffer);
 
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
 
 		renderer->SetRenderTarget(m_RenderTarget, m_DepthStencil);
 	}
 
-	virtual void Update(float_t dt)
+	virtual void Update(double dt)
 	{
 		m_worldViewProjection.offset += dt * 0.1f;
 		m_worldViewProjection.offset = fmod(m_worldViewProjection.offset, 139.0f);
@@ -213,7 +210,7 @@ public:
 		DrawScene();
 	}
 
-	virtual void PostUpdate(float_t dt)
+	virtual void PostUpdate(double dt)
 	{
 		renderer->Present();
 	}
@@ -234,14 +231,14 @@ public:
 				if (entity.hasComponent<AnimationComponent>()) {
 					AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
 					transformBuff.hasAnimation = true;
-					boneInfo->Update(animationComponent->boneInfo);
-					renderer->SetContantBuffer(7, boneInfo);
+					boneInfo->update(animationComponent->boneInfo);
+					renderer->SetGpuBuffer(boneInfo);
 				} else {
 					transformBuff.hasAnimation = false;
 				}
 
-				m_TransformConstantBuffer->Update(&transformBuff);
-				renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, m_TransformConstantBuffer);
+				m_TransformConstantBuffer->update(&transformBuff);
+				renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
 				for (auto& model : renderable->mesh->models) {
 					DrawObject(model);
@@ -255,15 +252,15 @@ public:
 	{
 		m_wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
 
-		m_WVPConstantBuffer->Update(&m_wvp);
-		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
+		m_WVPConstantBuffer->update(&m_wvp);
+		renderer->SetGpuBuffer(m_WVPConstantBuffer);
 
 		m_worldViewProjection.World = Matrix4::Identity();
 		m_worldViewProjection.View = camera->GetViewMatrix();
 		m_worldViewProjection.Projection = camera->GetProjectionMatrix();
-		m_WorldViewProjectionBuffer->Update(&m_worldViewProjection);
+		m_WorldViewProjectionBuffer->update(&m_worldViewProjection);
 
-		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, m_WorldViewProjectionBuffer);
+		renderer->SetGpuBuffer(m_WorldViewProjectionBuffer);
 	}
 
 	void DrawObject(Model * object)
@@ -285,8 +282,8 @@ public:
 				renderer->FreeShaderResource(2);
 			}
 
-			materialConstantBuffer->Update(&object->material->materialData);
-			renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, materialConstantBuffer);
+			materialConstantBuffer->update(&object->material->materialData);
+			renderer->SetGpuBuffer(materialConstantBuffer);
 
 			renderer->SetShader(object->material->shader);
 		} else {
@@ -305,8 +302,8 @@ public:
 		viewMatrx.md[2][3] = 0.0f;
 		m_wvp.WVP = m_Camera->GetProjectionMatrix() * viewMatrx;
 
-		m_WVPConstantBuffer->Update(&m_wvp);
-		renderer->SetContantBuffer(HOLLOW_CONST_BUFFER_WVP_SLOT, m_WVPConstantBuffer);
+		m_WVPConstantBuffer->update(&m_wvp);
+		renderer->SetGpuBuffer(m_WVPConstantBuffer);
 		DrawObject(skyMap->mesh->models[0]);
 	}
 

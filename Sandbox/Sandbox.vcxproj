@@ -19,7 +19,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sandbox\Application.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
     <ClInclude Include="Sandbox\Components\MeshComponent.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />

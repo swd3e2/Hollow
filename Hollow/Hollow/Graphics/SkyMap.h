@@ -9,13 +9,14 @@
 #include "ShaderManager.h"
 #include "Hollow/Importer/MeshImporter.h"
 #include "Hollow/Test.h"
+#include "Hollow/Common/FileSystem.h"
 
 class SkyMap
 {
 public:
 	int NumSphereVertices;
 	int NumSphereFaces;
-
+	Hollow::FileSystem fs;
 	Matrix4 transform;
 
 	Mesh* mesh;
@@ -30,10 +31,10 @@ public:
 		filenames.push_back("Sandbox/Resources/Textures/cubemap/cloudtop_dn.tga");
 		filenames.push_back("Sandbox/Resources/Textures/cubemap/cloudtop_rt.tga");
 		filenames.push_back("Sandbox/Resources/Textures/cubemap/cloudtop_lf.tga");
-
+		std::vector<std::string> vec = fs.read_directory("Sandbox/Resources/Textures/cubemap/");
 		for (int i = 0; i < filenames.size(); i++)
 		{
-			desc[i] = FreeImgImporter::import(filenames[i].c_str());
+			desc[i] = FreeImgImporter::instance()->import(filenames[i].c_str());
 		}
 
 		mesh = getCube();

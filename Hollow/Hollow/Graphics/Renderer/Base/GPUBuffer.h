@@ -1,16 +1,17 @@
 #pragma once
 
-#include <string>
-
-struct GPUBufferStruct
-{
-	std::string name; // ogl
-
-	unsigned int size;
-	unsigned int count;
-};
-
 class GPUBuffer
 {
-	unsigned int location; // dx
+protected:
+	unsigned int location;
+	unsigned int size;
+public:
+	GPUBuffer(unsigned int location, unsigned int size) :
+		location(location), size(size)
+	{}
+
+	unsigned int getSize() const { return size; }
+	unsigned int getLocation() const { return location; }
+
+	virtual void update(void* data) = 0;
 };

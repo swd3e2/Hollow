@@ -207,6 +207,8 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 				}
 			}
 		}
+
+		importer.FreeScene();
 	};
 
 	if (async) {

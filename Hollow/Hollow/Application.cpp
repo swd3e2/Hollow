@@ -5,6 +5,9 @@ Application::Application()
 	Hollow::Console::RedirectIOToConsole();
 	Hollow::Log::Init();
 
+	meshImporter = new MeshImporter();
+	imgImporter = new FreeImgImporter();
+
 	camera = new Camera(true);
 	camera->SetProjectionValues(90.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
@@ -57,6 +60,7 @@ void Application::Run()
 #ifdef D3D11
 		renderPass->shadowMap->camera.Update(dt);
 #endif
+
 		camera->Update(dt);
 
 		m_LayerStack.PreUpdate(dt);

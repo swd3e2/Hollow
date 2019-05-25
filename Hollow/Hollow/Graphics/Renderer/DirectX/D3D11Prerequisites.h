@@ -25,3 +25,4 @@ class D3D11HardwareBufferManager;
 class D3D11RenderApi;
 class D3D11Shader;
 class D3D11WindowManager;
+class D3D11BufferManager;

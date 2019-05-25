@@ -19,7 +19,7 @@ Texture* TextureManager::CreateTextureFromFile(const std::string& filename)
 	std::string pathToFile = filename;
 	pathToFile = baseTexturePapth + filename;
 
-	TEXTURE_DESC* textureDesc = FreeImgImporter::import(pathToFile.c_str());
+	TEXTURE_DESC* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
 
 	if (textureDesc == nullptr) {
 		return nullptr;

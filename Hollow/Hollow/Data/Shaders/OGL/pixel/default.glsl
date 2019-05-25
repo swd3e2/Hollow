@@ -1,14 +1,17 @@
-#version 330
+#version 460
 
 out vec4 FragColor;
 
-in vec2 outtexCoord;
-in vec3 outnormal;
-in vec3 outtangent;
-in vec3 outbitangent;
+in VS_OUT
+{
+	vec2 texCoord;
+	vec3 normal;
+	vec3 tangent;
+	vec3 bitangent;
+} fs_in;
 
 void main()
 {
-	FragColor = vec4(outnormal.x, outnormal.y, outnormal.z, 0.0f);
+	FragColor = vec4(fs_in.normal.x, fs_in.normal.y, fs_in.normal.z, 0.0f);
 
 }

@@ -7,6 +7,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
+#include "GPUBuffer.h"
 
 class RenderApi : public CModule<RenderApi>
 {
@@ -18,6 +19,7 @@ public:
 	virtual void SetTexture(UINT, Texture*) = 0;
 	virtual void SetTexture(UINT, RenderTarget*) = 0;
 	virtual void SetShader(ShaderProgram*) = 0;
+	virtual void SetGpuBuffer(GPUBuffer*) = 0;
 	virtual void Draw(UINT count) = 0;
 	virtual void DrawIndexed(UINT count) = 0;
 	virtual void Present() = 0;

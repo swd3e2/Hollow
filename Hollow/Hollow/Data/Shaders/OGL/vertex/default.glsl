@@ -1,4 +1,4 @@
-#version 330
+#version 460
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 texCoord;
@@ -8,20 +8,28 @@ layout(location = 4) in vec3 bitangent;
 layout(location = 5) in vec4 boneIDs;
 layout(location = 6) in vec4 weights;
 
-out vec2 outtexCoord;
-out vec3 outnormal;
-out vec3 outtangent;
-out vec3 outbitangent;
+out VS_OUT
+{
+	vec2 texCoord;
+	vec3 normal;
+	vec3 tangent;
+	vec3 bitangent;
+} vs_out;
 
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
+layout(std140, binding = 0) uniform Matrices
+{
+	mat4 WVP;
+	vec3 cameraPosition;
+};
+
 
 void main()
 {
 	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
-	gl_Position = gl_Position * viewMatrix * projectionMatrix;
-	outtexCoord = texCoord;
-	outnormal = normal;
-	outtangent = tangent;
-	outbitangent = bitangent;
+	gl_Position = gl_Position * WVP;
+
+	vs_out.texCoord = texCoord;
+	vs_out.normal = normal;
+	vs_out.tangent = tangent;
+	vs_out.bitangent = bitangent;
 }

@@ -13,7 +13,7 @@ public:
 		layers.push_back(layer);
 	}
 
-	void Update(float dt)
+	void Update(double dt)
 	{
 		for (auto& it : layers)
 		{
@@ -21,7 +21,7 @@ public:
 		}
 	}
 
-	void PreUpdate(float dt)
+	void PreUpdate(double dt)
 	{
 		for (auto& it : layers)
 		{
@@ -29,7 +29,7 @@ public:
 		}
 	}
 
-	void PostUpdate(float dt)
+	void PostUpdate(double dt)
 	{
 		for (auto& it : layers)
 		{

@@ -21,7 +21,7 @@ private:
 	class EntityContainer : public IEntityContainer
 	{
 	public:
-		Hollow::array<T, 512> entityList;
+		Hollow::array<T, 10> entityList;
 	};
 private:
 	std::unordered_map<size_t, IEntityContainer*> entityContainers;
