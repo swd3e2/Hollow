@@ -132,6 +132,7 @@ void D3D11RenderApi::startUp()
 	deviceContext->DSSetSamplers(1, 1, m_SamplerStateClamp->GetSamplerState());
 	deviceContext->DSSetSamplers(0, 1, m_SamplerStateWrap->GetSamplerState());
 	deviceContext->PSSetSamplers(1, 1, m_SamplerStateWrap->GetSamplerState());
+
 	// Rasterizers
 	m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 	m_Wireframe = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_WIREFRAME);
@@ -155,8 +156,7 @@ void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 		context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 		context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
-	}
-	else {
+	} else {
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
 		context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
 		context->getDeviceContext()->CSGetUnorderedAccessViews(slot, uavs, pUAV);

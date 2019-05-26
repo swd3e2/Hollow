@@ -21,18 +21,14 @@ Application::Application()
 	window = WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	m_Renderer->startUp();
-#ifdef OPENGL
-	oglRenderSystem = new OGLRenderSystem(static_cast<OGLRenderApi*>(m_Renderer), camera);
-	systemManager.AddSystem(oglRenderSystem);
-#endif
-#ifdef D3D11
-	renderPass = new ForwardRenderSystem(static_cast<D3D11RenderApi*>(m_Renderer));
+
+	renderPass = new ForwardRenderSystem(m_Renderer);
 	renderPass->m_Camera = camera;
 	systemManager.AddSystem(renderPass);
 
 	renderPass->skyMap = new SkyMap(10, 10);
-	renderPass->water = new Water();
-#endif
+
+	gui = new GUISystem(window, m_Renderer);
 
 	animationSystem = new Hollow::AnimationSystem();
 	systemManager.AddSystem(animationSystem);
@@ -57,9 +53,6 @@ void Application::Run()
 		m_Timer.Restart();
 		window->ProcessMessage();
 
-#ifdef D3D11
-#endif
-
 		camera->Update(dt);
 
 		m_LayerStack.PreUpdate(dt);
@@ -67,6 +60,8 @@ void Application::Run()
 
 		systemManager.UpdateSystems(dt);
 		m_LayerStack.Update(dt);
+
+		gui->update(dt);
 
 		m_LayerStack.PostUpdate(dt);
 		systemManager.PostUpdateSystems(dt);

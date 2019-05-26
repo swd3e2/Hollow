@@ -67,7 +67,7 @@ public:
 	Camera*					m_Camera;
 	SkyMap*					skyMap;
 private:
-	D3D11RenderApi* renderer;
+	RenderApi* renderer;
 private:
 	WVP						m_wvp;
 	WorldViewProjection		m_worldViewProjection;
@@ -95,7 +95,7 @@ private:
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 public:
-	ForwardRenderSystem(D3D11RenderApi* renderer) : renderer(renderer)
+	ForwardRenderSystem(RenderApi* renderer) : renderer(renderer)
 	{
 		m_WVPConstantBuffer			= GPUBufferManager::instance()->create(0, sizeof(WVP));
 		m_WorldViewProjectionBuffer	= GPUBufferManager::instance()->create(1, sizeof(WorldViewProjection));
@@ -104,8 +104,7 @@ public:
 		lightInfoBuffer				= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo					= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		renderer->SetViewport(0, 0, 2560, 1440);
-
+		renderer->SetViewport(0, 0, 1366, 768);
 		m_worldViewProjection.offset = 0.0f;
 	}
 
@@ -136,13 +135,10 @@ public:
 
 	virtual void Update(double dt)
 	{
-		m_worldViewProjection.offset += dt * 0.1f;
-		m_worldViewProjection.offset = fmod(m_worldViewProjection.offset, 139.0f);
-		DrawSkyMap();
 		updateWVP(m_Camera);
-
 		//DrawWater();
 		DrawScene();
+		DrawSkyMap();
 	}
 
 	virtual void PostUpdate(double dt)
@@ -203,18 +199,12 @@ public:
 		if (object->material != nullptr) {
 			if (object->material->diffuse_texture != nullptr) {
 				renderer->SetTexture(0, object->material->diffuse_texture);
-			} else {
-				renderer->FreeShaderResource(0);
 			}
 			if (object->material->normal_texture != nullptr) {
 				renderer->SetTexture(1, object->material->normal_texture);
-			} else {
-				renderer->FreeShaderResource(1);
 			}
 			if (object->material->specular_texture != nullptr) {
 				renderer->SetTexture(2, object->material->specular_texture);
-			} else {
-				renderer->FreeShaderResource(2);
 			}
 
 			materialConstantBuffer->update(&object->material->materialData);
@@ -240,26 +230,5 @@ public:
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->SetGpuBuffer(m_WVPConstantBuffer);
 		DrawObject(skyMap->mesh->models[0]);
-	}
-
-	void DrawWater()
-	{
-		D3D11Context& context = renderer->getContext();
-		/*context.getDeviceContext()->CSSetShader(static_cast<D3D11ComputeShader*>(water->computeShader)->GetShader(), NULL, 0);
-		
-		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, &static_cast<D3D11Texture*>(water->tex)->m_UnorderedAccessView, &uavs);
-		context.getDeviceContext()->Dispatch(16, 16, 1);
-		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, uav, &uavs);*/
-
-		renderer->SetTexture(5, water->tex);
-
-		/*context.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-		context.getDeviceContext()->HSSetShader(static_cast<D3D11HullShader*>(water->mesh->subMeshes[0]->material->shader->getHullShader())->GetShader(), NULL, 0);
-		context.getDeviceContext()->DSSetShader(static_cast<D3D11DomainShader*>(water->mesh->subMeshes[0]->material->shader->getDomainShader())->GetShader(), NULL, 0);
-		context.getDeviceContext()->GSSetShader(NULL, NULL, 0);*/
-
-		DrawObject(water->mesh->models[0]);
-
-		renderer->FreeShaderResource(5);
 	}
 };

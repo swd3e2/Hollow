@@ -11,6 +11,5 @@ SamplerState SampleTypeWrap : register(s1);
 
 float4 main(SKYMAP_VS_OUTPUT input) : SV_Target
 {
-	float4 color = SkyMap.Sample(SampleTypeWrap, input.texCoord);
-	return color;
+	return SkyMap.Sample(SampleTypeWrap, input.texCoord);
 }

@@ -14,7 +14,6 @@ struct SKYMAP_VS_OUTPUT
 	float3 texCoord : TEXCOORD;
 };
 
-
 struct VertexShaderInput
 {
 	float3 pos			: POSITION;

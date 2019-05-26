@@ -29,7 +29,7 @@ D3D11Win32Window::D3D11Win32Window(HINSTANCE hInst, int width, int height)
 	windowRect.bottom = height + windowRect.top;
 	AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUPWINDOW, /* WS_POPUP*/
+	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, /* WS_POPUPWINDOW*/
 		windowRect.left, windowRect.top,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 		nullptr, nullptr, hInst, this);
@@ -43,7 +43,7 @@ D3D11Win32Window::D3D11Win32Window(HINSTANCE hInst, int width, int height)
 
 	RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 
-	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+	ShowWindow(hWnd, SW_SHOW); // SW_SHOWMAXIMIZED
 	UpdateWindow(hWnd);
 }
 
@@ -76,8 +76,9 @@ LRESULT WINAPI D3D11Win32Window::_HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wPa
 
 LRESULT D3D11Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	/*if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-		return true;*/
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
+		return true;
+	}
 	
 	LRESULT result = 0;
 	switch (msg)

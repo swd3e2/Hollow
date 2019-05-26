@@ -13,6 +13,9 @@ void OGLRenderApi::startUp()
 	shaderManager = new OGLShaderManager();
 	gpuBufferManager = new OGLGPUBufferManager();
 	hwnd = static_cast<OGLWin32Window*>(windowManager->getWindow())->getHWND();
+	glEnable(GL_DEPTH_TEST);
+	//glCullFace(GL_BACK);
+	glDepthFunc(GL_LEQUAL);
 }
 
 void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
@@ -37,8 +40,12 @@ void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 void OGLRenderApi::SetTexture(UINT location, Texture* texture)
 {
 	OGLTexture* oglTexture = static_cast<OGLTexture*>(texture);
-	glActiveTexture(location + 0x84C0);
-	glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
+	glActiveTexture(location + GL_TEXTURE0);
+	if (texture->type == TextureType::TEXTURE2D) {
+		glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
+	} else {
+		glBindTexture(GL_TEXTURE_CUBE_MAP, oglTexture->textureId);
+	}
 }
 
 void OGLRenderApi::SetShader(ShaderProgram* shader)
@@ -50,7 +57,6 @@ void OGLRenderApi::SetGpuBuffer(GPUBuffer* buffer)
 {
 	OGLGpuBuffer* gpuBuffer = static_cast<OGLGpuBuffer*>(buffer);
 	glBindBufferBase(GL_UNIFORM_BUFFER, gpuBuffer->getLocation(), gpuBuffer->UBO);
-
 }
 
 void OGLRenderApi::SetViewport(int w0, int y0, int w, int y)
@@ -60,6 +66,8 @@ void OGLRenderApi::SetViewport(int w0, int y0, int w, int y)
 
 void OGLRenderApi::ClearRenderTarget(RenderTarget* renderTarget, float* color)
 {
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void OGLRenderApi::clear()

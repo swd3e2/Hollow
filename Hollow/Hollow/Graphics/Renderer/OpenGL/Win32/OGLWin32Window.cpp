@@ -118,7 +118,7 @@ OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
 		0
 	};
 
-	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUPWINDOW, /* WS_POPUP*/
+	hWnd = CreateWindow("HollowAppClass", "Hollow", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, /* WS_POPUPWINDOW*/
 		windowRect.left, windowRect.top,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 		nullptr, nullptr, hInst, this);
@@ -150,7 +150,7 @@ OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(MessageCallback, 0);
 
-	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
 }
 
@@ -183,8 +183,9 @@ LRESULT WINAPI OGLWin32Window::_HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wPara
 
 LRESULT OGLWin32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	/*if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-		return true;*/
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
+		return true;
+	}
 	
 	LRESULT result = 0;
 	switch (msg)

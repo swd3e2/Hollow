@@ -1,5 +1,5 @@
 #pragma once
-#define D3D11
+#define OPENGL
 
 #include "Platform.h"
 #include "ECS/ComponentManager.h"
@@ -24,9 +24,10 @@
 #include "Graphics/OGLRenderSystem.h"
 #include "Importer/FreeImgImporter.h"
 #include "Importer/MeshImporter.h"
+#include "Graphics/GUISystem.h"
 
-#define SCREEN_WIDTH 2560
-#define SCREEN_HEIGHT 1440
+#define SCREEN_WIDTH 1366
+#define SCREEN_HEIGHT 768
 
 class Application
 {
@@ -49,6 +50,7 @@ public:
 	RenderApi*						m_Renderer;
 	MeshImporter*					meshImporter;
 	FreeImgImporter*				imgImporter;
+	GUISystem*						gui;
 	double							dt;
 public:
 	Application();

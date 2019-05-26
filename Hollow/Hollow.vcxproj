@@ -33,6 +33,16 @@
     <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
     <ClInclude Include="Hollow\ECS\TransformComponent.h" />
     <ClInclude Include="Hollow\Graphics\GPUBufferManager.h" />
+    <ClInclude Include="Hollow\Graphics\GUISystem.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_internal.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
     <ClInclude Include="Hollow\Graphics\OGLRenderSystem.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
@@ -163,6 +173,13 @@
     <ClCompile Include="Hollow\Application.cpp" />
     <ClCompile Include="Hollow\Core\TaskManager.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\Base\SamplerState.h" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11BlendState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstantBuffer.cpp" />
@@ -257,7 +274,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -284,7 +301,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
