@@ -26,3 +26,4 @@ class D3D11RenderApi;
 class D3D11Shader;
 class D3D11WindowManager;
 class D3D11BufferManager;
+class D3D11RenderTargetManager;

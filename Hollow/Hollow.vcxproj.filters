@@ -114,9 +114,6 @@
     <ClInclude Include="Hollow\Graphics\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\ShadowMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Containers\array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -205,9 +202,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Context.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11DepthStencil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.h">
@@ -453,6 +447,15 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11GPUBufferManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\RenderTargetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -494,13 +497,7 @@
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLContext.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11DepthStencil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderApi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.cpp">
@@ -582,6 +579,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

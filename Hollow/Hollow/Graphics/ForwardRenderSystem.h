@@ -9,21 +9,10 @@
 #include "Hollow/ECS/PointLightComponent.h"
 #include "Hollow/Math/Matrix4.h"
 #include "Hollow/Graphics/Camera.h"
-#include "Renderer/DirectX/D3D11DepthStencil.h"
-#include "Renderer/DirectX/D3D11RenderTarget.h"
-#include "ShadowMap.h"
-#include "Renderer/DirectX/D3D11BlendState.h"
-#include "Renderer/DirectX/D3D11RasterizerState.h"
-#include "Renderer/DirectX/D3D11ConstantBuffer.h"
-#include "Renderer/DirectX/D3D11ConstBufferMapping.h"
-#include "Renderer/DirectX/D3D11ShaderResourceMapping.h"
 #include "Hollow/Resources/Mesh/Mesh.h"
-#include "Renderer/DirectX/D3D11Context.h"
 #include "ShaderManager.h"
 #include "SkyMap.h"
 #include "Water.h"
-#include "Renderer/DirectX/D3D11ShaderManager.h"
-#include "Renderer/DirectX/D3D11Texture.h"
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/ECS/AnimationComponent.h"
 #include "GPUBufferManager.h"
@@ -75,10 +64,7 @@ public:
 	Water*					water;
 	LightInfo				pointLights;
 	PointLight*				pointLight;
-	D3D11RenderTarget*		m_SecondRenderTarget;
-	ShadowMap*				shadowMap;
 	Camera*					m_Camera;
-	D3D11DepthStencil*		m_ShadowDepthStencil;
 	SkyMap*					skyMap;
 private:
 	D3D11RenderApi* renderer;
@@ -86,20 +72,8 @@ private:
 	WVP						m_wvp;
 	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
-	D3D11RasterizerState* m_cullNone;
-	D3D11RasterizerState* m_Wireframe;
-	D3D11RasterizerState* m_cullBack;
-
-	// light sources
 	LightMatrices			lightMatrices;
-
-	D3D11BlendState*		m_BlendStateTransparancy;
-	D3D11SamplerState*		m_SamplerStateWrap;
-	D3D11SamplerState*		m_SamplerStateClamp;
-	D3D11RenderTarget*		m_RenderTarget;
-	D3D11DepthStencil*		m_DepthStencil;
-
-	// constant buffers
+	
 	GPUBuffer*	m_WVPConstantBuffer;
 	GPUBuffer*	m_WorldViewProjectionBuffer;
 	GPUBuffer*	m_TransformConstantBuffer;
@@ -115,8 +89,6 @@ private:
 
 	const UINT uavs = 0;
 
-	ID3D11UnorderedAccessView* const uav[1] = { NULL };
-
 	int rasterizer = 0;
 
 	const UINT offset = 0;
@@ -125,57 +97,22 @@ private:
 public:
 	ForwardRenderSystem(D3D11RenderApi* renderer) : renderer(renderer)
 	{
-		m_RenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::MAIN, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		m_DepthStencil = new D3D11DepthStencil(2560, 1440, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
-
-		m_SecondRenderTarget = new D3D11RenderTarget(2560, 1440, RenderTargetType::SECONDARY, DXGI_FORMAT_R32G32B32A32_FLOAT);
-
-		m_BlendStateTransparancy = new D3D11BlendState();
-
-		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
-		m_Wireframe = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_WIREFRAME);
-		m_cullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
-
-		m_ShadowDepthStencil = new D3D11DepthStencil(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, 1);
-
-		m_WVPConstantBuffer			= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_WVP_SLOT, sizeof(WVP));
-		m_TransformConstantBuffer	= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_MESH_TRANSFORM_SLOT, sizeof(TransformBuff));
-		m_WorldViewProjectionBuffer	= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_WOLRD_VIEW_PROJECTION_SLOT, sizeof(WorldViewProjection));
-		materialConstantBuffer		= GPUBufferManager::instance()->create(HOLLOW_CONST_BUFFER_MATERIAL_SLOT, sizeof(MaterialData));
+		m_WVPConstantBuffer			= GPUBufferManager::instance()->create(0, sizeof(WVP));
+		m_WorldViewProjectionBuffer	= GPUBufferManager::instance()->create(1, sizeof(WorldViewProjection));
+		m_TransformConstantBuffer	= GPUBufferManager::instance()->create(2, sizeof(TransformBuff));
+		materialConstantBuffer		= GPUBufferManager::instance()->create(4, sizeof(MaterialData));
 		lightInfoBuffer				= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo					= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		shadowMap = new ShadowMap(8192, 8192);
-
-		vp.Width = (float)2560;
-		vp.Height = (float)1440;
-		vp.MinDepth = 0.0f;
-		vp.MaxDepth = 1.0f;
-		vp.TopLeftX = 0;
-		vp.TopLeftY = 0;
-
-		renderer->SetViewPort(1, &vp);
+		renderer->SetViewport(0, 0, 2560, 1440);
 
 		m_worldViewProjection.offset = 0.0f;
-		renderer->SetRasterizerState(m_cullNone);
 	}
 
 	virtual void PreUpdate(double dt)
 	{
-		if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F1)) {
-			renderer->SetRasterizerState(m_cullBack);
-		} else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F2)) {
-			renderer->SetRasterizerState(m_cullNone);
-		} else if (InputManager::instance()->GetKeyboardKeyIsPressed(eKeyCodes::KEY_F3)) {
-			renderer->SetRasterizerState(m_Wireframe);
-		}
-		renderer->ClearRenderTargetView(m_RenderTarget, (float*)ClearColor);
-		renderer->ClearRenderTargetView(&shadowMap->shadowRenderTarget, (float*)ClearColor);
-
-		renderer->ClearDepthStencilView(m_DepthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL);
-
-		// Setting states 
-		renderer->SetDepthStencil(m_DepthStencil);
+		renderer->ClearRenderTarget(0, (float*)ClearColor);
+		renderer->SetRenderTarget(0);
 
 		int j = 0;
 		for (auto& it : EntityManager::instance()->getContainer<Light>()->entityList) {
@@ -195,8 +132,6 @@ public:
 		renderer->SetGpuBuffer(lightInfoBuffer);
 
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
-
-		renderer->SetRenderTarget(m_RenderTarget, m_DepthStencil);
 	}
 
 	virtual void Update(double dt)
@@ -206,7 +141,7 @@ public:
 		DrawSkyMap();
 		updateWVP(m_Camera);
 
-		DrawWater();
+		//DrawWater();
 		DrawScene();
 	}
 
@@ -316,7 +251,7 @@ public:
 		context.getDeviceContext()->Dispatch(16, 16, 1);
 		context.getDeviceContext()->CSSetUnorderedAccessViews(0, 1, uav, &uavs);*/
 
-		context.getDeviceContext()->PSSetShaderResources(5, 1, &static_cast<D3D11Texture*>(water->tex)->m_TextureShaderResource);
+		renderer->SetTexture(5, water->tex);
 
 		/*context.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 		context.getDeviceContext()->HSSetShader(static_cast<D3D11HullShader*>(water->mesh->subMeshes[0]->material->shader->getHullShader())->GetShader(), NULL, 0);

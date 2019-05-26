@@ -53,9 +53,17 @@ void OGLRenderApi::SetGpuBuffer(GPUBuffer* buffer)
 
 }
 
+void OGLRenderApi::SetViewport(int w0, int y0, int w, int y)
+{
+	glViewport(w0, y0, w, y);
+}
+
+void OGLRenderApi::ClearRenderTarget(RenderTarget* renderTarget, float* color)
+{
+}
+
 void OGLRenderApi::clear()
 {
-	glViewport(0, 0, 2560, 1440);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

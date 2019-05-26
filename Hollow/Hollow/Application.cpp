@@ -58,7 +58,6 @@ void Application::Run()
 		window->ProcessMessage();
 
 #ifdef D3D11
-		renderPass->shadowMap->camera.Update(dt);
 #endif
 
 		camera->Update(dt);

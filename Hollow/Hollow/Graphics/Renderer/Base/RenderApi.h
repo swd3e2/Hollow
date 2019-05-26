@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "GPUBuffer.h"
+#include "RenderTarget.h"
 
 class RenderApi : public CModule<RenderApi>
 {
@@ -22,5 +23,8 @@ public:
 	virtual void SetGpuBuffer(GPUBuffer*) = 0;
 	virtual void Draw(UINT count) = 0;
 	virtual void DrawIndexed(UINT count) = 0;
+	virtual void SetViewport(int w0, int y0, int w, int y) = 0;
+	virtual void SetRenderTarget(RenderTarget* renderTarget) = 0;
+	virtual void ClearRenderTarget(RenderTarget* renderTarget, float* color) = 0;
 	virtual void Present() = 0;
 };
