@@ -12,30 +12,32 @@
 class GUISystem
 {
 public:
+	bool open = true;
+
 	GUISystem(Window* window, RenderApi* renderer)
 	{
+		bool result = true;
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();
 		
 #ifdef D3D11
-		ImGui_ImplWin32_Init(static_cast<D3D11Win32Window*>(window)->getHWND());
-		D3D11Context* context = static_cast<D3D11RenderApi*>(renderer)->getContext();
-		ImGui_ImplDX11_Init(context->getDevice(), context->getDeviceContext());
+		ImGui_ImplWin32_Init(*static_cast<D3D11Win32Window*>(window)->getHWND());
+		D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
+		ImGui_ImplDX11_Init(context.getDevice(), context.getDeviceContext());
 #endif
 #ifdef OPENGL
-		ImGui_ImplWin32_Init(static_cast<OGLWin32Window*>(window)->getHWND());
+		result = ImGui_ImplWin32_Init(*static_cast<OGLWin32Window*>(window)->getHWND());
 		const char* glsl_version = "#version 460";
-		ImGui_ImplOpenGL3_Init(glsl_version);
+		result = ImGui_ImplOpenGL3_Init(glsl_version);
 #endif
 	}
 
@@ -50,11 +52,45 @@ public:
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::ShowDemoWindow();
+		// Begin docking viewport
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::SetNextWindowBgAlpha(0.0f);
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace Demo", &open, window_flags);
+		ImGui::PopStyleVar(3);
+
+		ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+		ImGui::Begin("Editor");
+		ImGui::End();
+
+		ImGui::End();
 
 		ImGui::Render();
+#ifdef OPENGL
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
+#endif
+#ifdef D3D11 
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+#endif
+
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
 	}
 };
