@@ -172,9 +172,13 @@ void D3D11RenderApi::SetTexture(UINT slot, RenderTarget* renderTarget)
 
 void D3D11RenderApi::SetShader(ShaderProgram* shader)
 {
-	context->getDeviceContext()->VSSetShader(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetShader(), NULL, 0);
-	context->getDeviceContext()->IASetInputLayout(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetInputLayout());
-	context->getDeviceContext()->PSSetShader(static_cast<D3D11PixelShader*>(shader->getPixelShader())->GetShader(), NULL, 0);
+	if (shader->getVertexShader() != nullptr) {
+		context->getDeviceContext()->VSSetShader(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetShader(), NULL, 0);
+		context->getDeviceContext()->IASetInputLayout(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetInputLayout());
+	}
+	if (shader->getPixelShader() != nullptr) {
+		context->getDeviceContext()->PSSetShader(static_cast<D3D11PixelShader*>(shader->getPixelShader())->GetShader(), NULL, 0);
+	}
 }
 
 void D3D11RenderApi::FreeShaderResource(UINT slot)

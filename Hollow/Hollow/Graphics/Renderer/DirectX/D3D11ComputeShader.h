@@ -12,16 +12,19 @@ private:
 	friend class D3D11ShaderManager;
 public:
 	D3D11ComputeShader() :
-		Shader(ShaderType::COMPUTE), m_Shader(nullptr), m_ShaderBlob(nullptr)
+		Shader(ShaderType::COMPUTE), m_Shader(nullptr)
 	{}
-	~D3D11ComputeShader() {
+	~D3D11ComputeShader()
+	{
+		release();
+	}
+	virtual void release() override
+	{
 		SAFE_RELEASE(m_Shader);
-		SAFE_RELEASE(m_ShaderBlob);
 	}
 	inline ID3D11ComputeShader* GetShader() const { return m_Shader; }
 private:
 	ID3D11ComputeShader* m_Shader;
-	ID3DBlob* m_ShaderBlob;
 };
 
 #endif

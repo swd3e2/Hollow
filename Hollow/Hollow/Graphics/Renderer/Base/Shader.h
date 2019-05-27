@@ -9,8 +9,10 @@ class Shader
 {
 protected:
 	ShaderType type;
-protected:
+public:
 	Shader(ShaderType type) :
 		type(type)
 	{}
+
+	virtual void release() = 0;
 };

@@ -8,6 +8,7 @@
 #include "Renderer/DirectX/D3D11Win32Window.h"
 #include "Renderer/OpenGL/Win32/OGLWin32Window.h"
 #include "Renderer/Base/Window.h"
+#include "ShaderManager.h"
 
 class GUISystem
 {
@@ -41,7 +42,19 @@ public:
 #endif
 	}
 
-	void update(double dt)
+	~GUISystem()
+	{
+#ifdef OPENGL
+		ImGui_ImplOpenGL3_Shutdown();
+#endif
+#ifdef D3D11
+		ImGui_ImplDX11_Shutdown();
+#endif
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
+	}
+
+	void begin()
 	{
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_NewFrame();
@@ -72,10 +85,36 @@ public:
 		ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
 		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	}
 
-		ImGui::Begin("Editor");
+	void update(double dt)
+	{
+		begin();
+
+		ImGui::Begin("Main");
+		if (ImGui::TreeNode("Shaders"))
+		{
+			auto& shaders = ShaderManager::instance()->shaders;
+			for (auto& it : shaders)
+			{
+				if (ImGui::TreeNode(it.first.c_str()))
+				{
+					std::string buttonName = "Reload##" + it.first;
+					if (ImGui::Button(buttonName.c_str())) {
+						ShaderManager::instance()->reloadShader(it.second);
+					}
+					ImGui::TreePop();
+				}
+			}
+			ImGui::TreePop();
+		}
 		ImGui::End();
 
+		end();
+	}
+
+	void end()
+	{
 		ImGui::End();
 
 		ImGui::Render();

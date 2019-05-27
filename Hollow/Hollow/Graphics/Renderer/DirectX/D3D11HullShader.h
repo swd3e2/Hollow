@@ -14,15 +14,17 @@ public:
 	D3D11HullShader() :
 		Shader(ShaderType::HULL)
 	{}
-
-	~D3D11HullShader() {
+	~D3D11HullShader()
+	{
+		release();
+	}
+	virtual void release() override
+	{
 		SAFE_RELEASE(m_Shader);
-		SAFE_RELEASE(m_ShaderBlob);
 	}
 	inline ID3D11HullShader* GetShader() { return m_Shader; }
 private:
 	ID3D11HullShader* m_Shader;
-	ID3DBlob* m_ShaderBlob;
 };
 
 #endif

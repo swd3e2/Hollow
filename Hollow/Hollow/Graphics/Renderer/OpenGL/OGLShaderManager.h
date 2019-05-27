@@ -10,6 +10,7 @@ class OGLShaderManager : public ShaderManager
 public:
 	OGLShaderManager();
 
-	virtual Shader* compileShader(ShaderType type, const std::string& path) override;
-	virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader) override;
+	virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) override;
+	virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) override;
+	virtual void reloadShader(ShaderProgram* program) override;
 };

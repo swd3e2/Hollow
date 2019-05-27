@@ -15,6 +15,7 @@
 class ShaderManager : public CModule<ShaderManager>
 {
 protected:
+	friend class GUISystem;
 	std::unordered_map<std::string, ShaderProgram*> shaders;
 	std::string shaderTypeFolder;
 	Hollow::FileSystem fs;
@@ -26,8 +27,9 @@ public:
 	
 	inline ShaderProgram* getShader(const std::string& name) { return shaders[name]; }
 
-	virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader) = 0;
-	virtual Shader* compileShader(ShaderType type, const std::string& path) = 0;
+	virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) = 0;
+	virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) = 0;
+	virtual void reloadShader(ShaderProgram* program) = 0;
 };
 
 #endif

@@ -209,8 +209,11 @@ public:
 
 			materialConstantBuffer->update(&object->material->materialData);
 			renderer->SetGpuBuffer(materialConstantBuffer);
-
-			renderer->SetShader(object->material->shader);
+			if (object->material->shader != nullptr) {
+				renderer->SetShader(object->material->shader);
+			} else {
+				renderer->SetShader(ShaderManager::instance()->getShader("default"));
+			}
 		} else {
 			renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		}

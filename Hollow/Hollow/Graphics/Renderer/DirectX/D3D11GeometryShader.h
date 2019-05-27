@@ -14,15 +14,17 @@ public:
 	D3D11GeometryShader() :
 		Shader(ShaderType::GEOMERTY)
 	{}
-
-	~D3D11GeometryShader() {
+	~D3D11GeometryShader()
+	{
+		release();
+	}
+	virtual void release() override
+	{
 		SAFE_RELEASE(m_Shader);
-		SAFE_RELEASE(m_ShaderBlob);
 	}
 	inline ID3D11GeometryShader* GetShader() { return m_Shader; }
 private:
 	ID3D11GeometryShader* m_Shader;
-	ID3DBlob* m_ShaderBlob;
 };
 
 #endif

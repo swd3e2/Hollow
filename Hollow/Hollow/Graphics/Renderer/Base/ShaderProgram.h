@@ -4,7 +4,7 @@
 
 class ShaderProgram
 {
-private:
+protected:
 	Shader* pixelShader;
 	Shader* vertexShader;
 	Shader* geometryShader;
@@ -15,6 +15,8 @@ public:
 	ShaderProgram(Shader* vShader = nullptr, Shader* pShader = nullptr, Shader* gShader = nullptr, Shader* cShader = nullptr) :
 		pixelShader(pShader), vertexShader(vShader), geometryShader(gShader), computeShader(cShader)
 	{}
+
+	virtual void release() = 0;
 
 	void setVertexShader(Shader* Shader) { vertexShader = Shader; }
 	void setPixelShader(Shader* Shader) { pixelShader = Shader; }

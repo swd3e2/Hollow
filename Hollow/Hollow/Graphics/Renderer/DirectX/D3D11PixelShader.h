@@ -15,15 +15,17 @@ public:
 	D3D11PixelShader() :
 		Shader(ShaderType::PIXEL)
 	{}
-
-	~D3D11PixelShader() { 
+	~D3D11PixelShader()
+	{
+		release();
+	}
+	virtual void release() override
+	{
 		SAFE_RELEASE(m_Shader);
-		SAFE_RELEASE(m_ShaderBlob);
 	}
 	inline ID3D11PixelShader* GetShader() { return m_Shader; }
 private:
 	ID3D11PixelShader* m_Shader;
-	ID3DBlob* m_ShaderBlob;
 };
 
 #endif

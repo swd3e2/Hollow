@@ -53,6 +53,7 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11GPUBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11HullShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLGpuBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLGPUBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.h" />

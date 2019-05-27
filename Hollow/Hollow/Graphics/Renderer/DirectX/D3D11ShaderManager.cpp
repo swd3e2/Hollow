@@ -2,85 +2,146 @@
 #include "D3D11RenderApi.h"
 #include "D3D11Context.h"
 
-Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& path)
+Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& path, Shader* prevShader)
 {
 	Shader* shader = nullptr;
+
 	switch (type)
 	{
-	case VERTEX:
-	{
-		D3D11VertexShader* vShader = new D3D11VertexShader();
-		HRESULT hr = CompileShaderInternal(path, "main", "vs_5_0", &vShader->m_ShaderBlob);
-
-		hr = device->CreateVertexShader(vShader->m_ShaderBlob->GetBufferPointer(),
-			vShader->m_ShaderBlob->GetBufferSize(), NULL, &vShader->m_Shader);
-
-		D3D11_INPUT_ELEMENT_DESC bxlayout[] =
+		case VERTEX:
 		{
-			{ "POSITION",   0, DXGI_FORMAT_R32G32B32_FLOAT,	   0,							 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD",   0, DXGI_FORMAT_R32G32_FLOAT,	   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT,	   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TANGENT",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BITANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "BONEID",     0, DXGI_FORMAT_R32G32B32A32_SINT,  0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "WEIGHT",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
+			ID3DBlob* shaderBlob;
+			D3D11VertexShader* vShader = nullptr;
 
-		UINT numElements = ARRAYSIZE(bxlayout);
+			if (prevShader != nullptr) {
+				vShader = static_cast<D3D11VertexShader*>(prevShader);
+			} else {
+				vShader = new D3D11VertexShader();
+			}
 
-		// Create input layout to vertex shader
-		hr = device->CreateInputLayout(bxlayout, numElements,
-			vShader->m_ShaderBlob->GetBufferPointer(), vShader->m_ShaderBlob->GetBufferSize(),
-			&vShader->m_InputLayout);
-		shader = vShader;
-	} break;
-	case PIXEL:
-	{
-		D3D11PixelShader* pShader = new D3D11PixelShader();
+			if (CompileShaderInternal(path, "main", "vs_5_0", &shaderBlob) == S_OK) {
+				vShader->release();
 
-		HRESULT hr = CompileShaderInternal(path, "main", "ps_5_0", &pShader->m_ShaderBlob);
-		hr = device->CreatePixelShader(pShader->m_ShaderBlob->GetBufferPointer(),
-			pShader->m_ShaderBlob->GetBufferSize(), NULL, &pShader->m_Shader);
-		shader = pShader;
-	} break;
-	case GEOMERTY:
-	{
-		D3D11GeometryShader* gShader = new D3D11GeometryShader();
+				device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+					shaderBlob->GetBufferSize(), NULL, &vShader->m_Shader);
 
-		HRESULT hr = CompileShaderInternal(path, "main", "ps_5_0", &gShader->m_ShaderBlob);
-		hr = device->CreateGeometryShader(gShader->m_ShaderBlob->GetBufferPointer(),
-			gShader->m_ShaderBlob->GetBufferSize(), NULL, &gShader->m_Shader);
-		shader = gShader;
-	} break;
-	case COMPUTE:
-	{
-		D3D11ComputeShader* cShader = new D3D11ComputeShader();
+				D3D11_INPUT_ELEMENT_DESC bxlayout[] =
+				{
+					{ "POSITION",   0, DXGI_FORMAT_R32G32B32_FLOAT,	   0,							 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "TEXCOORD",   0, DXGI_FORMAT_R32G32_FLOAT,	   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "NORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT,	   0,	D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "TANGENT",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "BITANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "BONEID",     0, DXGI_FORMAT_R32G32B32A32_SINT,  0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+					{ "WEIGHT",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+				};
 
-		HRESULT hr = CompileShaderInternal(path, "main", "cs_5_0", &cShader->m_ShaderBlob);
-		hr = device->CreateComputeShader(cShader->m_ShaderBlob->GetBufferPointer(),
-			cShader->m_ShaderBlob->GetBufferSize(), NULL, &cShader->m_Shader);
-		shader = cShader;
-	} break;
-	case HULL:
-	{
-		D3D11HullShader* cShader = new D3D11HullShader();
+				UINT numElements = ARRAYSIZE(bxlayout);
 
-		HRESULT hr = CompileShaderInternal(path, "main", "hs_5_0", &cShader->m_ShaderBlob);
-		hr = device->CreateHullShader(cShader->m_ShaderBlob->GetBufferPointer(),
-			cShader->m_ShaderBlob->GetBufferSize(), NULL, &cShader->m_Shader);
-		shader = cShader;
-	} break;
-	case DOMAINS:
-	{
-		D3D11DomainShader* cShader = new D3D11DomainShader();
+				// Create input layout to vertex shader
+				device->CreateInputLayout(bxlayout, numElements,
+					shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(),
+					&vShader->m_InputLayout);
+				shader = vShader;
+			}
+		} break;
+		case PIXEL:
+		{
+			ID3DBlob* shaderBlob;
+			D3D11PixelShader* pShader = nullptr;
 
-		HRESULT hr = CompileShaderInternal(path, "main", "ds_5_0", &cShader->m_ShaderBlob);
-		hr = device->CreateDomainShader(cShader->m_ShaderBlob->GetBufferPointer(),
-			cShader->m_ShaderBlob->GetBufferSize(), NULL, &cShader->m_Shader);
-		shader = cShader;
-	} break;
-	default:
-		break;
+			if (prevShader != nullptr) {
+				pShader = static_cast<D3D11PixelShader*>(prevShader);
+			} else {
+				pShader = new D3D11PixelShader();
+			}
+			
+			if (CompileShaderInternal(path, "main", "ps_5_0", &shaderBlob) == S_OK) {
+				pShader->release();
+
+				device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+					shaderBlob->GetBufferSize(), NULL, &pShader->m_Shader);
+				shader = pShader;
+			}
+		} break;
+		case GEOMERTY:
+		{
+			ID3DBlob* shaderBlob;
+			D3D11GeometryShader* gShader = nullptr;
+
+			if (prevShader != nullptr) {
+				gShader = static_cast<D3D11GeometryShader*>(prevShader);
+			} else {
+				gShader = new D3D11GeometryShader();
+			}
+
+			if (CompileShaderInternal(path, "main", "ps_5_0", &shaderBlob) == S_OK) {
+				gShader->release();
+
+				device->CreateGeometryShader(shaderBlob->GetBufferPointer(),
+					shaderBlob->GetBufferSize(), NULL, &gShader->m_Shader);
+				shader = gShader;
+			}
+		} break;
+		case COMPUTE:
+		{
+			ID3DBlob* shaderBlob;
+			D3D11ComputeShader* cShader = nullptr;
+
+			if (prevShader != nullptr) {
+				cShader = static_cast<D3D11ComputeShader*>(prevShader);
+			} else {
+				cShader = new D3D11ComputeShader();
+			}
+
+			if (CompileShaderInternal(path, "main", "cs_5_0", &shaderBlob) == S_OK) {
+				cShader->release();
+
+				device->CreateComputeShader(shaderBlob->GetBufferPointer(),
+					shaderBlob->GetBufferSize(), NULL, &cShader->m_Shader);
+				shader = cShader;
+			}
+		} break;
+		case HULL:
+		{
+			ID3DBlob* shaderBlob;
+			D3D11HullShader* cShader = nullptr;
+
+			if (prevShader != nullptr) {
+				cShader = static_cast<D3D11HullShader*>(prevShader);
+			} else {
+				cShader = new D3D11HullShader();
+			}
+
+			if (CompileShaderInternal(path, "main", "hs_5_0", &shaderBlob) == S_OK) {
+				cShader->release();
+
+				device->CreateHullShader(shaderBlob->GetBufferPointer(),
+					shaderBlob->GetBufferSize(), NULL, &cShader->m_Shader);
+				shader = cShader;
+			}
+		} break;
+		case DOMAINS:
+		{
+			ID3DBlob* shaderBlob;
+			D3D11DomainShader* cShader = nullptr;
+
+			if (prevShader != nullptr) {
+				cShader = static_cast<D3D11DomainShader*>(prevShader);
+			} else {
+				cShader = new D3D11DomainShader();
+			}
+
+			if (CompileShaderInternal(path, "main", "ds_5_0", &shaderBlob) == S_OK) {
+				cShader->release();
+
+				device->CreateDomainShader(shaderBlob->GetBufferPointer(),
+					shaderBlob->GetBufferSize(), NULL, &cShader->m_Shader);
+				shader = cShader;
+			}
+		} break;
+		default:
+			break;
 	}
 	return shader;
 }
@@ -113,9 +174,27 @@ HRESULT D3D11ShaderManager::CompileShaderInternal(const std::string& path, LPCST
 	return hr;
 }
 
-ShaderProgram* D3D11ShaderManager::createShader(Shader* vertexShader, Shader* pixelShader)
+ShaderProgram* D3D11ShaderManager::createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram)
 {
-	return new ShaderProgram(vertexShader, pixelShader);
+	return new D3D11ShaderProgram(vertexShader, pixelShader);
+}
+
+void D3D11ShaderManager::reloadShader(ShaderProgram* program)
+{
+	std::string shaderName;
+
+	for (auto& it : shaders) {
+		if (it.second == program) {
+			shaderName = it.first;
+		}
+	}
+
+	if (!shaderName.size()) {
+		return;
+	}
+
+	compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + shaderName + ".hlsl", program->getVertexShader());
+	compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + shaderName + ".hlsl", program->getPixelShader());
 }
 
 D3D11ShaderManager::D3D11ShaderManager()
@@ -142,5 +221,7 @@ D3D11ShaderManager::D3D11ShaderManager()
 
 D3D11ShaderManager::~D3D11ShaderManager()
 {
-
+	for (auto& it : shaders) {
+		delete it.second;
+	}
 }

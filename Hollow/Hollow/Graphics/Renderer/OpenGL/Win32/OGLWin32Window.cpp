@@ -9,7 +9,9 @@ MessageCallback(GLenum source,
 	const GLchar* message,
 	const void* userParam)
 {
-	HW_ERROR("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+	if (type != 33361) {
+		HW_ERROR("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+	}
 }
 
 OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
