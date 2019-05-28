@@ -108,7 +108,7 @@ ShaderProgram* OGLShaderManager::createShader(Shader* vertexShader, Shader* pixe
 	if (prevProgram != nullptr) {
 		shaderProgram = static_cast<OGLShaderProgram*>(prevProgram);
 	} else {
-		shaderProgram = new OGLShaderProgram(vertexShader, vertexShader);
+		shaderProgram = new OGLShaderProgram(vertexShader, pixelShader);
 		shaderProgram->shaderId = glCreateProgram();
 	}
 
@@ -131,7 +131,6 @@ ShaderProgram* OGLShaderManager::createShader(Shader* vertexShader, Shader* pixe
 	glAttachShader(shaderProgram->shaderId, static_cast<OGLShader*>(pixelShader)->shaderId);
 	glLinkProgram(shaderProgram->shaderId);
 	
-	
 	glGetProgramiv(shaderProgram->shaderId, GL_LINK_STATUS, &success);
 	if (!success)
 	{
@@ -139,6 +138,12 @@ ShaderProgram* OGLShaderManager::createShader(Shader* vertexShader, Shader* pixe
 		HW_ERROR("{}", infoLog);
 
 		shaderProgram->linked = false;
+		int size = 0;
+		unsigned int attachedShaders[10];
+		glGetAttachedShaders(shaderProgram->shaderId, 10, &size, attachedShaders);
+		glDeleteShader(static_cast<OGLShader*>(vertexShader)->shaderId);
+		glDeleteShader(static_cast<OGLShader*>(pixelShader)->shaderId);
+
 		return shaderProgram;
 	} 
 
