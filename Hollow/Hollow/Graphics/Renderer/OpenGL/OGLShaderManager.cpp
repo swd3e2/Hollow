@@ -50,6 +50,7 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 				glDeleteShader(shaderId);
 				HW_ERROR("{}", infoLog);
 			} else {
+				shader->prevShaderId = shader->shaderId;
 				shader->shaderId = shaderId;
 			}
 		} break;
@@ -72,6 +73,7 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 				glDeleteShader(shaderId);
 				HW_ERROR("{}", infoLog);
 			} else {
+				shader->prevShaderId = shader->shaderId;
 				shader->shaderId = shaderId;
 			}
 		} break;
@@ -98,6 +100,9 @@ Shader* OGLShaderManager::compileShader(ShaderType type, const std::string& path
 
 ShaderProgram* OGLShaderManager::createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram)
 {
+	int  success;
+	char infoLog[512];
+
 	OGLShaderProgram* shaderProgram = nullptr;
 
 	if (prevProgram != nullptr) {
@@ -110,35 +115,34 @@ ShaderProgram* OGLShaderManager::createShader(Shader* vertexShader, Shader* pixe
 	if (static_cast<OGLShader*>(vertexShader)->shaderId == DEFAULT_SHADER_ID || static_cast<OGLShader*>(pixelShader)->shaderId == DEFAULT_SHADER_ID) {
 		return shaderProgram;
 	}
+
 	if (prevProgram != nullptr) {
 		OGLShader* pPixelShader = static_cast<OGLShader*>(prevProgram->getPixelShader());
-		if (pPixelShader != nullptr) {
-			glDetachShader(shaderProgram->shaderId, pPixelShader->shaderId);
+		if (pPixelShader != nullptr && pPixelShader->prevShaderId != DEFAULT_SHADER_ID) {
+			glDetachShader(shaderProgram->shaderId, pPixelShader->prevShaderId);
 		}
 		OGLShader* pVrtexShader = static_cast<OGLShader*>(prevProgram->getVertexShader());
-		if (pVrtexShader != nullptr) {
-			glDetachShader(shaderProgram->shaderId, pVrtexShader->shaderId);
+		if (pVrtexShader != nullptr && pVrtexShader->prevShaderId != DEFAULT_SHADER_ID) {
+			glDetachShader(shaderProgram->shaderId, pVrtexShader->prevShaderId);
 		}
 	}
 
 	glAttachShader(shaderProgram->shaderId, static_cast<OGLShader*>(vertexShader)->shaderId);
 	glAttachShader(shaderProgram->shaderId, static_cast<OGLShader*>(pixelShader)->shaderId);
 	glLinkProgram(shaderProgram->shaderId);
-
-	glUseProgram(shaderProgram->shaderId);
-
-	int  success;
-	char infoLog[512];
+	
 	
 	glGetProgramiv(shaderProgram->shaderId, GL_LINK_STATUS, &success);
 	if (!success)
 	{
 		glGetProgramInfoLog(shaderProgram->shaderId, 512, NULL, infoLog);
 		HW_ERROR("{}", infoLog);
-		shaderProgram->linked = false;
 
+		shaderProgram->linked = false;
 		return shaderProgram;
-	}
+	} 
+
+	glUseProgram(shaderProgram->shaderId);
 
 	int tex0 = glGetUniformLocation(shaderProgram->shaderId, "ambient_map");
 	int tex1 = glGetUniformLocation(shaderProgram->shaderId, "normal_map");

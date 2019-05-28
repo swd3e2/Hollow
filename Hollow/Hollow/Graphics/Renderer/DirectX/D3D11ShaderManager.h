@@ -7,7 +7,8 @@
 #include "Hollow/Graphics/ShaderManager.h"
 #include <d3dcompiler.h>
 #include "D3D11ShaderProgram.h"
-
+#include "Hollow/Common/Log.h"
+	
 class  D3D11ShaderManager : public ShaderManager
 {
 private:

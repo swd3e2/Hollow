@@ -162,7 +162,7 @@ HRESULT D3D11ShaderManager::CompileShaderInternal(const std::string& path, LPCST
 	{
 		if (errorBlob)
 		{
-			OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+			HW_ERROR("{}", (char*)errorBlob->GetBufferPointer());
 			errorBlob->Release();
 		}
 		if (shaderBlob)
@@ -193,8 +193,8 @@ void D3D11ShaderManager::reloadShader(ShaderProgram* program)
 		return;
 	}
 
-	compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + shaderName + ".hlsl", program->getVertexShader());
-	compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + shaderName + ".hlsl", program->getPixelShader());
+	program->setVertexShader(compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + shaderName + ".hlsl", program->getVertexShader()));
+	program->setPixelShader(compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + shaderName + ".hlsl", program->getPixelShader()));
 }
 
 D3D11ShaderManager::D3D11ShaderManager()

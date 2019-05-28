@@ -36,7 +36,8 @@ PixelShaderOutput main(VertexShaderInput input)
 {
 	PixelShaderOutput output;
 	output.pos = float4(input.pos, 1.0f);
-	
+	output.normal = input.normal;
+
 	if (hasAnimation) {
 		matrix BoneTransform = boneInfo[input.boneId.x] * input.weight.x;
 		BoneTransform += boneInfo[input.boneId.y] * input.weight.y;
@@ -44,12 +45,11 @@ PixelShaderOutput main(VertexShaderInput input)
 		BoneTransform += boneInfo[input.boneId.w] * input.weight.w;
 
 		output.pos = mul(output.pos, BoneTransform);
-		output.normal = mul(input.normal, BoneTransform);
+		output.normal = mul(output.normal, BoneTransform);
 	}
 	
 
 	output.pos = mul(output.pos, WVP);
 	output.texCoord = input.texCoord;
-
 	return output;
 }
