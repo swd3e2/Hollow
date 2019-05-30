@@ -9,11 +9,13 @@
 #include "Renderer/OpenGL/Win32/OGLWin32Window.h"
 #include "Renderer/Base/Window.h"
 #include "ShaderManager.h"
+#include "Hollow/Common/FileSystem.h"
 
 class GUISystem
 {
 public:
 	bool open = true;
+	std::string filename = "";
 
 	GUISystem(Window* window, RenderApi* renderer)
 	{
@@ -108,6 +110,11 @@ public:
 			}
 			ImGui::TreePop();
 		}
+
+		if (ImGui::Button("Open")){ 
+			filename = Hollow::FileSystem::OpenFile("");
+		}
+		ImGui::Text(filename.c_str());
 		ImGui::End();
 
 		end();

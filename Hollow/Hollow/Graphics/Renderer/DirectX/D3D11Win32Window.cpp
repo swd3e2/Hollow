@@ -1,7 +1,7 @@
 #include "D3D11Win32Window.h"
 
 D3D11Win32Window::D3D11Win32Window(HINSTANCE hInst, int width, int height)
-	: hInst(hInst)
+	: Win32Window(hInst)
 {
 	// Creating window class
 	WNDCLASSEX windowClass = {};
@@ -161,12 +161,6 @@ bool D3D11Win32Window::ProcessMessage()
 	return true;
 }
 
-HWND * D3D11Win32Window::getHWND()
-{
-	return &hWnd;
-}
-
 void D3D11Win32Window::m_UpdateWindowState()
 {
-
 }

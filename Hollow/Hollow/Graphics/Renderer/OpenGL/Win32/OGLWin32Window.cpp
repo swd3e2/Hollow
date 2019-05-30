@@ -15,7 +15,7 @@ MessageCallback(GLenum source,
 }
 
 OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
-	: hInst(hInst)
+	: Win32Window(hInst)
 {
 	// Creating window class
 	WNDCLASSEX windowClass = {};
@@ -268,11 +268,6 @@ bool OGLWin32Window::ProcessMessage()
 		DispatchMessage(&message);
 	}
 	return true;
-}
-
-HWND * OGLWin32Window::getHWND()
-{
-	return &hWnd;
 }
 
 void OGLWin32Window::m_UpdateWindowState()

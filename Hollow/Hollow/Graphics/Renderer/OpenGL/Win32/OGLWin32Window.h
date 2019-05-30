@@ -8,7 +8,7 @@
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
-#include "Hollow/Graphics/Renderer/Base/Window.h"
+#include "Hollow/Graphics/Renderer/Base/Platform/Win32Window.h"
 #include <memory>
 #include "../OGLPrerequisites.h"
 #include "../GL/wglext.h"
@@ -17,7 +17,7 @@
 
 LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-class OGLWin32Window : public Window
+class OGLWin32Window : public Win32Window
 {
 public:
 	OGLWin32Window(HINSTANCE hInst, int width, int height);
@@ -25,9 +25,6 @@ public:
 	static LRESULT WINAPI _HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT WINAPI _HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT WINAPI HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	HWND * getHWND();
 private:
 	void m_UpdateWindowState();
-	HINSTANCE hInst = nullptr;
-	HWND hWnd;
 };

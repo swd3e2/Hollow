@@ -181,6 +181,7 @@
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\Base\Platform\Win32Window.h" />
     <ClCompile Include="Hollow\Graphics\Renderer\Base\SamplerState.h" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11BlendState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstantBuffer.cpp" />

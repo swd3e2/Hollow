@@ -638,5 +638,8 @@
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_impl_opengl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\Base\Platform\Win32Window.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
