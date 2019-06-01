@@ -14,6 +14,11 @@ public:
 	OGLVertexBuffer(unsigned int stride, unsigned int numIndices) :
 		VertexBuffer(stride, numIndices)
 	{}
+	virtual ~OGLVertexBuffer()
+	{
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+	}
 };
 
 #endif

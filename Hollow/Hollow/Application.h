@@ -21,7 +21,6 @@
 #include "Common/Log.h"
 #include "Graphics/SkyMap.h"
 #include "AnimationSystem.h"
-#include "Graphics/OGLRenderSystem.h"
 #include "Importer/FreeImgImporter.h"
 #include "Importer/MeshImporter.h"
 #include "Graphics/GUISystem.h"
@@ -42,7 +41,6 @@ public:
 	Camera*							camera;
 	InputManager					inputManager;
 	ForwardRenderSystem*			renderPass;
-	OGLRenderSystem*				oglRenderSystem;
 	Hollow::AnimationSystem*		animationSystem;
 	TaskManager						taskManager;
 	RenderApiManager				renderApiManager;

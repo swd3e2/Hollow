@@ -16,7 +16,7 @@ public:
 		IndexBuffer(stride, numIndices)
 	{}
 
-	~D3D11IndexBuffer()
+	virtual ~D3D11IndexBuffer()
 	{
 		SAFE_RELEASE(buffer);
 	}

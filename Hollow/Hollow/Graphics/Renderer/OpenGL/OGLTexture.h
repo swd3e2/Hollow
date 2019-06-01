@@ -11,6 +11,10 @@ public:
 	unsigned int textureId;
 public:
 	OGLTexture(int width, int height) : Texture(width, height), textureId(0) {}
+	virtual ~OGLTexture()
+	{
+		glDeleteTextures(1, &textureId);
+	}
 };
 
 #endif

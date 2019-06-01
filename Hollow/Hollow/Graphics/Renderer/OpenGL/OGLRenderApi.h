@@ -14,6 +14,7 @@
 #include "OGLShaderProgram.h"
 #include "OGLShaderManager.h"
 #include "OGLGPUBufferManager.h"
+#include "OGLRenderTargetManager.h"
 
 class OGLRenderApi : public RenderApi
 {
@@ -24,6 +25,7 @@ private:
 	OGLTextureManager*			textureManager;
 	OGLShaderManager*			shaderManager;
 	OGLGPUBufferManager*		gpuBufferManager;
+	OGLRenderTargetManager*		renderTargetManager;
 public:
 	OGLRenderApi(int width, int height);
 
@@ -35,11 +37,9 @@ public:
 	virtual void SetShader(ShaderProgram*) override;
 	virtual void SetGpuBuffer(GPUBuffer*) override;
 	virtual void SetViewport(int w0, int y0, int w, int y) override;
-	virtual void ClearRenderTarget(RenderTarget* renderTarget, float* color) override;
-	virtual void SetRenderTarget(RenderTarget* renderTarget) override {}
+	virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
+	virtual void SetRenderTarget(RenderTarget* renderTarget) override;
 
-	void clear();
-	
 	virtual void Draw(UINT count)override {}
 	virtual void DrawIndexed(UINT count) override;
 	virtual void Present() override;

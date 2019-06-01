@@ -36,6 +36,7 @@ public:
 		{
 			desc[i] = FreeImgImporter::instance()->import(filenames[i].c_str());
 		}
+		desc[0]->filename = "SkyMap";
 
 		mesh = getCube();
 		mesh->models[0]->material = new Material();

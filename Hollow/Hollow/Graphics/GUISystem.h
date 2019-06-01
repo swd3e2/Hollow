@@ -10,12 +10,27 @@
 #include "Renderer/Base/Window.h"
 #include "ShaderManager.h"
 #include "Hollow/Common/FileSystem.h"
+#include "Hollow/ECS/EntityManager.h"
+#include "Hollow/ECS/GameObject.h"
+#include "Hollow/ECS/RenderableComponent.h"
+#include "Hollow/ECS/AnimationComponent.h"
+#include "Hollow/ECS/TransformComponent.h"
+#include "ForwardRenderSystem.h"
+#include "Hollow/Graphics/Renderer/DirectX/D3D11Texture.h"
+#include "Hollow/Graphics/Renderer/OpenGL/OGLTexture.h"
+#include "Hollow/Graphics/Renderer/DirectX/D3D11RenderTarget.h"
+#include "Hollow/Graphics/Renderer/OpenGL/OGLRenderTarget.h"
+#include "TextureManager.h"
 
 class GUISystem
 {
 public:
 	bool open = true;
 	std::string filename = "";
+	GameObject* selectedGameObject;
+	ForwardRenderSystem* renderSystem;
+	Model* selectedModel;
+	Material* selectedMaterial;
 
 	GUISystem(Window* window, RenderApi* renderer)
 	{
@@ -36,8 +51,7 @@ public:
 		ImGui_ImplWin32_Init(*static_cast<D3D11Win32Window*>(window)->getHWND());
 		D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
 		ImGui_ImplDX11_Init(context.getDevice(), context.getDeviceContext());
-#endif
-#ifdef OPENGL
+#elif ifdef OPENGL
 		result = ImGui_ImplWin32_Init(*static_cast<OGLWin32Window*>(window)->getHWND());
 		const char* glsl_version = "#version 460";
 		result = ImGui_ImplOpenGL3_Init(glsl_version);
@@ -48,8 +62,7 @@ public:
 	{
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_Shutdown();
-#endif
-#ifdef D3D11
+#elif ifdef D3D11
 		ImGui_ImplDX11_Shutdown();
 #endif
 		ImGui_ImplWin32_Shutdown();
@@ -60,8 +73,7 @@ public:
 	{
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_NewFrame();
-#endif
-#ifdef D3D11
+#elif ifdef D3D11
 		ImGui_ImplDX11_NewFrame();
 #endif
 		ImGui_ImplWin32_NewFrame();
@@ -94,13 +106,10 @@ public:
 		begin();
 
 		ImGui::Begin("Main");
-		if (ImGui::TreeNode("Shaders"))
-		{
+		if (ImGui::TreeNode("Shaders")) {
 			auto& shaders = ShaderManager::instance()->shaders;
-			for (auto& it : shaders)
-			{
-				if (ImGui::TreeNode(it.first.c_str()))
-				{
+			for (auto& it : shaders) {
+				if (ImGui::TreeNode(it.first.c_str())) {
 					std::string buttonName = "Reload##" + it.first;
 					if (ImGui::Button(buttonName.c_str())) {
 						ShaderManager::instance()->reloadShader(it.second);
@@ -110,11 +119,75 @@ public:
 			}
 			ImGui::TreePop();
 		}
-
-		if (ImGui::Button("Open")){ 
-			filename = Hollow::FileSystem::OpenFile("");
+#ifdef OPENGL
+		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->target)->texture, ImVec2(100, 100));
+#elif ifdef D3D11
+		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->target)->GetShaderResourceView(), ImVec2(100, 100));
+#endif
+		if (ImGui::Button("Delete all textures")) {
+			TextureManager::instance()->RemoveAll();
 		}
+
 		ImGui::Text(filename.c_str());
+
+		int counter = 0;
+		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			if (ImGui::Selectable(("Entity" + std::to_string(counter++)).c_str())) {
+				selectedGameObject = &entity;
+			}
+		}
+		ImGui::End();
+
+		ImGui::Begin("Inspector");
+		ImGui::Text("Renderable component");
+		if (selectedGameObject != nullptr) {
+			if (selectedGameObject->hasComponent<RenderableComponent>()) {
+				Mesh* mesh = selectedGameObject->getComponent<RenderableComponent>()->mesh;
+				
+				if (ImGui::TreeNode("Mesh")) {
+					for (int i = 0; i < mesh->numModels; i++) {
+						Model* model = mesh->models[i];
+						if (ImGui::Selectable(mesh->models[i]->name.c_str())) {
+							selectedModel = mesh->models[i];
+							selectedMaterial = mesh->models[i]->material;
+						}
+					}
+					ImGui::TreePop();
+				}
+			}
+		}
+
+		ImGui::Text("Transform component");
+		if (selectedGameObject != nullptr) {
+			if (selectedGameObject->hasComponent<TransformComponent>()) {
+				TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();
+				ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -100.0f, 100.0f);
+				ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -100.0f, 100.0f);
+				ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -100.0f, 100.0f);
+			}
+		}
+		ImGui::End();
+
+		ImGui::Begin("Material properties");
+		if (selectedMaterial != nullptr) {
+			if (selectedMaterial->diffuse_texture != nullptr) {
+#ifdef OPENGL
+				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->diffuse_texture)->textureId, ImVec2(100, 100));
+#elif ifdef D3D11
+				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->diffuse_texture)->m_TextureShaderResource, ImVec2(100, 100));
+#endif
+				ImGui::SameLine();
+			}
+
+			if (ImGui::Button("Change")) {
+				filename = Hollow::FileSystem::OpenFile("");
+				if (filename.size()) {
+					TextureManager::instance()->Remove(selectedMaterial->diffuse_texture);
+					selectedMaterial->diffuse_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+				}
+			}
+		}
+
 		ImGui::End();
 
 		end();
@@ -128,7 +201,7 @@ public:
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
-#ifdef D3D11 
+#ifdef ifdef D3D11 
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif
 

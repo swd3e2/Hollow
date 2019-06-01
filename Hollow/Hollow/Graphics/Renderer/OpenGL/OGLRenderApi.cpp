@@ -12,6 +12,7 @@ void OGLRenderApi::startUp()
 	textureManager = new OGLTextureManager();
 	shaderManager = new OGLShaderManager();
 	gpuBufferManager = new OGLGPUBufferManager();
+	renderTargetManager = new OGLRenderTargetManager();
 	hwnd = static_cast<OGLWin32Window*>(windowManager->getWindow())->getHWND();
 	glEnable(GL_DEPTH_TEST);
 	//glCullFace(GL_BACK);
@@ -64,16 +65,29 @@ void OGLRenderApi::SetViewport(int w0, int y0, int w, int y)
 	glViewport(w0, y0, w, y);
 }
 
-void OGLRenderApi::ClearRenderTarget(RenderTarget* renderTarget, float* color)
+void OGLRenderApi::ClearRenderTarget(RenderTarget* renderTarget, const float* color)
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+
+	if (oglRenderTarget != nullptr) {
+		glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
+		glClearColor(color[0], color[1], color[2], color[3]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	} else {
+		glClearColor(color[0], color[1], color[2], color[3]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 }
 
-void OGLRenderApi::clear()
+void OGLRenderApi::SetRenderTarget(RenderTarget* renderTarget)
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (renderTarget != nullptr) {
+		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+		glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
+	} else {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
 void OGLRenderApi::DrawIndexed(UINT count)

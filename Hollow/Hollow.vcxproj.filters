@@ -183,12 +183,6 @@
     <ClInclude Include="Hollow\Math\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\Icons\LightIcon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLVertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -420,9 +414,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\OGLRenderSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -489,6 +480,9 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -531,9 +525,6 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderApi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11SamplerState.cpp">
@@ -639,6 +630,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\Base\Platform\Win32Window.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

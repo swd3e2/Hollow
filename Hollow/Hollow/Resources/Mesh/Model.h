@@ -4,10 +4,19 @@
 #include "Hollow/Graphics/Renderer/Base/IndexBuffer.h"
 #include "Hollow/Resources/Material.h"
 
-class  Model
+class Model
 {
 public:
+	std::string name;
 	VertexBuffer* vBuffer;
 	IndexBuffer* iBuffer;
 	Material* material;
+public:
+	Model() {}
+	~Model()
+	{
+		delete vBuffer;
+		delete iBuffer;
+		delete material;
+	}
 };

@@ -15,6 +15,9 @@ Texture* OGLTextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	textureList[desc->filename] = texture;
+	delete desc;
+
 	return texture;
 }
 
@@ -36,6 +39,12 @@ Texture* OGLTextureManager::Create3dTexture(TEXTURE_DESC** desc)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	textureList[desc[0]->filename] = texture;
+
+	for (int i = 0; i < 6; i++) {
+		delete desc[i];
+	}
 
 	return texture;
 }

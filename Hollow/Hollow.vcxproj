@@ -43,7 +43,6 @@
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_textedit.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
-    <ClInclude Include="Hollow\Graphics\OGLRenderSystem.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ComputeShader.h" />
@@ -59,6 +58,7 @@
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLIndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTarget.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderProgram.h" />
@@ -108,7 +108,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.h" />
     <ClInclude Include="Hollow\Graphics\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderer.h" />
     <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLVertexBuffer.h" />
@@ -127,7 +126,6 @@
     <ClInclude Include="Hollow\Memory\PoolAllocator.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\Icons\LightIcon.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Buffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Material.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderApi.h" />
@@ -193,10 +191,10 @@
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11SamplerState.cpp" />
-    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.cpp" />
     <ClCompile Include="Hollow\Graphics\HardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />

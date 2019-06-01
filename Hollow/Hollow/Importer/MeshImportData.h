@@ -10,6 +10,7 @@
 
 struct LoadedMaterial
 {
+	std::string name;
 	std::string diffuseTextureName;
 	std::string normalTextureName;
 	std::string specularTextureName;
@@ -32,6 +33,7 @@ struct MeshData
 	std::vector<Vertex>* vertices;
 	std::vector<unsigned int>* indices;
 	std::vector<LoadedMaterial*> materials;
+	std::vector<std::string> modelNames;
 	int numModels;
 };
 

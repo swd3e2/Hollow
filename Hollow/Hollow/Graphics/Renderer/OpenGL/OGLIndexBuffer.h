@@ -13,6 +13,10 @@ public:
 	OGLIndexBuffer(unsigned int stride, unsigned int numIndices) :
 		IndexBuffer(stride, numIndices)
 	{}
+	virtual ~OGLIndexBuffer()
+	{
+		glDeleteBuffers(1, &IBO);
+	}
 };
 
 #endif

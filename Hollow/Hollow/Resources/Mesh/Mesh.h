@@ -30,9 +30,11 @@ public:
 
 			model->vBuffer = HardwareBufferManager::instance()->createVertexBuffer(data->vertices[i].data(), data->vertices[i].size());
 			model->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(data->indices[i].data(), data->indices[i].size());
+			model->name = data->modelNames[i];
 
 			// Material data
 			model->material = new Material();
+			model->material->name = data->materials[i]->name;
 			if (data->materials[i]->hasDiffueTexture) {
 				model->material->diffuse_texture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->diffuseTextureName);
 			}
@@ -43,6 +45,15 @@ public:
 				model->material->specular_texture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->specularTextureName);
 			}
 			models.push_back(model);
+		}
+
+		delete data;
+	}
+
+	~Mesh()
+	{
+		for (auto& it : models) {
+			delete it;
 		}
 	}
 };

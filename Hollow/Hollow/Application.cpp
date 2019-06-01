@@ -29,6 +29,7 @@ Application::Application()
 	renderPass->skyMap = new SkyMap(10, 10);
 
 	gui = new GUISystem(window, m_Renderer);
+	gui->renderSystem = renderPass;
 
 	animationSystem = new Hollow::AnimationSystem();
 	systemManager.AddSystem(animationSystem);
@@ -47,8 +48,7 @@ void Application::Run()
 {
 	m_Timer.Start();
 
-	while (!window->isClosed())
-	{
+	while (!window->isClosed()) {
 		dt = m_Timer.GetMilisecondsElapsed();
 		m_Timer.Restart();
 		window->ProcessMessage();

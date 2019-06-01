@@ -205,7 +205,7 @@ void D3D11RenderApi::SetVertexBuffer(VertexBuffer* buffer)
 	context->getDeviceContext()->IASetVertexBuffers(0, 1, buff->GetAddressOf(), buff->StridePtr(), &this->offset);
 }
 
-void D3D11RenderApi::ClearRenderTarget(RenderTarget* renderTarget, float* color)
+void D3D11RenderApi::ClearRenderTarget(RenderTarget* renderTarget, const float* color)
 {
 	if (renderTarget != nullptr) {
 		D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);

@@ -62,7 +62,7 @@ public:
 	virtual void SetGpuBuffer(GPUBuffer*) override;
 	virtual void SetViewport(int w0, int y0, int w, int y) override;
 	virtual void SetRenderTarget(RenderTarget* renderTarget) override;
-	virtual void ClearRenderTarget(RenderTarget* renderTarget, float* color) override;
+	virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 
 	virtual void startUp() override;
 

@@ -3,6 +3,7 @@
 
 Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 {
+	HW_INFO("D3D11TextureManager: creating 2d texture, filename {}", desc->filename.c_str());
 	D3D11Texture* texture = new D3D11Texture();
 
 	texture->active = true;
@@ -24,12 +25,9 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	textureDesc.MiscFlags = 0;
 
 	// If texture is created for compute shader
-	if (desc->unorderedAccess)
-	{
+	if (desc->unorderedAccess) {
 		textureDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
 	}
-
-	ID3D11Texture2D* m_texture = nullptr;
 
 	if (desc->mInitialData != nullptr) {
 		D3D11_SUBRESOURCE_DATA initData;
@@ -37,24 +35,29 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 		initData.SysMemPitch = desc->pitch;
 		initData.SysMemSlicePitch = 0;
 
-		if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &m_texture))) {
-			//HW_ERROR("D3DTexture: Can't create 2D texture");
+		if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &texture->m_texture))) {
+			HW_ERROR("D3DTexture: Can't create 2D texture");
+			delete texture;
+			return nullptr;
 		}
 	} else {
-		if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &m_texture))) {
-			//HW_ERROR("D3DTexture: Can't create 2D texture");
+		if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &texture->m_texture))) {
+			HW_ERROR("D3DTexture: Can't create 2D texture");
+			delete texture;
+			return nullptr;
 		}
 	}
 
-	if (desc->unorderedAccess)
-	{
+	if (desc->unorderedAccess) {
 		D3D11_UNORDERED_ACCESS_VIEW_DESC descUAV;
 		ZeroMemory(&descUAV, sizeof(descUAV));
 		descUAV.Format = textureDesc.Format;
 		descUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 		descUAV.Texture2D.MipSlice = 0;
-		if (FAILED(device->CreateUnorderedAccessView(m_texture, &descUAV, &texture->m_UnorderedAccessView))) {
-			//HW_ERROR("D3DTexture: Can't create unorderered access view");
+		if (FAILED(device->CreateUnorderedAccessView(texture->m_texture, &descUAV, &texture->m_UnorderedAccessView))) {
+			HW_ERROR("D3DTexture: Can't create unorderered access view");
+			delete texture;
+			return nullptr;
 		}
 	}
 
@@ -65,17 +68,22 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	if (device->CreateShaderResourceView(m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
-		//HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
+	if (device->CreateShaderResourceView(texture->m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
+		HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
+		delete texture;
+		return nullptr;
 	}
 
-	textureList["0"] = texture;
+	textureList[desc->filename] = texture;
+
+	delete desc;
 
 	return texture;
 }
 
 Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
 {
+	HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 	D3D11Texture* texture = new D3D11Texture();
 
 	texture->active = true;
@@ -98,16 +106,16 @@ Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
 
 	D3D11_SUBRESOURCE_DATA pData[6];
 
-	for (int i = 0; i < 6; i++)
-	{
+	for (int i = 0; i < 6; i++) {
 		pData[i].pSysMem = desc[i]->mInitialData;
 		pData[i].SysMemPitch = desc[i]->pitch;
 		pData[i].SysMemSlicePitch = 0;
 	}
 
-	ID3D11Texture2D* m_texture;
-	if (device->CreateTexture2D(&textureDesc, &pData[0], &m_texture) != S_OK) {
-		//HW_ERROR("D3DTexture: Can't create 2D texture");
+	if (device->CreateTexture2D(&textureDesc, &pData[0], &texture->m_texture) != S_OK) {
+		HW_ERROR("D3DTexture: Can't create 2D texture");
+		delete texture;
+		return nullptr;
 	}
 
 	// Setup the shader resource view description.
@@ -118,11 +126,17 @@ Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
 	srvDesc.Texture2D.MipLevels = 1;
 
 	// Create the shader resource view for the texture.
-	if (device->CreateShaderResourceView(m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
-		//HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
+	if (device->CreateShaderResourceView(texture->m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
+		HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
+		delete texture;
+		return nullptr;
 	}
 
-	textureList["0"] = texture;
+	textureList[desc[0]->filename] = texture;
+
+	for (int i = 0; i < 6; i++) {
+		delete desc[i];
+	}
 
 	return texture;
 }

@@ -10,6 +10,7 @@ protected:
 	unsigned int bufferSize;
 public:
 	VertexBuffer(unsigned int stride, unsigned int numIndices) : stride(stride), bufferSize(numIndices) {}
+	virtual ~VertexBuffer() {}
 	unsigned int getSize() const { return bufferSize; }
 	const unsigned int Stride() const { return stride; }
 	const unsigned int* StridePtr() const { return &stride; }

@@ -16,6 +16,7 @@
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/ECS/AnimationComponent.h"
 #include "GPUBufferManager.h"
+#include "RenderTargetManager.h"
 
 using namespace DirectX;
 
@@ -66,6 +67,7 @@ public:
 	PointLight*				pointLight;
 	Camera*					m_Camera;
 	SkyMap*					skyMap;
+	RenderTarget* target;
 private:
 	RenderApi* renderer;
 private:
@@ -90,7 +92,6 @@ private:
 	const UINT uavs = 0;
 
 	int rasterizer = 0;
-
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -104,6 +105,8 @@ public:
 		lightInfoBuffer				= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo					= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
+		target = RenderTargetManager::instance()->create(1366, 768);
+
 		renderer->SetViewport(0, 0, 1366, 768);
 		m_worldViewProjection.offset = 0.0f;
 	}
@@ -111,7 +114,7 @@ public:
 	virtual void PreUpdate(double dt)
 	{
 		renderer->ClearRenderTarget(0, (float*)ClearColor);
-		renderer->SetRenderTarget(0);
+		renderer->ClearRenderTarget(target, ClearColor);
 
 		int j = 0;
 		for (auto& it : EntityManager::instance()->getContainer<Light>()->entityList) {
@@ -131,12 +134,19 @@ public:
 		renderer->SetGpuBuffer(lightInfoBuffer);
 
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
+
 	}
 
 	virtual void Update(double dt)
 	{
 		updateWVP(m_Camera);
 		//DrawWater();
+		renderer->SetRenderTarget(target);
+		DrawScene();
+		DrawSkyMap();
+
+		updateWVP(m_Camera);
+		renderer->SetRenderTarget(0);
 		DrawScene();
 		DrawSkyMap();
 	}
@@ -154,11 +164,13 @@ public:
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 
 				transformBuff.transform = Matrix4::Transpose(
-					Matrix4::Scaling(transform->scale.x, transform->scale.y, transform->scale.z) *
-					Matrix4::Rotation(transform->rotation.x, transform->rotation.y, transform->rotation.z)* 
-					Matrix4::Translation(33, 22, transform->position.z)
+					Matrix4::Scaling(transform->scale) *
+					Matrix4::Rotation(transform->rotation)* 
+					Matrix4::Translation(transform->position)
 				);
-					
+				m_TransformConstantBuffer->update(&transformBuff);
+				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
 				if (entity.hasComponent<AnimationComponent>()) {
 					AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
 					transformBuff.hasAnimation = true;
@@ -167,9 +179,6 @@ public:
 				} else {
 					transformBuff.hasAnimation = false;
 				}
-
-				m_TransformConstantBuffer->update(&transformBuff);
-				renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
 				for (auto& model : renderable->mesh->models) {
 					DrawObject(model);

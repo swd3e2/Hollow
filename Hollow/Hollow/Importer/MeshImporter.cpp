@@ -125,67 +125,73 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 			std::vector<LoadedMaterial*>& materials = data->meshData->materials;
 
 			for (int i = 0; i < scene->mNumMeshes; i++) {
+				aiMesh* aMesh = scene->mMeshes[i];
+				data->meshData->modelNames.push_back(aMesh->mName.C_Str());
 				std::vector<Vertex>& vertexData = data->meshData->vertices[i];
 				std::vector<unsigned int>& indexData = data->meshData->indices[i];
 
-				for (int j = 0; j < scene->mMeshes[i]->mNumVertices; j++) {
+				for (int j = 0; j < aMesh->mNumVertices; j++) {
 					Vertex vertex;
 
-					vertex.pos.x = scene->mMeshes[i]->mVertices[j].x;
-					vertex.pos.y = scene->mMeshes[i]->mVertices[j].y;
-					vertex.pos.z = scene->mMeshes[i]->mVertices[j].z;
+					vertex.pos.x = aMesh->mVertices[j].x;
+					vertex.pos.y = aMesh->mVertices[j].y;
+					vertex.pos.z = aMesh->mVertices[j].z;
 
 					if (scene->mMeshes[i]->HasNormals()) {
-						vertex.normal.x = scene->mMeshes[i]->mNormals[j].x;
-						vertex.normal.y = scene->mMeshes[i]->mNormals[j].y;
-						vertex.normal.z = scene->mMeshes[i]->mNormals[j].z;
+						vertex.normal.x = aMesh->mNormals[j].x;
+						vertex.normal.y = aMesh->mNormals[j].y;
+						vertex.normal.z = aMesh->mNormals[j].z;
 					}
 
 					if (scene->mMeshes[i]->HasTextureCoords(0)) {
 #ifdef D3D11
-						vertex.texCoord.x = scene->mMeshes[i]->mTextureCoords[0][j].x;
-						vertex.texCoord.y = scene->mMeshes[i]->mTextureCoords[0][j].y;
+						vertex.texCoord.x = aMesh->mTextureCoords[0][j].x;
+						vertex.texCoord.y = aMesh->mTextureCoords[0][j].y;
 #else
-						vertex.texCoord.x = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].x;
-						vertex.texCoord.y = 1.0f - scene->mMeshes[i]->mTextureCoords[0][j].y;
+						vertex.texCoord.x = 1.0f - aMesh->mTextureCoords[0][j].x;
+						vertex.texCoord.y = 1.0f - aMesh->mTextureCoords[0][j].y;
 #endif
 					}
 
 					if (scene->mMeshes[i]->HasTangentsAndBitangents()) {
-						vertex.tangent.x = scene->mMeshes[i]->mTangents[j].x;
-						vertex.tangent.y = scene->mMeshes[i]->mTangents[j].y;
-						vertex.tangent.z = scene->mMeshes[i]->mTangents[j].z;
-						vertex.bitangent.x = scene->mMeshes[i]->mBitangents[j].x;
-						vertex.bitangent.y = scene->mMeshes[i]->mBitangents[j].y;
-						vertex.bitangent.z = scene->mMeshes[i]->mBitangents[j].z;
+						vertex.tangent.x = aMesh->mTangents[j].x;
+						vertex.tangent.y = aMesh->mTangents[j].y;
+						vertex.tangent.z = aMesh->mTangents[j].z;
+						vertex.bitangent.x = aMesh->mBitangents[j].x;
+						vertex.bitangent.y = aMesh->mBitangents[j].y;
+						vertex.bitangent.z = aMesh->mBitangents[j].z;
 					}
 
 					vertexData.push_back(vertex);
 				}
 
 				/* Indices */
-				int size = scene->mMeshes[i]->mNumFaces * scene->mMeshes[i]->mFaces[0].mNumIndices;
+				int size = scene->mMeshes[i]->mNumFaces * aMesh->mFaces[0].mNumIndices;
 				unsigned int* indices = new unsigned int[size];
 
-				for (int j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
-					for (int k = 0; k < scene->mMeshes[i]->mFaces[j].mNumIndices; k++) {
-						indexData.push_back(scene->mMeshes[i]->mFaces[j].mIndices[k]);
+				for (int j = 0; j < aMesh->mNumFaces; j++) {
+					for (int k = 0; k < aMesh->mFaces[j].mNumIndices; k++) {
+						indexData.push_back(aMesh->mFaces[j].mIndices[k]);
 					}
 				}
 
 				aiString str;
 
 				// Material data
+				aiMaterial* aMaterial = scene->mMaterials[aMesh->mMaterialIndex];
+
 				LoadedMaterial* material = new LoadedMaterial();
-				if (aiReturn_SUCCESS == scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &str)) {
+				material->name = aMaterial->GetName().C_Str();
+
+				if (aiReturn_SUCCESS == aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &str)) {
 					material->diffuseTextureName = str.C_Str();
 					material->hasDiffueTexture = true;
 				}
-				if (aiReturn_SUCCESS == scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType_HEIGHT, 0, &str)) {
+				if (aiReturn_SUCCESS == aMaterial->GetTexture(aiTextureType_HEIGHT, 0, &str)) {
 					material->normalTextureName = str.C_Str();
 					material->hasNormalTexture = true;
 				}
-				if (aiReturn_SUCCESS == scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType_SPECULAR, 0, &str)) {
+				if (aiReturn_SUCCESS == aMaterial->GetTexture(aiTextureType_SPECULAR, 0, &str)) {
 					material->specularTextureName = str.C_Str();
 					material->hasSpecularTexture = true;
 				}

@@ -41,6 +41,10 @@ public:
 	{
 		shader = ShaderManager::instance()->getShader("default");
 	}
+
+	~Material()
+	{
+	}
 };
 
 #endif

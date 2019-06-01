@@ -3,6 +3,8 @@
 TEXTURE_DESC* FreeImgImporter::import(const char* filename)
 {
 	TEXTURE_DESC* textureData = new TEXTURE_DESC();
+	textureData->filename = filename;
+
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded

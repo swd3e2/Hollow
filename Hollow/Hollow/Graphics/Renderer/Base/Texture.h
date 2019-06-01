@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "Hollow/Platform.h"
+#include <string>
 
 enum TextureFormat
 {
@@ -15,7 +16,7 @@ enum TextureType
 	TEXTURE_CUBE
 };
 
-class  TEXTURE_DESC
+class TEXTURE_DESC
 {
 public:
 	int width;
@@ -25,6 +26,7 @@ public:
 	bool unorderedAccess;
 	TextureFormat format;
 	TextureType type;
+	std::string filename;
 public:
 	TEXTURE_DESC() :
 		format(FORMAT_B8G8R8A8_UNORM), unorderedAccess(false)
@@ -46,4 +48,5 @@ public:
 public:
 	Texture(int width, int height) : width(width), height(height) {}
 	Texture() : width(0), height(0) {}
+	virtual ~Texture() {}
 };

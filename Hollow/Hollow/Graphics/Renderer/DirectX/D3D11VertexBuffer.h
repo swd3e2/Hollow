@@ -16,7 +16,7 @@ public:
 		VertexBuffer(stride, numVertices)
 	{}
 
-	~D3D11VertexBuffer()
+	virtual ~D3D11VertexBuffer()
 	{
 		SAFE_RELEASE(buffer);
 	}
