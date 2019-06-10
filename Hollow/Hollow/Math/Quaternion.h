@@ -2,6 +2,7 @@
 
 #include "Math.h"
 #include <cmath>
+#include "Matrix4.h"
 
 class Quaternion
 {
@@ -15,17 +16,9 @@ public:
 		x(0), y(0), z(0), w(0)
 	{}
 
-	Quaternion(float x, float y, float z, float w)
-	{
-		float rads = Math::toRadians(w);
-
-		w = cosf(rads/2);
-
-		float sin = sinf(rads / 2);
-		x = x * sin;
-		y = y * sin;
-		z = z * sin;
-	}
+	Quaternion(float x, float y, float z, float w) :
+		x(x), y(y), z(z), w(w)
+	{}
 
 	Quaternion(const Quaternion& other) :
 		x(other.x), y(other.y), z(other.z), w(other.w)
@@ -93,5 +86,26 @@ public:
 		pOut.y = sclp * pStart.y + sclq * end.y;
 		pOut.z = sclp * pStart.z + sclq * end.z;
 		pOut.w = sclp * pStart.w + sclq * end.w;
+	}
+
+	Matrix4 toMatrix4()
+	{
+		Matrix4 matrix;
+
+		matrix.md[0][0] = 1 - 2 * (y * y) - 2 * (z * z);
+		matrix.md[0][1] = 2 * x * y + 2 * w * z;
+		matrix.md[0][2] = 2 * x * z - 2 * w * y;
+
+		matrix.md[1][0] = 2 * x * y - 2 * w * y;
+		matrix.md[1][1] = 1 - 2 * x * x - 2 * z * z;
+		matrix.md[1][2] = 2 * y * z + 2 * w * x;
+
+		matrix.md[2][0] = 2 * x * z + 2 * w * y;
+		matrix.md[2][1] = 2 * y * z - 2 * w * x;
+		matrix.md[2][2] = 1 - 2 * x * x - 2 * y * y;
+
+		matrix.md[3][3] = 1.0f;
+
+		return matrix;
 	}
 };

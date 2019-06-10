@@ -3,8 +3,6 @@
 #ifndef HW_VECTOR_3_H
 #define HW_VECTOR_3_H
 
-#include "Hollow/Platform.h"
-
 class  Vector3
 {
 public:

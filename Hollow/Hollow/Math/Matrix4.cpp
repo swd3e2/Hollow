@@ -46,6 +46,34 @@ Matrix4::Matrix4(const float* other, int size)
 	}
 }
 
+Matrix4::Matrix4(const double* other, int size)
+{
+	Matrix4 identity = Matrix4::Identity();
+
+	switch (size)
+	{
+	case 16:
+		for (int i = 0; i < size; i++) m[i] = (float)other[i];
+		break;
+	case 9:
+	{
+		for (int i = 0; i < 16; i++)
+			m[i] = 0;
+		m[15] = 1.0f;
+		int counter = 0;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				md[i][j] = (float)other[counter++];
+			}
+		}
+	} break;
+	default:
+		break;
+	}
+}
+
 Matrix4 & Matrix4::operator=(const Matrix4& other)
 {
 	for (int i = 0; i < 16; i++)

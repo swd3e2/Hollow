@@ -16,16 +16,14 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 			aiProcess_Triangulate |
 			aiProcess_JoinIdenticalVertices |
 			aiProcess_SortByPType |
-#ifdef D3D11
 			aiProcess_MakeLeftHanded | 
-#endif
 			aiProcess_GenNormals
 		);
 
 		if (!scene) return;
 
 		// Bone data
-		if (scene->HasMeshes() && scene->mMeshes[0]->HasBones()) {
+		if (scene->HasMeshes() && scene->mMeshes[0]->HasBones() && false) {
 			data->animationData = new AnimationData();
 			std::unordered_map<std::string, Bone*> nodeMap;
 			SetChilds(scene->mRootNode, nodeMap);
@@ -48,32 +46,20 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 					data->animationData->bones[it.second->name] = it.second;
 				}
 			}
+			
+			data->animationData->rootBone = nodeMap[scene->mRootNode->mName.C_Str()];
+			data->animationData->rootBone->childs.clear();
+			data->animationData->globalInverse = Matrix4((const float*)&scene->mRootNode->mTransformation.Inverse(), 16);
 
-			Bone* bone = nullptr;
 			for (auto& it : data->animationData->bones) {
-				if (it.second->parent == nullptr) {
-					bone = it.second;
+				if (data->animationData->bones.find(it.second->parent->name) == data->animationData->bones.end()) {
+					it.second->parent = data->animationData->rootBone;
+					data->animationData->rootBone->childs.push_back(it.second);
 				}
-			}
-
-			if (bone == nullptr)  {
-				for (auto& it : data->animationData->bones) {
-					if (data->animationData->bones.find(it.second->parent->name) == data->animationData->bones.end()) {
-						bone = it.second->parent;
-						break;
-					}
-				}
-				aiNode* node = FindRootNode(scene->mRootNode, bone->name);
-				data->animationData->rootBone = nodeMap[node->mName.C_Str()];
-				data->animationData->globalInverse = Matrix4((const float*)& node->mTransformation.Inverse(), 16);
-			} else {
-				aiNode* node = FindRootNode(scene->mRootNode, bone->name);
-				data->animationData->rootBone = nodeMap[node->mParent->mName.C_Str()];
-				data->animationData->globalInverse = Matrix4((const float*)&node->mParent->mTransformation.Inverse(), 16);
 			}
 
 			// Animation
-			if (scene->HasAnimations()) {
+			if (scene->HasAnimations() && false) {
 				for (int i = 0; i < scene->mNumAnimations; i++) {
 					Animation* anim = new Animation();
 					aiAnimation* animation = scene->mAnimations[i];
@@ -117,6 +103,8 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 		// Mesh data
 		if (scene->mNumMeshes > 0)
 		{
+			aiNode* temp;
+
 			data->meshData = new MeshData();
 			data->meshData->numModels = scene->mNumMeshes;
 			data->meshData->vertices = new std::vector<Vertex>[scene->mNumMeshes];
@@ -129,28 +117,37 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 				data->meshData->modelNames.push_back(aMesh->mName.C_Str());
 				std::vector<Vertex>& vertexData = data->meshData->vertices[i];
 				std::vector<unsigned int>& indexData = data->meshData->indices[i];
+				temp = FindNode(scene->mRootNode, aMesh->mName.C_Str());
 
 				for (int j = 0; j < aMesh->mNumVertices; j++) {
 					Vertex vertex;
+					aiVector3D& position = aMesh->mVertices[j];
+					
+					if (temp != nullptr) {
+						position = temp->mTransformation * position;
+					}
 
-					vertex.pos.x = aMesh->mVertices[j].x;
-					vertex.pos.y = aMesh->mVertices[j].y;
-					vertex.pos.z = aMesh->mVertices[j].z;
+					vertex.pos.x = position.x;
+					vertex.pos.y = position.y;
+					vertex.pos.z = position.z;
 
 					if (scene->mMeshes[i]->HasNormals()) {
-						vertex.normal.x = aMesh->mNormals[j].x;
-						vertex.normal.y = aMesh->mNormals[j].y;
-						vertex.normal.z = aMesh->mNormals[j].z;
+						aiVector3D& normal = aMesh->mNormals[j];
+
+						vertex.normal.x = normal.x;
+						vertex.normal.y = normal.y;
+						vertex.normal.z = normal.z;
 					}
 
 					if (scene->mMeshes[i]->HasTextureCoords(0)) {
-#ifdef D3D11
+//#ifdef D3D11
 						vertex.texCoord.x = aMesh->mTextureCoords[0][j].x;
-						vertex.texCoord.y = aMesh->mTextureCoords[0][j].y;
-#else
-						vertex.texCoord.x = 1.0f - aMesh->mTextureCoords[0][j].x;
 						vertex.texCoord.y = 1.0f - aMesh->mTextureCoords[0][j].y;
-#endif
+//#else
+//						vertex.texCoord.x = 1.0f - aMesh->mTextureCoords[0][j].x;
+//						vertex.texCoord.y = 1.0f - aMesh->mTextureCoords[0][j].y;
+//#endif
+
 					}
 
 					if (scene->mMeshes[i]->HasTangentsAndBitangents()) {
@@ -199,7 +196,7 @@ MeshImportData* MeshImporter::import(const char* filename, bool async)
 				materials.push_back(material);
 
 				/* Vertex bone information */
-				if (scene->mMeshes[i]->HasBones()) {
+				if (scene->mMeshes[i]->HasBones() && false) {
 					for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++) {
 						aiBone* aibone = scene->mMeshes[i]->mBones[j];
 						Bone* bone = data->animationData->bones[aibone->mName.C_Str()];

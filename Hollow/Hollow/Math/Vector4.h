@@ -5,7 +5,6 @@
 
 #include <utility>
 #include "Vector3.h"
-#include "Hollow/Platform.h"
 
 class  Vector4
 {

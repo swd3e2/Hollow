@@ -27,6 +27,7 @@ public:
 	TextureFormat format;
 	TextureType type;
 	std::string filename;
+	int size;
 public:
 	TEXTURE_DESC() :
 		format(FORMAT_B8G8R8A8_UNORM), unorderedAccess(false)

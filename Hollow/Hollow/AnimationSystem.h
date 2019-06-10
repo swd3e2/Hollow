@@ -32,20 +32,18 @@ namespace Hollow {
 			KeyFrame* frame = component->animations[0]->findKeyFrame(time, bone->name);
 			KeyFrame* nextFrame = component->animations[0]->findKeyNextFrame(time, bone->name);
 
-			if (frame && nextFrame)
-			{
+			if (frame && nextFrame) {
 				Matrix4 Scaling = CalcInterpolatedScaling(frame, nextFrame, time);
 				Matrix4 Rotation = CalcInterpolatedRotation(frame, nextFrame, time);
 				Matrix4 Translation = CalcInterpolatedPosition(frame, nextFrame, time);
-				NodeTransformation = Matrix4::Transpose((Rotation)* Translation);
+				NodeTransformation = Matrix4::Transpose(Rotation * Translation);
 			}
 
 			Matrix4 GlobalTransformation = ParentTransform * NodeTransformation;
 
 			component->boneInfo[bone->id] = component->globalInverse * GlobalTransformation * bone->localTransform;
 
-			for (auto& it : bone->childs)
-			{
+			for (auto& it : bone->childs) {
 				animate(time, it, GlobalTransformation, component);
 			}
 		}

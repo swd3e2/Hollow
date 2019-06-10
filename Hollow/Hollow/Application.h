@@ -1,5 +1,5 @@
 #pragma once
-#define OPENGL
+#define D3D11
 
 #include "Platform.h"
 #include "ECS/ComponentManager.h"
@@ -25,8 +25,8 @@
 #include "Importer/MeshImporter.h"
 #include "Graphics/GUISystem.h"
 
-#define SCREEN_WIDTH 1366
-#define SCREEN_HEIGHT 768
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 class Application
 {

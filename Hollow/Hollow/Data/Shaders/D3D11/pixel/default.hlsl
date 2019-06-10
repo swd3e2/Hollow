@@ -14,6 +14,7 @@ SamplerState SampleTypeWrap : register(s1);
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
-	float val = dot(input.normal, float3(-1.0f, 0.0f, 0.0f));
-	return ambient_map.Sample(SampleTypeWrap, input.texCoord) + val * float4(0.5f, 0.5f, 0.5f, 0.0f);
+	float val = dot(input.normal, float3(0.0f, 0.0f, -1.0f));
+	//return ambient_map.Sample(SampleTypeWrap, input.texCoord) + val * float4(0.1f, 0.1f, 0.1f, 0.0f) * 0.99f;
+	return float4(0.5f, 0.5f, 0.5f, 0.0f) + val * float4(0.1f, 0.1f, 0.1f, 0.0f) * 0.99f;
 }

@@ -26,6 +26,7 @@
     <ClInclude Include="Hollow\ECS\Entity.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\GameObject.h" />
+    <ClInclude Include="Hollow\ECS\GLTFRenderable.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />
     <ClInclude Include="Hollow\ECS\Light.h" />
@@ -67,6 +68,12 @@
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
     <ClInclude Include="Hollow\Graphics\SkyMap.h" />
     <ClInclude Include="Hollow\Importer\AnimationData.h" />
+    <ClInclude Include="Hollow\Importer\gltf\GLTFImporter.h" />
+    <ClInclude Include="Hollow\Importer\gltf\json.hpp" />
+    <ClInclude Include="Hollow\Importer\gltf\stb_image.h" />
+    <ClInclude Include="Hollow\Importer\gltf\stb_image_write.h" />
+    <ClInclude Include="Hollow\Importer\gltf\tiny_gltf.h" />
+    <ClInclude Include="Hollow\Importer\gltf\tiny_gltf_loader.h" />
     <ClInclude Include="Hollow\Importer\MeshData.h" />
     <ClInclude Include="Hollow\Importer\MeshImportData.h" />
     <ClInclude Include="Hollow\Layers\EditorLayer.h" />
@@ -167,6 +174,7 @@
     <ClInclude Include="Hollow\Resources\Sound.h" />
     <ClInclude Include="Hollow\Math\Math.h" />
     <ClInclude Include="Hollow\Test.h" />
+    <ClInclude Include="Hollow\TinyGltf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Application.cpp" />
@@ -274,7 +282,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_IMPLEMENTATION;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>

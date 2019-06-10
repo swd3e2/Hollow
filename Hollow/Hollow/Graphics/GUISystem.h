@@ -21,6 +21,7 @@
 #include "Hollow/Graphics/Renderer/DirectX/D3D11RenderTarget.h"
 #include "Hollow/Graphics/Renderer/OpenGL/OGLRenderTarget.h"
 #include "TextureManager.h"
+#include "Hollow/Importer/MeshImporter.h"
 
 class GUISystem
 {
@@ -51,7 +52,8 @@ public:
 		ImGui_ImplWin32_Init(*static_cast<D3D11Win32Window*>(window)->getHWND());
 		D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
 		ImGui_ImplDX11_Init(context.getDevice(), context.getDeviceContext());
-#elif ifdef OPENGL
+#endif
+#ifdef OPENGL
 		result = ImGui_ImplWin32_Init(*static_cast<OGLWin32Window*>(window)->getHWND());
 		const char* glsl_version = "#version 460";
 		result = ImGui_ImplOpenGL3_Init(glsl_version);
@@ -62,7 +64,8 @@ public:
 	{
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_Shutdown();
-#elif ifdef D3D11
+#endif
+#ifdef D3D11
 		ImGui_ImplDX11_Shutdown();
 #endif
 		ImGui_ImplWin32_Shutdown();
@@ -73,7 +76,8 @@ public:
 	{
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_NewFrame();
-#elif ifdef D3D11
+#endif
+#ifdef D3D11
 		ImGui_ImplDX11_NewFrame();
 #endif
 		ImGui_ImplWin32_NewFrame();
@@ -121,16 +125,21 @@ public:
 		}
 #ifdef OPENGL
 		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->target)->texture, ImVec2(100, 100));
-#elif ifdef D3D11
+#endif
+#ifdef D3D11
 		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->target)->GetShaderResourceView(), ImVec2(100, 100));
 #endif
 		if (ImGui::Button("Delete all textures")) {
 			TextureManager::instance()->RemoveAll();
 		}
 
-		ImGui::Text(filename.c_str());
-
 		int counter = 0;
+		if (ImGui::Button("Add enitity")) {
+			GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
+			entity->addComponent<TransformComponent, Vector3&&, Vector3&&, Vector3&&>
+				(Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), Vector3(0.0f, 0.0f, 0.0f));
+		}
+
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
 			if (ImGui::Selectable(("Entity" + std::to_string(counter++)).c_str())) {
 				selectedGameObject = &entity;
@@ -154,6 +163,16 @@ public:
 					}
 					ImGui::TreePop();
 				}
+			} else {
+				if (ImGui::Button("Add mesh")) {
+					filename = Hollow::FileSystem::OpenFile("");
+					if (filename.size()) {
+						MeshImportData* data = MeshImporter::instance()->import(filename.c_str(), false);
+						if (data) {
+							selectedGameObject->addComponent<RenderableComponent>(data->meshData);
+						}
+					}
+				}
 			}
 		}
 
@@ -170,20 +189,60 @@ public:
 
 		ImGui::Begin("Material properties");
 		if (selectedMaterial != nullptr) {
+			ImGui::Text("Diffuse texture");
 			if (selectedMaterial->diffuse_texture != nullptr) {
 #ifdef OPENGL
 				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->diffuse_texture)->textureId, ImVec2(100, 100));
-#elif ifdef D3D11
+#endif
+#ifdef D3D11
 				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->diffuse_texture)->m_TextureShaderResource, ImVec2(100, 100));
 #endif
 				ImGui::SameLine();
 			}
 
-			if (ImGui::Button("Change")) {
+			if (ImGui::Button("Change##diffuse_texture")) {
 				filename = Hollow::FileSystem::OpenFile("");
 				if (filename.size()) {
 					TextureManager::instance()->Remove(selectedMaterial->diffuse_texture);
 					selectedMaterial->diffuse_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+				}
+			}
+
+			ImGui::Text("Normal texture");
+			if (selectedMaterial->normal_texture != nullptr) {
+#ifdef OPENGL
+				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->normal_texture)->textureId, ImVec2(100, 100));
+#endif
+#ifdef D3D11
+				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->normal_texture)->m_TextureShaderResource, ImVec2(100, 100));
+#endif
+				ImGui::SameLine();
+			}
+
+			if (ImGui::Button("Change##normal_texture")) {
+				filename = Hollow::FileSystem::OpenFile("");
+				if (filename.size()) {
+					TextureManager::instance()->Remove(selectedMaterial->normal_texture);
+					selectedMaterial->normal_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+				}
+			}
+
+			ImGui::Text("Specular texture");
+			if (selectedMaterial->specular_texture != nullptr) {
+#ifdef OPENGL
+				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->specular_texture)->textureId, ImVec2(100, 100));
+#endif
+#ifdef D3D11
+				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->specular_texture)->m_TextureShaderResource, ImVec2(100, 100));
+#endif
+				ImGui::SameLine();
+			}
+
+			if (ImGui::Button("Change##specular_texture")) {
+				filename = Hollow::FileSystem::OpenFile("");
+				if (filename.size()) {
+					TextureManager::instance()->Remove(selectedMaterial->specular_texture);
+					selectedMaterial->specular_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
 			}
 		}
@@ -201,7 +260,7 @@ public:
 #ifdef OPENGL
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
-#ifdef ifdef D3D11 
+#ifdef D3D11 
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif
 

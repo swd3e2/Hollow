@@ -49,10 +49,10 @@ TEXTURE_DESC* FreeImgImporter::import(const char* filename)
 	textureData->height = FreeImage_GetHeight(dib);
 	textureData->pitch = FreeImage_GetPitch(dib);
 
-	int size = textureData->width * textureData->height * 4;
+	textureData->size = textureData->width * textureData->height * 4;
 
-	textureData->mInitialData = malloc(size);
-	memcpy(textureData->mInitialData, bits, size);
+	textureData->mInitialData = malloc(textureData->size);
+	memcpy(textureData->mInitialData, bits, textureData->size);
 
 	FreeImage_Unload(dib);
 

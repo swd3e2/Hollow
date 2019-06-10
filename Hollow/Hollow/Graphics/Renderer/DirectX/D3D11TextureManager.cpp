@@ -3,7 +3,7 @@
 
 Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 {
-	HW_INFO("D3D11TextureManager: creating 2d texture, filename {}", desc->filename.c_str());
+	HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 	D3D11Texture* texture = new D3D11Texture();
 
 	texture->active = true;
@@ -83,7 +83,7 @@ Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
 
 Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
 {
-	HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
+	//HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 	D3D11Texture* texture = new D3D11Texture();
 
 	texture->active = true;

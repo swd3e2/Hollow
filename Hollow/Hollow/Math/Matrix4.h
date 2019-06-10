@@ -6,7 +6,6 @@
 #include <cmath>
 #include "Math.h"
 #include "Vector4.h"
-#include "Hollow/Platform.h"
 
 class  Matrix4
 {
@@ -49,6 +48,7 @@ public:
 	Matrix4(const Matrix4& other);
 	Matrix4(Matrix4&& other);
 	Matrix4(const float* other, int size);
+	Matrix4(const double* other, int size);
 
 	Matrix4& operator=(const Matrix4& other);
 	Matrix4& operator=(Matrix4&& other);

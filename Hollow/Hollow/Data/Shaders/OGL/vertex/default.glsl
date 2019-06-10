@@ -45,10 +45,10 @@ void main()
 		BoneTransform	   += boneInfo[boneIDs[3]] * weights[3];
 
 		gl_Position = gl_Position * BoneTransform;
-	} else {
 	}
-	vs_out.normal =normal;
+	vs_out.normal = normal;
 
+	gl_Position = gl_Position * transform;
 	gl_Position = gl_Position * WVP;
 
 	vs_out.texCoord = texCoord;

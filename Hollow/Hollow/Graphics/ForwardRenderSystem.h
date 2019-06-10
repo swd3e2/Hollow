@@ -15,10 +15,9 @@
 #include "Water.h"
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/ECS/AnimationComponent.h"
+#include "Hollow/ECS/GLTFRenderable.h"
 #include "GPUBufferManager.h"
 #include "RenderTargetManager.h"
-
-using namespace DirectX;
 
 struct WVP
 {
@@ -62,11 +61,11 @@ struct LightInfo
 class ForwardRenderSystem : public Hollow::System<ForwardRenderSystem>
 {
 public:
-	Water*					water;
+	Water* water;
 	LightInfo				pointLights;
-	PointLight*				pointLight;
-	Camera*					m_Camera;
-	SkyMap*					skyMap;
+	PointLight* pointLight;
+	Camera* m_Camera;
+	SkyMap* skyMap;
 	RenderTarget* target;
 private:
 	RenderApi* renderer;
@@ -75,13 +74,13 @@ private:
 	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
 	LightMatrices			lightMatrices;
-	
-	GPUBuffer*	m_WVPConstantBuffer;
-	GPUBuffer*	m_WorldViewProjectionBuffer;
-	GPUBuffer*	m_TransformConstantBuffer;
-	GPUBuffer*	materialConstantBuffer;
-	GPUBuffer*	lightInfoBuffer;
-	GPUBuffer*	boneInfo;
+
+	GPUBuffer* m_WVPConstantBuffer;
+	GPUBuffer* m_WorldViewProjectionBuffer;
+	GPUBuffer* m_TransformConstantBuffer;
+	GPUBuffer* materialConstantBuffer;
+	GPUBuffer* lightInfoBuffer;
+	GPUBuffer* boneInfo;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -98,16 +97,16 @@ private:
 public:
 	ForwardRenderSystem(RenderApi* renderer) : renderer(renderer)
 	{
-		m_WVPConstantBuffer			= GPUBufferManager::instance()->create(0, sizeof(WVP));
-		m_WorldViewProjectionBuffer	= GPUBufferManager::instance()->create(1, sizeof(WorldViewProjection));
-		m_TransformConstantBuffer	= GPUBufferManager::instance()->create(2, sizeof(TransformBuff));
-		materialConstantBuffer		= GPUBufferManager::instance()->create(4, sizeof(MaterialData));
-		lightInfoBuffer				= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
-		boneInfo					= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
+		m_WVPConstantBuffer = GPUBufferManager::instance()->create(0, sizeof(WVP));
+		m_WorldViewProjectionBuffer = GPUBufferManager::instance()->create(1, sizeof(WorldViewProjection));
+		m_TransformConstantBuffer = GPUBufferManager::instance()->create(2, sizeof(TransformBuff));
+		materialConstantBuffer = GPUBufferManager::instance()->create(4, sizeof(MaterialData));
+		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
+		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		target = RenderTargetManager::instance()->create(1366, 768);
+		target = RenderTargetManager::instance()->create(1920, 1080);
 
-		renderer->SetViewport(0, 0, 1366, 768);
+		renderer->SetViewport(0, 0, 1920, 1080);
 		m_worldViewProjection.offset = 0.0f;
 	}
 
@@ -115,39 +114,20 @@ public:
 	{
 		renderer->ClearRenderTarget(0, (float*)ClearColor);
 		renderer->ClearRenderTarget(target, ClearColor);
-
-		int j = 0;
-		for (auto& it : EntityManager::instance()->getContainer<Light>()->entityList) {
-			if (it.hasComponent<PointLightComponent>() && it.getComponent<TransformComponent>()) {
-				TransformComponent* transform = it.getComponent<TransformComponent>();
-				PointLightComponent* light = it.getComponent<PointLightComponent>();
-				
-				pointLights.pointLights[j] = light->light.data;
-
-				pointLights.pointLights[j].position[0] = transform->position.x;
-				pointLights.pointLights[j].position[1] = transform->position.y;
-				pointLights.pointLights[j].position[2] = transform->position.z;
-				j++;
-			}
-		}
-		lightInfoBuffer->update(&pointLights);
-		renderer->SetGpuBuffer(lightInfoBuffer);
-
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
-
 	}
 
 	virtual void Update(double dt)
 	{
-		updateWVP(m_Camera);
-		//DrawWater();
-		renderer->SetRenderTarget(target);
-		DrawScene();
-		DrawSkyMap();
+		//updateWVP(m_Camera);
+		////DrawWater();
+		//renderer->SetRenderTarget(target);
+		//DrawSceneGLTF();
+		//DrawSkyMap();
 
 		updateWVP(m_Camera);
 		renderer->SetRenderTarget(0);
-		DrawScene();
+		DrawSceneGLTF();
 		DrawSkyMap();
 	}
 
@@ -165,7 +145,7 @@ public:
 
 				transformBuff.transform = Matrix4::Transpose(
 					Matrix4::Scaling(transform->scale) *
-					Matrix4::Rotation(transform->rotation)* 
+					Matrix4::Rotation(transform->rotation) *
 					Matrix4::Translation(transform->position)
 				);
 				m_TransformConstantBuffer->update(&transformBuff);
@@ -176,7 +156,8 @@ public:
 					transformBuff.hasAnimation = true;
 					boneInfo->update(animationComponent->boneInfo);
 					renderer->SetGpuBuffer(boneInfo);
-				} else {
+				}
+				else {
 					transformBuff.hasAnimation = false;
 				}
 
@@ -184,6 +165,37 @@ public:
 					DrawObject(model);
 				}
 			}
+		}
+	}
+
+	void DrawSceneGLTF()
+	{
+		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			if (entity.hasComponent<GLTFRenderable>()) {
+				GLTFRenderable* renderable = entity.getComponent<GLTFRenderable>();
+				drawRecursive(renderable->rootNode, renderable);
+			}
+		}
+	}
+
+	void drawRecursive(Hollow::Node* parentNode, GLTFRenderable* renderable)
+	{
+		transformBuff.transform = parentNode->transformation;
+
+		m_TransformConstantBuffer->update(&transformBuff);
+		renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+		for (auto& it : parentNode->childrens) {
+			if (it->mesh != -1) {
+				renderer->SetShader(ShaderManager::instance()->getShader("default"));
+				renderer->SetVertexBuffer(renderable->renderables[it->mesh]->vBuffer);
+				renderer->SetIndexBuffer(renderable->renderables[it->mesh]->iBuffer);
+				renderer->DrawIndexed(renderable->renderables[it->mesh]->iBuffer->getSize());
+			}
+		}
+
+		for (auto& it : parentNode->childrens) {
+			drawRecursive(it, renderable);
 		}
 	}
 

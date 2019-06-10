@@ -32,5 +32,5 @@ public:
 	Matrix4 globalInverse;
 
 	double time;
-	double speed = 0.0001f;
+	double speed = 0.01f;
 };
