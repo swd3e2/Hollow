@@ -504,9 +504,6 @@
     <ClInclude Include="Hollow\ECS\GLTFRenderable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\TinyGltf.cpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp">
@@ -657,6 +654,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Importer\gltf\GLTFImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Importer\gltf\tinygltf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

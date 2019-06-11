@@ -1,5 +1,5 @@
 #pragma once
-#define D3D11
+#define OPENGL
 
 #include "Platform.h"
 #include "ECS/ComponentManager.h"

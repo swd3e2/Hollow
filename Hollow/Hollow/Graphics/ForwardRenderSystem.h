@@ -171,21 +171,23 @@ public:
 	void DrawSceneGLTF()
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
-			if (entity.hasComponent<GLTFRenderable>()) {
+			if (entity.hasComponent<GLTFRenderable>() && entity.hasComponent<TransformComponent>()) {
 				GLTFRenderable* renderable = entity.getComponent<GLTFRenderable>();
-				drawRecursive(renderable->rootNode, renderable);
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+				drawRecursive(renderable->rootNode, renderable, transform, Matrix4::Identity());
 			}
 		}
 	}
 
-	void drawRecursive(Hollow::Node* parentNode, GLTFRenderable* renderable)
+	void drawRecursive(Hollow::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
-		transformBuff.transform = parentNode->transformation;
+		transformBuff.transform = parentTransform * node->transformation;
 
 		m_TransformConstantBuffer->update(&transformBuff);
 		renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
-		for (auto& it : parentNode->childrens) {
+		for (auto& it : node->childrens) {
 			if (it->mesh != -1) {
 				renderer->SetShader(ShaderManager::instance()->getShader("default"));
 				renderer->SetVertexBuffer(renderable->renderables[it->mesh]->vBuffer);
@@ -194,8 +196,8 @@ public:
 			}
 		}
 
-		for (auto& it : parentNode->childrens) {
-			drawRecursive(it, renderable);
+		for (auto& it : node->childrens) {
+			drawRecursive(it, renderable, transform, node->transformation);
 		}
 	}
 

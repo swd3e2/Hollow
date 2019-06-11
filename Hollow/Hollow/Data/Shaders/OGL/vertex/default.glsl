@@ -38,14 +38,14 @@ void main()
 	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
 	vs_out.normal = normal;
 
-	if (hasAnimation) {
+	/*if (hasAnimation) {
 		mat4 BoneTransform	= boneInfo[boneIDs[0]] * weights[0];
 		BoneTransform	   += boneInfo[boneIDs[1]] * weights[1];
 		BoneTransform	   += boneInfo[boneIDs[2]] * weights[2];
 		BoneTransform	   += boneInfo[boneIDs[3]] * weights[3];
 
 		gl_Position = gl_Position * BoneTransform;
-	}
+	}*/
 	vs_out.normal = normal;
 
 	gl_Position = gl_Position * transform;

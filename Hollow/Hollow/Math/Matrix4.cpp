@@ -261,26 +261,11 @@ Matrix4 Matrix4::Transpose(const Matrix4& matrix)
 Matrix4 Matrix4::operator*(const Matrix4 & other) const
 {
 	Matrix4 matrix;
-
-	matrix.md[0][0] = (md[0][0] * other.md[0][0]) + (md[0][1] * other.md[1][0]) + (md[0][2] * other.md[2][0]) + (md[0][3] * other.md[3][0]);
-	matrix.md[0][1] = (md[0][0] * other.md[0][1]) + (md[0][1] * other.md[1][1]) + (md[0][2] * other.md[2][1]) + (md[0][3] * other.md[3][1]);
-	matrix.md[0][2] = (md[0][0] * other.md[0][2]) + (md[0][1] * other.md[1][2]) + (md[0][2] * other.md[2][2]) + (md[0][3] * other.md[3][2]);
-	matrix.md[0][3] = (md[0][0] * other.md[0][3]) + (md[0][1] * other.md[1][3]) + (md[0][2] * other.md[2][3]) + (md[0][3] * other.md[3][3]);
-
-	matrix.md[1][0] = (md[1][0] * other.md[0][0]) + (md[1][1] * other.md[1][0]) + (md[1][2] * other.md[2][0]) + (md[1][3] * other.md[3][0]);
-	matrix.md[1][1] = (md[1][0] * other.md[0][1]) + (md[1][1] * other.md[1][1]) + (md[1][2] * other.md[2][1]) + (md[1][3] * other.md[3][1]);
-	matrix.md[1][2] = (md[1][0] * other.md[0][2]) + (md[1][1] * other.md[1][2]) + (md[1][2] * other.md[2][2]) + (md[1][3] * other.md[3][2]);
-	matrix.md[1][3] = (md[1][0] * other.md[0][3]) + (md[1][1] * other.md[1][3]) + (md[1][2] * other.md[2][3]) + (md[1][3] * other.md[3][3]);
-
-	matrix.md[2][0] = (md[2][0] * other.md[0][0]) + (md[2][1] * other.md[1][0]) + (md[2][2] * other.md[2][0]) + (md[2][3] * other.md[3][0]);
-	matrix.md[2][1] = (md[2][0] * other.md[0][1]) + (md[2][1] * other.md[1][1]) + (md[2][2] * other.md[2][1]) + (md[2][3] * other.md[3][1]);
-	matrix.md[2][2] = (md[2][0] * other.md[0][2]) + (md[2][1] * other.md[1][2]) + (md[2][2] * other.md[2][2]) + (md[2][3] * other.md[3][2]);
-	matrix.md[2][3] = (md[2][0] * other.md[0][3]) + (md[2][1] * other.md[1][3]) + (md[2][2] * other.md[2][3]) + (md[2][3] * other.md[3][3]);
-
-	matrix.md[3][0] = (md[3][0] * other.md[0][0]) + (md[3][1] * other.md[1][0]) + (md[3][2] * other.md[2][0]) + (md[3][3] * other.md[3][0]);
-	matrix.md[3][1] = (md[3][0] * other.md[0][1]) + (md[3][1] * other.md[1][1]) + (md[3][2] * other.md[2][1]) + (md[3][3] * other.md[3][1]);
-	matrix.md[3][2] = (md[3][0] * other.md[0][2]) + (md[3][1] * other.md[1][2]) + (md[3][2] * other.md[2][2]) + (md[3][3] * other.md[3][2]);
-	matrix.md[3][3] = (md[3][0] * other.md[0][3]) + (md[3][1] * other.md[1][3]) + (md[3][2] * other.md[2][3]) + (md[3][3] * other.md[3][3]);
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			matrix.md[i][j] = (md[i][0] * other.md[0][j]) + (md[i][1] * other.md[1][j]) + (md[i][2] * other.md[2][j]) + (md[i][3] * other.md[3][j]);
+		}
+	}
 
 	return matrix;
 }

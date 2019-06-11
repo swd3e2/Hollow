@@ -174,7 +174,6 @@
     <ClInclude Include="Hollow\Resources\Sound.h" />
     <ClInclude Include="Hollow\Math\Math.h" />
     <ClInclude Include="Hollow\Test.h" />
-    <ClInclude Include="Hollow\TinyGltf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Application.cpp" />
@@ -210,6 +209,8 @@
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLContext.h" />
     <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp" />
+    <ClCompile Include="Hollow\Importer\gltf\GLTFImporter.cpp" />
+    <ClCompile Include="Hollow\Importer\gltf\tinygltf.cpp" />
     <ClCompile Include="Hollow\Importer\MeshImporter.cpp" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
@@ -282,7 +283,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_IMPLEMENTATION;STB_IMAGE_IMPLEMENTATION;STB_IMAGE_WRITE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
