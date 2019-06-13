@@ -25,7 +25,7 @@ RenderTarget* OGLRenderTargetManager::create(int width, int height)
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, renderTarget->depth, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
+	
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		HW_ERROR("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
 	}

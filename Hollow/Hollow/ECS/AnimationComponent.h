@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Hollow/Importer/MeshImportData.h"
+#include "Hollow/Importer/gltf/GLTFImporter.h"
 
 class AnimationComponent : public Component<AnimationComponent>
 {
