@@ -21,7 +21,6 @@
 #include "Hollow/Graphics/Renderer/DirectX/D3D11RenderTarget.h"
 #include "Hollow/Graphics/Renderer/OpenGL/OGLRenderTarget.h"
 #include "TextureManager.h"
-#include "Hollow/Importer/MeshImporter.h"
 
 class GUISystem
 {
@@ -166,12 +165,12 @@ public:
 			} else {
 				if (ImGui::Button("Add mesh")) {
 					filename = Hollow::FileSystem::OpenFile("");
-					if (filename.size()) {
+					/*if (filename.size()) {
 						MeshImportData* data = MeshImporter::instance()->import(filename.c_str(), false);
 						if (data) {
 							selectedGameObject->addComponent<RenderableComponent>(data->meshData);
 						}
-					}
+					}*/
 				}
 			}
 		}
@@ -190,12 +189,12 @@ public:
 		ImGui::Begin("Material properties");
 		if (selectedMaterial != nullptr) {
 			ImGui::Text("Diffuse texture");
-			if (selectedMaterial->diffuse_texture != nullptr) {
+			if (selectedMaterial->diffuseTexture != nullptr) {
 #ifdef OPENGL
-				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->diffuse_texture)->textureId, ImVec2(100, 100));
+				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
 #endif
 #ifdef D3D11
-				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->diffuse_texture)->m_TextureShaderResource, ImVec2(100, 100));
+				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
 #endif
 				ImGui::SameLine();
 			}
@@ -203,18 +202,18 @@ public:
 			if (ImGui::Button("Change##diffuse_texture")) {
 				filename = Hollow::FileSystem::OpenFile("");
 				if (filename.size()) {
-					TextureManager::instance()->Remove(selectedMaterial->diffuse_texture);
-					selectedMaterial->diffuse_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+					TextureManager::instance()->Remove(selectedMaterial->diffuseTexture);
+					selectedMaterial->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
 			}
 
 			ImGui::Text("Normal texture");
-			if (selectedMaterial->normal_texture != nullptr) {
+			if (selectedMaterial->normalTexture != nullptr) {
 #ifdef OPENGL
-				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->normal_texture)->textureId, ImVec2(100, 100));
+				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
 #endif
 #ifdef D3D11
-				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->normal_texture)->m_TextureShaderResource, ImVec2(100, 100));
+				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
 #endif
 				ImGui::SameLine();
 			}
@@ -222,18 +221,18 @@ public:
 			if (ImGui::Button("Change##normal_texture")) {
 				filename = Hollow::FileSystem::OpenFile("");
 				if (filename.size()) {
-					TextureManager::instance()->Remove(selectedMaterial->normal_texture);
-					selectedMaterial->normal_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+					TextureManager::instance()->Remove(selectedMaterial->normalTexture);
+					selectedMaterial->normalTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
 			}
 
 			ImGui::Text("Specular texture");
-			if (selectedMaterial->specular_texture != nullptr) {
+			if (selectedMaterial->specularTexture != nullptr) {
 #ifdef OPENGL
-				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->specular_texture)->textureId, ImVec2(100, 100));
+				ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->specularTexture)->textureId, ImVec2(100, 100));
 #endif
 #ifdef D3D11
-				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->specular_texture)->m_TextureShaderResource, ImVec2(100, 100));
+				ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->specularTexture)->m_TextureShaderResource, ImVec2(100, 100));
 #endif
 				ImGui::SameLine();
 			}
@@ -241,8 +240,8 @@ public:
 			if (ImGui::Button("Change##specular_texture")) {
 				filename = Hollow::FileSystem::OpenFile("");
 				if (filename.size()) {
-					TextureManager::instance()->Remove(selectedMaterial->specular_texture);
-					selectedMaterial->specular_texture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+					TextureManager::instance()->Remove(selectedMaterial->specularTexture);
+					selectedMaterial->specularTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
 			}
 		}

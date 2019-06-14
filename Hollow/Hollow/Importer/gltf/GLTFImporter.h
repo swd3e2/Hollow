@@ -15,17 +15,141 @@
 #define UNSIGNED_INT 5125
 #define FLOAT 5126
 
+#define TRANSLATION 0
+#define ROTATION 1
+#define SCALE 2
+
 namespace Hollow {
 	struct NodeKeyFrameData
 	{
 		Vector3 vec3Val;
 		Quaternion quatVal;
+		double time;
+	};
+
+	struct KeyFrames
+	{
+		std::vector<NodeKeyFrameData> rotations;
+		std::vector<NodeKeyFrameData> tranlations;
+		std::vector<NodeKeyFrameData> scales;
+	};
+
+	struct GLTFAnimation
+	{
+		double duration;
+		std::map<int, KeyFrames> data;
+
+		inline NodeKeyFrameData* findKeyFrameTranslation(double time, int bone)
+		{
+			NodeKeyFrameData* frame = nullptr;
+			if (data.find(bone) != data.end()) {
+				for (auto& it : data[bone].tranlations) {
+					if (it.time <= time) {
+						frame = &it;
+					}
+				}
+				if (frame == nullptr && data[bone].tranlations.size()) {
+					frame = &data[bone].tranlations[data[bone].tranlations.size() - 1];
+				}
+			}
+
+			return frame;
+		}
+		inline NodeKeyFrameData* findKeyFrameScale(double time, int bone)
+		{
+			NodeKeyFrameData* frame = nullptr;
+			if (data.find(bone) != data.end()) {
+				for (auto& it : data[bone].scales) {
+					if (it.time <= time) {
+						frame = &it;
+					}
+				}
+				if (frame == nullptr && data[bone].scales.size()) {
+					frame = &data[bone].scales[data[bone].scales.size() - 1];
+				}
+			}
+
+			return frame;
+		}
+		inline NodeKeyFrameData* findKeyFrameRotation(double time, int bone)
+		{
+			NodeKeyFrameData* frame = nullptr;
+			if (data.find(bone) != data.end()) {
+				for (auto& it : data[bone].rotations) {
+					if (it.time <= time) {
+						frame = &it;
+					}
+				}
+				if (frame == nullptr && data[bone].rotations.size()) {
+					frame = &data[bone].rotations[data[bone].rotations.size() - 1];
+				}
+			}
+
+			return frame;
+		}
+		inline NodeKeyFrameData* findKeyNextFrameTranslation(double time, int bone)
+		{
+			NodeKeyFrameData* frame = nullptr;
+
+			if (data.find(bone) != data.end())
+			{
+				for (auto& it : data[bone].tranlations)
+				{
+					if (it.time > time) {
+						frame = &it;
+					}
+				}
+				if (frame == nullptr && data[bone].tranlations.size()) {
+					frame = &data[bone].tranlations[data[bone].tranlations.size() - 1];
+				}
+			}
+
+			return frame;
+		}
+		inline NodeKeyFrameData* findKeyNextFrameScale(double time, int bone)
+		{
+			NodeKeyFrameData* frame = nullptr;
+
+			if (data.find(bone) != data.end())
+			{
+				for (auto& it : data[bone].scales)
+				{
+					if (it.time > time) {
+						frame = &it;
+					}
+				}
+				if (frame == nullptr && data[bone].scales.size()) {
+					frame = &data[bone].scales[data[bone].scales.size() - 1];
+				}
+			}
+
+			return frame;
+		}
+		inline NodeKeyFrameData* findKeyNextFrameRotation(double time, int bone)
+		{
+			NodeKeyFrameData* frame = nullptr;
+
+			if (data.find(bone) != data.end())
+			{
+				for (auto& it : data[bone].rotations)
+				{
+					if (it.time > time) {
+						frame = &it;
+					}
+				}
+				if (frame == nullptr && data[bone].rotations.size()) {
+					frame = &data[bone].rotations[data[bone].rotations.size() - 1];
+				}
+			}
+
+			return frame;
+		}
 	};
 
 	struct NodeAnimationData
 	{
 		int nodeId;
-		std::unordered_map<float, NodeKeyFrameData> data;
+		std::map<float, NodeKeyFrameData> data;
 	};
 
 	struct AnimationNode
@@ -38,7 +162,9 @@ namespace Hollow {
 
 	struct Animation
 	{
-		std::vector<NodeAnimationData> data;
+		std::unordered_map<int, NodeAnimationData> rotations;
+		std::unordered_map<int, NodeAnimationData> translation;
+		std::unordered_map<int, NodeAnimationData> scale;
 	};
 
 	struct Material
@@ -51,6 +177,7 @@ namespace Hollow {
 		std::string occlusionTexture;
 
 		std::string name;
+		unsigned int id;
 	};
 
 	struct LoadedMesh
@@ -61,12 +188,14 @@ namespace Hollow {
 		std::vector<float*>  weigths;
 		std::vector<unsigned short*> joints;
 		std::vector<unsigned int> indices;
+		unsigned int material;
 	};
 
 	struct Mesh
 	{
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
+		unsigned int material;
 	};
 
 	struct Node
@@ -76,7 +205,6 @@ namespace Hollow {
 		std::string name;
 		// index to mesh
 		int mesh = -1;
-
 		Node(std::string& name) :
 			name(name)
 		{}
@@ -84,18 +212,36 @@ namespace Hollow {
 
 	struct GLTFModel
 	{
+		std::vector<GLTFAnimation> gltfAnimations;
 		std::vector<Mesh*> meshes;
+		std::unordered_map<unsigned int, Material> materials;
+		std::vector<Animation> animations;
 		Node* rootNode;
+		AnimationNode* animationRootNode;
+
+		~GLTFModel()
+		{
+			for (auto& it : meshes) {
+				delete it;
+			}
+		}
 	};
 
 	struct Model
 	{
-		std::vector<LoadedMesh> meshes;
-		std::unordered_map<std::string, Material> materials;
+		std::vector<LoadedMesh*> meshes;
+		std::unordered_map<unsigned int, Material> materials;
 		std::vector<Animation> animations;
 		Node* rootNode;
 		AnimationNode* animationRootNode;
 		std::vector<AnimationNode*> animationNodes;
+
+		~Model()
+		{
+			for (auto& it : meshes) {
+				delete it;
+			}
+		}
 	};
 }
 

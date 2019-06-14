@@ -22,7 +22,6 @@
 #include "Graphics/SkyMap.h"
 #include "AnimationSystem.h"
 #include "Importer/FreeImgImporter.h"
-#include "Importer/MeshImporter.h"
 #include "Graphics/GUISystem.h"
 
 #define SCREEN_WIDTH 1920
@@ -46,7 +45,6 @@ public:
 	RenderApiManager				renderApiManager;
 	Window*							window;
 	RenderApi*						m_Renderer;
-	MeshImporter*					meshImporter;
 	FreeImgImporter*				imgImporter;
 	GUISystem*						gui;
 	double							dt;

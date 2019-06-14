@@ -4,6 +4,7 @@
 #include "ECS/EntityManager.h"
 #include "Hollow/ECS/AnimationComponent.h"
 #include <assimp/scene.h>
+#include "Hollow/ECS/GLTFAnimationComponent.h"
 
 namespace Hollow {
 	class AnimationSystem : public System<AnimationSystem>

@@ -12,13 +12,14 @@ TextureManager::~TextureManager()
 
 Texture* TextureManager::CreateTextureFromFile(const std::string& filename, bool fromDefaultFolder)
 {
-	if (textureList.find(filename) != textureList.end()) {
-		return textureList[filename];
-	}
 	std::string pathToFile = filename;
 
 	if (fromDefaultFolder) {
 		pathToFile = baseTexturePapth + filename;
+	}
+
+	if (textureList.find(pathToFile) != textureList.end()) {
+		return textureList[pathToFile];
 	}
 
 	TEXTURE_DESC* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
@@ -28,6 +29,7 @@ Texture* TextureManager::CreateTextureFromFile(const std::string& filename, bool
 	}
 
 	Texture* tex = Create2dTexture(textureDesc);
+	tex->name = filename;
 
 	return tex;
 }
