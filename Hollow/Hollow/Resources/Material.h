@@ -26,25 +26,26 @@ struct MaterialData
 class Material
 {
 public:
-	bool active = false;
 	std::string name;
 
 	MaterialData materialData;
 
-	Texture* diffuse_texture;
-	Texture* normal_texture;
-	Texture* specular_texture;
+	Texture* diffuseTexture;
+	Texture* normalTexture;
+	Texture* specularTexture;
+	Texture* roughnesTexture;
+	Texture* emisiveTexture;
+	Texture* occlusionTexture;
+
 	ShaderProgram* shader;
 
-	Material() :
-		diffuse_texture(nullptr), normal_texture(nullptr), specular_texture(nullptr), shader(nullptr)
+	Material()
 	{
 		shader = ShaderManager::instance()->getShader("default");
 	}
 
 	~Material()
-	{
-	}
+	{}
 };
 
 #endif

@@ -2,16 +2,14 @@
 
 void GLTFImporter::processSkin(Hollow::Model& lModel, tinygltf::Model& model, std::ifstream& file)
 {
-	using namespace tinygltf;
-
 	if (model.skins.size() > 0) {
-		Node& rootNode = model.nodes[model.skins[0].skeleton];
+		tinygltf::Node& rootNode = model.nodes[model.skins[0].skeleton];
 		lModel.animationRootNode = new Hollow::AnimationNode();
 		lModel.animationRootNode->gltfId = model.skins[0].skeleton;
 		lModel.animationNodes.push_back(lModel.animationRootNode);
 
-		Accessor& accessor = model.accessors[model.skins[0].inverseBindMatrices];
-		BufferView& bufferView = model.bufferViews[accessor.bufferView];
+		tinygltf::Accessor& accessor = model.accessors[model.skins[0].inverseBindMatrices];
+		tinygltf::BufferView& bufferView = model.bufferViews[accessor.bufferView];
 		file.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
 
 		Matrix4* matrixData = new Matrix4[model.skins[0].joints.size()];
@@ -20,7 +18,7 @@ void GLTFImporter::processSkin(Hollow::Model& lModel, tinygltf::Model& model, st
 		processAnimationNode(lModel.animationRootNode, rootNode, lModel, model);
 
 		for (int i = 0; i < model.skins[0].joints.size(); i++) {
-			for (auto& node : lModel.animationNodes) {
+			for (Hollow::AnimationNode*& node : lModel.animationNodes) {
 				if (node->gltfId == model.skins[0].joints[i]) {
 					node->id = i;
 					node->localTransform = matrixData[i];
@@ -33,12 +31,10 @@ void GLTFImporter::processSkin(Hollow::Model& lModel, tinygltf::Model& model, st
 
 void GLTFImporter::processAnimationNode(Hollow::AnimationNode* node, const tinygltf::Node& modelNode, Hollow::Model& lModel, tinygltf::Model& model)
 {
-	using namespace tinygltf;
-
-	for (auto& child : modelNode.children) {
+	for (int childId : modelNode.children) {
 		Hollow::AnimationNode* animationNode = new Hollow::AnimationNode();
-		Node& modelAnimationNode = model.nodes[child];
-		animationNode->gltfId = child;
+		tinygltf::Node& modelAnimationNode = model.nodes[childId];
+		animationNode->gltfId = childId;
 
 		node->childrens.push_back(animationNode);
 		lModel.animationNodes.push_back(animationNode);
@@ -51,8 +47,8 @@ void GLTFImporter::processAnimation(Hollow::Model& lModel, tinygltf::Model& mode
 	// animation
 	for (auto& animation : model.animations) {
 		Hollow::Animation mAnimation;
-
-		for (auto& channel : animation.channels) {
+		
+		for (tinygltf::AnimationChannel& channel : animation.channels) {
 			tinygltf::AnimationSampler& sampler = animation.samplers[channel.sampler];
 			tinygltf::Accessor& timeAccessor = model.accessors[sampler.input];
 			tinygltf::BufferView& timeBufferView = model.bufferViews[timeAccessor.bufferView];
@@ -80,13 +76,24 @@ void GLTFImporter::processAnimation(Hollow::Model& lModel, tinygltf::Model& mode
 			if (channel.target_path == "rotation") {
 				for (int i = 0; i < timeAccessor.count; i++) {
 					data.data[timeData[i]].quatVal = Quaternion(valueData[i * 4], valueData[i * 4 + 1], valueData[i * 4 + 2], valueData[i * 4 + 3]);
+					data.data[timeData[i]].time = timeData[i];
 				}
-			} else {
+				mAnimation.rotations[data.nodeId] = data;
+			} else if (channel.target_path == "translation"){
 				for (int i = 0; i < timeAccessor.count; i++) {
 					data.data[timeData[i]].vec3Val = Vector3(valueData[i * 3], valueData[i * 3 + 1], valueData[i * 3 + 2]);
+					data.data[timeData[i]].time = timeData[i];
 				}
+				mAnimation.translation[data.nodeId] = data;
+			} else if (channel.target_path == "scale") {
+				for (int i = 0; i < timeAccessor.count; i++) {
+					data.data[timeData[i]].vec3Val = Vector3(valueData[i * 3], valueData[i * 3 + 1], valueData[i * 3 + 2]);
+					data.data[timeData[i]].time = timeData[i];
+				}
+				mAnimation.scale[data.nodeId] = data;
 			}
-			mAnimation.data.push_back(data);
+
+			delete[] valueData;
 		}
 		lModel.animations.push_back(mAnimation);
 	}
@@ -112,11 +119,10 @@ void GLTFImporter::load(Hollow::Node* node, const tinygltf::Node& modelNode, tin
 		}
 
 		node->transformation = (scale * rotation * translation).Transpose();
-		if (0) {}
 	}
 
-	for (auto& it : modelNode.children) {
-		tinygltf::Node& childModelNode = tModel.nodes[it];
+	for (int childId : modelNode.children) {
+		tinygltf::Node& childModelNode = tModel.nodes[childId];
 
 		if (hasMesh(childModelNode, tModel)) {
 			Hollow::Node* childNode = new Hollow::Node(childModelNode.name);
@@ -137,13 +143,15 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 
 	// Poisitons and normals
 	tinygltf::Mesh& tMesh = tModel.meshes[childModelNode.mesh];
-	for (auto& it2 : tMesh.primitives[0].attributes) {
-		tinygltf::Accessor& accessor = tModel.accessors[it2.second];
+	mesh->material = tMesh.primitives[0].material;
+
+	for (std::pair<const std::string, int>& attribute : tMesh.primitives[0].attributes) {
+		tinygltf::Accessor& accessor = tModel.accessors[attribute.second];
 		tinygltf::BufferView& bufferView = tModel.bufferViews[accessor.bufferView];
 		file.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
 
 		if (accessor.componentType == FLOAT) {
-			if (it2.first == "NORMAL") {
+			if (attribute.first == "NORMAL") {
 				float* data = new float[accessor.count * 3];
 
 				file.read((char*)data, sizeof(float) * accessor.count * 3);
@@ -151,7 +159,8 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 				for (int i = 0; i < accessor.count; i++) {
 					mesh->normals.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
 				}
-			} else if (it2.first == "POSITION") {
+				delete[] data;
+			} else if (attribute.first == "POSITION") {
 				float* data = new float[accessor.count * 3];
 
 				file.read((char*)data, sizeof(float) * accessor.count * 3);
@@ -159,7 +168,8 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 				for (int i = 0; i < accessor.count; i++) {
 					mesh->positions.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
 				}
-			} else if (it2.first == "WEIGHTS_0") {
+				delete[] data;
+			} else if (attribute.first == "WEIGHTS_0") {
 				float* data = new float[accessor.count * 4];
 
 				file.read((char*)data, sizeof(float) * accessor.count * 4);
@@ -168,7 +178,8 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 					float* weights = new float[4]{ data[i] , data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3] };
 					mesh->weigths.push_back(weights);
 				}
-			} else if (it2.first == "TEXCOORD_0") {
+				delete[] data;
+			} else if (attribute.first == "TEXCOORD_0") {
 				float* data = new float[accessor.count * 2];
 
 				file.read((char*)data, sizeof(float) * accessor.count * 2);
@@ -176,9 +187,10 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 				for (int i = 0; i < accessor.count; i++) {
 					mesh->texCoords.push_back(Vector2(data[i * 2], data[i * 2 + 1]));
 				}
+				delete[] data;
 			}
 		} else if (accessor.componentType == UNSIGNED_SHORT) {
-			if (it2.first == "JOINTS_0") {
+			if (attribute.first == "JOINTS_0") {
 				unsigned short* data = new unsigned short[accessor.count * 4];
 
 				file.seekg(accessor.byteOffset, std::fstream::cur);
@@ -188,6 +200,7 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 					unsigned short* joints = new unsigned short[4]{ data[i] , data[i + 1], data[i + 2], data[i + 3] };
 					mesh->joints.push_back(joints);
 				}
+				delete[] data;
 			}
 		}
 	}
@@ -205,6 +218,7 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 		for (int i = 0; i < accessor.count; i++) {
 			mesh->indices.push_back(data[i]);
 		}
+		delete[] data;
 	} else if (accessor.componentType == UNSIGNED_INT) {
 		unsigned int* data = new unsigned int[accessor.count];
 
@@ -213,34 +227,58 @@ void GLTFImporter::processMesh(Hollow::Node* node, tinygltf::Node childModelNode
 		for (int i = 0; i < accessor.count; i++) {
 			mesh->indices.push_back(data[i]);
 		}
+		delete[] data;
 	}
 	
-	model.meshes.push_back(*mesh);
+	model.meshes.push_back(mesh);
 
-	Hollow::Material lMaterial;
 	tinygltf::Material& material = tModel.materials[tMesh.primitives[0].material];
 
-	lMaterial.name = material.name;
-	for (auto& values : material.values) {
-		if (values.first == "baseColorTexture") {
-			lMaterial.diffuseTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-		} else if (values.first == "metallicRoughnessTexture") {
-			lMaterial.roughnesTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-		}
-	}
+	if (model.materials.find(tMesh.primitives[0].material) == model.materials.end()) {
+		Hollow::Material lMaterial;
 
-	for (auto& values : material.additionalValues) {
-		if (values.first == "emisiveTexture") {
-			lMaterial.emisiveTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-		} else if (values.first == "normalTexture") {
-			lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-		} else if (values.first == "occlusionTexture") {
-			lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+		lMaterial.id = tMesh.primitives[0].material;
+		lMaterial.name = material.name;
+	
+		for (std::pair<const std::string, tinygltf::Parameter>& values : material.values) {
+			if (values.first == "baseColorTexture") {
+				lMaterial.diffuseTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+			} else if (values.first == "metallicRoughnessTexture") {
+				lMaterial.roughnesTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+			}
 		}
-	}
 
-	if (model.materials.find(lMaterial.name) == model.materials.end()) {
-		model.materials[lMaterial.name] = lMaterial;
+		for (std::pair<const std::string, tinygltf::Parameter>& values : material.additionalValues) {
+			if (values.first == "emisiveTexture") {
+				lMaterial.emisiveTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+			} else if (values.first == "normalTexture") {
+				lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+			} else if (values.first == "occlusionTexture") {
+				lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+			}
+		}
+
+		for (std::pair<const std::string, tinygltf::Value>& it : material.extensions) {
+			std::vector<std::string> keys = it.second.Keys();
+			for (std::string& key : keys) {
+				auto& value = it.second.Get(key);
+				if (value.IsObject()) {
+					std::vector<std::string> innerKeys = value.Keys();
+					for (std::string& innerKey : innerKeys) {
+						if (key == "diffuseTexture" && innerKey == "index") {
+							tinygltf::Value index = value.Get(innerKey);
+							int val = index.Get<int>();
+							lMaterial.diffuseTexture = tModel.images[tModel.textures[val].source].uri;
+						} else if (key == "specularGlossinessTexture" && innerKey == "index") {
+							tinygltf::Value index = value.Get(innerKey);
+							int val = index.Get<int>();
+							lMaterial.specularTexture = tModel.images[tModel.textures[val].source].uri;
+						}
+					}
+				}
+			}
+		}
+		model.materials[lMaterial.id] = lMaterial;
 	}
 
 	node->mesh = model.meshes.size() - 1;
@@ -261,7 +299,10 @@ Hollow::GLTFModel* GLTFImporter::import(const char* filename)
 	lModel->rootNode = new Hollow::Node(modelRootNode.name);
 
 	std::ifstream file("Sandbox/Resources/Meshes/" + model.buffers[0].uri, std::fstream::in | std::fstream::binary);
-	bool res = file.is_open();
+	if (!file.is_open()) {
+		delete lModel;
+		return nullptr;
+	}
 
 	load(lModel->rootNode, modelRootNode, model, *lModel, file);
 	processAnimation(*lModel, model, file);
@@ -270,34 +311,82 @@ Hollow::GLTFModel* GLTFImporter::import(const char* filename)
 	file.close();
 
 	Hollow::GLTFModel * gltfModel = new Hollow::GLTFModel();
+
 	gltfModel->rootNode = lModel->rootNode;
 	gltfModel->meshes.resize(0);
+	gltfModel->materials = std::move(lModel->materials);
+	gltfModel->animationRootNode = lModel->animationRootNode;
+
+	for (auto& animation : lModel->animations) {
+		Hollow::GLTFAnimation gltfAnimation;
+
+		double animationTime = 0;
+
+		std::unordered_map<int, Hollow::NodeAnimationData>& rotations = animation.rotations;
+		std::unordered_map<int, Hollow::NodeAnimationData>& translation = animation.translation;
+		std::unordered_map<int, Hollow::NodeAnimationData>& scale = animation.scale;
+
+		for (auto& node : lModel->animationNodes) {
+			Hollow::KeyFrames keyFrames;
+
+			Hollow::NodeAnimationData& nodeRotations = animation.rotations[node->gltfId];
+			Hollow::NodeAnimationData& nodeTranslation = animation.translation[node->gltfId];
+			Hollow::NodeAnimationData& nodeScale = animation.scale[node->gltfId];
+
+			for (auto& it : nodeTranslation.data) {
+				if (animationTime < it.first) {
+					animationTime = it.first;
+				}
+				keyFrames.tranlations.push_back(it.second);
+			}
+
+			for (auto& it : nodeRotations.data) {
+				if (animationTime < it.first) {
+					animationTime = it.first;
+				}
+				keyFrames.rotations.push_back(it.second);
+			}
+
+			for (auto& it : nodeScale.data) {
+				if (animationTime < it.first) {
+					animationTime = it.first;
+				}
+				keyFrames.scales.push_back(it.second);
+			}
+
+			gltfAnimation.data[node->id] = keyFrames;
+		}
+
+		gltfAnimation.duration = animationTime;
+		gltfModel->gltfAnimations.push_back(gltfAnimation);
+	}
 
 	for (auto& model : lModel->meshes) {
 		Hollow::Mesh* mesh = new Hollow::Mesh;
+		mesh->material = model->material;
 
-		for (int i = 0; i < model.positions.size(); i++) {
+		for (int i = 0; i < model->positions.size(); i++) {
 			Vertex vertex;
 
-			vertex.pos = model.positions[i];
+			vertex.pos = model->positions[i];
 
-			if (model.normals.size() > i) {
-				vertex.normal = model.normals[i];
+			if (model->normals.size() > i) {
+				vertex.normal = model->normals[i];
 			}
-			if (model.texCoords.size() > i) {
-				model.texCoords[i].y = 1.0f - model.texCoords[i].y;
-				vertex.texCoord = model.texCoords[i];
+			if (model->texCoords.size() > i) {
+				vertex.texCoord = model->texCoords[i];
 			}
 
 			mesh->vertices.push_back(vertex);
 		}
 
-		for (auto& it : model.indices) {
+		for (auto& it : model->indices) {
 			mesh->indices.push_back(it);
 		}
 
 		gltfModel->meshes.push_back(mesh);
 	}
+	delete lModel;
 
 	return gltfModel;
 }

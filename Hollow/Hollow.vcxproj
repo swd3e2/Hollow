@@ -26,6 +26,7 @@
     <ClInclude Include="Hollow\ECS\Entity.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\GameObject.h" />
+    <ClInclude Include="Hollow\ECS\GLTFAnimationComponent.h" />
     <ClInclude Include="Hollow\ECS\GLTFRenderable.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />
@@ -121,7 +122,6 @@
     <ClInclude Include="Hollow\Graphics\SpotLight.h" />
     <ClInclude Include="Hollow\Graphics\WindowManager.h" />
     <ClInclude Include="Hollow\Importer\FreeImgImporter.h" />
-    <ClInclude Include="Hollow\Importer\MeshImporter.h" />
     <ClInclude Include="Hollow\Math\EAngle.h" />
     <ClInclude Include="Hollow\Math\Matrix4.h" />
     <ClInclude Include="Hollow\Math\Quaternion.h" />
@@ -211,7 +211,6 @@
     <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp" />
     <ClCompile Include="Hollow\Importer\gltf\GLTFImporter.cpp" />
     <ClCompile Include="Hollow\Importer\gltf\tinygltf.cpp" />
-    <ClCompile Include="Hollow\Importer\MeshImporter.cpp" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
     <ClCompile Include="Hollow\Math\Vector3.cpp" />
@@ -283,7 +282,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -297,7 +296,7 @@
       <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -310,7 +309,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -323,7 +322,7 @@
       <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\release"</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>FreeImageLib.lib;assimp.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

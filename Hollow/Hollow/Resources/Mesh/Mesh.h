@@ -36,13 +36,13 @@ public:
 			model->material = new Material();
 			model->material->name = data->materials[i]->name;
 			if (data->materials[i]->hasDiffueTexture) {
-				model->material->diffuse_texture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->diffuseTextureName);
+				model->material->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->diffuseTextureName);
 			}
 			if (data->materials[i]->hasNormalTexture) {
-				model->material->normal_texture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->normalTextureName);
+				model->material->normalTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->normalTextureName);
 			}
 			if (data->materials[i]->hasSpecularTexture) {
-				model->material->specular_texture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->specularTextureName);
+				model->material->specularTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->specularTextureName);
 			}
 			models.push_back(model);
 		}

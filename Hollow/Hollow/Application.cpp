@@ -5,7 +5,6 @@ Application::Application()
 	Hollow::Console::RedirectIOToConsole();
 	Hollow::Log::Init();
 
-	meshImporter = new MeshImporter();
 	imgImporter = new FreeImgImporter();
 
 	camera = new Camera(true);

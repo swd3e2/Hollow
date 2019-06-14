@@ -46,6 +46,7 @@ public:
 	int width;
 	int height;
 	TextureType type = TextureType::TEXTURE2D;
+	std::string name;
 public:
 	Texture(int width, int height) : width(width), height(height) {}
 	Texture() : width(0), height(0) {}

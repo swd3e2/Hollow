@@ -175,12 +175,12 @@ public:
 				GLTFRenderable* renderable = entity.getComponent<GLTFRenderable>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				drawRecursive(renderable->rootNode, renderable, transform, Matrix4::Identity());
+				Draw(renderable->rootNode, renderable, transform, Matrix4::Identity());
 			}
 		}
 	}
 
-	void drawRecursive(Hollow::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
+	void Draw(Hollow::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
 		transformBuff.transform = parentTransform * node->transformation;
 
@@ -189,6 +189,16 @@ public:
 
 		for (auto& it : node->childrens) {
 			if (it->mesh != -1) {
+				if (renderable->renderables[it->mesh]->material->diffuseTexture != nullptr) {
+					renderer->SetTexture(0, renderable->renderables[it->mesh]->material->diffuseTexture);
+				}
+				if (renderable->renderables[it->mesh]->material->normalTexture != nullptr) {
+					renderer->SetTexture(1, renderable->renderables[it->mesh]->material->normalTexture);
+				}
+				if (renderable->renderables[it->mesh]->material->specularTexture != nullptr) {
+					renderer->SetTexture(2, renderable->renderables[it->mesh]->material->specularTexture);
+				}
+
 				renderer->SetShader(ShaderManager::instance()->getShader("default"));
 				renderer->SetVertexBuffer(renderable->renderables[it->mesh]->vBuffer);
 				renderer->SetIndexBuffer(renderable->renderables[it->mesh]->iBuffer);
@@ -197,7 +207,7 @@ public:
 		}
 
 		for (auto& it : node->childrens) {
-			drawRecursive(it, renderable, transform, node->transformation);
+			Draw(it, renderable, transform, node->transformation);
 		}
 	}
 
@@ -220,14 +230,14 @@ public:
 	void DrawObject(Model * object)
 	{
 		if (object->material != nullptr) {
-			if (object->material->diffuse_texture != nullptr) {
-				renderer->SetTexture(0, object->material->diffuse_texture);
+			if (object->material->diffuseTexture != nullptr) {
+				renderer->SetTexture(0, object->material->diffuseTexture);
 			}
-			if (object->material->normal_texture != nullptr) {
-				renderer->SetTexture(1, object->material->normal_texture);
+			if (object->material->normalTexture != nullptr) {
+				renderer->SetTexture(1, object->material->normalTexture);
 			}
-			if (object->material->specular_texture != nullptr) {
-				renderer->SetTexture(2, object->material->specular_texture);
+			if (object->material->specularTexture != nullptr) {
+				renderer->SetTexture(2, object->material->specularTexture);
 			}
 
 			materialConstantBuffer->update(&object->material->materialData);
