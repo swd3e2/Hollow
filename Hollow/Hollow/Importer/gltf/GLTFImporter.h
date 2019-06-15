@@ -15,6 +15,10 @@
 #define UNSIGNED_INT 5125
 #define FLOAT 5126
 
+#define TRANSLATION 0
+#define ROTATION 1
+#define SCALE 2
+
 namespace Hollow {
 	struct NodeKeyFrameData
 	{
@@ -164,6 +168,7 @@ namespace Hollow {
 		std::string occlusionTexture;
 
 		std::string name;
+		unsigned int id;
 	};
 
 	struct LoadedMesh
@@ -174,12 +179,14 @@ namespace Hollow {
 		std::vector<float*>  weigths;
 		std::vector<unsigned short*> joints;
 		std::vector<unsigned int> indices;
+		unsigned int material;
 	};
 
 	struct Mesh
 	{
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
+		unsigned int material;
 	};
 
 	struct Node
@@ -189,7 +196,6 @@ namespace Hollow {
 		std::string name;
 		// index to mesh
 		int mesh = -1;
-
 		Node(std::string& name) :
 			name(name)
 		{}
@@ -197,7 +203,10 @@ namespace Hollow {
 
 	struct GLTFModel
 	{
+		std::vector<GLTFAnimation> gltfAnimations;
 		std::vector<Mesh*> meshes;
+		std::unordered_map<unsigned int, Material> materials;
+		std::vector<Animation> animations;
 		Node* rootNode;
 		AnimationNode* rootAnimationNode;
 		std::vector<Animation> animations;
@@ -205,12 +214,19 @@ namespace Hollow {
 
 	struct Model
 	{
-		std::vector<LoadedMesh> meshes;
-		std::unordered_map<std::string, Material> materials;
+		std::vector<LoadedMesh*> meshes;
+		std::unordered_map<unsigned int, Material> materials;
 		std::vector<Animation> animations;
 		Node* rootNode;
 		AnimationNode* animationRootNode;
 		std::vector<AnimationNode*> animationNodes;
+
+		~Model()
+		{
+			for (auto& it : meshes) {
+				delete it;
+			}
+		}
 	};
 }
 

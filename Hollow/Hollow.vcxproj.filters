@@ -273,9 +273,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Importer\MeshImporter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -567,9 +564,6 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Importer\MeshImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RasterizerState.cpp">

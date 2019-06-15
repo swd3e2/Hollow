@@ -8,10 +8,10 @@
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
+	Application app;
+
 	GLTFImporter importer;
 	Hollow::GLTFModel* model = importer.import("Sandbox/Resources/Meshes/scene.gltf");
-
-	Application app;
 
 	GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
 	entity->addComponent<GLTFAnimation, Hollow::GLTFModel*&>(model);

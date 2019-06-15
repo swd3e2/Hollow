@@ -18,5 +18,5 @@ uniform sampler2D shadow_map;
 void main()
 {
 	FragColor = texture(ambient_map, fs_in.texCoord);
-	FragColor += dot(fs_in.normal, vec3(-1.0f, 0.0f, 0.0f)) * vec4(0.5f, 0.5f, 0.5f, 1.0f);
+	FragColor += dot(fs_in.normal, vec3(0.0f, 1.0f, -0.5f)) * vec4(0.5f, 0.5f, 0.5f, 1.0f);
 }
