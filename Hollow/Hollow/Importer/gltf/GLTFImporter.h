@@ -203,13 +203,11 @@ namespace Hollow {
 
 	struct GLTFModel
 	{
-		std::vector<GLTFAnimation> gltfAnimations;
 		std::vector<Mesh*> meshes;
 		std::unordered_map<unsigned int, Material> materials;
 		std::vector<Animation> animations;
 		Node* rootNode;
 		AnimationNode* rootAnimationNode;
-		std::vector<Animation> animations;
 	};
 
 	struct Model

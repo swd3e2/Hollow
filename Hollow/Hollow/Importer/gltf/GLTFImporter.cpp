@@ -324,7 +324,14 @@ Hollow::GLTFModel* GLTFImporter::import(const char* filename)
 	Hollow::GLTFModel * gltfModel = new Hollow::GLTFModel();
 
 	gltfModel->rootNode = lModel->rootNode;
-	gltfModel->rootAnimationNode = lModel->animationRootNode;
+	if (lModel->animationRootNode == nullptr) {
+		gltfModel->rootAnimationNode = new Hollow::AnimationNode();
+		gltfModel->rootAnimationNode->gltfId = 0;
+		gltfModel->rootAnimationNode->id = 0;
+		gltfModel->rootAnimationNode->localTransform = Matrix4::Identity();
+	} else {
+		gltfModel->rootAnimationNode = lModel->animationRootNode;
+	}
 	gltfModel->animations = std::move(lModel->animations);
 	
 
