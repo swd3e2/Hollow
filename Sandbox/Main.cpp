@@ -2,6 +2,8 @@
 #include <Hollow/Application.h>
 #include <Hollow/Importer/gltf/GLTFImporter.h>
 #include "Hollow/ECS/GLTFRenderable.h"
+#include "Hollow/ECS/GLTFAnimation.h"
+
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
@@ -12,6 +14,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	Application app;
 
 	GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
+	entity->addComponent<GLTFAnimation, Hollow::GLTFModel*&>(model);
 	entity->addComponent<GLTFRenderable, Hollow::GLTFModel*&>(model);
 
 	entity->addComponent<TransformComponent, Vector3&&, Vector3&&, Vector3&&>

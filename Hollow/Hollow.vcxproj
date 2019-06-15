@@ -26,6 +26,7 @@
     <ClInclude Include="Hollow\ECS\Entity.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\GameObject.h" />
+    <ClInclude Include="Hollow\ECS\GLTFAnimation.h" />
     <ClInclude Include="Hollow\ECS\GLTFRenderable.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />

@@ -18,14 +18,18 @@
 namespace Hollow {
 	struct NodeKeyFrameData
 	{
-		Vector3 vec3Val;
-		Quaternion quatVal;
+		Vector3 translation;
+		Vector3 scale;
+		Quaternion rotation;
+		double time;
 	};
 
 	struct NodeAnimationData
 	{
 		int nodeId;
-		std::unordered_map<float, NodeKeyFrameData> data;
+		std::map<float, NodeKeyFrameData> rotations;
+		std::map<float, NodeKeyFrameData> translation;
+		std::map<float, NodeKeyFrameData> scale;
 	};
 
 	struct AnimationNode
@@ -38,7 +42,116 @@ namespace Hollow {
 
 	struct Animation
 	{
-		std::vector<NodeAnimationData> data;
+		std::map<int, NodeAnimationData*> data;
+		double duration = 0.0;
+
+		inline NodeKeyFrameData* findKeyFrameTranslation(double time, int bone)
+		{
+			Hollow::NodeAnimationData* keyFrames = data[bone];
+			NodeKeyFrameData* frame = nullptr;
+
+			for (auto& it : keyFrames->translation)
+			{
+				if (it.first <= time) {
+					frame = &it.second;
+				}
+			}
+			if (frame == nullptr && keyFrames->translation.size()) {
+				frame = &keyFrames->translation.rbegin()->second;
+			}
+
+			return frame;
+		}
+
+		inline NodeKeyFrameData* findKeyNextFrameTranslation(double time, int bone)
+		{
+			Hollow::NodeAnimationData* keyFrames = data[bone];
+			NodeKeyFrameData* frame = nullptr;
+
+			for (auto& it : keyFrames->translation)
+			{
+				if (it.first > time) {
+					frame = &it.second;
+				}
+			}
+			if (frame == nullptr && keyFrames->translation.size()) {
+				frame = &keyFrames->translation.rbegin()->second;
+			}
+
+			return frame;
+		}
+
+		inline NodeKeyFrameData* findKeyFrameRotation(double time, int bone)
+		{
+			Hollow::NodeAnimationData* keyFrames = data[bone];
+			NodeKeyFrameData* frame = nullptr;
+
+			for (auto& it : keyFrames->rotations)
+			{
+				if (it.first <= time) {
+					frame = &it.second;
+				}
+			}
+			if (frame == nullptr && keyFrames->rotations.size()) {
+				frame = &keyFrames->rotations.rbegin()->second;
+			}
+
+			return frame;
+		}
+
+		inline NodeKeyFrameData* findKeyNextFrameRotation(double time, int bone)
+		{
+			Hollow::NodeAnimationData* keyFrames = data[bone];
+			NodeKeyFrameData* frame = nullptr;
+
+			for (auto& it : keyFrames->rotations)
+			{
+				if (it.first > time) {
+					frame = &it.second;
+				}
+			}
+			if (frame == nullptr && keyFrames->rotations.size()) {
+				frame = &keyFrames->rotations.rbegin()->second;
+			}
+
+			return frame;
+		}
+
+		inline NodeKeyFrameData* findKeyFrameScale(double time, int bone)
+		{
+			Hollow::NodeAnimationData* keyFrames = data[bone];
+			NodeKeyFrameData* frame = nullptr;
+
+			for (auto& it : keyFrames->scale)
+			{
+				if (it.first <= time) {
+					frame = &it.second;
+				}
+			}
+			if (frame == nullptr && keyFrames->scale.size()) {
+				frame = &keyFrames->scale.rbegin()->second;
+			}
+
+			return frame;
+		}
+
+		inline NodeKeyFrameData* findKeyNextFrameScale(double time, int bone)
+		{
+			Hollow::NodeAnimationData* keyFrames = data[bone];
+			NodeKeyFrameData* frame = nullptr;
+
+			for (auto& it : keyFrames->scale)
+			{
+				if (it.first > time) {
+					frame = &it.second;
+				}
+			}
+			if (frame == nullptr && keyFrames->scale.size()) {
+				frame = &keyFrames->scale.rbegin()->second;
+			}
+
+			return frame;
+		}
 	};
 
 	struct Material
@@ -86,6 +199,8 @@ namespace Hollow {
 	{
 		std::vector<Mesh*> meshes;
 		Node* rootNode;
+		AnimationNode* rootAnimationNode;
+		std::vector<Animation> animations;
 	};
 
 	struct Model

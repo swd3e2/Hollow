@@ -108,4 +108,19 @@ public:
 
 		return matrix;
 	}
+
+	inline Quaternion& Normalize()
+	{
+		// compute the magnitude and divide through it
+		const float mag = std::sqrt(x * x + y * y + z * z + w * w);
+		if (mag)
+		{
+			const float invMag = static_cast<float>(1.0) / mag;
+			x *= invMag;
+			y *= invMag;
+			z *= invMag;
+			w *= invMag;
+		}
+		return *this;
+	}
 };

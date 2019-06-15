@@ -74,19 +74,41 @@ void GLTFImporter::processAnimation(Hollow::Model& lModel, tinygltf::Model& mode
 				file.read((char*)valueData, sizeof(float) * valueAccessor.count * 3);
 			}
 
-			Hollow::NodeAnimationData data;
-			data.nodeId = channel.target_node;
+			Hollow::NodeAnimationData* data;
+			if (mAnimation.data.find(channel.target_node) != mAnimation.data.end()) {
+				data = mAnimation.data[channel.target_node];
+			} else {
+				data = new Hollow::NodeAnimationData();
+				data->nodeId = channel.target_node;
+			}
 
 			if (channel.target_path == "rotation") {
 				for (int i = 0; i < timeAccessor.count; i++) {
-					data.data[timeData[i]].quatVal = Quaternion(valueData[i * 4], valueData[i * 4 + 1], valueData[i * 4 + 2], valueData[i * 4 + 3]);
+					data->rotations[timeData[i]].rotation = Quaternion(valueData[i * 4], valueData[i * 4 + 1], valueData[i * 4 + 2], valueData[i * 4 + 3]);
+					data->rotations[timeData[i]].time = timeData[i];
+					if (timeData[i] > mAnimation.duration) {
+						mAnimation.duration = timeData[i];
+					}
 				}
-			} else {
+			} else if (channel.target_path == "translation") {
 				for (int i = 0; i < timeAccessor.count; i++) {
-					data.data[timeData[i]].vec3Val = Vector3(valueData[i * 3], valueData[i * 3 + 1], valueData[i * 3 + 2]);
+					data->translation[timeData[i]].translation = Vector3(valueData[i * 3], valueData[i * 3 + 1], valueData[i * 3 + 2]);
+					data->translation[timeData[i]].time = timeData[i];
+					if (timeData[i] > mAnimation.duration) {
+						mAnimation.duration = timeData[i];
+					}
+				}
+			} else if (channel.target_path == "scale") {
+				for (int i = 0; i < timeAccessor.count; i++) {
+					data->scale[timeData[i]].scale = Vector3(valueData[i * 3], valueData[i * 3 + 1], valueData[i * 3 + 2]);
+					data->scale[timeData[i]].time = timeData[i];
+					if (timeData[i] > mAnimation.duration) {
+						mAnimation.duration = timeData[i];
+					}
 				}
 			}
-			mAnimation.data.push_back(data);
+
+			mAnimation.data[data->nodeId] = data;
 		}
 		lModel.animations.push_back(mAnimation);
 	}
@@ -271,7 +293,9 @@ Hollow::GLTFModel* GLTFImporter::import(const char* filename)
 
 	Hollow::GLTFModel * gltfModel = new Hollow::GLTFModel();
 	gltfModel->rootNode = lModel->rootNode;
-	gltfModel->meshes.resize(0);
+	gltfModel->rootAnimationNode = lModel->animationRootNode;
+	gltfModel->animations = std::move(lModel->animations);
+	
 
 	for (auto& model : lModel->meshes) {
 		Hollow::Mesh* mesh = new Hollow::Mesh;
