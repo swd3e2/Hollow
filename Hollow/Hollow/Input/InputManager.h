@@ -101,10 +101,10 @@ namespace Hollow {
 			float xOffset = 0, yOffset = 0;
 			int border_thickness;
 
-			if (false)
+			if (true)
 			{
 				float centerScreenX = (float)GetSystemMetrics(SM_CXSCREEN) / 2.0f - 1600.0f / 2.0f;
-				float centerScreenY = (float)GetSystemMetrics(SM_CYSCREEN) / 2.0f - 800.0f / 2.0f;
+				float centerScreenY = (float)GetSystemMetrics(SM_CYSCREEN) / 2.0f - 900.0f / 2.0f;
 				border_thickness = GetSystemMetrics(SM_CYCAPTION);
 
 				xOffset = centerScreenX;
@@ -113,7 +113,7 @@ namespace Hollow {
 
 			XMFLOAT4X4 fView;
 			XMStoreFloat4x4(&fView, projectionMatrix);
-			pcx = (((2 * mcx) / 1800.0f) - 1.0f) / fView._11;
+			pcx = (((2 * mcx) / 1600.0f) - 1.0f) / fView._11;
 			pcy = -(((2 * mcy) / 900.0f) - 1.0f) / fView._22;
 
 			pickRayInViewSpaceDir = XMVectorSet(pcx, pcy, 1.0f, 0.0f);

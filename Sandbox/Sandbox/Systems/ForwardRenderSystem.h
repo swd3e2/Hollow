@@ -97,9 +97,9 @@ public:
 		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		target = RenderTargetManager::instance()->create(1920, 1080);
+		target = RenderTargetManager::instance()->create(1600, 900);
 
-		renderer->SetViewport(0, 0, 1920, 1080);
+		renderer->SetViewport(0, 0, 1600, 900);
 		m_worldViewProjection.offset = 0.0f;
 	}
 
@@ -143,7 +143,8 @@ public:
 
 	void Draw(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
-		transformBuff.transform = parentTransform * node->transformation;
+		transformBuff.transform = parentTransform * node->transformation * 
+			Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
 
 		m_TransformConstantBuffer->update(&transformBuff);
 		renderer->SetGpuBuffer(m_TransformConstantBuffer);

@@ -1,5 +1,4 @@
 #pragma once
-#define OPENGL
 
 #include "Platform.h"
 #include "ECS/ComponentManager.h"

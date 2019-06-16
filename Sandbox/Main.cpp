@@ -1,5 +1,5 @@
 #pragma once
-#define OPENGL
+#define D3D11
 #include <Hollow/Core.h>
 #include <Hollow/Importer/gltf/GLTFImporter.h>
 #include "Sandbox/Components/GLTFRenderable.h"
@@ -10,9 +10,12 @@
 #include "Sandbox/Systems/AnimationSystem.h"
 #include <Hollow/Graphics/RenderApiManager.h>
 #include "Sandbox/GUISystem.h"
+#include "Sandbox/Systems/MoveSystem.h"
+#include "Sandbox/Components/MoveComponent.h"
+#include "Sandbox/Components/SelectComponent.h"
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 900
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
@@ -29,6 +32,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	renderPass.skyMap = new SkyMap();
 	renderPass.m_Camera = camera;
 
+	MoveSystem moveSystem;
+
 	Hollow::GLTFImporter importer;
 	Hollow::GLTF::GLTFModel* model = importer.import("Sandbox/Resources/Meshes/scene.gltf");
 
@@ -38,8 +43,12 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	entity->addComponent<TransformComponent, Hollow::Vector3&&, Hollow::Vector3&&, Hollow::Vector3&&>
 		(Hollow::Vector3(0.0f, 0.0f, 0.0f), Hollow::Vector3(0.8f, 0.8f, 0.8f), Hollow::Vector3(0.0f, 0.0f, 0.0f));
+	entity->addComponent<SelectComponent, bool>(true);
+	entity->addComponent<MoveComponent>();
+
 
 	core.systemManager.AddSystem(&renderPass);
+	core.systemManager.AddSystem(&moveSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->renderSystem = &renderPass;
@@ -49,8 +58,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 		window->ProcessMessage();
 		camera->Update(core.dt);
-
 		core.Update();
+		gui->update(core.dt);
 
 		core.PostUpdate();
 	}

@@ -252,7 +252,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;D3D11;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>

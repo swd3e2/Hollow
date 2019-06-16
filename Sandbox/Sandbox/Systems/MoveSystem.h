@@ -23,7 +23,7 @@ public:
 public:
 	MoveSystem() {}
 
-	virtual void Update(float_t dt)
+	virtual void Update(double dt) override
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
 			posComponent = entity.getComponent<TransformComponent>();
