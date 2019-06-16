@@ -11,51 +11,53 @@
 #include "Hollow/Graphics/HardwareBufferManager.h"
 #include "Hollow/Graphics/TextureManager.h"
 
-class Mesh
-{
-public:
-	int numModels;
-	std::vector<Model*> models;
-	std::string filename;
-public:
-	Mesh() : numModels(0) {}
-
-	Mesh(MeshData* data)
+namespace Hollow {
+	class Mesh
 	{
-		numModels = data->numModels;
+	public:
+		int numModels;
+		std::vector<Model*> models;
+		std::string filename;
+	public:
+		Mesh() : numModels(0) {}
 
-		for (int i = 0; i < data->numModels; i++)
+		Mesh(MeshData* data)
 		{
-			Model* model = new Model();
+			numModels = data->numModels;
 
-			model->vBuffer = HardwareBufferManager::instance()->createVertexBuffer(data->vertices[i].data(), data->vertices[i].size());
-			model->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(data->indices[i].data(), data->indices[i].size());
-			model->name = data->modelNames[i];
+			for (int i = 0; i < data->numModels; i++)
+			{
+				Model* model = new Model();
 
-			// Material data
-			model->material = new Material();
-			model->material->name = data->materials[i]->name;
-			if (data->materials[i]->hasDiffueTexture) {
-				model->material->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->diffuseTextureName);
+				model->vBuffer = HardwareBufferManager::instance()->createVertexBuffer(data->vertices[i].data(), data->vertices[i].size());
+				model->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(data->indices[i].data(), data->indices[i].size());
+				model->name = data->modelNames[i];
+
+				// Material data
+				model->material = new Material();
+				model->material->name = data->materials[i]->name;
+				if (data->materials[i]->hasDiffueTexture) {
+					model->material->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->diffuseTextureName);
+				}
+				if (data->materials[i]->hasNormalTexture) {
+					model->material->normalTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->normalTextureName);
+				}
+				if (data->materials[i]->hasSpecularTexture) {
+					model->material->specularTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->specularTextureName);
+				}
+				models.push_back(model);
 			}
-			if (data->materials[i]->hasNormalTexture) {
-				model->material->normalTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->normalTextureName);
-			}
-			if (data->materials[i]->hasSpecularTexture) {
-				model->material->specularTexture = TextureManager::instance()->CreateTextureFromFile(data->materials[i]->specularTextureName);
-			}
-			models.push_back(model);
+
+			delete data;
 		}
 
-		delete data;
-	}
-
-	~Mesh()
-	{
-		for (auto& it : models) {
-			delete it;
+		~Mesh()
+		{
+			for (auto& it : models) {
+				delete it;
+			}
 		}
-	}
-};
+	};
+}
 
 #endif

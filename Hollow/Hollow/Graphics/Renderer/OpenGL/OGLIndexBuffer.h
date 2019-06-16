@@ -5,18 +5,20 @@
 
 #include "Hollow/Graphics/Renderer/Base/IndexBuffer.h"
 
-class OGLIndexBuffer : public IndexBuffer
-{
-public:
-	unsigned int IBO;
-public:
-	OGLIndexBuffer(unsigned int stride, unsigned int numIndices) :
-		IndexBuffer(stride, numIndices)
-	{}
-	virtual ~OGLIndexBuffer()
+namespace Hollow {
+	class OGLIndexBuffer : public IndexBuffer
 	{
-		glDeleteBuffers(1, &IBO);
-	}
-};
+	public:
+		unsigned int IBO;
+	public:
+		OGLIndexBuffer(unsigned int stride, unsigned int numIndices) :
+			IndexBuffer(stride, numIndices)
+		{}
+		virtual ~OGLIndexBuffer()
+		{
+			glDeleteBuffers(1, &IBO);
+		}
+	};
+}
 
 #endif

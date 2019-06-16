@@ -6,25 +6,28 @@
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/Shader.h"
 
-class D3D11ComputeShader : public Shader
-{
-private:
-	friend class D3D11ShaderManager;
-public:
-	D3D11ComputeShader() :
-		Shader(ShaderType::COMPUTE), m_Shader(nullptr)
-	{}
-	~D3D11ComputeShader()
+namespace Hollow {
+	class D3D11ComputeShader : public Shader
 	{
-		release();
-	}
-	virtual void release() override
-	{
-		SAFE_RELEASE(m_Shader);
-	}
-	inline ID3D11ComputeShader* GetShader() const { return m_Shader; }
-private:
-	ID3D11ComputeShader* m_Shader;
-};
+	private:
+		friend class D3D11ShaderManager;
+	public:
+		D3D11ComputeShader() :
+			Shader(ShaderType::COMPUTE), m_Shader(nullptr)
+		{}
+		~D3D11ComputeShader()
+		{
+			release();
+		}
+		virtual void release() override
+		{
+			SAFE_RELEASE(m_Shader);
+		}
+		inline ID3D11ComputeShader* GetShader() const { return m_Shader; }
+	private:
+		ID3D11ComputeShader* m_Shader;
+	};
+}
+
 
 #endif

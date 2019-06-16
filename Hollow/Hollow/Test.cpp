@@ -1,24 +1,24 @@
 #include "Test.h"
 
-Mesh* getCube()
+Hollow::Mesh* getCube()
 {
-	Mesh* mesh = new Mesh();
-	Model* model = new Model();
+	Hollow::Mesh* mesh = new Hollow::Mesh();
+	Hollow::Model* model = new Hollow::Model();
 
-	Vertex cube_vertices[] = {
+	Hollow::Vertex cube_vertices[] = {
 		// front
-		Vertex(-1.0, -1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
-		Vertex(1.0, -1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
-		Vertex(1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
-		Vertex(-1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(-1.0, -1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(1.0, -1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(-1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
 		// back
-		Vertex(-1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
-		Vertex(1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
-		Vertex(1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
-		Vertex(-1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(-1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
+		Hollow::Vertex(-1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
 	};
 
-	model->vBuffer = HardwareBufferManager::instance()->createVertexBuffer(cube_vertices, 8);
+	model->vBuffer = Hollow::HardwareBufferManager::instance()->createVertexBuffer(cube_vertices, 8);
 
 	unsigned int cube_elements[] = {
 		// front
@@ -40,7 +40,7 @@ Mesh* getCube()
 		3, 2, 6,
 		6, 7, 3
 	};
-	model->iBuffer = HardwareBufferManager::instance()->createIndexBuffer(cube_elements, 36);
+	model->iBuffer = Hollow::HardwareBufferManager::instance()->createIndexBuffer(cube_elements, 36);
 	mesh->models.push_back(model);
 
 	return mesh;

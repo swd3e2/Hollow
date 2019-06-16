@@ -11,31 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Hollow\AnimationSystem.h" />
-    <ClInclude Include="Hollow\Application.h" />
     <ClInclude Include="Hollow\Containers\array.h" />
+    <ClInclude Include="Hollow\Core.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
-    <ClInclude Include="Hollow\Core\CoreThread.h" />
-    <ClInclude Include="Hollow\Core\SimulationThread.h" />
     <ClInclude Include="Hollow\Core\Task.h" />
     <ClInclude Include="Hollow\Core\TaskList.h" />
     <ClInclude Include="Hollow\Core\TaskManager.h" />
-    <ClInclude Include="Hollow\ECS\AnimationComponent.h" />
     <ClInclude Include="Hollow\ECS\Component.h" />
     <ClInclude Include="Hollow\ECS\ComponentManager.h" />
     <ClInclude Include="Hollow\ECS\Entity.h" />
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
-    <ClInclude Include="Hollow\ECS\GameObject.h" />
-    <ClInclude Include="Hollow\ECS\GLTFAnimation.h" />
-    <ClInclude Include="Hollow\ECS\GLTFRenderable.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />
-    <ClInclude Include="Hollow\ECS\Light.h" />
-    <ClInclude Include="Hollow\ECS\PointLightComponent.h" />
-    <ClInclude Include="Hollow\ECS\RenderableComponent.h" />
-    <ClInclude Include="Hollow\ECS\TransformComponent.h" />
     <ClInclude Include="Hollow\Graphics\GPUBufferManager.h" />
-    <ClInclude Include="Hollow\Graphics\GUISystem.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imconfig.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imgui_impl_dx11.h" />
@@ -67,8 +55,8 @@
     <ClInclude Include="Hollow\Graphics\RenderTargetManager.h" />
     <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
-    <ClInclude Include="Hollow\Graphics\SkyMap.h" />
     <ClInclude Include="Hollow\Importer\AnimationData.h" />
+    <ClInclude Include="Hollow\Importer\gltf\Animation.h" />
     <ClInclude Include="Hollow\Importer\gltf\GLTFImporter.h" />
     <ClInclude Include="Hollow\Importer\gltf\json.hpp" />
     <ClInclude Include="Hollow\Importer\gltf\stb_image.h" />
@@ -90,9 +78,6 @@
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
     <ClInclude Include="Hollow\Layers\ApplicationLayer.h" />
-    <ClInclude Include="Hollow\Graphics\DefferedRenderPass.h" />
-    <ClInclude Include="Hollow\Graphics\DirectionalLight.h" />
-    <ClInclude Include="Hollow\Graphics\ForwardRenderSystem.h" />
     <ClInclude Include="Hollow\Graphics\RenderApiManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\IndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTarget.h" />
@@ -109,17 +94,13 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\HardwareBufferManager.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11WindowManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLPrerequisites.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLWindowManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.h" />
     <ClInclude Include="Hollow\Graphics\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
-    <ClInclude Include="Hollow\Graphics\PointLight.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLVertexBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\SpotLight.h" />
     <ClInclude Include="Hollow\Graphics\WindowManager.h" />
     <ClInclude Include="Hollow\Importer\FreeImgImporter.h" />
     <ClInclude Include="Hollow\Math\EAngle.h" />
@@ -136,15 +117,11 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Buffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Material.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderApi.h" />
-    <ClInclude Include="Hollow\Graphics\Renderer\Base\Renderable.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Texture.h" />
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
     <ClInclude Include="Hollow\Layers\Layer.h" />
     <ClInclude Include="Hollow\Layers\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\Material.h" />
-    <ClInclude Include="Hollow\Resources\Mesh\Bone.h" />
-    <ClInclude Include="Hollow\Resources\Mesh\BoneTransform.h" />
-    <ClInclude Include="Hollow\Resources\Mesh\KeyFrame.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />
@@ -158,7 +135,6 @@
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstBufferMapping.h" />
     <ClInclude Include="Hollow\Platform.h" />
-    <ClInclude Include="Hollow\Resources\AudioEngine.h" />
     <ClInclude Include="Hollow\Common\Console.h" />
     <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ConstantBuffer.h" />
@@ -176,7 +152,7 @@
     <ClInclude Include="Hollow\Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Hollow\Application.cpp" />
+    <ClCompile Include="Hollow\Core.cpp" />
     <ClCompile Include="Hollow\Core\TaskManager.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
@@ -198,16 +174,13 @@
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11SamplerState.cpp" />
-    <ClCompile Include="Hollow\Graphics\HardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />
-    <ClCompile Include="Hollow\Graphics\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
-    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLContext.h" />
     <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp" />
     <ClCompile Include="Hollow\Importer\gltf\GLTFImporter.cpp" />
     <ClCompile Include="Hollow\Importer\gltf\tinygltf.cpp" />
@@ -218,13 +191,10 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11TextureManager.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
-    <ClCompile Include="Hollow\Resources\AudioEngine.cpp" />
     <ClCompile Include="Hollow\Common\Console.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />
-    <ClCompile Include="Hollow\Resources\Mesh\Animation.cpp" />
-    <ClCompile Include="Hollow\Resources\Mesh\Animation.h" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
     <ClCompile Include="Hollow\Test.cpp" />
   </ItemGroup>
@@ -282,7 +252,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Hollow;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\FreeImage\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;OPENGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>

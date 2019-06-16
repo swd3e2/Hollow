@@ -5,16 +5,18 @@
 
 #include "Hollow/Graphics/Renderer/Base/Texture.h"
 
-class OGLTexture : public Texture
-{
-public:
-	unsigned int textureId;
-public:
-	OGLTexture(int width, int height) : Texture(width, height), textureId(0) {}
-	virtual ~OGLTexture()
+namespace Hollow {
+	class OGLTexture : public Texture
 	{
-		glDeleteTextures(1, &textureId);
-	}
-};
+	public:
+		unsigned int textureId;
+	public:
+		OGLTexture(int width, int height) : Texture(width, height), textureId(0) {}
+		virtual ~OGLTexture()
+		{
+			glDeleteTextures(1, &textureId);
+		}
+	};
+}
 
 #endif

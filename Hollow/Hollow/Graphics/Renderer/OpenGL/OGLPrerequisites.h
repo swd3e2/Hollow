@@ -12,5 +12,3 @@
 #endif
 
 #include "Hollow/Common/Log.h"
-
-class OGLWindowManager;

@@ -5,15 +5,17 @@
 
 #include "D3D11Prerequisites.h"
 
-class D3D11BlendState
-{
-private:
-	ID3D11BlendState* m_BlendState;
-public:
-	D3D11BlendState();
-	~D3D11BlendState();
-	
-	ID3D11BlendState* GetBlendState() { return m_BlendState; }
-};
+namespace Hollow {
+	class D3D11BlendState
+	{
+	private:
+		ID3D11BlendState* m_BlendState;
+	public:
+		D3D11BlendState();
+		~D3D11BlendState();
+
+		ID3D11BlendState* GetBlendState() { return m_BlendState; }
+	};
+}
 
 #endif

@@ -16,11 +16,13 @@
 #define BONE_ID_LOCATION		5
 #define WEIGHTS_LOCATION		6
 
-class OGLHardwareBufferManager : public HardwareBufferManager
-{
-public:
-	virtual VertexBuffer* createVertexBuffer(Vertex* data, unsigned int numVertices) override;
-	virtual IndexBuffer* createIndexBuffer(unsigned int* data, unsigned int numIndices) override;
-};
+namespace Hollow {
+	class OGLHardwareBufferManager : public HardwareBufferManager
+	{
+	public:
+		virtual VertexBuffer* createVertexBuffer(Vertex* data, size_t numVertices) override;
+		virtual IndexBuffer* createIndexBuffer(unsigned int* data, size_t numIndices) override;
+	};
+}
 
 #endif

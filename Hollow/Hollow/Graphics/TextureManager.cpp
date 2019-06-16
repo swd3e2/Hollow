@@ -1,55 +1,56 @@
 #include "TextureManager.h"
 
-TextureManager::TextureManager()
-{
-	setStartedUp();
-}
-
-TextureManager::~TextureManager()
-{
-	setShutdown();
-}
-
-Texture* TextureManager::CreateTextureFromFile(const std::string& filename, bool fromDefaultFolder)
-{
-	std::string pathToFile = filename;
-
-	if (fromDefaultFolder) {
-		pathToFile = baseTexturePapth + filename;
+namespace Hollow {
+	TextureManager::TextureManager()
+	{
+		setStartedUp();
 	}
 
-	if (textureList.find(pathToFile) != textureList.end()) {
-		return textureList[pathToFile];
+	TextureManager::~TextureManager()
+	{
+		setShutdown();
 	}
 
-	TEXTURE_DESC* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
+	Texture* TextureManager::CreateTextureFromFile(const std::string& filename, bool fromDefaultFolder)
+	{
+		std::string pathToFile = filename;
 
-	if (textureDesc == nullptr) {
-		return nullptr;
+		if (fromDefaultFolder) {
+			pathToFile = baseTexturePapth + filename;
+		}
+
+		if (textureList.find(pathToFile) != textureList.end()) {
+			return textureList[pathToFile];
+		}
+
+		TEXTURE_DESC* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
+
+		if (textureDesc == nullptr) {
+			return nullptr;
+		}
+
+		Texture* tex = Create2dTexture(textureDesc);
+		tex->name = filename;
+
+		return tex;
 	}
 
-	Texture* tex = Create2dTexture(textureDesc);
-	tex->name = filename;
+	void TextureManager::Remove(Texture* texture)
+	{
+		for (auto& it : textureList) {
+			if (it.second == texture) {
+				textureList.erase(it.first);
+				delete texture;
+				break;
+			}
+		}
+	}
 
-	return tex;
-}
-
-void TextureManager::Remove(Texture* texture)
-{
-	for (auto& it : textureList) {
-		if (it.second == texture) {
-			textureList.erase(it.first);
-			delete texture;
-			break;
+	void TextureManager::RemoveAll()
+	{
+		for (auto& it : textureList) {
+			delete it.second;
+			it.second = nullptr;
 		}
 	}
 }
-
-void TextureManager::RemoveAll()
-{
-	for (auto& it : textureList) {
-		delete it.second;
-		it.second = nullptr;
-	}
-}
-

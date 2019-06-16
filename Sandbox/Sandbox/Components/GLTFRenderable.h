@@ -1,43 +1,43 @@
 #pragma once
 
-#include "Component.h"
-#include "Hollow/Importer/gltf/GLTFImporter.h"
-#include "Hollow/Graphics/HardwareBufferManager.h"
-#include "Hollow/Resources/Material.h"
+#include <Hollow/ECS/Component.h>
+#include <Hollow/Importer/gltf/GLTFImporter.h>
+#include <Hollow/Graphics/HardwareBufferManager.h>
+#include <Hollow/Resources/Material.h>
 
 struct GLTFRenderableObject
 {
-	IndexBuffer* iBuffer;
-	VertexBuffer* vBuffer;
-	Material* material;
+	Hollow::IndexBuffer* iBuffer;
+	Hollow::VertexBuffer* vBuffer;
+	Hollow::Material* material;
 
-	GLTFRenderableObject(IndexBuffer* iBuffer, VertexBuffer* vBuffer) :
+	GLTFRenderableObject(Hollow::IndexBuffer* iBuffer, Hollow::VertexBuffer* vBuffer) :
 		iBuffer(iBuffer), vBuffer(vBuffer)
 	{}
 	~GLTFRenderableObject() {}
 };
 
-class GLTFRenderable : public Component<GLTFRenderable>
+class GLTFRenderable : public Hollow::Component<GLTFRenderable>
 {
 public:
-	Hollow::Node* rootNode;
+	Hollow::GLTF::Node* rootNode;
 	std::vector<GLTFRenderableObject*> renderables;
 public:
-	GLTFRenderable(Hollow::GLTFModel* model)
+	GLTFRenderable(Hollow::GLTF::GLTFModel* model)
 	{
 		rootNode = model->rootNode;
 		for (auto& mesh : model->meshes) {
 			GLTFRenderableObject* gltfModel = new GLTFRenderableObject(
-				HardwareBufferManager::instance()->createIndexBuffer(mesh->indices.data(), mesh->indices.size()),
-				HardwareBufferManager::instance()->createVertexBuffer(mesh->vertices.data(), mesh->vertices.size())
+				Hollow::HardwareBufferManager::instance()->createIndexBuffer(mesh->indices.data(), mesh->indices.size()),
+				Hollow::HardwareBufferManager::instance()->createVertexBuffer(mesh->vertices.data(), mesh->vertices.size())
 			);
 
 			// Material data
-			gltfModel->material = new Material();
+			gltfModel->material = new Hollow::Material();
 			gltfModel->material->name = model->materials[mesh->material].name;
 
 			if (model->materials[mesh->material].diffuseTexture.size()) {
-				gltfModel->material->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(model->materials[mesh->material].diffuseTexture);
+				gltfModel->material->diffuseTexture = Hollow::TextureManager::instance()->CreateTextureFromFile(model->materials[mesh->material].diffuseTexture);
 			}
 			/*if (model->materials[mesh->material].normalTexture.size()) {
 				gltfModel->material->normalTexture = TextureManager::instance()->CreateTextureFromFile(model->materials[mesh->material].normalTexture);

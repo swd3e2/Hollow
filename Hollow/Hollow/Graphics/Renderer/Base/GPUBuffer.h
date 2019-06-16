@@ -1,17 +1,24 @@
 #pragma once
 
-class GPUBuffer
-{
-protected:
-	unsigned int location;
-	unsigned int size;
-public:
-	GPUBuffer(unsigned int location, unsigned int size) :
-		location(location), size(size)
-	{}
+#ifndef HW_GPU_BUFFER_H
+#define HW_GPU_BUFFER_H
 
-	unsigned int getSize() const { return size; }
-	unsigned int getLocation() const { return location; }
+namespace Hollow {
+	class GPUBuffer
+	{
+	protected:
+		unsigned int location;
+		unsigned int size;
+	public:
+		GPUBuffer(unsigned int location, unsigned int size) :
+			location(location), size(size)
+		{}
 
-	virtual void update(void* data) = 0;
-};
+		unsigned int getSize() const { return size; }
+		unsigned int getLocation() const { return location; }
+
+		virtual void update(void* data) = 0;
+	};
+}
+
+#endif

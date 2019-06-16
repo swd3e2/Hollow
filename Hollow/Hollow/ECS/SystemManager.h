@@ -9,7 +9,7 @@
 #include "Hollow/Core/CModule.h"
 
 namespace Hollow {
-	class  SystemManager : public CModule<SystemManager>
+	class SystemManager : public CModule<SystemManager>
 	{
 	private:
 		std::list<ISystem*> m_Systems;
@@ -23,10 +23,9 @@ namespace Hollow {
 		{
 			setShutdown();
 		}
-		template<class T>
-		void AddSystem(T* system)
+		void AddSystem(ISystem* system)
 		{
-			this->m_Systems.push_back((ISystem*)system);
+			this->m_Systems.push_back(system);
 		}
 
 		template<class S>

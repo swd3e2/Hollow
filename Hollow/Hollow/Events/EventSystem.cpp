@@ -1,3 +1,5 @@
 #include "EventSystem.h"
 
-EventSystem* EventSystem::_instance = nullptr;
+namespace Hollow {
+	EventSystem* EventSystem::_instance = nullptr;
+}

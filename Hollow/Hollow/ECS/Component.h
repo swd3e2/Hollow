@@ -5,16 +5,18 @@
 
 #include "IComponent.h"
 
-template<class T>
-class Component : public IComponent
-{
-private:
-	static size_t componentTypeId;
-public:
-	size_t getTypeId() { return componentTypeId; }
-	static size_t staticGetTypeId() { return componentTypeId; }
-};
+namespace Hollow {
+	template<class T>
+	class Component : public IComponent
+	{
+	private:
+		static size_t componentTypeId;
+	public:
+		size_t getTypeId() { return componentTypeId; }
+		static size_t staticGetTypeId() { return componentTypeId; }
+	};
 
-template<class T> size_t Component<T>::componentTypeId = typeid(T).hash_code();
+	template<class T> size_t Component<T>::componentTypeId = typeid(T).hash_code();
+}
 
 #endif

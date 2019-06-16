@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ENTITY_MANAGER_H
-#define ENTITY_MANAGER_H
+#ifndef HW_ENTITY_MANAGER_H
+#define HW_ENTITY_MANAGER_H
 
 #include <unordered_map>
 
@@ -12,73 +12,74 @@
 
 #define DEFAULT_ENTITY_CONTAINER_GROW_SIZE 2048
 
-class EntityManager : public CModule<EntityManager>
-{
-private:
-	class IEntityContainer {};
-
-	template<class T>
-	class EntityContainer : public IEntityContainer
+namespace Hollow {
+	class EntityManager : public CModule<EntityManager>
 	{
-	public:
-		Hollow::array<T, 10> entityList;
-	};
-private:
-	std::unordered_map<size_t, IEntityContainer*> entityContainers;
-	size_t entityIdCounter;
-public:
-	EntityManager()
-	{
-		entityIdCounter = 0;
-	}
+	private:
+		class IEntityContainer {};
 
-	template<class T>
-	EntityContainer<T>* getContainer()
-	{
-		size_t entityTypeId = T::staticGetTypeId();
-
-		// Trying to find container, if found - just return it
-		if (entityContainers.find(entityTypeId) != entityContainers.end())
+		template<class T>
+		class EntityContainer : public IEntityContainer
 		{
-			return (EntityContainer<T>*)(entityContainers[entityTypeId]);
+		public:
+			Hollow::array<T, 10> entityList;
+		};
+	private:
+		std::unordered_map<size_t, IEntityContainer*> entityContainers;
+		size_t entityIdCounter;
+	public:
+		EntityManager()
+		{
+			entityIdCounter = 0;
 		}
-		// if not - need to create one
-		EntityContainer<T>* container = new EntityContainer<T>();
-		entityContainers[entityTypeId] = container;
 
-		return container;
-	}
+		template<class T>
+		EntityContainer<T>* getContainer()
+		{
+			size_t entityTypeId = T::staticGetTypeId();
 
-	template<class T, typename ...ARGS>
-	T* createEntity(ARGS&& ...args)
-	{
-		EntityContainer<T>* container = getContainer<T>();
-		T* entity = container->entityList.createObject(std::forward<ARGS>(args)...);
-		entity->entityId = getNextEntityId();
-		
-		return entity;
-	}
+			// Trying to find container, if found - just return it
+			if (entityContainers.find(entityTypeId) != entityContainers.end())
+			{
+				return (EntityContainer<T>*)(entityContainers[entityTypeId]);
+			}
+			// if not - need to create one
+			EntityContainer<T>* container = new EntityContainer<T>();
+			entityContainers[entityTypeId] = container;
 
-	void startUp() { setStartedUp(); }
-	void shutdown() { setShutdown(); }
+			return container;
+		}
 
-	size_t getNextEntityId()
-	{
-		return entityIdCounter++;
-	}
+		template<class T, typename ...ARGS>
+		T* createEntity(ARGS&& ...args)
+		{
+			EntityContainer<T>* container = getContainer<T>();
+			T* entity = container->entityList.createObject(std::forward<ARGS>(args)...);
+			entity->entityId = getNextEntityId();
 
-	template<class E>
-	typename Hollow::array<E>::iterator& begin()
-	{
-		return getContainer<E>()->entityList.begin();
-	}
+			return entity;
+		}
 
-	template<class E>
-	typename Hollow::array<E>::iterator& end()
-	{
-		return getContainer<E>()->entityList.end();
-	}
-};
+		void startUp() { setStartedUp(); }
+		void shutdown() { setShutdown(); }
 
+		size_t getNextEntityId()
+		{
+			return entityIdCounter++;
+		}
+
+		template<class E>
+		typename Hollow::array<E>::iterator& begin()
+		{
+			return getContainer<E>()->entityList.begin();
+		}
+
+		template<class E>
+		typename Hollow::array<E>::iterator& end()
+		{
+			return getContainer<E>()->entityList.end();
+		}
+	};
+}
 
 #endif

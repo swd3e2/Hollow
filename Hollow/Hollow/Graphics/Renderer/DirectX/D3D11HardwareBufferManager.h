@@ -8,11 +8,14 @@
 #include "D3D11VertexBuffer.h"
 #include "D3D11IndexBuffer.h"
 
-class D3D11HardwareBufferManager : public HardwareBufferManager
-{
-public:
-	virtual VertexBuffer* createVertexBuffer(Vertex* data, unsigned int numVertices) override;
-	virtual IndexBuffer* createIndexBuffer(unsigned int* data, unsigned int numIndices) override;
-};
+namespace Hollow {
+	class D3D11HardwareBufferManager : public HardwareBufferManager
+	{
+	public:
+		virtual VertexBuffer* createVertexBuffer(Vertex* data, size_t numVertices) override;
+		virtual IndexBuffer* createIndexBuffer(unsigned int* data, size_t numIndices) override;
+	};
+}
+
 
 #endif

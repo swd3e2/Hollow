@@ -11,7 +11,6 @@
 #define GROW_SIZE 128
 
 namespace Hollow {
-
 	template<class T, int grow_size = GROW_SIZE>
 	class Vector
 	{

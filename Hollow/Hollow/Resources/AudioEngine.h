@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef HW_AUDIO_ENGINE_H
+#define HW_AUDIO_ENGINE_H
+
 #include <XAudio2.h>
 #include <wrl/client.h>
 #include "Hollow/Platform.h"
@@ -12,7 +16,7 @@
 #define fourccDPDS 'sdpd'
 
 namespace Hollow {
-	class  AudioEngine
+	class AudioEngine
 	{
 	private:
 		IXAudio2MasteringVoice*		masteringVoice;
@@ -26,3 +30,5 @@ namespace Hollow {
 		~AudioEngine();
 	};
 }
+
+#endif

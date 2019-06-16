@@ -4,23 +4,25 @@
 #include "Event.h"
 #include "IEventListener.h"
 
-template<class EventType>
-class EventDispatcher
-{
-private:
-	std::vector<IEventDelegate*>  eventDelegates;
-public:
-	void addEventDispatcher(EventDispatcher<IEventListener, EventType>* delegate)
+namespace Hollow {
+	template<class EventType>
+	class EventDispatcher
 	{
-		for (auto& it : eventDelegates)
+	private:
+		std::vector<IEventDelegate*>  eventDelegates;
+	public:
+		void addEventDispatcher(EventDispatcher<IEventListener, EventType>* delegate)
 		{
+			for (auto& it : eventDelegates)
+			{
 
+			}
 		}
-	}
 
-	void dispatch(IEvent* event)
-	{
-		for (auto& it : eventDelegates)
-			it->invoke(event);
-	}
-};
+		void dispatch(IEvent* event)
+		{
+			for (auto& it : eventDelegates)
+				it->invoke(event);
+		}
+	};
+}

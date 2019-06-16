@@ -3,8 +3,7 @@
 #ifndef HW_PAIR_H
 #define HW_PAIR_H
 
-namespace Hollow { namespace Containers {
-
+namespace Hollow { 
 	template<class T, class U>
 	class Pair
 	{
@@ -14,7 +13,6 @@ namespace Hollow { namespace Containers {
 	public:
 		Pair(T first = 0, U second = 0) : first(first), second(second) {}
 	};
-
-} }
+}
 
 #endif

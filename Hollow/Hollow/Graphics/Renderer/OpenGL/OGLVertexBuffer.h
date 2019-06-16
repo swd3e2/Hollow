@@ -4,21 +4,24 @@
 #define HW_OGL_VERTEX_BUFFER_H
 
 #include "Hollow/Graphics/Renderer/Base/VertexBuffer.h"
+#include "OGLPrerequisites.h"
 
-class OGLVertexBuffer : public VertexBuffer
-{
-public:
-	unsigned int VAO;
-	unsigned int VBO;
-public:
-	OGLVertexBuffer(unsigned int stride, unsigned int numIndices) :
-		VertexBuffer(stride, numIndices)
-	{}
-	virtual ~OGLVertexBuffer()
+namespace Hollow {
+	class OGLVertexBuffer : public VertexBuffer
 	{
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-	}
-};
+	public:
+		unsigned int VAO;
+		unsigned int VBO;
+	public:
+		OGLVertexBuffer(unsigned int stride, unsigned int numIndices) :
+			VertexBuffer(stride, numIndices)
+		{}
+		virtual ~OGLVertexBuffer()
+		{
+			glDeleteVertexArrays(1, &VAO);
+			glDeleteBuffers(1, &VBO);
+		}
+	};
+}
 
 #endif

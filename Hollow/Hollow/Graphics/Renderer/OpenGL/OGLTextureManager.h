@@ -8,12 +8,13 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/TextureManager.h"
 
-class OGLTextureManager : public TextureManager
-{
-public:
-	virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;
-	virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override;
-private:
-};
+namespace Hollow {
+	class OGLTextureManager : public TextureManager
+	{
+	public:
+		virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;
+		virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override;
+	};
+}
 
 #endif

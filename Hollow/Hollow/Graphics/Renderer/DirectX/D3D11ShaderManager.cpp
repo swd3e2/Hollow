@@ -2,12 +2,13 @@
 #include "D3D11RenderApi.h"
 #include "D3D11Context.h"
 
-Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& path, Shader* prevShader)
-{
-	Shader* shader = nullptr;
-
-	switch (type)
+namespace Hollow {
+	Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& path, Shader* prevShader)
 	{
+		Shader* shader = nullptr;
+
+		switch (type)
+		{
 		case VERTEX:
 		{
 			ID3DBlob* shaderBlob;
@@ -15,7 +16,8 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 			if (prevShader != nullptr) {
 				vShader = static_cast<D3D11VertexShader*>(prevShader);
-			} else {
+			}
+			else {
 				vShader = new D3D11VertexShader();
 			}
 
@@ -52,10 +54,11 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 			if (prevShader != nullptr) {
 				pShader = static_cast<D3D11PixelShader*>(prevShader);
-			} else {
+			}
+			else {
 				pShader = new D3D11PixelShader();
 			}
-			
+
 			if (CompileShaderInternal(path, "main", "ps_5_0", &shaderBlob) == S_OK) {
 				pShader->release();
 
@@ -71,7 +74,8 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 			if (prevShader != nullptr) {
 				gShader = static_cast<D3D11GeometryShader*>(prevShader);
-			} else {
+			}
+			else {
 				gShader = new D3D11GeometryShader();
 			}
 
@@ -90,7 +94,8 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 			if (prevShader != nullptr) {
 				cShader = static_cast<D3D11ComputeShader*>(prevShader);
-			} else {
+			}
+			else {
 				cShader = new D3D11ComputeShader();
 			}
 
@@ -109,7 +114,8 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 			if (prevShader != nullptr) {
 				cShader = static_cast<D3D11HullShader*>(prevShader);
-			} else {
+			}
+			else {
 				cShader = new D3D11HullShader();
 			}
 
@@ -128,7 +134,8 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 
 			if (prevShader != nullptr) {
 				cShader = static_cast<D3D11DomainShader*>(prevShader);
-			} else {
+			}
+			else {
 				cShader = new D3D11DomainShader();
 			}
 
@@ -142,86 +149,87 @@ Shader* D3D11ShaderManager::compileShader(ShaderType type, const std::string& pa
 		} break;
 		default:
 			break;
-	}
-	return shader;
-}
-
-HRESULT D3D11ShaderManager::CompileShaderInternal(const std::string& path, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
-{
-	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION; 
-
-	ID3DBlob* shaderBlob = nullptr;
-	ID3DBlob* errorBlob = nullptr;
-	wchar_t* wideStringFilename = Hollow::Helper::converToWideChar(path.c_str());
-
-	HRESULT hr = D3DCompileFromFile(wideStringFilename, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		entryPoint, profile,
-		flags, 0, &shaderBlob, &errorBlob);
-
-	if (FAILED(hr))
-	{
-		if (errorBlob)
-		{
-			HW_ERROR("{}", (char*)errorBlob->GetBufferPointer());
-			errorBlob->Release();
 		}
-		if (shaderBlob)
-			shaderBlob->Release();
+		return shader;
+	}
 
+	HRESULT D3D11ShaderManager::CompileShaderInternal(const std::string& path, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob)
+	{
+		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+
+		ID3DBlob* shaderBlob = nullptr;
+		ID3DBlob* errorBlob = nullptr;
+		wchar_t* wideStringFilename = Hollow::Helper::converToWideChar(path.c_str());
+
+		HRESULT hr = D3DCompileFromFile(wideStringFilename, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryPoint, profile,
+			flags, 0, &shaderBlob, &errorBlob);
+
+		if (FAILED(hr))
+		{
+			if (errorBlob)
+			{
+				HW_ERROR("{}", (char*)errorBlob->GetBufferPointer());
+				errorBlob->Release();
+			}
+			if (shaderBlob)
+				shaderBlob->Release();
+
+			return hr;
+		}
+		*blob = shaderBlob;
 		return hr;
 	}
-	*blob = shaderBlob;
-	return hr;
-}
 
-ShaderProgram* D3D11ShaderManager::createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram)
-{
-	return new D3D11ShaderProgram(vertexShader, pixelShader);
-}
-
-void D3D11ShaderManager::reloadShader(ShaderProgram* program)
-{
-	std::string shaderName;
-
-	for (auto& it : shaders) {
-		if (it.second == program) {
-			shaderName = it.first;
-		}
-	}
-
-	if (!shaderName.size()) {
-		return;
-	}
-
-	program->setVertexShader(compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + shaderName + ".hlsl", program->getVertexShader()));
-	program->setPixelShader(compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + shaderName + ".hlsl", program->getPixelShader()));
-}
-
-D3D11ShaderManager::D3D11ShaderManager()
-{
-	D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
-	device = r->getContext().getDevice();
-
-	shaderTypeFolder = "D3D11";
-
-	std::vector<std::string> shaders = fs.read_directory(shaderFolder + shaderTypeFolder + "/vertex/");
-
-	for (auto& it : shaders)
+	ShaderProgram* D3D11ShaderManager::createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram)
 	{
-		if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
+		return new D3D11ShaderProgram(vertexShader, pixelShader);
+	}
+
+	void D3D11ShaderManager::reloadShader(ShaderProgram* program)
+	{
+		std::string shaderName;
+
+		for (auto& it : shaders) {
+			if (it.second == program) {
+				shaderName = it.first;
+			}
+		}
+
+		if (!shaderName.size()) {
+			return;
+		}
+
+		program->setVertexShader(compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + shaderName + ".hlsl", program->getVertexShader()));
+		program->setPixelShader(compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + shaderName + ".hlsl", program->getPixelShader()));
+	}
+
+	D3D11ShaderManager::D3D11ShaderManager()
+	{
+		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+		device = r->getContext().getDevice();
+
+		shaderTypeFolder = "D3D11";
+
+		std::vector<std::string> shaders = fs.read_directory(shaderFolder + shaderTypeFolder + "/vertex/");
+
+		for (auto& it : shaders)
 		{
-			ShaderProgram* shader = createShader(
-				compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + it),
-				compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + it)
-			);
-			this->shaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = shader;
+			if (strcmp(it.c_str(), ".") != 0 && strcmp(it.c_str(), "..") != 0)
+			{
+				ShaderProgram* shader = createShader(
+					compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + it),
+					compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + it)
+				);
+				this->shaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = shader;
+			}
 		}
 	}
-}
 
-D3D11ShaderManager::~D3D11ShaderManager()
-{
-	for (auto& it : shaders) {
-		delete it.second;
+	D3D11ShaderManager::~D3D11ShaderManager()
+	{
+		for (auto& it : shaders) {
+			delete it.second;
+		}
 	}
 }

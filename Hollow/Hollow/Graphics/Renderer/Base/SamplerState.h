@@ -1,11 +1,13 @@
 #pragma once 
 
-#ifndef HW_I_SAMPLER_H
-#define HW_I_SAMPLER_H
+#ifndef HW_SAMPLER_H
+#define HW_SAMPLER_H
 
-class SamplerState
-{
+namespace Hollow {
+	class SamplerState
+	{
 
-};
+	};
+}
 
 #endif

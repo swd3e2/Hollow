@@ -17,8 +17,7 @@
 #include "Hollow/Graphics/Renderer/OpenGL/Win32/OGLWin32Window.h"
 #include <Commdlg.h>
 
-namespace Hollow
-{
+namespace Hollow {
 	class FileSystem
 	{
 	private:

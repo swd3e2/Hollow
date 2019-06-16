@@ -1,23 +1,21 @@
 #pragma once
-#include "Renderer/DirectX/D3D11RenderApi.h"
-#include "Hollow/ECS/RenderableComponent.h"
-#include "Hollow/ECS/TransformComponent.h"
+#include "Sandbox/Components/TransformComponent.h"
 #include "Hollow/ECS/System.h"
 #include "Hollow/ECS/EntityManager.h"
-#include "Hollow/ECS/GameObject.h"
-#include "Hollow/ECS/Light.h"
-#include "Hollow/ECS/PointLightComponent.h"
+#include "Sandbox/Entities/GameObject.h"
+#include "Sandbox/Entities/Light.h"
 #include "Hollow/Math/Matrix4.h"
 #include "Hollow/Graphics/Camera.h"
 #include "Hollow/Resources/Mesh/Mesh.h"
-#include "ShaderManager.h"
-#include "SkyMap.h"
-#include "Water.h"
+#include "Hollow/Graphics/ShaderManager.h"
+#include "Sandbox/Graphics/SkyMap.h"
 #include "Hollow/Input/InputManager.h"
-#include "Hollow/ECS/AnimationComponent.h"
-#include "Hollow/ECS/GLTFRenderable.h"
-#include "GPUBufferManager.h"
-#include "RenderTargetManager.h"
+#include "Sandbox/Components/GLTFRenderable.h"
+#include "Hollow/Graphics/GPUBufferManager.h"
+#include "Hollow/Graphics/RenderTargetManager.h"
+#include "Hollow/Graphics/Renderer/Base/RenderApi.h"
+
+using namespace Hollow;
 
 struct WVP
 {
@@ -54,16 +52,13 @@ struct TransformBuff
 
 struct LightInfo
 {
-	PointLightStruct pointLights[10];
 	int pointLightsNum = 1;
 };
 
 class ForwardRenderSystem : public Hollow::System<ForwardRenderSystem>
 {
 public:
-	Water* water;
 	LightInfo				pointLights;
-	PointLight* pointLight;
 	Camera* m_Camera;
 	SkyMap* skyMap;
 	RenderTarget* target;
@@ -85,8 +80,6 @@ private:
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
 	int spotLifhtNum = 0;
-
-	D3D11_VIEWPORT vp;
 
 	const UINT uavs = 0;
 
@@ -136,38 +129,6 @@ public:
 		renderer->Present();
 	}
 
-	void DrawScene()
-	{
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<RenderableComponent>()) {
-				TransformComponent* transform = entity.getComponent<TransformComponent>();
-				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
-
-				transformBuff.transform = Matrix4::Transpose(
-					Matrix4::Scaling(transform->scale) *
-					Matrix4::Rotation(transform->rotation) *
-					Matrix4::Translation(transform->position)
-				);
-				m_TransformConstantBuffer->update(&transformBuff);
-				renderer->SetGpuBuffer(m_TransformConstantBuffer);
-
-				if (entity.hasComponent<AnimationComponent>()) {
-					AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
-					transformBuff.hasAnimation = true;
-					boneInfo->update(animationComponent->boneInfo);
-					renderer->SetGpuBuffer(boneInfo);
-				}
-				else {
-					transformBuff.hasAnimation = false;
-				}
-
-				for (auto& model : renderable->mesh->models) {
-					DrawObject(model);
-				}
-			}
-		}
-	}
-
 	void DrawSceneGLTF()
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
@@ -180,7 +141,7 @@ public:
 		}
 	}
 
-	void Draw(Hollow::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
+	void Draw(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
 		transformBuff.transform = parentTransform * node->transformation;
 

@@ -12,24 +12,26 @@
 #include "Hollow/Common/Helper.h"
 #include <string>
 
-class ShaderManager : public CModule<ShaderManager>
-{
-protected:
-	friend class GUISystem;
-	std::unordered_map<std::string, ShaderProgram*> shaders;
-	std::string shaderTypeFolder;
-	Hollow::FileSystem fs;
+namespace Hollow {
+	class ShaderManager : public CModule<ShaderManager>
+	{
+	public:
+		std::unordered_map<std::string, ShaderProgram*> shaders;
+	protected:
+		std::string shaderTypeFolder;
+		FileSystem fs;
 
-	const std::string shaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
-public:
-	ShaderManager();
-	~ShaderManager();
-	
-	inline ShaderProgram* getShader(const std::string& name) { return shaders[name]; }
+		const std::string shaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
+	public:
+		ShaderManager() { setStartedUp(); }
+		~ShaderManager() { setShutdown(); }
 
-	virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) = 0;
-	virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) = 0;
-	virtual void reloadShader(ShaderProgram* program) = 0;
-};
+		inline ShaderProgram* getShader(const std::string& name) { return shaders[name]; }
+
+		virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) = 0;
+		virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) = 0;
+		virtual void reloadShader(ShaderProgram* program) = 0;
+	};
+}
 
 #endif

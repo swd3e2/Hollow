@@ -3,24 +3,25 @@
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_win32.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_dx11.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_opengl3.h"
-#include "Renderer/DirectX/D3D11RenderApi.h"
-#include "Renderer/DirectX/D3D11Context.h"
-#include "Renderer/DirectX/D3D11Win32Window.h"
-#include "Renderer/OpenGL/Win32/OGLWin32Window.h"
-#include "Renderer/Base/Window.h"
-#include "ShaderManager.h"
+#include "Hollow/Graphics/Renderer/DirectX/D3D11RenderApi.h"
+#include "Hollow/Graphics/Renderer/DirectX/D3D11Context.h"
+#include "Hollow/Graphics/Renderer/DirectX/D3D11Win32Window.h"
+#include "Hollow/Graphics/Renderer/OpenGL/Win32/OGLWin32Window.h"
+#include "Hollow/Graphics/Renderer/Base/Window.h"
+#include "Hollow/Graphics/ShaderManager.h"
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/ECS/EntityManager.h"
-#include "Hollow/ECS/GameObject.h"
-#include "Hollow/ECS/RenderableComponent.h"
-#include "Hollow/ECS/AnimationComponent.h"
-#include "Hollow/ECS/TransformComponent.h"
-#include "ForwardRenderSystem.h"
 #include "Hollow/Graphics/Renderer/DirectX/D3D11Texture.h"
 #include "Hollow/Graphics/Renderer/OpenGL/OGLTexture.h"
 #include "Hollow/Graphics/Renderer/DirectX/D3D11RenderTarget.h"
 #include "Hollow/Graphics/Renderer/OpenGL/OGLRenderTarget.h"
-#include "TextureManager.h"
+#include "Hollow/Graphics/TextureManager.h"
+
+#include "Sandbox/Entities/GameObject.h"
+#include "Sandbox/Components/TransformComponent.h"
+#include "Sandbox/Systems/ForwardRenderSystem.h"
+
+using namespace Hollow;
 
 class GUISystem
 {
@@ -148,32 +149,32 @@ public:
 
 		ImGui::Begin("Inspector");
 		ImGui::Text("Renderable component");
-		if (selectedGameObject != nullptr) {
-			if (selectedGameObject->hasComponent<RenderableComponent>()) {
-				Mesh* mesh = selectedGameObject->getComponent<RenderableComponent>()->mesh;
-				
-				if (ImGui::TreeNode("Mesh")) {
-					for (int i = 0; i < mesh->numModels; i++) {
-						Model* model = mesh->models[i];
-						if (ImGui::Selectable(mesh->models[i]->name.c_str())) {
-							selectedModel = mesh->models[i];
-							selectedMaterial = mesh->models[i]->material;
-						}
-					}
-					ImGui::TreePop();
-				}
-			} else {
-				if (ImGui::Button("Add mesh")) {
-					filename = Hollow::FileSystem::OpenFile("");
-					/*if (filename.size()) {
-						MeshImportData* data = MeshImporter::instance()->import(filename.c_str(), false);
-						if (data) {
-							selectedGameObject->addComponent<RenderableComponent>(data->meshData);
-						}
-					}*/
-				}
-			}
-		}
+		//if (selectedGameObject != nullptr) {
+		//	if (selectedGameObject->hasComponent<RenderableComponent>()) {
+		//		Mesh* mesh = selectedGameObject->getComponent<RenderableComponent>()->mesh;
+		//		
+		//		if (ImGui::TreeNode("Mesh")) {
+		//			for (int i = 0; i < mesh->numModels; i++) {
+		//				Model* model = mesh->models[i];
+		//				if (ImGui::Selectable(mesh->models[i]->name.c_str())) {
+		//					selectedModel = mesh->models[i];
+		//					selectedMaterial = mesh->models[i]->material;
+		//				}
+		//			}
+		//			ImGui::TreePop();
+		//		}
+		//	} else {
+		//		if (ImGui::Button("Add mesh")) {
+		//			filename = Hollow::FileSystem::OpenFile("");
+		//			/*if (filename.size()) {
+		//				MeshImportData* data = MeshImporter::instance()->import(filename.c_str(), false);
+		//				if (data) {
+		//					selectedGameObject->addComponent<RenderableComponent>(data->meshData);
+		//				}
+		//			}*/
+		//		}
+		//	}
+		//}
 
 		ImGui::Text("Transform component");
 		if (selectedGameObject != nullptr) {

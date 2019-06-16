@@ -1,25 +1,25 @@
 #pragma once
-#include "Component.h"
+#include <Hollow/ECS/Component.h>
 #include "Hollow/Importer/gltf/GLTFImporter.h"
 
-class GLTFAnimation : public Component<GLTFAnimation>
+class GLTFAnimation : public Hollow::Component<GLTFAnimation>
 {
 public:
 	Hollow::AnimationNode* rootNode;
 	std::vector<Hollow::Animation> animations;
-	Matrix4* boneInfo;
-	Matrix4 globalInverse;
+	Hollow::Matrix4* boneInfo;
+	Hollow::Matrix4 globalInverse;
 
 	double time;
 	double speed = 0.01f;
 public:
-	GLTFAnimation(Hollow::GLTFModel* model)
+	GLTFAnimation(Hollow::GLTF::GLTFModel* model)
 	{
 		animations = std::move(model->animations);
 		rootNode = model->rootAnimationNode;
-		globalInverse = Matrix4::Identity();
+		globalInverse = Hollow::Matrix4::Identity();
 
-		boneInfo = new Matrix4[100];
+		boneInfo = new Hollow::Matrix4[100];
 	}
 
 	void tick(double time)

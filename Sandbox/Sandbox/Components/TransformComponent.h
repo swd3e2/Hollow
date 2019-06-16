@@ -3,17 +3,17 @@
 #ifndef HW_TRANSFORM_COMPONENT_H
 #define HW_TRANSFORM_COMPONENT_H
 
-#include "Component.h"
+#include "Hollow/ECS/Component.h"
 #include "Hollow/Math/Vector3.h"
 
-class TransformComponent : public Component<TransformComponent>
+class TransformComponent : public Hollow::Component<TransformComponent>
 {
 public:
-	Vector3 position;
-	Vector3 scale;
-	Vector3 rotation;
+	Hollow::Vector3 position;
+	Hollow::Vector3 scale;
+	Hollow::Vector3 rotation;
 public:
-	TransformComponent(const Vector3& position, const Vector3& scale, const Vector3& rotation) :
+	TransformComponent(const Hollow::Vector3& position, const Hollow::Vector3& scale, const Hollow::Vector3& rotation) :
 		position(position), scale(scale), rotation(rotation)
 	{}
 	TransformComponent(float * position, float * scale, float * rotation)

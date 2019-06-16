@@ -8,40 +8,42 @@
 
 #define NUM_BONES_PER_VEREX 4
 
-struct VertexBoneData
-{
-	int IDs[NUM_BONES_PER_VEREX];
-	float Weights[NUM_BONES_PER_VEREX];
-};
-
-struct Vertex
-{
-	Vertex() :
-		pos(0.0f, 0.0f, 0.0f), texCoord(0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
+namespace Hollow {
+	struct VertexBoneData
 	{
-		for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
-		{
-			boneData.IDs[i] = 0.0f;
-			boneData.Weights[i] = 0.0f;
-		}
-	}
+		int IDs[NUM_BONES_PER_VEREX];
+		float Weights[NUM_BONES_PER_VEREX];
+	};
 
-	Vertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
-		: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
+	struct Vertex
 	{
-		for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
+		Vertex() :
+			pos(0.0f, 0.0f, 0.0f), texCoord(0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
 		{
-			boneData.IDs[i] = 0.0f;
-			boneData.Weights[i] = 0.0f;
+			for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
+			{
+				boneData.IDs[i] = 0;
+				boneData.Weights[i] = 0.0f;
+			}
 		}
-	}
 
-	Vector3 pos;
-	Vector2 texCoord;
-	Vector3 normal;
-	Vector3 tangent;
-	Vector3 bitangent;
-	VertexBoneData boneData;
-};
+		Vertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
+			: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
+		{
+			for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
+			{
+				boneData.IDs[i] = 0;
+				boneData.Weights[i] = 0.0f;
+			}
+		}
+
+		Vector3 pos;
+		Vector2 texCoord;
+		Vector3 normal;
+		Vector3 tangent;
+		Vector3 bitangent;
+		VertexBoneData boneData;
+	};
+}
 
 #endif

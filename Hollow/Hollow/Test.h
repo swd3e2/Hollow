@@ -7,6 +7,6 @@
 #include "Graphics/Vertex.h"
 #include "Graphics/HardwareBufferManager.h"
 
-Mesh* getCube();
+Hollow::Mesh* getCube();
 
 #endif

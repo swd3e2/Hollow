@@ -8,14 +8,15 @@
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Graphics/Vertex.h"
 
-class HardwareBufferManager : public CModule<HardwareBufferManager>
-{
-public:
-	HardwareBufferManager();
-	~HardwareBufferManager();
-	virtual VertexBuffer* createVertexBuffer(Vertex* data, unsigned int numVertices) = 0;
-	virtual IndexBuffer* createIndexBuffer(unsigned int* data, unsigned int numIndices) = 0;
-};
-
+namespace Hollow {
+	class HardwareBufferManager : public CModule<HardwareBufferManager>
+	{
+	public:
+		HardwareBufferManager() { setStartedUp(); }
+		~HardwareBufferManager() { setShutdown(); }
+		virtual VertexBuffer* createVertexBuffer(Vertex* data, size_t numVertices) = 0;
+		virtual IndexBuffer* createIndexBuffer(unsigned int* data, size_t numIndices) = 0;
+	};
+}
 
 #endif

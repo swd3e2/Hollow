@@ -8,7 +8,6 @@
 #include <typeinfo>
 
 namespace Hollow {
-
 	template<class T>
 	class System : public ISystem
 	{

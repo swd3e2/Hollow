@@ -7,25 +7,27 @@
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Renderer/Base/Shader.h"
 
-class  D3D11PixelShader : public Shader
-{
-private:
-	friend class D3D11ShaderManager;
-public:
-	D3D11PixelShader() :
-		Shader(ShaderType::PIXEL)
-	{}
-	~D3D11PixelShader()
+namespace Hollow {
+	class D3D11PixelShader : public Shader
 	{
-		release();
-	}
-	virtual void release() override
-	{
-		SAFE_RELEASE(m_Shader);
-	}
-	inline ID3D11PixelShader* GetShader() { return m_Shader; }
-private:
-	ID3D11PixelShader* m_Shader;
-};
+	private:
+		friend class D3D11ShaderManager;
+	public:
+		D3D11PixelShader() :
+			Shader(ShaderType::PIXEL)
+		{}
+		~D3D11PixelShader()
+		{
+			release();
+		}
+		virtual void release() override
+		{
+			SAFE_RELEASE(m_Shader);
+		}
+		inline ID3D11PixelShader* GetShader() { return m_Shader; }
+	private:
+		ID3D11PixelShader* m_Shader;
+	};
+}
 
 #endif

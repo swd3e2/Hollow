@@ -1,9 +1,16 @@
 #pragma once
 
-using eventId = size_t;
+#ifndef HW_I_EVENT_H
+#define HW_I_EVENT_H
 
-class IEvent
-{
-public:
-	virtual eventId getEventId() = 0;
-};
+namespace Hollow {
+	using eventId = size_t;
+
+	class IEvent
+	{
+	public:
+		virtual eventId getEventId() = 0;
+	};
+}
+
+#endif

@@ -5,22 +5,24 @@
 
 #include "D3D11Prerequisites.h"
 
-class  D3D11ConstantBuffer
-{
-private:
-	D3D11ConstantBuffer(const D3D11ConstantBuffer &rhs);
-private:
-	ID3D11Buffer* m_Buffer;
-	UINT size;
-public:
-	/*
-	 * @param UINT size size of structure 
-	 */
-	D3D11ConstantBuffer(UINT size);
-	~D3D11ConstantBuffer();
-	
-	ID3D11Buffer * const* GetAddressOf() const { return &m_Buffer; }
-	bool Update(void* data);
-};
+namespace Hollow {
+	class D3D11ConstantBuffer
+	{
+	private:
+		D3D11ConstantBuffer(const D3D11ConstantBuffer& rhs);
+	private:
+		ID3D11Buffer* m_Buffer;
+		UINT size;
+	public:
+		/*
+		 * @param UINT size size of structure
+		 */
+		D3D11ConstantBuffer(UINT size);
+		~D3D11ConstantBuffer();
+
+		ID3D11Buffer* const* GetAddressOf() const { return &m_Buffer; }
+		bool Update(void* data);
+	};
+}
 
 #endif

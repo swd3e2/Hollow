@@ -1,7 +1,6 @@
 #include "AudioEngine.h"
 
 namespace Hollow {
-
 	HRESULT AudioEngine::ReadChunkData(HANDLE hFile, void * buffer, DWORD buffersize, DWORD bufferoffset)
 	{
 		HRESULT hr = S_OK;

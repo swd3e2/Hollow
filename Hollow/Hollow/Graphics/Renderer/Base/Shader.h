@@ -1,18 +1,26 @@
 #pragma once
 
-enum ShaderType
-{
-	VERTEX, PIXEL, GEOMERTY, COMPUTE, HULL, DOMAINS
-};
+#ifndef HW_SHADER_H
+#define HW_SHADER_H
 
-class Shader
-{
-protected:
-	ShaderType type;
-public:
-	Shader(ShaderType type) :
-		type(type)
-	{}
+namespace Hollow {
+	enum ShaderType
+	{
+		VERTEX, PIXEL, GEOMERTY, COMPUTE, HULL, DOMAINS
+	};
 
-	virtual void release() = 0;
-};
+	class Shader
+	{
+	protected:
+		ShaderType type;
+	public:
+		Shader(ShaderType type) :
+			type(type)
+		{}
+
+		virtual void release() = 0;
+	};
+}
+
+
+#endif

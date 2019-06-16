@@ -3,13 +3,15 @@
 #ifndef HW_I_COMPONENT_H
 #define HW_I_COMPONENT_H
 
-class ComponentManager;
+namespace Hollow {
+	class ComponentManager;
 
-class IComponent
-{
-	friend ComponentManager;
-protected:
-	size_t componentId;
-};
+	class IComponent
+	{
+		friend ComponentManager;
+	protected:
+		size_t componentId;
+	};
+}
 
 #endif
