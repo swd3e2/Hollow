@@ -9,7 +9,7 @@ class MoveComponent : public Hollow::Component<MoveComponent>
 public:
 	MoveComponent() : move(true) {}
 	bool move;
-	float speed = 0.1f;
+	float speed = 1.0f;
 	float elapsed = 0.0f;
 	float distance = 0.0f;
 	float distancePassed = 0.0f;

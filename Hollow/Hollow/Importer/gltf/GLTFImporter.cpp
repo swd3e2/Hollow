@@ -136,6 +136,10 @@ namespace Hollow {
 			node->transformation = (scale * rotation * translation).Transpose();
 		}
 
+		if (modelNode.mesh >= 0) {
+			processMesh(node, modelNode, model, tModel, file);
+		}
+
 		for (int childId : modelNode.children) {
 			tinygltf::Node& childModelNode = tModel.nodes[childId];
 
@@ -144,10 +148,6 @@ namespace Hollow {
 
 				load(childNode, childModelNode, tModel, model, file);
 				node->childrens.push_back(childNode);
-
-				if (childModelNode.mesh >= 0) {
-					processMesh(childNode, childModelNode, model, tModel, file);
-				}
 			}
 		}
 	}
@@ -263,8 +263,7 @@ namespace Hollow {
 			for (std::pair<const std::string, tinygltf::Parameter>& values : material.values) {
 				if (values.first == "baseColorTexture") {
 					lMaterial.diffuseTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				}
-				else if (values.first == "metallicRoughnessTexture") {
+				} else if (values.first == "metallicRoughnessTexture") {
 					lMaterial.roughnesTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
 				}
 			}
@@ -272,11 +271,9 @@ namespace Hollow {
 			for (std::pair<const std::string, tinygltf::Parameter>& values : material.additionalValues) {
 				if (values.first == "emisiveTexture") {
 					lMaterial.emisiveTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				}
-				else if (values.first == "normalTexture") {
+				} else if (values.first == "normalTexture") {
 					lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				}
-				else if (values.first == "occlusionTexture") {
+				} else if (values.first == "occlusionTexture") {
 					lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
 				}
 			}
@@ -323,6 +320,7 @@ namespace Hollow {
 		lModel->rootNode = new Hollow::GLTF::Node(modelRootNode.name);
 
 		std::ifstream file("Sandbox/Resources/Meshes/" + model.buffers[0].uri, std::fstream::in | std::fstream::binary);
+
 		if (!file.is_open()) {
 			delete lModel;
 			return nullptr;
@@ -347,7 +345,7 @@ namespace Hollow {
 			gltfModel->rootAnimationNode = lModel->animationRootNode;
 		}
 		gltfModel->animations = std::move(lModel->animations);
-
+		gltfModel->materials = std::move(lModel->materials);
 
 		for (auto& model : lModel->meshes) {
 			Hollow::GLTF::Mesh* mesh = new Hollow::GLTF::Mesh;
@@ -357,7 +355,8 @@ namespace Hollow {
 				Vertex vertex;
 
 				vertex.pos = model->positions[i];
-
+				vertex.pos.x = -vertex.pos.x;
+				vertex.pos.z = -vertex.pos.z;
 				if (model->normals.size() > i) {
 					vertex.normal = model->normals[i];
 				}

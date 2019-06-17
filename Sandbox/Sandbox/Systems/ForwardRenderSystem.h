@@ -143,29 +143,27 @@ public:
 
 	void Draw(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
-		transformBuff.transform = parentTransform * node->transformation * 
-			Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
+		transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position)) *
+			parentTransform * node->transformation;
 
 		m_TransformConstantBuffer->update(&transformBuff);
 		renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
-		for (auto& it : node->childrens) {
-			if (it->mesh != -1) {
-				if (renderable->renderables[it->mesh]->material->diffuseTexture != nullptr) {
-					renderer->SetTexture(0, renderable->renderables[it->mesh]->material->diffuseTexture);
-				}
-				if (renderable->renderables[it->mesh]->material->normalTexture != nullptr) {
-					renderer->SetTexture(1, renderable->renderables[it->mesh]->material->normalTexture);
-				}
-				if (renderable->renderables[it->mesh]->material->specularTexture != nullptr) {
-					renderer->SetTexture(2, renderable->renderables[it->mesh]->material->specularTexture);
-				}
-
-				renderer->SetShader(ShaderManager::instance()->getShader("default"));
-				renderer->SetVertexBuffer(renderable->renderables[it->mesh]->vBuffer);
-				renderer->SetIndexBuffer(renderable->renderables[it->mesh]->iBuffer);
-				renderer->DrawIndexed(renderable->renderables[it->mesh]->iBuffer->getSize());
+		if (node->mesh != -1) {
+			if (renderable->renderables[node->mesh]->material->diffuseTexture != nullptr) {
+				renderer->SetTexture(0, renderable->renderables[node->mesh]->material->diffuseTexture);
 			}
+			if (renderable->renderables[node->mesh]->material->normalTexture != nullptr) {
+				renderer->SetTexture(1, renderable->renderables[node->mesh]->material->normalTexture);
+			}
+			if (renderable->renderables[node->mesh]->material->specularTexture != nullptr) {
+				renderer->SetTexture(2, renderable->renderables[node->mesh]->material->specularTexture);
+			}
+
+			renderer->SetShader(ShaderManager::instance()->getShader("default"));
+			renderer->SetVertexBuffer(renderable->renderables[node->mesh]->vBuffer);
+			renderer->SetIndexBuffer(renderable->renderables[node->mesh]->iBuffer);
+			renderer->DrawIndexed(renderable->renderables[node->mesh]->iBuffer->getSize());
 		}
 
 		for (auto& it : node->childrens) {
