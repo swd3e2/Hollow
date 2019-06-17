@@ -20,7 +20,7 @@ public:
 
 	SkyMap()
 	{
-		Hollow::TEXTURE_DESC** desc = new Hollow::TEXTURE_DESC * [6];
+		/*Hollow::TEXTURE_DESC** desc = new Hollow::TEXTURE_DESC * [6];
 
 		std::vector<std::string> filenames;
 		filenames.push_back("Sandbox/Resources/Textures/cubemap/cloudtop_ft.tga");
@@ -34,10 +34,14 @@ public:
 			desc[i] = Hollow::FreeImgImporter::instance()->import(filenames[i].c_str());
 		}
 		desc[0]->filename = "SkyMap";
+*/
+
+		Hollow::TEXTURE_DESC* desc = Hollow::FreeImgImporter::instance()->import("Sandbox/Resources/Textures/Irradiance.tga");
+		Hollow::Texture* cubemap = Hollow::TextureManager::instance()->Create3dTexture(desc);
 
 		mesh = getCube();
 		mesh->models[0]->material = new Hollow::Material();
 		mesh->models[0]->material->shader = Hollow::ShaderManager::instance()->getShader("SkyMap");
-		mesh->models[0]->material->diffuseTexture = Hollow::TextureManager::instance()->Create3dTexture(desc);
+		mesh->models[0]->material->diffuseTexture = cubemap;
 	}
 };

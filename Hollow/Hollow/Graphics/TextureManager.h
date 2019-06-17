@@ -26,6 +26,7 @@ namespace Hollow {
 		void RemoveAll();
 		virtual Texture* Create2dTexture(TEXTURE_DESC* desc) = 0;
 		virtual Texture* Create3dTexture(TEXTURE_DESC** desc) = 0;
+		virtual Texture* Create3dTexture(TEXTURE_DESC* desc) = 0;
 	};
 }
 

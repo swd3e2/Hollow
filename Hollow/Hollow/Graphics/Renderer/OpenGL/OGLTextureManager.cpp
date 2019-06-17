@@ -51,4 +51,8 @@ namespace Hollow {
 
 		return texture;
 	}
+	Texture* OGLTextureManager::Create3dTexture(TEXTURE_DESC* desc)
+	{
+		return nullptr;
+	}
 }

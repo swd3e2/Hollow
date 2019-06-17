@@ -14,6 +14,7 @@ namespace Hollow {
 	public:
 		virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;
 		virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override;
+		virtual Texture* Create3dTexture(TEXTURE_DESC* desc) override;
 	private:
 		DXGI_FORMAT getFormat(TextureFormat format);
 	};
