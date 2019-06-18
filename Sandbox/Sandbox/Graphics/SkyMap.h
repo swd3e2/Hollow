@@ -36,7 +36,7 @@ public:
 		desc[0]->filename = "SkyMap";
 */
 
-		Hollow::TEXTURE_DESC* desc = Hollow::FreeImgImporter::instance()->import("Sandbox/Resources/Textures/Irradiance.tga");
+		Hollow::TEXTURE_DESC* desc = Hollow::FreeImgImporter::instance()->import("Sandbox/Resources/Textures/cube.jpg");
 		Hollow::Texture* cubemap = Hollow::TextureManager::instance()->Create3dTexture(desc);
 
 		mesh = getCube();

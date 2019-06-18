@@ -33,6 +33,7 @@
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_textedit.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Hollow\Graphics\RendererType.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ComputeShader.h" />

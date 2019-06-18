@@ -159,11 +159,13 @@ namespace Hollow {
 		int tex1 = glGetUniformLocation(shaderProgram->shaderId, "normal_map");
 		int tex2 = glGetUniformLocation(shaderProgram->shaderId, "specular_map");
 		int tex3 = glGetUniformLocation(shaderProgram->shaderId, "shadow_map");
+		int tex4 = glGetUniformLocation(shaderProgram->shaderId, "enivironmentMap");
 
 		glUniform1i(tex0, 0);
 		glUniform1i(tex1, 1);
 		glUniform1i(tex2, 2);
 		glUniform1i(tex3, 3);
+		glUniform1i(tex4, 4);
 
 		glDeleteShader(static_cast<OGLShader*>(vertexShader)->shaderId);
 		glDeleteShader(static_cast<OGLShader*>(pixelShader)->shaderId);

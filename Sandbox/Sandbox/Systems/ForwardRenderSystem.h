@@ -20,10 +20,7 @@ using namespace Hollow;
 struct WVP
 {
 	Matrix4 WVP;
-	float gMaxTessDistance;
-	float gMinTessDistance;
-	float gMinTessFactor;
-	float gMaxTessFactor;
+	Vector3 cameraPosition;
 };
 
 struct WorldViewProjection
@@ -112,11 +109,10 @@ public:
 
 	virtual void Update(double dt)
 	{
-		//updateWVP(m_Camera);
-		////DrawWater();
-		//renderer->SetRenderTarget(target);
-		//DrawSceneGLTF();
-		//DrawSkyMap();
+		updateWVP(m_Camera);
+		renderer->SetRenderTarget(target);
+		DrawSceneGLTF();
+		DrawSkyMap();
 
 		updateWVP(m_Camera);
 		renderer->SetRenderTarget(0);
@@ -160,6 +156,8 @@ public:
 				renderer->SetTexture(2, renderable->renderables[node->mesh]->material->specularTexture);
 			}
 
+			materialConstantBuffer->update(&renderable->renderables[node->mesh]->material->materialData);
+			renderer->SetGpuBuffer(materialConstantBuffer);
 			renderer->SetShader(ShaderManager::instance()->getShader("default"));
 			renderer->SetVertexBuffer(renderable->renderables[node->mesh]->vBuffer);
 			renderer->SetIndexBuffer(renderable->renderables[node->mesh]->iBuffer);
@@ -225,6 +223,12 @@ public:
 
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->SetGpuBuffer(m_WVPConstantBuffer);
-		DrawObject(skyMap->mesh->models[0]);
+
+		renderer->SetTexture(4, skyMap->mesh->models[0]->material->diffuseTexture);
+		
+		renderer->SetShader(skyMap->mesh->models[0]->material->shader);
+		renderer->SetVertexBuffer(skyMap->mesh->models[0]->vBuffer);
+		renderer->SetIndexBuffer(skyMap->mesh->models[0]->iBuffer);
+		renderer->DrawIndexed(skyMap->mesh->models[0]->iBuffer->getSize());
 	}
 };

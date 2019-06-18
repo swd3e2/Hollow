@@ -33,6 +33,11 @@ namespace Hollow {
 			std::string occlusionTexture;
 
 			std::string name;
+			Vector4 baseColorFactor;
+			float metallicFactor = 0.0f;
+			float roughnessFactor = 0.0f;
+			float emmisiveFactor = 0.0f;
+
 			unsigned int id;
 		};
 
@@ -44,6 +49,7 @@ namespace Hollow {
 			std::vector<float*>  weigths;
 			std::vector<unsigned short*> joints;
 			std::vector<unsigned int> indices;
+			std::string name;
 			unsigned int material;
 		};
 
@@ -51,6 +57,7 @@ namespace Hollow {
 		{
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
+			std::string name;
 			unsigned int material;
 		};
 
@@ -77,6 +84,8 @@ namespace Hollow {
 
 		struct Model
 		{
+			int nodeCounter = 0;
+			int meshCounter = 0;
 			std::vector<LoadedMesh*> meshes;
 			std::unordered_map<unsigned int, Material> materials;
 			std::vector<Animation> animations;

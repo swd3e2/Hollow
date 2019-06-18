@@ -1,12 +1,11 @@
 #include "Core.h"
 
 namespace Hollow {
-	Core::Core()
+	Core::Core(RendererType type) : 
+		renderApiManager(type), windowManager(type)
 	{
 		Hollow::Console::RedirectIOToConsole();
 		Hollow::Log::Init();
-
-		imgImporter = new FreeImgImporter();
 
 		eventSystem.startUp();
 		inputManager.startUp();
@@ -14,7 +13,6 @@ namespace Hollow {
 		entityManager.startUp();
 		systemManager.startUp();
 
-		windowManager = new WindowManager();
 		m_Timer.Start();
 	}
 

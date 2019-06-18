@@ -6,19 +6,17 @@
 #include <string>
 #include "Hollow/Graphics/Renderer/Base/Texture.h"
 #include "Hollow/Graphics/ShaderManager.h"
+#include "Hollow/Math/Vector4.h"
 
 namespace Hollow {
 	struct MaterialData
 	{
+		Vector4 color;
 		// constant illumination color
-		float Ka[3] = { 0 };
-		float Ns = 0;
-		float Kd[3] = { 0 };
-		float pad = 0;
-		float Ks[3] = { 0 };
-		float pad2 = 0;
-		float Ke[3] = { 0 };
-		float pad3 = 0;
+		float metallicFactor;
+		float roughnessFactor;
+		float emmisiveFactor;
+		float pad;
 		int hasDiffuseTexture = 0;
 		int hasNormalMap = 0;
 		int hasSpecularMap = 0;

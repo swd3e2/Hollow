@@ -10,6 +10,7 @@ struct GLTFRenderableObject
 	Hollow::IndexBuffer* iBuffer;
 	Hollow::VertexBuffer* vBuffer;
 	Hollow::Material* material;
+	std::string name;
 
 	GLTFRenderableObject(Hollow::IndexBuffer* iBuffer, Hollow::VertexBuffer* vBuffer) :
 		iBuffer(iBuffer), vBuffer(vBuffer)
@@ -31,10 +32,15 @@ public:
 				Hollow::HardwareBufferManager::instance()->createIndexBuffer(mesh->indices.data(), mesh->indices.size()),
 				Hollow::HardwareBufferManager::instance()->createVertexBuffer(mesh->vertices.data(), mesh->vertices.size())
 			);
+			gltfModel->name = mesh->name;
 
 			// Material data
 			gltfModel->material = new Hollow::Material();
 			gltfModel->material->name = model->materials[mesh->material].name;
+			gltfModel->material->materialData.color = model->materials[mesh->material].baseColorFactor;
+			gltfModel->material->materialData.metallicFactor = model->materials[mesh->material].metallicFactor;
+			gltfModel->material->materialData.roughnessFactor = model->materials[mesh->material].roughnessFactor;
+			gltfModel->material->materialData.emmisiveFactor = model->materials[mesh->material].emmisiveFactor;
 
 			if (model->materials[mesh->material].diffuseTexture.size()) {
 				gltfModel->material->diffuseTexture = Hollow::TextureManager::instance()->CreateTextureFromFile(model->materials[mesh->material].diffuseTexture);

@@ -4,7 +4,7 @@ struct SKYMAP_VS_OUTPUT    //output structure for skymap vertex shader
 	float3 texCoord : TEXCOORD;
 };
 
-TextureCube SkyMap : TEXTUTRE: register(t0);
+TextureCube SkyMap : TEXTUTRE: register(t4);
 
 SamplerState SampleTypeClamp : register(s0);
 SamplerState SampleTypeWrap : register(s1);

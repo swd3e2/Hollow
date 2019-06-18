@@ -53,6 +53,96 @@ namespace Hollow {
 	}
 	Texture* OGLTextureManager::Create3dTexture(TEXTURE_DESC* desc)
 	{
-		return nullptr;
+		int xOffset = desc->width / 4;
+		int yOffset = desc->height / 3;
+		std::array<unsigned char*, 6> data;
+		for (int i = 0; i < data.size(); i++) {
+			data[i] = new unsigned char[xOffset * yOffset * 4];
+		}
+
+		unsigned char* textureData = (unsigned char*)desc->mInitialData;
+
+		OGLTexture* texture = new OGLTexture(xOffset, yOffset);
+		texture->type = TextureType::TEXTURE_CUBE;
+
+		// forward 1 1
+		// ? * xOffset * 4 - width | yOffset * desc->width * ? * 4 - plane
+		for (int oy = 0; oy < yOffset; oy++) {
+			for (int ox = 0; ox < xOffset; ox++) {
+				data[4][ox * 4 + oy * yOffset * 4 + 0] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 0];
+				data[4][ox * 4 + oy * yOffset * 4 + 1] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 1];
+				data[4][ox * 4 + oy * yOffset * 4 + 2] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 2];
+				data[4][ox * 4 + oy * yOffset * 4 + 3] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 3];
+			}
+		}
+
+		// back  2 1
+		for (int oy = 0; oy < yOffset; oy++) {
+			for (int ox = 0; ox < xOffset; ox++) {
+				data[5][ox * 4 + oy * yOffset * 4 + 0] = textureData[(ox * 4) + (3 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 0];
+				data[5][ox * 4 + oy * yOffset * 4 + 1] = textureData[(ox * 4) + (3 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 1];
+				data[5][ox * 4 + oy * yOffset * 4 + 2] = textureData[(ox * 4) + (3 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 2];
+				data[5][ox * 4 + oy * yOffset * 4 + 3] = textureData[(ox * 4) + (3 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 3];
+			}
+		}
+
+		// up 1 0
+		for (int oy = 0; oy < yOffset; oy++) {
+			for (int ox = 0; ox < xOffset; ox++) {
+				data[2][ox * 4 + oy * yOffset * 4 + 0] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 0 * 4) + (oy * desc->width * 4) + 0];
+				data[2][ox * 4 + oy * yOffset * 4 + 1] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 0 * 4) + (oy * desc->width * 4) + 1];
+				data[2][ox * 4 + oy * yOffset * 4 + 2] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 0 * 4) + (oy * desc->width * 4) + 2];
+				data[2][ox * 4 + oy * yOffset * 4 + 3] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 0 * 4) + (oy * desc->width * 4) + 3];
+			}
+		}
+
+		// down 1 2
+		for (int oy = 0; oy < yOffset; oy++) {
+			for (int ox = 0; ox < xOffset; ox++) {
+				data[3][ox * 4 + oy * yOffset * 4 + 0] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 2 * 4) + (oy * desc->width * 4) + 0];
+				data[3][ox * 4 + oy * yOffset * 4 + 1] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 2 * 4) + (oy * desc->width * 4) + 1];
+				data[3][ox * 4 + oy * yOffset * 4 + 2] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 2 * 4) + (oy * desc->width * 4) + 2];
+				data[3][ox * 4 + oy * yOffset * 4 + 3] = textureData[(ox * 4) + (1 * xOffset * 4) + (yOffset * desc->width * 2 * 4) + (oy * desc->width * 4) + 3];
+			}
+		}
+
+		// right 2 1
+		for (int oy = 0; oy < yOffset; oy++) {
+			for (int ox = 0; ox < xOffset; ox++) {
+				data[0][ox * 4 + oy * yOffset * 4 + 0] = textureData[(ox * 4) + (2 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 0];
+				data[0][ox * 4 + oy * yOffset * 4 + 1] = textureData[(ox * 4) + (2 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 1];
+				data[0][ox * 4 + oy * yOffset * 4 + 2] = textureData[(ox * 4) + (2 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 2];
+				data[0][ox * 4 + oy * yOffset * 4 + 3] = textureData[(ox * 4) + (2 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 3];
+			}
+		}
+
+		// left 0 1
+		for (int oy = 0; oy < yOffset; oy++) {
+			for (int ox = 0; ox < xOffset; ox++) {
+				data[1][ox * 4 + oy * yOffset * 4 + 0] = textureData[(ox * 4) + (0 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 0];
+				data[1][ox * 4 + oy * yOffset * 4 + 1] = textureData[(ox * 4) + (0 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 1];
+				data[1][ox * 4 + oy * yOffset * 4 + 2] = textureData[(ox * 4) + (0 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 2];
+				data[1][ox * 4 + oy * yOffset * 4 + 3] = textureData[(ox * 4) + (0 * xOffset * 4) + (yOffset * desc->width * 1 * 4) + (oy * desc->width * 4) + 3];
+			}
+		}
+
+
+		glGenTextures(1, &texture->textureId);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->textureId);
+		for (int i = 0; i < 6; i++) {
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, xOffset, yOffset, 0, GL_BGRA, GL_UNSIGNED_BYTE, data[i]);
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+		delete desc;
+
+		return texture;
 	}
 }

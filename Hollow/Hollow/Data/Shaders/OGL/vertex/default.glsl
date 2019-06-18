@@ -14,6 +14,7 @@ out VS_OUT
 	vec3 normal;
 	vec3 tangent;
 	vec3 bitangent;
+	vec3 cubemapDirection;
 } vs_out;
 
 layout(std140, binding = 0) uniform Matrices
@@ -26,6 +27,18 @@ layout(std140, binding = 2) uniform PerObject
 {
 	mat4 transform;
 	bool hasAnimation;
+};
+
+layout(std140, binding = 4) uniform MaterialData
+{
+	vec4 color;
+	float metallicFactor;
+	float roughnessFactor;
+	float emmisiveFactor;
+	float pad;
+	bool hasDiffuseTexture;
+	bool hasNormalMap;
+	bool hasSpecularMap;
 };
 
 layout(std140, binding = 7) uniform Bones
@@ -46,7 +59,7 @@ void main()
 
 		gl_Position = gl_Position * BoneTransform;
 	}*/
-	vs_out.normal = normal;
+	vs_out.normal = normal * mat3(transform);
 
 	gl_Position = gl_Position * transform;
 	gl_Position = gl_Position * WVP;
@@ -54,4 +67,7 @@ void main()
 	vs_out.texCoord = texCoord;
 	vs_out.tangent = tangent;
 	vs_out.bitangent = bitangent;
+
+	vec3 temp = cameraPosition - vec3(gl_Position);
+	vs_out.cubemapDirection = reflect(temp, normal);
 }

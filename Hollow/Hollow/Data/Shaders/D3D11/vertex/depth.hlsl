@@ -1,6 +1,7 @@
 cbuffer ConstantBuffer : register(b0)
 {
     matrix WVP;
+	float3 cameraPosition;
 }
 
 cbuffer ConstantBuffer : register(b1)

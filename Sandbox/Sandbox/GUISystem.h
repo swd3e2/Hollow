@@ -20,6 +20,7 @@
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
+#include "Sandbox/Components/GLTFRenderable.h"
 
 using namespace Hollow;
 
@@ -30,7 +31,7 @@ public:
 	std::string filename = "";
 	GameObject* selectedGameObject;
 	ForwardRenderSystem* renderSystem;
-	Model* selectedModel;
+	GLTFRenderableObject* selectedRenderable;
 	Material* selectedMaterial;
 
 	GUISystem(Window* window, RenderApi* renderer)
@@ -148,32 +149,13 @@ public:
 
 		ImGui::Begin("Inspector");
 		ImGui::Text("Renderable component");
-		//if (selectedGameObject != nullptr) {
-		//	if (selectedGameObject->hasComponent<RenderableComponent>()) {
-		//		Mesh* mesh = selectedGameObject->getComponent<RenderableComponent>()->mesh;
-		//		
-		//		if (ImGui::TreeNode("Mesh")) {
-		//			for (int i = 0; i < mesh->numModels; i++) {
-		//				Model* model = mesh->models[i];
-		//				if (ImGui::Selectable(mesh->models[i]->name.c_str())) {
-		//					selectedModel = mesh->models[i];
-		//					selectedMaterial = mesh->models[i]->material;
-		//				}
-		//			}
-		//			ImGui::TreePop();
-		//		}
-		//	} else {
-		//		if (ImGui::Button("Add mesh")) {
-		//			filename = Hollow::FileSystem::OpenFile("");
-		//			/*if (filename.size()) {
-		//				MeshImportData* data = MeshImporter::instance()->import(filename.c_str(), false);
-		//				if (data) {
-		//					selectedGameObject->addComponent<RenderableComponent>(data->meshData);
-		//				}
-		//			}*/
-		//		}
-		//	}
-		//}
+		if (selectedGameObject != nullptr) {
+			if (selectedGameObject->hasComponent<GLTFRenderable>()) {
+				GLTFRenderable* renderableComponent = selectedGameObject->getComponent<GLTFRenderable>();
+				std::vector<GLTFRenderableObject*>& renderables = selectedGameObject->getComponent<GLTFRenderable>()->renderables;
+				drawNodes(renderableComponent->rootNode, renderables);
+			}
+		}
 
 		ImGui::Text("Transform component");
 		if (selectedGameObject != nullptr) {
@@ -268,6 +250,21 @@ public:
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
+		}
+	}
+
+	void drawNodes(Hollow::GLTF::Node* node, std::vector<GLTFRenderableObject*>& renderables) {
+		if (ImGui::TreeNode(node->name.c_str())) {
+			if (node->mesh >= 0) {
+				if (ImGui::Selectable(renderables[node->mesh]->name.c_str())) {
+					selectedMaterial = renderables[node->mesh]->material;
+				}
+			}
+			
+			for (auto& it : node->childrens) {
+				drawNodes(it, renderables);
+			}
+			ImGui::TreePop();
 		}
 	}
 };

@@ -6,32 +6,39 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Core/CModule.h"
 #include "Renderer/Base/RenderApi.h"
-
-#ifdef D3D11
 #include "Renderer/DirectX/D3D11RenderApi.h"
-#endif
-#ifdef OPENGL
 #include "Renderer/OpenGL/OGLRenderApi.h"
-#endif
+#include "RendererType.h"
 
 namespace Hollow {
 	class RenderApiManager : public CModule<RenderApiManager>
 	{
+	private:
+		RendererType rendererType;
+		RenderApi* renderer;
 	public:
-		RenderApiManager() { setStartedUp(); }
-		~RenderApiManager() { setShutdown(); }
-
-		RenderApi* initialize(int width, int height) const
-		{
-			RenderApi* renderer = nullptr;
-#ifdef D3D11
-			renderer = new D3D11RenderApi(width, height);
-#endif
-#ifdef OPENGL
-			renderer = new OGLRenderApi(width, height);
-#endif
-			return renderer;
+		RenderApiManager(RendererType type) :
+			rendererType(type)
+		{ 
+			setStartedUp(); 
 		}
+
+		~RenderApiManager() 
+		{ 
+			setShutdown(); 
+		}
+
+		RenderApi* initialize(int width, int height)
+		{
+			switch (rendererType)
+			{
+				case RendererType::None: return nullptr;
+				case RendererType::OpenGL: return (renderer = new OGLRenderApi(width, height));
+				case RendererType::DirectX: return (renderer = new D3D11RenderApi(width, height));
+			}
+		}
+
+		inline RendererType getRendererType() const { return rendererType; }
 	};
 }
 

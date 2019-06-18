@@ -34,11 +34,11 @@ namespace Hollow {
 		InputManager					inputManager;
 		TaskManager						taskManager;
 		RenderApiManager				renderApiManager;
-		FreeImgImporter*				imgImporter;
-		WindowManager*					windowManager;
+		FreeImgImporter					imgImporter;
+		WindowManager					windowManager;
 		double							dt;
 	public:
-		Core();
+		Core(RendererType type);
 		~Core();
 
 		void PreUpdate();

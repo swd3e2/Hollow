@@ -144,7 +144,8 @@ namespace Hollow {
 			tinygltf::Node& childModelNode = tModel.nodes[childId];
 
 			if (hasMesh(childModelNode, tModel)) {
-				Hollow::GLTF::Node* childNode = new Hollow::GLTF::Node(childModelNode.name);
+				std::string name = childModelNode.name.size() ? childModelNode.name : ("Node " + std::to_string(model.nodeCounter++));
+				Hollow::GLTF::Node* childNode = new Hollow::GLTF::Node(name);
 
 				load(childNode, childModelNode, tModel, model, file);
 				node->childrens.push_back(childNode);
@@ -159,6 +160,7 @@ namespace Hollow {
 		// Poisitons and normals
 		tinygltf::Mesh& tMesh = tModel.meshes[childModelNode.mesh];
 		mesh->material = tMesh.primitives[0].material;
+		mesh->name = tMesh.name.size() ? tMesh.name : ("Mesh " + std::to_string(model.meshCounter));
 
 		for (std::pair<const std::string, int>& attribute : tMesh.primitives[0].attributes) {
 			tinygltf::Accessor& accessor = tModel.accessors[attribute.second];
@@ -265,6 +267,17 @@ namespace Hollow {
 					lMaterial.diffuseTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
 				} else if (values.first == "metallicRoughnessTexture") {
 					lMaterial.roughnesTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+				} else if (values.first == "metallicFactor") {
+					lMaterial.metallicFactor = values.second.number_value;
+				} else if (values.first == "roughnessFactor") {
+					lMaterial.roughnessFactor = values.second.number_value;
+				} else if (values.first == "baseColorFactor") {
+					lMaterial.baseColorFactor =  Vector4(
+							values.second.number_array[0], 
+							values.second.number_array[1], 
+							values.second.number_array[2],
+							values.second.number_array[3]
+						);
 				}
 			}
 
@@ -275,6 +288,8 @@ namespace Hollow {
 					lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
 				} else if (values.first == "occlusionTexture") {
 					lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+				} else if (values.first == "emmisiveFactor") {
+					lMaterial.emmisiveFactor = values.second.number_value;
 				}
 			}
 
@@ -350,6 +365,7 @@ namespace Hollow {
 		for (auto& model : lModel->meshes) {
 			Hollow::GLTF::Mesh* mesh = new Hollow::GLTF::Mesh;
 			mesh->material = model->material;
+			mesh->name = model->name;
 
 			for (int i = 0; i < model->positions.size(); i++) {
 				Vertex vertex;

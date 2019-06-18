@@ -7,12 +7,9 @@ in VS_OUT
 
 out vec4 FragColor;
 
-uniform samplerCube ambient_map;
-uniform samplerCube normal_map;
-uniform samplerCube specular_map;
-uniform samplerCube shadow_map;
+uniform samplerCube enivironmentMap;
 
 void main()
 {
-	FragColor = texture(ambient_map, fs_in.texCoord);
+	FragColor = texture(enivironmentMap, fs_in.texCoord);
 }
