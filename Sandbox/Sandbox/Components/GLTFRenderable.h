@@ -11,6 +11,7 @@ struct GLTFRenderableObject
 	Hollow::VertexBuffer* vBuffer;
 	Hollow::Material* material;
 	std::string name;
+	unsigned int id;
 
 	GLTFRenderableObject(Hollow::IndexBuffer* iBuffer, Hollow::VertexBuffer* vBuffer) :
 		iBuffer(iBuffer), vBuffer(vBuffer)
@@ -33,6 +34,7 @@ public:
 				Hollow::HardwareBufferManager::instance()->createVertexBuffer(mesh->vertices.data(), mesh->vertices.size())
 			);
 			gltfModel->name = mesh->name;
+			gltfModel->id = mesh->id;
 
 			// Material data
 			gltfModel->material = new Hollow::Material();

@@ -20,12 +20,14 @@ out VS_OUT
 layout(std140, binding = 0) uniform Matrices
 {
 	mat4 WVP;
-	vec3 cameraPosition;
 };
 
 layout(std140, binding = 2) uniform PerObject
 {
 	mat4 transform;
+	vec3 cameraPosition;
+	float pad2;
+	bool selected;
 	bool hasAnimation;
 };
 

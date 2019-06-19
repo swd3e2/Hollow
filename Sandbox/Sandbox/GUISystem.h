@@ -24,6 +24,11 @@
 
 using namespace Hollow;
 
+enum DrawTypes {
+	Debug = 0,
+	Default = 1
+};
+
 class GUISystem
 {
 public:
@@ -33,6 +38,7 @@ public:
 	ForwardRenderSystem* renderSystem;
 	GLTFRenderableObject* selectedRenderable;
 	Material* selectedMaterial;
+	int drawMode = 0;
 
 	GUISystem(Window* window, RenderApi* renderer)
 	{
@@ -110,6 +116,10 @@ public:
 		begin();
 
 		ImGui::Begin("Main");
+
+		ImGui::Text((std::to_string(renderSystem->selectedColor.x) + " " + std::to_string(renderSystem->selectedColor.y) + " " + std::to_string(renderSystem->selectedColor.z) + " " + std::to_string(renderSystem->selectedColor.w)).c_str());
+		ImGui::Text((std::to_string(renderSystem->pickedID)).c_str());
+
 		if (ImGui::TreeNode("Shaders")) {
 			auto& shaders = ShaderManager::instance()->shaders;
 			for (auto& it : shaders) {
@@ -123,12 +133,7 @@ public:
 			}
 			ImGui::TreePop();
 		}
-#ifdef OPENGL
-		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->target)->texture, ImVec2(100, 100));
-#endif
-#ifdef D3D11
-		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->target)->GetShaderResourceView(), ImVec2(100, 100));
-#endif
+
 		if (ImGui::Button("Delete all textures")) {
 			TextureManager::instance()->RemoveAll();
 		}
@@ -229,7 +234,14 @@ public:
 		}
 
 		ImGui::End();
-
+		ImGui::Begin("Scene");
+#ifdef OPENGL
+			ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug)->texture, ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImVec2(0, 1), ImVec2(1, 0));
+#endif
+#ifdef D3D11
+			ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->debug)->GetShaderResourceView(), ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
+#endif
+		ImGui::End();
 		end();
 	}
 

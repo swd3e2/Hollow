@@ -32,6 +32,7 @@ namespace Hollow {
 		inline ID3D11DepthStencilView* GetDepthStencilView() const { return m_DepthStencilView; }
 		inline ID3D11DepthStencilState* GetDepthStencilState() const { return m_DepthStencilState; }
 		inline ID3D11ShaderResourceView* GetDepthStencilResource() const { return m_DepthResourceView; }
+		virtual Vector4 readPixel(int x, int y) override;
 	private:
 		ID3D11RenderTargetView* renderTarget;
 		ID3D11Texture2D* m_BackBuffer;

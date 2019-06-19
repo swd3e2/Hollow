@@ -12,7 +12,7 @@ namespace Hollow {
 	public:
 		RenderTargetManager() { setStartedUp(); }
 		~RenderTargetManager() { setShutdown(); }
-		virtual RenderTarget* create(int width, int height) = 0;
+		virtual RenderTarget* create(int width, int height, RenderTargetFlags flags = RenderTargetFlags::NONE) = 0;
 	};
 }
 

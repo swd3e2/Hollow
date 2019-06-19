@@ -173,10 +173,12 @@
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RasterizerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderApi.cpp" />
     <ClCompile Include="Hollow\Graphics\Camera.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\DirectX\D3D11SamplerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLHardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderApi.cpp" />
+    <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLRenderTargetManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp" />

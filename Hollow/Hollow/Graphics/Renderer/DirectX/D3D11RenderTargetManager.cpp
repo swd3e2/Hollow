@@ -3,7 +3,7 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	RenderTarget* D3D11RenderTargetManager::create(int width, int height)
+	RenderTarget* D3D11RenderTargetManager::create(int width, int height, RenderTargetFlags flags)
 	{
 		D3D11RenderTarget* renderTarget = new D3D11RenderTarget(width, height);
 
@@ -22,8 +22,13 @@ namespace Hollow {
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
 		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		textureDesc.CPUAccessFlags = 0;
+		
+		if (flags == RenderTargetFlags::ACCESS_BY_CPU) {
+			textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
+		}
+
 		textureDesc.MiscFlags = 0;
+		textureDesc.CPUAccessFlags = 0;
 
 		hr = device->CreateTexture2D(&textureDesc, NULL, &renderTarget->m_BackBuffer);
 		if (hr != S_OK) {
@@ -55,10 +60,9 @@ namespace Hollow {
 		DXGI_FORMAT resformat = GetDepthResourceFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
 		DXGI_FORMAT srvformat = GetDepthSRVFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
 
-		D3D11_TEXTURE2D_DESC desc;
+		D3D11_TEXTURE2D_DESC desc = {};
 		desc.ArraySize = 1;
 		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0;
 		desc.Format = resformat;
 		desc.Height = height;
 		desc.MipLevels = 1;

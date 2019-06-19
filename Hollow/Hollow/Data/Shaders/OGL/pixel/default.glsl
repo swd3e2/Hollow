@@ -23,6 +23,15 @@ layout(std140, binding = 4) uniform MaterialData
 	bool hasSpecularMap;
 };
 
+layout(std140, binding = 2) uniform PerObject
+{
+	mat4 transform;
+	vec3 cameraPosition;
+	float pad2;
+	bool selected;
+	bool hasAnimation;
+};
+
 uniform sampler2D ambient_map;
 uniform sampler2D normal_map;
 uniform sampler2D specular_map;
@@ -31,6 +40,10 @@ uniform samplerCube enivironmentMap;
 
 void main()
 {
-	FragColor = roughnessFactor * texture(enivironmentMap, fs_in.cubemapDirection);
+	if (selected) {
+		FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+	} else {
+		FragColor = roughnessFactor * texture(enivironmentMap, fs_in.cubemapDirection);
+	}
 	//FragColor += dot(fs_in.normal, vec3(0.0f, 1.0f, -0.5f)) * vec4(0.5f, 0.5f, 0.5f, 1.0f);
 }

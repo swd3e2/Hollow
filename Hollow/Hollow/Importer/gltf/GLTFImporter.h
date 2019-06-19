@@ -51,6 +51,7 @@ namespace Hollow {
 			std::vector<unsigned int> indices;
 			std::string name;
 			unsigned int material;
+			unsigned int id;
 		};
 
 		struct Mesh
@@ -59,6 +60,7 @@ namespace Hollow {
 			std::vector<unsigned int> indices;
 			std::string name;
 			unsigned int material;
+			unsigned int id;
 		};
 
 		struct Node
@@ -84,8 +86,9 @@ namespace Hollow {
 
 		struct Model
 		{
-			int nodeCounter = 0;
-			int meshCounter = 0;
+			unsigned int meshIdCounter = 0;
+			unsigned int nodeCounter = 0;
+			unsigned int meshCounter = 0;
 			std::vector<LoadedMesh*> meshes;
 			std::unordered_map<unsigned int, Material> materials;
 			std::vector<Animation> animations;

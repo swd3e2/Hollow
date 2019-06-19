@@ -14,6 +14,7 @@
 #include "Hollow/Graphics/GPUBufferManager.h"
 #include "Hollow/Graphics/RenderTargetManager.h"
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
+#include "Hollow/Common/Log.h"
 
 using namespace Hollow;
 
@@ -21,6 +22,8 @@ struct WVP
 {
 	Matrix4 WVP;
 	Vector3 cameraPosition;
+	Vector2 cursorPosition;
+	Vector3 outputColor;
 };
 
 struct WorldViewProjection
@@ -44,7 +47,10 @@ struct LightMatrices
 struct TransformBuff
 {
 	Matrix4 transform;
-	bool hasAnimation;
+	Vector3 color;
+	float pad;
+	int selected;
+	int hasAnimation;
 };
 
 struct LightInfo
@@ -58,7 +64,10 @@ public:
 	LightInfo				pointLights;
 	Camera* m_Camera;
 	SkyMap* skyMap;
-	RenderTarget* target;
+	RenderTarget* main;
+	RenderTarget* debug;
+	Vector4 selectedColor;
+	int pickedID = -1;
 private:
 	RenderApi* renderer;
 private:
@@ -94,7 +103,7 @@ public:
 		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		target = RenderTargetManager::instance()->create(1600, 900);
+		debug = RenderTargetManager::instance()->create(1600, 900, RenderTargetFlags::ACCESS_BY_CPU);
 
 		renderer->SetViewport(0, 0, 1600, 900);
 		m_worldViewProjection.offset = 0.0f;
@@ -103,21 +112,26 @@ public:
 	virtual void PreUpdate(double dt)
 	{
 		renderer->ClearRenderTarget(0, (float*)ClearColor);
-		renderer->ClearRenderTarget(target, ClearColor);
+		renderer->ClearRenderTarget(main, ClearColor);
+		renderer->ClearRenderTarget(debug, ClearColor);
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
 	}
 
 	virtual void Update(double dt)
 	{
 		updateWVP(m_Camera);
-		renderer->SetRenderTarget(target);
-		DrawSceneGLTF();
-		DrawSkyMap();
+		renderer->SetRenderTarget(debug);
+		DrawSceneForPicker();
 
-		updateWVP(m_Camera);
 		renderer->SetRenderTarget(0);
 		DrawSceneGLTF();
 		DrawSkyMap();
+
+		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+			HW_TRACE("{} {}", InputManager::mcx, InputManager::mcy);
+			selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
+			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
+		}
 	}
 
 	virtual void PostUpdate(double dt)
@@ -141,6 +155,12 @@ public:
 	{
 		transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position)) *
 			parentTransform * node->transformation;
+
+		if (pickedID == node->mesh) {
+			transformBuff.selected = true;
+		} else {
+			transformBuff.selected = false;
+		}
 
 		m_TransformConstantBuffer->update(&transformBuff);
 		renderer->SetGpuBuffer(m_TransformConstantBuffer);
@@ -169,10 +189,50 @@ public:
 		}
 	}
 
+	void DrawSceneForPicker()
+	{
+		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			if (entity.hasComponent<GLTFRenderable>() && entity.hasComponent<TransformComponent>()) {
+				GLTFRenderable* renderable = entity.getComponent<GLTFRenderable>();
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+				DrawForPicker(renderable->rootNode, renderable, transform, Matrix4::Identity());
+			}
+		}
+	}
+
+	void DrawForPicker(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
+	{
+		if (node->mesh != -1) {
+			transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position)) *
+				parentTransform * node->transformation;
+
+			float r = ((renderable->renderables[node->mesh]->id & 0x000000FF) >> 0) / 255.0f;
+			float g = ((renderable->renderables[node->mesh]->id & 0x0000FF00) >> 8) / 255.0f;
+			float b = ((renderable->renderables[node->mesh]->id & 0x00FF0000) >> 1) / 255.0f;
+
+			transformBuff.color = Vector3(r, g, b);
+			m_TransformConstantBuffer->update(&transformBuff);
+			renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+			materialConstantBuffer->update(&renderable->renderables[node->mesh]->material->materialData);
+			renderer->SetGpuBuffer(materialConstantBuffer);
+			renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+			renderer->SetVertexBuffer(renderable->renderables[node->mesh]->vBuffer);
+			renderer->SetIndexBuffer(renderable->renderables[node->mesh]->iBuffer);
+			renderer->DrawIndexed(renderable->renderables[node->mesh]->iBuffer->getSize());
+		}
+
+		for (auto& it : node->childrens) {
+			DrawForPicker(it, renderable, transform, node->transformation);
+		}
+	}
+
 	// Update world view projection matrix
 	void updateWVP(Camera* camera)
 	{
 		m_wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
+		m_wvp.cursorPosition = Vector2(InputManager::mcx, InputManager::mcy);
 
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->SetGpuBuffer(m_WVPConstantBuffer);

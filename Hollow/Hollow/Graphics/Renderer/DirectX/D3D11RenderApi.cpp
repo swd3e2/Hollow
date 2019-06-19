@@ -47,14 +47,14 @@ namespace Hollow {
 		IDXGISwapChain* swapChain;
 
 		DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
-		swapChainDesc.BufferCount = 1;
+		swapChainDesc.BufferCount = 2;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.BufferDesc.Height = height;
 		swapChainDesc.BufferDesc.Width = width;
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 		swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 		swapChainDesc.Windowed = TRUE;
 		swapChainDesc.SampleDesc.Quality = 0;
@@ -212,8 +212,7 @@ namespace Hollow {
 			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
 			context->getDeviceContext()->ClearRenderTargetView(d3d11RenderTarget->GetRenderTaget(), color);
 			context->getDeviceContext()->ClearDepthStencilView(d3d11RenderTarget->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		}
-		else {
+		} else {
 			context->getDeviceContext()->ClearRenderTargetView(this->renderTarget, color);
 			context->getDeviceContext()->ClearDepthStencilView(this->m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		}
@@ -232,8 +231,7 @@ namespace Hollow {
 			auto ptr = d3d11RenderTarget->GetRenderTaget();
 			context->getDeviceContext()->OMSetRenderTargets(1, &ptr, d3d11RenderTarget->GetDepthStencilView());
 			context->getDeviceContext()->OMSetDepthStencilState(d3d11RenderTarget->GetDepthStencilState(), 0);
-		}
-		else {
+		} else {
 			context->getDeviceContext()->OMSetRenderTargets(1, &this->renderTarget, this->m_DepthStencilView);
 			context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilState, 0);
 		}

@@ -161,6 +161,7 @@ namespace Hollow {
 		tinygltf::Mesh& tMesh = tModel.meshes[childModelNode.mesh];
 		mesh->material = tMesh.primitives[0].material;
 		mesh->name = tMesh.name.size() ? tMesh.name : ("Mesh " + std::to_string(model.meshCounter));
+		mesh->id = model.meshIdCounter++;
 
 		for (std::pair<const std::string, int>& attribute : tMesh.primitives[0].attributes) {
 			tinygltf::Accessor& accessor = tModel.accessors[attribute.second];
@@ -366,6 +367,7 @@ namespace Hollow {
 			Hollow::GLTF::Mesh* mesh = new Hollow::GLTF::Mesh;
 			mesh->material = model->material;
 			mesh->name = model->name;
+			mesh->id = model->id;
 
 			for (int i = 0; i < model->positions.size(); i++) {
 				Vertex vertex;
