@@ -289,8 +289,8 @@ namespace Hollow {
 					lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
 				} else if (values.first == "occlusionTexture") {
 					lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				} else if (values.first == "emmisiveFactor") {
-					lMaterial.emmisiveFactor = values.second.number_value;
+				} else if (values.first == "emissiveFactor") {
+					lMaterial.emissiveFactor = values.second.number_value;
 				}
 			}
 

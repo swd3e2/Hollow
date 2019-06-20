@@ -36,7 +36,7 @@ namespace Hollow {
 			Vector4 baseColorFactor;
 			float metallicFactor = 0.0f;
 			float roughnessFactor = 0.0f;
-			float emmisiveFactor = 0.0f;
+			float emissiveFactor = 0.0f;
 
 			unsigned int id;
 		};

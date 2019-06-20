@@ -15,7 +15,7 @@ namespace Hollow {
 		// constant illumination color
 		float metallicFactor;
 		float roughnessFactor;
-		float emmisiveFactor;
+		float emissiveFactor;
 		float pad;
 		int hasDiffuseTexture = 0;
 		int hasNormalMap = 0;

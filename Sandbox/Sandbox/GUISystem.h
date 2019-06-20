@@ -16,11 +16,14 @@
 #include "Hollow/Graphics/Renderer/DirectX/D3D11RenderTarget.h"
 #include "Hollow/Graphics/Renderer/OpenGL/OGLRenderTarget.h"
 #include "Hollow/Graphics/TextureManager.h"
+#include <Hollow/Events/IEventListener.h>
+#include <Hollow/Events/EventSystem.h>
 
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
 #include "Sandbox/Components/GLTFRenderable.h"
+#include "Sandbox/Events.h"
 
 using namespace Hollow;
 
@@ -29,7 +32,7 @@ enum DrawTypes {
 	Default = 1
 };
 
-class GUISystem
+class GUISystem : public Hollow::IEventListener
 {
 public:
 	bool open = true;
@@ -42,6 +45,9 @@ public:
 
 	GUISystem(Window* window, RenderApi* renderer)
 	{
+		Hollow::EventSystem::instance()->addEventListener(this, &GUISystem::onChangePickedMesh, ChangeSelectedEntity::getStaticEventId());
+
+
 		bool result = true;
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -117,9 +123,6 @@ public:
 
 		ImGui::Begin("Main");
 
-		ImGui::Text((std::to_string(renderSystem->selectedColor.x) + " " + std::to_string(renderSystem->selectedColor.y) + " " + std::to_string(renderSystem->selectedColor.z) + " " + std::to_string(renderSystem->selectedColor.w)).c_str());
-		ImGui::Text((std::to_string(renderSystem->pickedID)).c_str());
-
 		if (ImGui::TreeNode("Shaders")) {
 			auto& shaders = ShaderManager::instance()->shaders;
 			for (auto& it : shaders) {
@@ -175,6 +178,11 @@ public:
 
 		ImGui::Begin("Material properties");
 		if (selectedMaterial != nullptr) {
+			ImGui::DragFloat4("Base color", (float*)&selectedMaterial->materialData.color, 0.001f, 0.0f, 1.0f);
+			ImGui::DragFloat("Metallic", &selectedMaterial->materialData.metallicFactor, 0.001f, 0.0f, 1.0f);
+			ImGui::DragFloat("Emissive", &selectedMaterial->materialData.emissiveFactor, 0.001f, 0.0f, 1.0f);
+			ImGui::DragFloat("Roughness", &selectedMaterial->materialData.roughnessFactor, 0.001f, 0.0f, 1.0f);
+
 			ImGui::Text("Diffuse texture");
 			if (selectedMaterial->diffuseTexture != nullptr) {
 #ifdef OPENGL
@@ -277,6 +285,18 @@ public:
 				drawNodes(it, renderables);
 			}
 			ImGui::TreePop();
+		}
+	}
+
+	void onChangePickedMesh(Hollow::IEvent* event)
+	{
+		ChangeSelectedEntity* changeEvent = reinterpret_cast<ChangeSelectedEntity*>(event);
+		if (selectedGameObject != nullptr && selectedGameObject->hasComponent<GLTFRenderable>()) {
+			GLTFRenderable* renderable = selectedGameObject->getComponent<GLTFRenderable>();
+			std::vector<GLTFRenderableObject*>& renderables = renderable->renderables;
+			if (changeEvent->pickedId < renderables.size()) {
+				selectedMaterial = renderables[changeEvent->pickedId]->material;
+			}
 		}
 	}
 };

@@ -18,6 +18,7 @@
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
     <ClInclude Include="Sandbox\GUISystem.h" />
     <ClInclude Include="Sandbox\Systems\ForwardRenderSystem.h" />
+    <ClInclude Include="Sandbox\Events.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

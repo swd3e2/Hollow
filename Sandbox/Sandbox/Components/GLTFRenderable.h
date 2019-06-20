@@ -42,7 +42,7 @@ public:
 			gltfModel->material->materialData.color = model->materials[mesh->material].baseColorFactor;
 			gltfModel->material->materialData.metallicFactor = model->materials[mesh->material].metallicFactor;
 			gltfModel->material->materialData.roughnessFactor = model->materials[mesh->material].roughnessFactor;
-			gltfModel->material->materialData.emmisiveFactor = model->materials[mesh->material].emmisiveFactor;
+			gltfModel->material->materialData.emissiveFactor = model->materials[mesh->material].emissiveFactor;
 
 			if (model->materials[mesh->material].diffuseTexture.size()) {
 				gltfModel->material->diffuseTexture = Hollow::TextureManager::instance()->CreateTextureFromFile(model->materials[mesh->material].diffuseTexture);

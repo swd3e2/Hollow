@@ -15,6 +15,7 @@
 #include "Hollow/Graphics/RenderTargetManager.h"
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include "Hollow/Common/Log.h"
+#include "Sandbox/Events.h"
 
 using namespace Hollow;
 
@@ -66,8 +67,7 @@ public:
 	SkyMap* skyMap;
 	RenderTarget* main;
 	RenderTarget* debug;
-	Vector4 selectedColor;
-	int pickedID = -1;
+	int pickedID;
 private:
 	RenderApi* renderer;
 private:
@@ -127,10 +127,10 @@ public:
 		DrawSceneGLTF();
 		DrawSkyMap();
 
-		if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
-			HW_TRACE("{} {}", InputManager::mcx, InputManager::mcy);
-			selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+			Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
 			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
+			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
 		}
 	}
 
