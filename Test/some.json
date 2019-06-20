@@ -1,0 +1,321 @@
+{
+  "Data": {
+    "filename": "mesh1.bin",
+    "size": 44870868
+  },
+  "Materials": [
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/body_diffuse.jpeg",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/body_normal.jpeg",
+      "occlusion_texture": "textures/body_occlusion.png",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": "textures/body_specularGlossiness.png"
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/cloth_diffuse.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/cloth_normal.jpeg",
+      "occlusion_texture": "textures/cloth_occlusion.png",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": "textures/cloth_specularGlossiness.png"
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/eyelash_diffuse.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/eyes_inner_diffuse.jpeg",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/eyes_inner_normal.jpeg",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/eyes_outer_normal.jpeg",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/material_diffuse.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/hair_inner_diffuse.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/hair_inner_normal.jpeg",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/hair_outer_diffuse.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/hair_outer_normal.jpeg",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    }
+  ],
+  "Meshes": [
+    {
+      "indices_offset": 2931352,
+      "indices_size": 146802,
+      "material": 0,
+      "vertices_offset": 0,
+      "vertices_size": 26638
+    },
+    {
+      "indices_offset": 6751092,
+      "indices_size": 199125,
+      "material": 1,
+      "vertices_offset": 2931352,
+      "vertices_size": 34355
+    },
+    {
+      "indices_offset": 6796020,
+      "indices_size": 1728,
+      "material": 2,
+      "vertices_offset": 6751092,
+      "vertices_size": 432
+    },
+    {
+      "indices_offset": 6838820,
+      "indices_size": 2208,
+      "material": 3,
+      "vertices_offset": 6796020,
+      "vertices_size": 386
+    },
+    {
+      "indices_offset": 6881620,
+      "indices_size": 2208,
+      "material": 4,
+      "vertices_offset": 6838820,
+      "vertices_size": 386
+    },
+    {
+      "indices_offset": 13041628,
+      "indices_size": 98298,
+      "material": 5,
+      "vertices_offset": 6881620,
+      "vertices_size": 65532
+    },
+    {
+      "indices_offset": 19201636,
+      "indices_size": 98298,
+      "material": 5,
+      "vertices_offset": 13041628,
+      "vertices_size": 65532
+    },
+    {
+      "indices_offset": 25361644,
+      "indices_size": 98298,
+      "material": 5,
+      "vertices_offset": 19201636,
+      "vertices_size": 65532
+    },
+    {
+      "indices_offset": 31521652,
+      "indices_size": 98298,
+      "material": 5,
+      "vertices_offset": 25361644,
+      "vertices_size": 65532
+    },
+    {
+      "indices_offset": 37681660,
+      "indices_size": 98298,
+      "material": 5,
+      "vertices_offset": 31521652,
+      "vertices_size": 65532
+    },
+    {
+      "indices_offset": 43756316,
+      "indices_size": 96936,
+      "material": 5,
+      "vertices_offset": 37681660,
+      "vertices_size": 64624
+    },
+    {
+      "indices_offset": 43756692,
+      "indices_size": 6,
+      "material": 6,
+      "vertices_offset": 43756316,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 44599188,
+      "indices_size": 30576,
+      "material": 7,
+      "vertices_offset": 43756692,
+      "vertices_size": 8184
+    },
+    {
+      "indices_offset": 44840004,
+      "indices_size": 8724,
+      "material": 8,
+      "vertices_offset": 44599188,
+      "vertices_size": 2340
+    },
+    {
+      "indices_offset": 44847876,
+      "indices_size": 252,
+      "material": 9,
+      "vertices_offset": 44840004,
+      "vertices_size": 78
+    },
+    {
+      "indices_offset": 44859636,
+      "indices_size": 432,
+      "material": 10,
+      "vertices_offset": 44847876,
+      "vertices_size": 114
+    },
+    {
+      "indices_offset": 44870868,
+      "indices_size": 432,
+      "material": 11,
+      "vertices_offset": 44859636,
+      "vertices_size": 108
+    }
+  ]
+}

@@ -463,10 +463,19 @@ namespace Hollow {
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat)
 	{
-		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0];
-		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1];
-		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2];
+		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0] + mat.md[3][0];
+		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1] + mat.md[3][1];
+		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2] + mat.md[3][2];
 
 		return Vector4(x, y, z, vec.w);
+	}
+
+	Vector3 operator*(const Vector3& vec, const Matrix4& mat)
+	{
+		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0] + mat.md[3][0];
+		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1] + mat.md[3][1];
+		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2] + mat.md[3][2];
+
+		return Vector3(x, y, z);
 	}
 }

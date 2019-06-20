@@ -12,3 +12,6 @@ Sandbox/imgui.ini
 Hollow/vendor/lib/*
 Hollow/vendor/lib/*
 Sandbox/vendor/*
+Test/Hollow.lib
+Test/mesh1.bin
+Test/scene.gltf

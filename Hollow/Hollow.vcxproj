@@ -266,7 +266,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"</Command>
+      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"
+copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Test"</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
