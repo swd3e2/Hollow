@@ -24,6 +24,7 @@
     <ClInclude Include="Sandbox\Components\GLTFRenderable.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
+    <ClInclude Include="Sandbox\Components\TempRenderableComponent.h" />
     <ClInclude Include="Sandbox\Components\TransformComponent.h" />
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
     <ClInclude Include="Sandbox\Entities\Light.h" />

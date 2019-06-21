@@ -16,6 +16,7 @@
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include "Hollow/Common/Log.h"
 #include "Sandbox/Events.h"
+#include "Sandbox/Components/TempRenderableComponent.h"
 
 using namespace Hollow;
 
@@ -121,10 +122,11 @@ public:
 	{
 		updateWVP(m_Camera);
 		renderer->SetRenderTarget(debug);
-		DrawSceneForPicker();
+		//DrawSceneForPicker();
 
 		renderer->SetRenderTarget(0);
-		DrawSceneGLTF();
+		tempDraw();
+		//DrawSceneGLTF();
 		DrawSkyMap();
 
 		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
@@ -187,6 +189,31 @@ public:
 		for (auto& it : node->childrens) {
 			Draw(it, renderable, transform, node->transformation);
 		}
+	}
+
+	void tempDraw()
+	{
+		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			if (entity.hasComponent<TempRenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+				TempRenderableComponent* renderable = entity.getComponent<TempRenderableComponent>();
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
+				for (auto& it : renderable->renderables) {
+					drawTempObject(it);
+				}
+			}
+		}
+	}
+
+	void drawTempObject(TempRenderableObject& object)
+	{
+		transformBuff.transform = Matrix4::Identity();
+		m_TransformConstantBuffer->update(&transformBuff);
+		
+		renderer->SetGpuBuffer(m_TransformConstantBuffer);
+		renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+		renderer->SetVertexBuffer(object.vBuffer);
+		renderer->SetIndexBuffer(object.iBuffer);
+		renderer->DrawIndexed(object.iBuffer->getSize());
 	}
 
 	void DrawSceneForPicker()

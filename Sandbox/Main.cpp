@@ -13,6 +13,7 @@
 #include "Sandbox/Systems/MoveSystem.h"
 #include "Sandbox/Components/MoveComponent.h"
 #include "Sandbox/Components/SelectComponent.h"
+#include "Sandbox/Components/TempRenderableComponent.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -38,8 +39,9 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	Hollow::GLTF::GLTFModel* model = importer.import("Sandbox/Resources/Meshes/scene.gltf");
 
 	GameObject* entity = Hollow::EntityManager::instance()->createEntity<GameObject>();
-	entity->addComponent<GLTFAnimation, Hollow::GLTF::GLTFModel*&>(model);
-	entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
+	//entity->addComponent<GLTFAnimation, Hollow::GLTF::GLTFModel*&>(model);
+	//entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
+	entity->addComponent<TempRenderableComponent>();
 
 	entity->addComponent<TransformComponent, Hollow::Vector3&&, Hollow::Vector3&&, Hollow::Vector3&&>
 		(Hollow::Vector3(0.0f, 0.0f, 0.0f), Hollow::Vector3(1.0f, 1.0f, 1.0f), Hollow::Vector3(-1.5f, 0.0f, 0.0f));

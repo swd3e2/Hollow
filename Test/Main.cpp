@@ -22,6 +22,14 @@ struct temp {
 	size_t indices_size;
 };
 
+struct Mesh {
+	Hollow::Vertex* vertices;
+	size_t verticesCount;
+	unsigned int* indices;
+	size_t indicesCount;
+	int material;
+};
+
 void prepareModel(Hollow::GLTF::Node* node, const Hollow::Matrix4& parentTransform, Hollow::GLTF::GLTFModel* model)
 {
 	if (node->mesh != -1) {
@@ -30,6 +38,9 @@ void prepareModel(Hollow::GLTF::Node* node, const Hollow::Matrix4& parentTransfo
 			it.pos = it.pos * transform;
 			it.normal = it.normal * transform;
 		}
+	}
+	for (auto& it : node->childrens) {
+		prepareModel(it, node->transformation, model);
 	}
 }
 
@@ -73,9 +84,9 @@ void saveGLTF()
 
 		// write indices data
 		file.write((char*)mesh->indices.data(), mesh->indices.size() * sizeof(unsigned int));
-		currentOffset += mesh->indices.size() * sizeof(unsigned int);
 		temp_data[i].indices_offset = currentOffset;
 		temp_data[i].indices_size = mesh->indices.size();
+		currentOffset += mesh->indices.size() * sizeof(unsigned int);
 
 		temp_data[i].material = mesh->material;
 	}
@@ -106,24 +117,29 @@ int main()
 	saveGLTF();
 
 	auto j = json::parse(FileSystem::getFileContent("some.json"));
-	std::cout << j["Meshes"].size() << std::endl;
 
 	std::string filename = j["Data"]["filename"].get<std::string>();
 	std::ifstream file(filename, std::ios::binary);
 
-	Hollow::Vertex** vertices = new Hollow::Vertex*[j["Meshes"].size()];
+	Mesh* meshes = new Mesh[j["Meshes"].size()];
 
-	int counter = 0;
-	for (auto& it : j["Meshes"]) {
-		file.seekg(it["vertices_offset"].get<size_t>(), std::fstream::beg);
+	for (int i = 0; i < j["Meshes"].size(); i++) {
+		meshes[i].material = j["Meshes"][i]["material"].get<int>();
+		meshes[i].indicesCount = j["Meshes"][i]["indices_size"].get<size_t>();
+		meshes[i].verticesCount = j["Meshes"][i]["vertices_size"].get<size_t>();
 
-		vertices[counter] = new Hollow::Vertex[it["vertices_size"].get<size_t>()];
+		file.seekg(j["Meshes"][i]["vertices_offset"].get<size_t>(), std::fstream::beg);
 
-		std::cout << it["vertices_offset"].get<size_t>() << std::endl;
-		std::cout << it["vertices_size"].get<size_t>() << std::endl;
+		meshes[i].vertices = new Hollow::Vertex[j["Meshes"][i]["vertices_size"].get<size_t>()];
+		file.read((char*)meshes[i].vertices, sizeof(Hollow::Vertex) * j["Meshes"][i]["vertices_size"].get<size_t>());
 
-		file.read((char*)vertices[counter], sizeof(Hollow::Vertex) * it["vertices_size"].get<size_t>());
-		counter++;
+		file.seekg(j["Meshes"][i]["indices_offset"].get<size_t>(), std::fstream::beg);
+		std::cout << j["Meshes"][i]["indices_size"].get<size_t>() << std::endl;
+		std::cout << j["Meshes"][i]["indices_offset"].get<size_t>() << std::endl;
+
+		meshes[i].indices = new unsigned int[j["Meshes"][i]["indices_size"].get<size_t>()];
+		
+		file.read((char*)meshes[i].indices, sizeof(unsigned int) * j["Meshes"][i]["indices_size"].get<int>());
 	}
 
 	file.close();
