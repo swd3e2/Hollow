@@ -27,7 +27,7 @@ public:
 	{
 		using namespace Hollow;
 
-		auto j = json::parse(FileSystem::getFileContent("mesh1.json"));
+		auto j = json::parse(FileSystem::getFileContent("_scene.json"));
 
 		std::string filename = j["Data"]["filename"].get<std::string>();
 		std::ifstream file(filename, std::ios::binary);

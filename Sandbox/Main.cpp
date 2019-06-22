@@ -27,7 +27,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	Hollow::RenderApi* renderer = Hollow::RenderApiManager::instance()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
-	camera->SetProjectionValues(90.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
+	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
 	ForwardRenderSystem renderPass(renderer);
 	renderPass.skyMap = new SkyMap();
@@ -47,7 +47,6 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 		(Hollow::Vector3(0.0f, 0.0f, 0.0f), Hollow::Vector3(0.1f, 0.1f, 0.1f), Hollow::Vector3(0.0f, 0.0f, 0.0f));
 	
 	entity->addComponent<MoveComponent>();
-
 
 	core.systemManager.AddSystem(&renderPass);
 	core.systemManager.AddSystem(&moveSystem);

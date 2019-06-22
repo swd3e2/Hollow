@@ -14,6 +14,8 @@
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
+    <ClInclude Include="Hollow\Core\ProjectSettings.h" />
+    <ClInclude Include="Hollow\Core\ProjectSettingsLoader.h" />
     <ClInclude Include="Hollow\Core\Task.h" />
     <ClInclude Include="Hollow\Core\TaskList.h" />
     <ClInclude Include="Hollow\Core\TaskManager.h" />

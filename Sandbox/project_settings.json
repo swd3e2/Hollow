@@ -1,0 +1,12 @@
+{
+    "Folders" : {
+        "MeshesFolder" :  "Meshes",
+        "TexturesFolder" : "Textures",
+        "ShadersFolder" : "Shaders"
+    },
+    "Scenes" : [
+        {
+            "filename" : "scene.json"
+        }
+    ]
+}

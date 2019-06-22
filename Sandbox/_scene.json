@@ -1,0 +1,608 @@
+{
+  "Data": {
+    "filename": "_scene.bin",
+    "size": 15972036
+  },
+  "Materials": [
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/body_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/body_normal.png",
+      "occlusion_texture": "textures/body_metallicRoughness.png",
+      "roughness": 1.0,
+      "roughness_texture": "textures/body_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.1827273666858673,
+        0.16533274948596954,
+        0.049561500549316406,
+        1.0
+      ],
+      "diffuse_texture": "textures/hair_inner_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/hair_inner_normal.png",
+      "occlusion_texture": "textures/hair_inner_metallicRoughness.png",
+      "roughness": 0.20000000298023224,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Clothing_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/Clothing_normal.png",
+      "occlusion_texture": "textures/Clothing_metallicRoughness.png",
+      "roughness": 1.0,
+      "roughness_texture": "textures/Clothing_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/base_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/base_normal.png",
+      "occlusion_texture": "",
+      "roughness": 1.0,
+      "roughness_texture": "textures/base_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.20195968449115753,
+        0.16463284194469452,
+        0.04578915238380432,
+        1.0
+      ],
+      "diffuse_texture": "textures/hair_outer_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/hair_outer_normal.png",
+      "occlusion_texture": "textures/hair_outer_metallicRoughness.png",
+      "roughness": 0.20000000298023224,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/material_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/material_normal.png",
+      "occlusion_texture": "",
+      "roughness": 1.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        0.18000000715255737
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    }
+  ],
+  "Meshes": [
+    {
+      "indices_offset": 866272,
+      "indices_size": 54816,
+      "material": 0,
+      "vertices_offset": 0,
+      "vertices_size": 9844
+    },
+    {
+      "indices_offset": 1095040,
+      "indices_size": 384,
+      "material": 0,
+      "vertices_offset": 1085536,
+      "vertices_size": 108
+    },
+    {
+      "indices_offset": 1734488,
+      "indices_size": 28164,
+      "material": 1,
+      "vertices_offset": 1096576,
+      "vertices_size": 7249
+    },
+    {
+      "indices_offset": 4122736,
+      "indices_size": 146502,
+      "material": 2,
+      "vertices_offset": 1847144,
+      "vertices_size": 25859
+    },
+    {
+      "indices_offset": 7160248,
+      "indices_size": 164370,
+      "material": 2,
+      "vertices_offset": 4708744,
+      "vertices_size": 27858
+    },
+    {
+      "indices_offset": 9402080,
+      "indices_size": 104811,
+      "material": 2,
+      "vertices_offset": 7817728,
+      "vertices_size": 18004
+    },
+    {
+      "indices_offset": 10051004,
+      "indices_size": 11292,
+      "material": 2,
+      "vertices_offset": 9821324,
+      "vertices_size": 2610
+    },
+    {
+      "indices_offset": 10181004,
+      "indices_size": 4992,
+      "material": 2,
+      "vertices_offset": 10096172,
+      "vertices_size": 964
+    },
+    {
+      "indices_offset": 10257468,
+      "indices_size": 2592,
+      "material": 2,
+      "vertices_offset": 10200972,
+      "vertices_size": 642
+    },
+    {
+      "indices_offset": 10380916,
+      "indices_size": 6264,
+      "material": 2,
+      "vertices_offset": 10267836,
+      "vertices_size": 1285
+    },
+    {
+      "indices_offset": 10408524,
+      "indices_size": 102,
+      "material": 3,
+      "vertices_offset": 10405972,
+      "vertices_size": 29
+    },
+    {
+      "indices_offset": 11046844,
+      "indices_size": 28164,
+      "material": 4,
+      "vertices_offset": 10408932,
+      "vertices_size": 7249
+    },
+    {
+      "indices_offset": 11199276,
+      "indices_size": 2262,
+      "material": 5,
+      "vertices_offset": 11159500,
+      "vertices_size": 452
+    },
+    {
+      "indices_offset": 11248100,
+      "indices_size": 2262,
+      "material": 6,
+      "vertices_offset": 11208324,
+      "vertices_size": 452
+    },
+    {
+      "indices_offset": 11257676,
+      "indices_size": 12,
+      "material": 3,
+      "vertices_offset": 11257148,
+      "vertices_size": 6
+    },
+    {
+      "indices_offset": 11270308,
+      "indices_size": 804,
+      "material": 3,
+      "vertices_offset": 11257724,
+      "vertices_size": 143
+    },
+    {
+      "indices_offset": 11273876,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11273524,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11274252,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11273900,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11274628,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11274276,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11275004,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11274652,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11275380,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11275028,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11275756,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11275404,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11276132,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11275780,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 11276508,
+      "indices_size": 6,
+      "material": 3,
+      "vertices_offset": 11276156,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 14987052,
+      "indices_size": 243486,
+      "material": 0,
+      "vertices_offset": 11276532,
+      "vertices_size": 42165
+    },
+    {
+      "indices_offset": 15970500,
+      "indices_size": 384,
+      "material": 0,
+      "vertices_offset": 15960996,
+      "vertices_size": 108
+    }
+  ]
+}
