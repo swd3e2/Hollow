@@ -66,8 +66,7 @@ namespace Hollow {
 				if (channel.target_path == "rotation") {
 					valueData = new float[valueAccessor.count * 4];
 					file.read((char*)valueData, sizeof(float) * valueAccessor.count * 4);
-				}
-				else {
+				} else {
 					valueData = new float[valueAccessor.count * 3];
 					file.read((char*)valueData, sizeof(float) * valueAccessor.count * 3);
 				}
@@ -75,8 +74,7 @@ namespace Hollow {
 				Hollow::NodeAnimationData* data;
 				if (mAnimation.data.find(channel.target_node) != mAnimation.data.end()) {
 					data = mAnimation.data[channel.target_node];
-				}
-				else {
+				} else {
 					data = new Hollow::NodeAnimationData();
 					data->nodeId = channel.target_node;
 				}
@@ -177,8 +175,7 @@ namespace Hollow {
 						mesh->normals.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
 					}
 					delete[] data;
-				}
-				else if (attribute.first == "POSITION") {
+				} else if (attribute.first == "POSITION") {
 					float* data = new float[accessor.count * 3];
 
 					file.read((char*)data, sizeof(float) * accessor.count * 3);
@@ -187,8 +184,7 @@ namespace Hollow {
 						mesh->positions.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
 					}
 					delete[] data;
-				}
-				else if (attribute.first == "WEIGHTS_0") {
+				} else if (attribute.first == "WEIGHTS_0") {
 					float* data = new float[accessor.count * 4];
 
 					file.read((char*)data, sizeof(float) * accessor.count * 4);
@@ -198,8 +194,7 @@ namespace Hollow {
 						mesh->weigths.push_back(weights);
 					}
 					delete[] data;
-				}
-				else if (attribute.first == "TEXCOORD_0") {
+				} else if (attribute.first == "TEXCOORD_0") {
 					float* data = new float[accessor.count * 2];
 
 					file.read((char*)data, sizeof(float) * accessor.count * 2);
@@ -209,8 +204,7 @@ namespace Hollow {
 					}
 					delete[] data;
 				}
-			}
-			else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_SHORT) {
+			} else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_SHORT) {
 				if (attribute.first == "JOINTS_0") {
 					unsigned short* data = new unsigned short[accessor.count * 4];
 
@@ -240,8 +234,7 @@ namespace Hollow {
 				mesh->indices.push_back(data[i]);
 			}
 			delete[] data;
-		}
-		else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_INT) {
+		} else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_INT) {
 			unsigned int* data = new unsigned int[accessor.count];
 
 			file.read((char*)data, sizeof(unsigned int) * accessor.count);
@@ -355,10 +348,10 @@ namespace Hollow {
 			gltfModel->rootAnimationNode->gltfId = 0;
 			gltfModel->rootAnimationNode->id = 0;
 			gltfModel->rootAnimationNode->localTransform = Matrix4::Identity();
-		}
-		else {
+		} else {
 			gltfModel->rootAnimationNode = lModel->animationRootNode;
 		}
+
 		gltfModel->animations = std::move(lModel->animations);
 		gltfModel->materials = std::move(lModel->materials);
 
@@ -372,8 +365,6 @@ namespace Hollow {
 				Vertex vertex;
 
 				vertex.pos = model->positions[i];
-				vertex.pos.x = -vertex.pos.x;
-				vertex.pos.z = -vertex.pos.z;
 				if (model->normals.size() > i) {
 					vertex.normal = model->normals[i];
 				}

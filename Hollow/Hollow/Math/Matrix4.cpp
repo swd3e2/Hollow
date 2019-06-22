@@ -262,6 +262,7 @@ namespace Hollow {
 	Matrix4 Matrix4::operator*(const Matrix4& other) const
 	{
 		Matrix4 matrix;
+
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				matrix.md[i][j] = (md[i][0] * other.md[0][j]) + (md[i][1] * other.md[1][j]) + (md[i][2] * other.md[2][j]) + (md[i][3] * other.md[3][j]);
