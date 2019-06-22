@@ -3,9 +3,14 @@
 namespace Hollow {
 	OGLShaderManager::OGLShaderManager()
 	{
+
+	}
+
+	void OGLShaderManager::loadShadersFromFolder()
+	{
 		shaderTypeFolder = "OGL";
 
-		std::vector<std::string> shaders = fs.read_directory(shaderFolder + shaderTypeFolder + "/vertex/");
+		std::vector<std::string> shaders = fs.read_directory(shaderFolder + "/" + shaderTypeFolder + "/vertex/");
 
 		for (auto& it : shaders)
 		{

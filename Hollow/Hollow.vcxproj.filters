@@ -330,9 +330,6 @@
     <ClInclude Include="Hollow\Resources\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Importer\MeshImportData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLIndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -435,7 +432,7 @@
     <ClInclude Include="Hollow\Graphics\RendererType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Core\ProjectSettings.h">
+    <ClInclude Include="Hollow\Resources\MeshManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

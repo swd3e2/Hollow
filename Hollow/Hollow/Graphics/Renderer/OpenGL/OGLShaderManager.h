@@ -14,6 +14,7 @@ namespace Hollow {
 	public:
 		OGLShaderManager();
 
+		virtual void loadShadersFromFolder() override;
 		virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) override;
 		virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) override;
 		virtual void reloadShader(ShaderProgram* program) override;

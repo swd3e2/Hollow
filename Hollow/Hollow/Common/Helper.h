@@ -38,6 +38,26 @@ namespace Hollow {
 			return new_string;
 		}
 
+		inline static char* trim_from_last_line_entry(const char* string, char entry)
+		{
+			int lastEntry = -1;
+			int prevEntry = -1;
+			int stringLenght = strlen(string);
+
+			for (int i = 0; i < stringLenght; i++) {
+				if (string[i] == entry) {
+					lastEntry = i;
+				}
+			}
+			if (lastEntry == -1) return nullptr;
+
+			char* new_string = new char[stringLenght - lastEntry + 2];
+			memcpy((void*)new_string, (void*)string, lastEntry + 2);
+			new_string[lastEntry + 1] = '\0';
+
+			return new_string;
+		}
+
 		inline static char* trim_to_symbol(const char* string, char entry)
 		{
 			int lastEntry = -1;

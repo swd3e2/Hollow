@@ -206,12 +206,24 @@ namespace Hollow {
 
 	D3D11ShaderManager::D3D11ShaderManager()
 	{
+	}
+
+	
+	D3D11ShaderManager::~D3D11ShaderManager()
+	{
+		for (auto& it : shaders) {
+			delete it.second;
+		}
+	}
+
+	void D3D11ShaderManager::loadShadersFromFolder()
+	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		device = r->getContext().getDevice();
 
 		shaderTypeFolder = "D3D11";
 
-		std::vector<std::string> shaders = fs.read_directory(shaderFolder + shaderTypeFolder + "/vertex/");
+		std::vector<std::string> shaders = fs.read_directory(shaderFolder + "/" + shaderTypeFolder + "/vertex/");
 
 		for (auto& it : shaders)
 		{
@@ -223,13 +235,6 @@ namespace Hollow {
 				);
 				this->shaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = shader;
 			}
-		}
-	}
-
-	D3D11ShaderManager::~D3D11ShaderManager()
-	{
-		for (auto& it : shaders) {
-			delete it.second;
 		}
 	}
 }

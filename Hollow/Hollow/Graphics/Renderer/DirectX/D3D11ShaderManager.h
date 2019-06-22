@@ -19,6 +19,7 @@ namespace Hollow {
 	public:
 		D3D11ShaderManager();
 		~D3D11ShaderManager();
+		virtual void loadShadersFromFolder() override;
 		virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) override;
 		virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) override;
 		void reloadShader(ShaderProgram* program) override;

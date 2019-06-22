@@ -12,28 +12,28 @@
 
 using json = nlohmann::json;
 
-struct TempRenderableObject {
+struct RenderableObject {
 	Hollow::VertexBuffer* vBuffer;
 	Hollow::IndexBuffer* iBuffer;
 	int material;
 };
 
-class TempRenderableComponent : public Hollow::Component<TempRenderableComponent>
+class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
-	std::vector<TempRenderableObject> renderables;
+	std::vector<RenderableObject> renderables;
 public:
-	TempRenderableComponent()
+	RenderableComponent(const std::string& filename)
 	{
 		using namespace Hollow;
 
-		auto j = json::parse(FileSystem::getFileContent("_scene.json"));
+		auto j = json::parse(FileSystem::getFileContent(filename));
 
 		std::string filename = j["Data"]["filename"].get<std::string>();
 		std::ifstream file(filename, std::ios::binary);
 
 		for (int i = 0; i < j["Meshes"].size(); i++) {
-			TempRenderableObject renderable;
+			RenderableObject renderable;
 			renderable.material = j["Meshes"][i]["material"].get<int>();
 
 			file.seekg(j["Meshes"][i]["vertices_offset"].get<size_t>(), std::fstream::beg);

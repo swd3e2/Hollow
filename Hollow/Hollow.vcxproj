@@ -14,7 +14,6 @@
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
-    <ClInclude Include="Hollow\Core\ProjectSettings.h" />
     <ClInclude Include="Hollow\Core\Task.h" />
     <ClInclude Include="Hollow\Core\TaskList.h" />
     <ClInclude Include="Hollow\Core\TaskManager.h" />
@@ -66,7 +65,6 @@
     <ClInclude Include="Hollow\Importer\gltf\tiny_gltf.h" />
     <ClInclude Include="Hollow\Importer\gltf\tiny_gltf_loader.h" />
     <ClInclude Include="Hollow\Importer\MeshData.h" />
-    <ClInclude Include="Hollow\Importer\MeshImportData.h" />
     <ClInclude Include="Hollow\Layers\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
@@ -124,6 +122,7 @@
     <ClInclude Include="Hollow\Layers\Layer.h" />
     <ClInclude Include="Hollow\Layers\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\Material.h" />
+    <ClInclude Include="Hollow\Resources\MeshManager.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />

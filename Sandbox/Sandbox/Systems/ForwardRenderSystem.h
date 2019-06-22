@@ -16,7 +16,8 @@
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
 #include "Hollow/Common/Log.h"
 #include "Sandbox/Events.h"
-#include "Sandbox/Components/TempRenderableComponent.h"
+#include "Sandbox/Components/RenderableComponent.h"
+#include "Sandbox/ProjectSettings.h"
 
 using namespace Hollow;
 
@@ -116,23 +117,26 @@ public:
 		renderer->ClearRenderTarget(main, ClearColor);
 		renderer->ClearRenderTarget(debug, ClearColor);
 		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
+		renderer->SetRenderTarget(0);
 	}
 
 	virtual void Update(double dt)
 	{
-		updateWVP(m_Camera);
-		renderer->SetRenderTarget(debug);
-		DrawSceneForPicker();
+		if (ProjectSettings::instance()->isProjectLoaded) {
+			updateWVP(m_Camera);
+			renderer->SetRenderTarget(debug);
+			DrawSceneForPicker();
 
-		renderer->SetRenderTarget(0);
-		tempDraw();
-		DrawSceneGLTF();
-		DrawSkyMap();
+			renderer->SetRenderTarget(0);
+			tempDraw();
+			DrawSceneGLTF();
+			DrawSkyMap();
 
-		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
-			Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
-			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
-			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+				Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
+				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
+				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
+			}
 		}
 	}
 
@@ -193,8 +197,8 @@ public:
 	void tempDraw()
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
-			if (entity.hasComponent<TempRenderableComponent>() && entity.hasComponent<TransformComponent>()) {
-				TempRenderableComponent* renderable = entity.getComponent<TempRenderableComponent>();
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
 				transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
@@ -209,7 +213,7 @@ public:
 		}
 	}
 
-	void drawTempObject(TempRenderableObject& object)
+	void drawTempObject(RenderableObject& object)
 	{
 		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		renderer->SetVertexBuffer(object.vBuffer);
@@ -314,7 +318,7 @@ public:
 
 		renderer->SetTexture(4, skyMap->mesh->models[0]->material->diffuseTexture);
 		
-		renderer->SetShader(skyMap->mesh->models[0]->material->shader);
+		renderer->SetShader(Hollow::ShaderManager::instance()->getShader("SkyMap"));
 		renderer->SetVertexBuffer(skyMap->mesh->models[0]->vBuffer);
 		renderer->SetIndexBuffer(skyMap->mesh->models[0]->iBuffer);
 		renderer->DrawIndexed(skyMap->mesh->models[0]->iBuffer->getSize());

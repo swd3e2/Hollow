@@ -19,7 +19,8 @@
     <ClInclude Include="Sandbox\GUISystem.h" />
     <ClInclude Include="Sandbox\Systems\ForwardRenderSystem.h" />
     <ClInclude Include="Sandbox\Events.h" />
-    <ClInclude Include="Sandbox\Components\TempRenderableComponent.h" />
+    <ClInclude Include="Sandbox\ProjectSettings.h" />
+    <ClInclude Include="Sandbox\Components\RenderableComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

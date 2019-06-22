@@ -16,16 +16,17 @@ namespace Hollow {
 	class ShaderManager : public CModule<ShaderManager>
 	{
 	public:
+		std::string shaderTypeFolder;
 		std::unordered_map<std::string, ShaderProgram*> shaders;
 	protected:
-		std::string shaderTypeFolder;
 		FileSystem fs;
 
-		const std::string shaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
+		std::string shaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
 	public:
 		ShaderManager() { setStartedUp(); }
 		~ShaderManager() { setShutdown(); }
 
+		virtual void loadShadersFromFolder() = 0;
 		inline ShaderProgram* getShader(const std::string& name) { return shaders[name]; }
 
 		virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) = 0;

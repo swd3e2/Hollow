@@ -19,7 +19,6 @@
 #include "Common/Log.h"
 #include "Importer/FreeImgImporter.h"
 #include "Graphics/WindowManager.h"
-#include "Core/ProjectSettings.h"
 
 namespace Hollow {
 	class Core
@@ -37,7 +36,7 @@ namespace Hollow {
 		RenderApiManager				renderApiManager;
 		FreeImgImporter					imgImporter;
 		WindowManager					windowManager;
-		ProjectSettings					projectSettings;
+
 		double							dt;
 	public:
 		Core(RendererType type);

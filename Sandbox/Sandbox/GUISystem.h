@@ -18,7 +18,7 @@
 #include "Hollow/Graphics/TextureManager.h"
 #include <Hollow/Events/IEventListener.h>
 #include <Hollow/Events/EventSystem.h>
-#include <Hollow/Core/ProjectSettings.h>
+#include "Sandbox/ProjectSettings.h"
 
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
@@ -59,7 +59,6 @@ public:
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
 		
 #ifdef D3D11
 		ImGui_ImplWin32_Init(*static_cast<D3D11Win32Window*>(window)->getHWND());
@@ -122,7 +121,7 @@ public:
 	{
 		begin();
 
-		if (!Hollow::ProjectSettings::instance()->isProjectLoaded) {
+		if (ProjectSettings::instance()->isProjectLoaded) {
 			drawMainWindow();
 		} else {
 			drawProjectLoaderGui();
@@ -138,7 +137,7 @@ public:
 		if (ImGui::Button("Select project file")) {
 			filename = Hollow::FileSystem::OpenFile("");
 			if (filename.size()) {
-
+				ProjectSettings::instance()->loadFromFile(filename);
 			}
 		}
 		ImGui::End();

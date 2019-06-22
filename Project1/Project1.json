@@ -1,7 +1,7 @@
 {
-    "MeshesFolder" : "Meshes",
-    "TexturesFolder" : "Textures",
-    "ShadersFolder" : "Shaders",
+    "MeshesFolder" : "C:/dev/Hollow Engine/Project1/Meshes",
+    "TexturesFolder" : "C:/dev/Hollow Engine/Project1/Textures",
+    "ShadersFolder" : "C:/dev/Hollow Engine/Project1/Shaders",
     "Entities" : [
         {
             "TransformComponent" : {
@@ -22,7 +22,7 @@
                 ]
             },
             "RenderableComponent" : {
-                "filename" : "scene.json"
+                "filename" : "_scene.json"
             }
         }
     ]

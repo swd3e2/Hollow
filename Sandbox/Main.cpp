@@ -13,7 +13,8 @@
 #include "Sandbox/Systems/MoveSystem.h"
 #include "Sandbox/Components/MoveComponent.h"
 #include "Sandbox/Components/SelectComponent.h"
-#include "Sandbox/Components/TempRenderableComponent.h"
+#include "Sandbox/Components/RenderableComponent.h"
+#include "Sandbox/ProjectSettings.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -25,6 +26,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	Hollow::Window* window = Hollow::WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	Hollow::RenderApi* renderer = Hollow::RenderApiManager::instance()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	ProjectSettings settings;
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
@@ -40,7 +43,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	GameObject* entity = Hollow::EntityManager::instance()->createEntity<GameObject>();
 	//entity->addComponent<GLTFAnimation, Hollow::GLTF::GLTFModel*&>(model);
-	entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
+	//entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
 	//entity->addComponent<TempRenderableComponent>();
 
 	entity->addComponent<TransformComponent, Hollow::Vector3&&, Hollow::Vector3&&, Hollow::Vector3&&>
