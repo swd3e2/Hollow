@@ -33,6 +33,19 @@ namespace Hollow {
 			entityIdCounter = 0;
 		}
 
+		~EntityManager()
+		{
+			clear();
+		}
+
+		void clear()
+		{
+			for (auto& container : entityContainers) {
+				delete container.second;
+			}
+			entityContainers.clear();
+		}
+
 		template<class T>
 		EntityContainer<T>* getContainer()
 		{

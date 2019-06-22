@@ -31,6 +31,11 @@ namespace Hollow {
 			currentSize = 0;
 		}
 
+		~array()
+		{
+			delete allocator;
+		}
+
 		/*
 		 * Creates object T
 		 */

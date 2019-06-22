@@ -38,6 +38,23 @@ namespace Hollow {
 		   +---------------------------------------------+ */
 		std::unordered_map<size_t, std::unordered_map<size_t, IComponent*>> componentMap;
 	public:
+		~ComponentManager()
+		{
+			clear();
+		}
+
+		void clear()
+		{
+			for (auto& componentContainer : componentContainers) {
+				delete componentContainer.second;
+			}
+			componentContainers.clear();
+
+			for (auto& map : componentMap) {
+				map.second.clear();
+			}
+		}
+
 		template<class T>
 		ComponentContainer<T>* getContainer()
 		{
@@ -53,12 +70,6 @@ namespace Hollow {
 			componentContainers[componentTypeId] = container;
 
 			return container;
-		}
-
-		template<typename ... ARGS>
-		void create1(ARGS&& ... args)
-		{
-
 		}
 
 		template<class T, typename ... ARGS>

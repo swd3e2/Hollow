@@ -18,6 +18,7 @@
 #include "Hollow/Graphics/TextureManager.h"
 #include <Hollow/Events/IEventListener.h>
 #include <Hollow/Events/EventSystem.h>
+#include <Hollow/Core/ProjectSettings.h>
 
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
@@ -121,8 +122,35 @@ public:
 	{
 		begin();
 
-		ImGui::Begin("Main");
+		if (!Hollow::ProjectSettings::instance()->isProjectLoaded) {
+			drawMainWindow();
+		} else {
+			drawProjectLoaderGui();
+		}
+		
+		end();
+	}
 
+	void drawProjectLoaderGui()
+	{
+		ImGui::Begin("ProjectLoader");
+		ImGui::Text("You need to load project");
+		if (ImGui::Button("Select project file")) {
+			filename = Hollow::FileSystem::OpenFile("");
+			if (filename.size()) {
+
+			}
+		}
+		ImGui::End();
+	}
+
+	void drawMainWindow()
+	{
+		ImGui::Begin("Main");
+		if (ImGui::Button("Clear")) {
+			Hollow::EntityManager::instance()->clear();
+			Hollow::ComponentManager::instance()->clear();
+		}
 		if (ImGui::TreeNode("Shaders")) {
 			auto& shaders = ShaderManager::instance()->shaders;
 			for (auto& it : shaders) {
@@ -178,7 +206,7 @@ public:
 
 		ImGui::Begin("Material properties");
 		if (selectedMaterial != nullptr) {
-			ImGui::DragFloat4("Base color", (float*)&selectedMaterial->materialData.color, 0.001f, 0.0f, 1.0f);
+			ImGui::DragFloat4("Base color", (float*)& selectedMaterial->materialData.color, 0.001f, 0.0f, 1.0f);
 			ImGui::DragFloat("Metallic", &selectedMaterial->materialData.metallicFactor, 0.001f, 0.0f, 1.0f);
 			ImGui::DragFloat("Emissive", &selectedMaterial->materialData.emissiveFactor, 0.001f, 0.0f, 1.0f);
 			ImGui::DragFloat("Roughness", &selectedMaterial->materialData.roughnessFactor, 0.001f, 0.0f, 1.0f);
@@ -200,7 +228,7 @@ public:
 					TextureManager::instance()->Remove(selectedMaterial->diffuseTexture);
 					selectedMaterial->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
-			}
+				}
 
 			ImGui::Text("Normal texture");
 			if (selectedMaterial->normalTexture != nullptr) {
@@ -219,7 +247,7 @@ public:
 					TextureManager::instance()->Remove(selectedMaterial->normalTexture);
 					selectedMaterial->normalTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
-			}
+				}
 
 			ImGui::Text("Specular texture");
 			if (selectedMaterial->specularTexture != nullptr) {
@@ -239,18 +267,17 @@ public:
 					selectedMaterial->specularTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
 			}
-		}
+				}
 
 		ImGui::End();
 		ImGui::Begin("Scene");
 #ifdef OPENGL
-			ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug)->texture, ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug)->texture, ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImVec2(0, 1), ImVec2(1, 0));
 #endif
 #ifdef D3D11
-			ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->debug)->GetShaderResourceView(), ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
+		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->debug)->GetShaderResourceView(), ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
 #endif
 		ImGui::End();
-		end();
 	}
 
 	void end()
