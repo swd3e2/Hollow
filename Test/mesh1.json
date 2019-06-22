@@ -1,34 +1,148 @@
 {
-    "buffers" : {
-        "size" : 1,
-        "filename" : "mesh1.bin"
+  "Data": {
+    "filename": "mesh1.bin",
+    "size": 3412680
+  },
+  "Materials": [
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Mat_Circle_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.20903201401233673,
+      "roughness_texture": "textures/Mat_Circle_metallicRoughness.png",
+      "specular_texture": ""
     },
-    "Meshes" : [
-        {
-            "material" : 1,
-            "vertices_size" : 4,
-            "vertices_offset" : 0,
-            "indices_size" : 3,
-            "indices_offset" : 9
-        }
-    ],
-    "Materials" : [
-        {
-            "base_color" : [
-                0.0,
-                0.0,
-                0.0,
-                0.0
-            ],
-            "emissive" : 0.0,
-            "roughness" : 0.0,
-            "metallic" : 0.0,
-            "diffuse_texture" : "diffuse.dds",
-            "normal_texture" : "diffuse.dds",
-            "specular_texture" : "diffuse.dds",
-            "roughness_texture" : "diffuse.dds",
-            "emissive_texture" : "diffuse.dds",
-            "occlusion_texture" : "diffuse.dds"
-        }
-    ]
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Mat_Helmet_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/Mat_Helmet_normal.png",
+      "occlusion_texture": "",
+      "roughness": 0.8248856663703918,
+      "roughness_texture": "textures/Mat_Helmet_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Mat_Skirt_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/Mat_Skirt_normal.png",
+      "occlusion_texture": "",
+      "roughness": 1.0,
+      "roughness_texture": "textures/Mat_Skirt_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Mat_Sword_baseColor.jpg",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/Mat_Sword_normal.jpg",
+      "occlusion_texture": "",
+      "roughness": 1.0,
+      "roughness_texture": "textures/Mat_Sword_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Mat_Chainmail_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/Mat_Chainmail_normal.png",
+      "occlusion_texture": "",
+      "roughness": 0.6907393336296082,
+      "roughness_texture": "textures/Mat_Chainmail_metallicRoughness.png",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/Mat_PlateArmor_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "normal_texture": "textures/Mat_PlateArmor_normal.png",
+      "occlusion_texture": "",
+      "roughness": 0.7700076103210449,
+      "roughness_texture": "textures/Mat_PlateArmor_metallicRoughness.png",
+      "specular_texture": ""
+    }
+  ],
+  "Meshes": [
+    {
+      "indices_offset": 31064,
+      "indices_size": 630,
+      "material": 0,
+      "vertices_offset": 0,
+      "vertices_size": 353
+    },
+    {
+      "indices_offset": 257896,
+      "indices_size": 13698,
+      "material": 1,
+      "vertices_offset": 33584,
+      "vertices_size": 2549
+    },
+    {
+      "indices_offset": 1678976,
+      "indices_size": 47874,
+      "material": 2,
+      "vertices_offset": 312688,
+      "vertices_size": 15526
+    },
+    {
+      "indices_offset": 1938496,
+      "indices_size": 3852,
+      "material": 3,
+      "vertices_offset": 1870472,
+      "vertices_size": 773
+    },
+    {
+      "indices_offset": 2114152,
+      "indices_size": 8328,
+      "material": 4,
+      "vertices_offset": 1953904,
+      "vertices_size": 1821
+    },
+    {
+      "indices_offset": 3265944,
+      "indices_size": 36684,
+      "material": 5,
+      "vertices_offset": 2147464,
+      "vertices_size": 12710
+    }
+  ]
 }

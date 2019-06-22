@@ -43,7 +43,8 @@ void main()
 	if (selected) {
 		FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);
 	} else {
-		FragColor = roughnessFactor * texture(enivironmentMap, fs_in.cubemapDirection);
+		FragColor = texture(ambient_map, fs_in.texCoord) + (dot(fs_in.normal, vec3(1.0f, 0.0f, 0.0f)) * vec4(0.5f, 0.5f, 0.5f, 1.0f));
+		//FragColor = roughnessFactor * texture(enivironmentMap, fs_in.cubemapDirection);
 	}
 	//FragColor += dot(fs_in.normal, vec3(0.0f, 1.0f, -0.5f)) * vec4(0.5f, 0.5f, 0.5f, 1.0f);
 }

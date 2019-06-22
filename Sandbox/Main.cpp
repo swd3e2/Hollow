@@ -1,5 +1,5 @@
 #pragma once
-#define OPENGL
+#define D3D11
 #include <Hollow/Core.h>
 #include <Hollow/Importer/gltf/GLTFImporter.h>
 #include "Sandbox/Components/GLTFRenderable.h"
@@ -21,7 +21,7 @@
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	Hollow::Core core(Hollow::RendererType::OpenGL);
+	Hollow::Core core(Hollow::RendererType::DirectX);
 
 	Hollow::Window* window = Hollow::WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	Hollow::RenderApi* renderer = Hollow::RenderApiManager::instance()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -40,11 +40,11 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	GameObject* entity = Hollow::EntityManager::instance()->createEntity<GameObject>();
 	//entity->addComponent<GLTFAnimation, Hollow::GLTF::GLTFModel*&>(model);
-	//entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
-	entity->addComponent<TempRenderableComponent>();
+	entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
+	//entity->addComponent<TempRenderableComponent>();
 
 	entity->addComponent<TransformComponent, Hollow::Vector3&&, Hollow::Vector3&&, Hollow::Vector3&&>
-		(Hollow::Vector3(0.0f, 0.0f, 0.0f), Hollow::Vector3(1.0f, 1.0f, 1.0f), Hollow::Vector3(-1.5f, 0.0f, 0.0f));
+		(Hollow::Vector3(0.0f, 0.0f, 0.0f), Hollow::Vector3(0.1f, 0.1f, 0.1f), Hollow::Vector3(0.0f, 0.0f, 0.0f));
 	
 	entity->addComponent<MoveComponent>();
 

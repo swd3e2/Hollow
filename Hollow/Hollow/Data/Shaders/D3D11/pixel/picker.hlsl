@@ -12,5 +12,6 @@ cbuffer ConstantBuffer : register(b2)
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
+	
 	return float4(color, 1.0f);
 }

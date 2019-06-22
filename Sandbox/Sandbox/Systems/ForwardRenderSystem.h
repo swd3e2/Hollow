@@ -122,11 +122,11 @@ public:
 	{
 		updateWVP(m_Camera);
 		renderer->SetRenderTarget(debug);
-		//DrawSceneForPicker();
+		DrawSceneForPicker();
 
 		renderer->SetRenderTarget(0);
-		tempDraw();
-		//DrawSceneGLTF();
+		//tempDraw();
+		DrawSceneGLTF();
 		DrawSkyMap();
 
 		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
@@ -155,8 +155,7 @@ public:
 
 	void Draw(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
-		transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position)) *
-			parentTransform * node->transformation;
+		transformBuff.transform = parentTransform * node->transformation;
 
 		if (pickedID == node->mesh) {
 			transformBuff.selected = true;
@@ -197,6 +196,12 @@ public:
 			if (entity.hasComponent<TempRenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				TempRenderableComponent* renderable = entity.getComponent<TempRenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+				transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
+
+				m_TransformConstantBuffer->update(&transformBuff);
+				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
 				for (auto& it : renderable->renderables) {
 					drawTempObject(it);
 				}
@@ -206,11 +211,7 @@ public:
 
 	void drawTempObject(TempRenderableObject& object)
 	{
-		transformBuff.transform = Matrix4::Identity();
-		m_TransformConstantBuffer->update(&transformBuff);
-		
-		renderer->SetGpuBuffer(m_TransformConstantBuffer);
-		renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		renderer->SetVertexBuffer(object.vBuffer);
 		renderer->SetIndexBuffer(object.iBuffer);
 		renderer->DrawIndexed(object.iBuffer->getSize());
@@ -231,12 +232,12 @@ public:
 	void DrawForPicker(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
 		if (node->mesh != -1) {
-			transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position)) *
-				parentTransform * node->transformation;
+			transformBuff.transform = parentTransform * node->transformation *
+				Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
 
 			float r = ((renderable->renderables[node->mesh]->id & 0x000000FF) >> 0) / 255.0f;
 			float g = ((renderable->renderables[node->mesh]->id & 0x0000FF00) >> 8) / 255.0f;
-			float b = ((renderable->renderables[node->mesh]->id & 0x00FF0000) >> 1) / 255.0f;
+			float b = ((renderable->renderables[node->mesh]->id & 0x00FF0000) >> 16) / 255.0f;
 
 			transformBuff.color = Vector3(r, g, b);
 			m_TransformConstantBuffer->update(&transformBuff);

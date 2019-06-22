@@ -117,8 +117,7 @@ namespace Hollow {
 	{
 		if (modelNode.matrix.data()) {
 			node->transformation = Matrix4(modelNode.matrix.data(), 16).Transpose();
-		}
-		else {
+		} else {
 			Matrix4 rotation = Matrix4::Identity();
 			Matrix4 scale = Matrix4::Identity();
 			Matrix4 translation = Matrix4::Identity();
@@ -335,7 +334,7 @@ namespace Hollow {
 		tinygltf::Node& modelRootNode = model.nodes[model.scenes[0].nodes[0]];
 		lModel->rootNode = new Hollow::GLTF::Node(modelRootNode.name);
 
-		std::ifstream file(model.buffers[0].uri, std::fstream::in | std::fstream::binary);
+		std::ifstream file("Sandbox/Resources/Meshes/" + model.buffers[0].uri, std::fstream::in | std::fstream::binary);
 
 		if (!file.is_open()) {
 			delete lModel;

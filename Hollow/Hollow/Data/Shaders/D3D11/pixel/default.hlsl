@@ -28,5 +28,5 @@ float4 main(PixelShaderInput input) : SV_TARGET
 	if (selected == 1) {
 		return float4(0.0f, 1.0f, 0.0f, 1.0f);
 	}
-	return enivironmentMap.Sample(SampleTypeWrap, input.cubemapDirection);
+	return ambient_map.Sample(SampleTypeWrap, input.texCoord);
 }

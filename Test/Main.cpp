@@ -33,7 +33,7 @@ struct Mesh {
 void prepareModel(Hollow::GLTF::Node* node, const Hollow::Matrix4& parentTransform, Hollow::GLTF::GLTFModel* model)
 {
 	if (node->mesh != -1) {
-		Hollow::Matrix4 transform = parentTransform * node->transformation;
+		Hollow::Matrix4 transform = Hollow::Matrix4::Transpose(parentTransform * node->transformation);
 		for (auto& it : model->meshes[node->mesh]->vertices) {
 			it.pos = it.pos * transform;
 			it.normal = it.normal * transform;
@@ -51,15 +51,11 @@ void saveGLTF()
 	Hollow::GLTFImporter importer;
 	Hollow::GLTF::GLTFModel* model = importer.import("scene.gltf");
 	prepareModel(model->rootNode, Matrix4::Identity(), model);
-	std::ofstream file("mesh1.bin", std::ios::binary);
-
-	std::string file_content = Hollow::FileSystem::getFileContent("mesh1.json");
 
 	int mesh_count = model->meshes.size();
 	temp* temp_data = new temp[model->meshes.size()];
 	json j;
-
-	for (int i = 0; i < model->materials.size(); i++) {
+	for (int i = 0; i < mesh_count; i++) {
 		GLTF::Material& material = model->materials[i];
 		j["Materials"][i] = {
 			{"base_color", { material.baseColorFactor.x, material.baseColorFactor.y, material.baseColorFactor.z, material.baseColorFactor.w }},
@@ -74,6 +70,7 @@ void saveGLTF()
 		};
 	}
 
+	std::ofstream file("mesh1.bin", std::ios::binary);
 	for (int i = 0; i < mesh_count; i++) {
 		Hollow::GLTF::Mesh* mesh = model->meshes[i];
 		// write vertex data
@@ -90,6 +87,7 @@ void saveGLTF()
 
 		temp_data[i].material = mesh->material;
 	}
+	file.close();
 
 	for (int i = 0; i < mesh_count; i++) {
 		j["Meshes"][i] = {
@@ -106,43 +104,42 @@ void saveGLTF()
 		{"size", currentOffset}
 	};
 
-	file.close();
 	std::string s = j.dump(2);
 
-	Hollow::FileSystem::writeToFile("some.json", s.c_str());
+	Hollow::FileSystem::writeToFile("mesh1.json", s.c_str());
 }
 
 int main() 
 {
 	saveGLTF();
 
-	auto j = json::parse(FileSystem::getFileContent("some.json"));
+	//auto j = json::parse(FileSystem::getFileContent("some.json"));
 
-	std::string filename = j["Data"]["filename"].get<std::string>();
-	std::ifstream file(filename, std::ios::binary);
+	//std::string filename = j["Data"]["filename"].get<std::string>();
+	//std::ifstream file(filename, std::ios::binary);
 
-	Mesh* meshes = new Mesh[j["Meshes"].size()];
+	//Mesh* meshes = new Mesh[j["Meshes"].size()];
 
-	for (int i = 0; i < j["Meshes"].size(); i++) {
-		meshes[i].material = j["Meshes"][i]["material"].get<int>();
-		meshes[i].indicesCount = j["Meshes"][i]["indices_size"].get<size_t>();
-		meshes[i].verticesCount = j["Meshes"][i]["vertices_size"].get<size_t>();
+	//for (int i = 0; i < j["Meshes"].size(); i++) {
+	//	meshes[i].material = j["Meshes"][i]["material"].get<int>();
+	//	meshes[i].indicesCount = j["Meshes"][i]["indices_size"].get<size_t>();
+	//	meshes[i].verticesCount = j["Meshes"][i]["vertices_size"].get<size_t>();
 
-		file.seekg(j["Meshes"][i]["vertices_offset"].get<size_t>(), std::fstream::beg);
+	//	file.seekg(j["Meshes"][i]["vertices_offset"].get<size_t>(), std::fstream::beg);
 
-		meshes[i].vertices = new Hollow::Vertex[j["Meshes"][i]["vertices_size"].get<size_t>()];
-		file.read((char*)meshes[i].vertices, sizeof(Hollow::Vertex) * j["Meshes"][i]["vertices_size"].get<size_t>());
+	//	meshes[i].vertices = new Hollow::Vertex[j["Meshes"][i]["vertices_size"].get<size_t>()];
+	//	file.read((char*)meshes[i].vertices, sizeof(Hollow::Vertex) * j["Meshes"][i]["vertices_size"].get<size_t>());
 
-		file.seekg(j["Meshes"][i]["indices_offset"].get<size_t>(), std::fstream::beg);
-		std::cout << j["Meshes"][i]["indices_size"].get<size_t>() << std::endl;
-		std::cout << j["Meshes"][i]["indices_offset"].get<size_t>() << std::endl;
+	//	file.seekg(j["Meshes"][i]["indices_offset"].get<size_t>(), std::fstream::beg);
+	//	std::cout << j["Meshes"][i]["indices_size"].get<size_t>() << std::endl;
+	//	std::cout << j["Meshes"][i]["indices_offset"].get<size_t>() << std::endl;
 
-		meshes[i].indices = new unsigned int[j["Meshes"][i]["indices_size"].get<size_t>()];
-		
-		file.read((char*)meshes[i].indices, sizeof(unsigned int) * j["Meshes"][i]["indices_size"].get<int>());
-	}
+	//	meshes[i].indices = new unsigned int[j["Meshes"][i]["indices_size"].get<size_t>()];
+	//	
+	//	file.read((char*)meshes[i].indices, sizeof(unsigned int) * j["Meshes"][i]["indices_size"].get<int>());
+	//}
 
-	file.close();
+	//file.close();
 
 	return 0;
 }
