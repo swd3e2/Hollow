@@ -28,5 +28,6 @@ float4 main(PixelShaderInput input) : SV_TARGET
 	if (selected == 1) {
 		return float4(0.0f, 1.0f, 0.0f, 1.0f);
 	}
+	return float4(0.3f, 0.3f, 0.3f, 0.0f) + dot(input.normal, float3(1.0f, 0.0f, 0.0f)) * float4(0.4f, 0.7f, 0.7f, 0.0f);
 	return ambient_map.Sample(SampleTypeWrap, input.texCoord);
 }

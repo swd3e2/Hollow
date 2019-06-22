@@ -23,7 +23,9 @@ namespace Hollow {
 		{
 			int lastEntry = -1;
 			int prevEntry = -1;
-			for (int i = 0; i < strlen(string); i++) {
+			int stringLenght = strlen(string);
+
+			for (int i = 0; i < stringLenght; i++) {
 				if (string[i] == entry) {
 					lastEntry = i;
 				}

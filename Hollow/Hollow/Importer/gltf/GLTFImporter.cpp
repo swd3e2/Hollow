@@ -327,7 +327,13 @@ namespace Hollow {
 		tinygltf::Node& modelRootNode = model.nodes[model.scenes[0].nodes[0]];
 		lModel->rootNode = new Hollow::GLTF::Node(modelRootNode.name);
 
-		std::ifstream file(model.buffers[0].uri, std::fstream::in | std::fstream::binary);
+		const char* fileFolder = Helper::trim_to_last_line_entry(filename, '/');
+		std::string somestring;
+		if (fileFolder) {
+			somestring = fileFolder;
+		}
+
+		std::ifstream file(somestring + model.buffers[0].uri, std::fstream::in | std::fstream::binary);
 
 		if (!file.is_open()) {
 			delete lModel;

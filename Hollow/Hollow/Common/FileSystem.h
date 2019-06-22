@@ -118,11 +118,8 @@ namespace Hollow {
 		static void writeToFile(const std::string& filename, const char* content)
 		{
 			std::ofstream fileStream(filename, std::ios::out);
-
 			fileStream << content;
-
 			fileStream.close();
-			std::cout << "'" << content << "'" << std::endl;
 		}
 
 		static std::string OpenFile(const std::string& filter)

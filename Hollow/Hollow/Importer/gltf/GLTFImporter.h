@@ -7,6 +7,7 @@
 #include "Hollow/Math/Quaternion.h"
 #include "Hollow/Graphics/Vertex.h"
 #include "Animation.h"
+#include "Hollow/Common/Helper.h"
 
 #include <fstream>
 #include <unordered_map>
