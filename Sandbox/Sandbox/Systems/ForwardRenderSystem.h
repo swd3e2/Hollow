@@ -125,7 +125,7 @@ public:
 		DrawSceneForPicker();
 
 		renderer->SetRenderTarget(0);
-		//tempDraw();
+		tempDraw();
 		DrawSceneGLTF();
 		DrawSkyMap();
 
@@ -155,7 +155,7 @@ public:
 
 	void Draw(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
 	{
-		transformBuff.transform = parentTransform * node->transformation;
+		transformBuff.transform = parentTransform;
 
 		if (pickedID == node->mesh) {
 			transformBuff.selected = true;
@@ -186,7 +186,7 @@ public:
 		}
 
 		for (auto& it : node->childrens) {
-			Draw(it, renderable, transform, node->transformation);
+			Draw(it, renderable, transform, parentTransform * node->transformation);
 		}
 	}
 

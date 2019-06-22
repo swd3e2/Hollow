@@ -32,15 +32,16 @@ struct Mesh {
 
 void prepareModel(Hollow::GLTF::Node* node, const Hollow::Matrix4& parentTransform, Hollow::GLTF::GLTFModel* model)
 {
+	Hollow::Matrix4 transform = Hollow::Matrix4::Transpose(parentTransform);
+
 	if (node->mesh != -1) {
-		Hollow::Matrix4 transform = Hollow::Matrix4::Transpose(parentTransform * node->transformation);
 		for (auto& it : model->meshes[node->mesh]->vertices) {
 			it.pos = it.pos * transform;
 			it.normal = it.normal * transform;
 		}
 	}
 	for (auto& it : node->childrens) {
-		prepareModel(it, node->transformation, model);
+		prepareModel(it, transform * node->transformation, model);
 	}
 }
 
