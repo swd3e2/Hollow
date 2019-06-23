@@ -17,14 +17,29 @@ namespace Hollow {
 			: ShaderProgram(vShader, pShader, gShader, cShader)
 		{}
 
-		OGLShaderProgram(const OGLShaderProgram& other)
-		{
-			shaderId = other.shaderId;
-		}
+		OGLShaderProgram(const OGLShaderProgram& other) { shaderId = other.shaderId; }
+		OGLShaderProgram(OGLShaderProgram&& other) { shaderId = other.shaderId; }
 
-		OGLShaderProgram(OGLShaderProgram&& other)
-		{
-			shaderId = other.shaderId;
+		virtual ~OGLShaderProgram() { 
+			release();
+			if (pixelShader != nullptr) {
+				delete pixelShader;
+			}
+			if (vertexShader != nullptr) {
+				delete vertexShader;
+			}
+			if (geometryShader != nullptr) {
+				delete geometryShader;
+			}
+			if (computeShader != nullptr) {
+				delete computeShader;
+			}
+			if (hullShader != nullptr) {
+				delete hullShader;
+			}
+			if (domainShader != nullptr) {
+				delete domainShader;
+			}
 		}
 
 		OGLShaderProgram& operator=(const OGLShaderProgram& other)

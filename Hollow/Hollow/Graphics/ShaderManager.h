@@ -18,15 +18,19 @@ namespace Hollow {
 	public:
 		std::string shaderTypeFolder;
 		std::unordered_map<std::string, ShaderProgram*> shaders;
+		std::string shaderFolder;
 	protected:
 		FileSystem fs;
-
-		std::string shaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
 	public:
 		ShaderManager() { setStartedUp(); }
-		~ShaderManager() { setShutdown(); }
+		~ShaderManager() {
+			for (auto& it : shaders) {
+				delete it.second;
+			}
+			setShutdown(); 
+		}
 
-		virtual void loadShadersFromFolder() = 0;
+		virtual void loadShadersFromFolder(const std::string& folder) = 0;
 		inline ShaderProgram* getShader(const std::string& name) { return shaders[name]; }
 
 		virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) = 0;

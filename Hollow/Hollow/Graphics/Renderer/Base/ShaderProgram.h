@@ -19,6 +19,7 @@ namespace Hollow {
 		ShaderProgram(Shader* vShader = nullptr, Shader* pShader = nullptr, Shader* gShader = nullptr, Shader* cShader = nullptr) :
 			pixelShader(pShader), vertexShader(vShader), geometryShader(gShader), computeShader(cShader)
 		{}
+		virtual ~ShaderProgram() {}
 
 		virtual void release() = 0;
 

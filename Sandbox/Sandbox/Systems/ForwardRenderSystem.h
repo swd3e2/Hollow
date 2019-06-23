@@ -128,8 +128,7 @@ public:
 			DrawSceneForPicker();
 
 			renderer->SetRenderTarget(0);
-			tempDraw();
-			DrawSceneGLTF();
+			Draw();
 			DrawSkyMap();
 
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
@@ -194,7 +193,7 @@ public:
 		}
 	}
 
-	void tempDraw()
+	void Draw()
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
@@ -202,19 +201,23 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
 				transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
-
 				m_TransformConstantBuffer->update(&transformBuff);
 				renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
 				for (auto& it : renderable->renderables) {
-					drawTempObject(it);
+					DrawObject(it);
 				}
 			}
 		}
 	}
 
-	void drawTempObject(RenderableObject& object)
+	void DrawObject(RenderableObject& object)
 	{
+		transformBuff.selected = pickedID == object.id ? true : false;
+
+		m_TransformConstantBuffer->update(&transformBuff);
+		renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
 		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		renderer->SetVertexBuffer(object.vBuffer);
 		renderer->SetIndexBuffer(object.iBuffer);
@@ -224,40 +227,38 @@ public:
 	void DrawSceneForPicker()
 	{
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
-			if (entity.hasComponent<GLTFRenderable>() && entity.hasComponent<TransformComponent>()) {
-				GLTFRenderable* renderable = entity.getComponent<GLTFRenderable>();
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				DrawForPicker(renderable->rootNode, renderable, transform, Matrix4::Identity());
+				transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) 
+					* Matrix4::Rotation(transform->rotation) 
+					* Matrix4::Translation(transform->position));
+
+				m_TransformConstantBuffer->update(&transformBuff);
+				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+				for (auto& it : renderable->renderables) {
+					DrawForPicker(it);
+				}
 			}
 		}
 	}
 
-	void DrawForPicker(Hollow::GLTF::Node* node, GLTFRenderable* renderable, TransformComponent* transform, const Matrix4& parentTransform)
+	void DrawForPicker(RenderableObject& object)
 	{
-		if (node->mesh != -1) {
-			transformBuff.transform = parentTransform * node->transformation *
-				Matrix4::Transpose(Matrix4::Scaling(transform->scale) * Matrix4::Rotation(transform->rotation) * Matrix4::Translation(transform->position));
+		float r = ((object.id & 0x000000FF) >> 0) / 255.0f;
+		float g = ((object.id & 0x0000FF00) >> 8) / 255.0f;
+		float b = ((object.id & 0x00FF0000) >> 16) / 255.0f;
 
-			float r = ((renderable->renderables[node->mesh]->id & 0x000000FF) >> 0) / 255.0f;
-			float g = ((renderable->renderables[node->mesh]->id & 0x0000FF00) >> 8) / 255.0f;
-			float b = ((renderable->renderables[node->mesh]->id & 0x00FF0000) >> 16) / 255.0f;
+		transformBuff.color = Vector3(r, g, b);
+		m_TransformConstantBuffer->update(&transformBuff);
+		renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
-			transformBuff.color = Vector3(r, g, b);
-			m_TransformConstantBuffer->update(&transformBuff);
-			renderer->SetGpuBuffer(m_TransformConstantBuffer);
-
-			materialConstantBuffer->update(&renderable->renderables[node->mesh]->material->materialData);
-			renderer->SetGpuBuffer(materialConstantBuffer);
-			renderer->SetShader(ShaderManager::instance()->getShader("picker"));
-			renderer->SetVertexBuffer(renderable->renderables[node->mesh]->vBuffer);
-			renderer->SetIndexBuffer(renderable->renderables[node->mesh]->iBuffer);
-			renderer->DrawIndexed(renderable->renderables[node->mesh]->iBuffer->getSize());
-		}
-
-		for (auto& it : node->childrens) {
-			DrawForPicker(it, renderable, transform, node->transformation);
-		}
+		renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+		renderer->SetVertexBuffer(object.vBuffer);
+		renderer->SetIndexBuffer(object.iBuffer);
+		renderer->DrawIndexed(object.iBuffer->getSize());
 	}
 
 	// Update world view projection matrix

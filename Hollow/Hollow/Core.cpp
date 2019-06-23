@@ -46,6 +46,8 @@ namespace Hollow {
 		inputManager.Clear();
 
 		m_Timer.Stop();
+
+		delayedTaskManager.Update();
 	}
 }
 

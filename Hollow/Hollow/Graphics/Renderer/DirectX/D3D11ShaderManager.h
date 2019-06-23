@@ -17,9 +17,9 @@ namespace Hollow {
 	private:
 		HRESULT CompileShaderInternal(const std::string& path, LPCSTR entryPoint, LPCSTR profile, ID3DBlob** blob);
 	public:
-		D3D11ShaderManager();
+		D3D11ShaderManager() = default;
 		~D3D11ShaderManager();
-		virtual void loadShadersFromFolder() override;
+		virtual void loadShadersFromFolder(const std::string& folder) override;
 		virtual Shader* compileShader(ShaderType type, const std::string& path, Shader* shader = nullptr) override;
 		virtual ShaderProgram* createShader(Shader* vertexShader, Shader* pixelShader, ShaderProgram* prevProgram = nullptr) override;
 		void reloadShader(ShaderProgram* program) override;

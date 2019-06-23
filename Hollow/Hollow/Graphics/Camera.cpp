@@ -29,22 +29,22 @@ namespace Hollow {
 	void Camera::Update(double dt)
 	{
 		if (mainCamera) {
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_W) == true) {
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_UP) == true) {
 				position += forwardVec * dt * cameraMoveSpeed;
 				UpdateViewMatrix();
 			}
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_S) == true) {
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_DOWN) == true) {
 				position -= forwardVec * dt * cameraMoveSpeed;
 				UpdateViewMatrix();
 			}
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_A) == true) {
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_LEFT) == true) {
 				position -= rightVec * dt * cameraMoveSpeed;
 				UpdateViewMatrix();
 			}
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_D) == true) {
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_RIGHT) == true) {
 				position += rightVec * dt * cameraMoveSpeed;
 				UpdateViewMatrix();
 			}

@@ -16,6 +16,7 @@
 #include "Hollow/Graphics/Renderer/DirectX/D3D11Win32Window.h"
 #include "Hollow/Graphics/Renderer/OpenGL/Win32/OGLWin32Window.h"
 #include <Commdlg.h>
+#include "Shlobj.h"
 
 namespace Hollow {
 	class FileSystem
@@ -67,7 +68,7 @@ namespace Hollow {
 			return v;
 		}
 
-		std::vector<std::string> read_directory(std::string filepath)
+		std::vector<std::string> read_directory(const std::string& filepath)
 		{
 			std::vector<std::string> v;
 
@@ -145,6 +146,35 @@ namespace Hollow {
 				return ofn.lpstrFile;
 			}
 			return std::string();
+		}
+
+		static std::string OpenFolder()
+		{
+			CHAR szFile[260] = { 0 };  // if using TCHAR macros
+			LPITEMIDLIST pidl;
+
+			BROWSEINFOA desc = { 0 };
+			desc.hwndOwner = *(static_cast<OGLWin32Window*>(WindowManager::instance()->getWindow()))->getHWND();
+			desc.lpszTitle = "select folder";
+			desc.pszDisplayName = szFile;
+			pidl = SHBrowseForFolder(&desc);
+
+			if (pidl) {
+				SHGetPathFromIDList(pidl, szFile);
+				return szFile;
+			}
+
+			return std::string();
+		}
+
+		static bool CreateFolder(std::string path)
+		{
+			return CreateDirectoryA(path.c_str(), NULL);
+		}
+
+		static bool Copy(const std::string& filepath, const std::string& dst)
+		{
+			return CopyFile(filepath.c_str(), dst.c_str(), false);
 		}
 	};
 

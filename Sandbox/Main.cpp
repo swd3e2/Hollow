@@ -38,21 +38,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	MoveSystem moveSystem(camera);
 
-	Hollow::GLTFImporter importer;
-	Hollow::GLTF::GLTFModel* model = importer.import("Sandbox/Resources/Meshes/scene.gltf");
-
-	GameObject* entity = Hollow::EntityManager::instance()->createEntity<GameObject>();
-	//entity->addComponent<GLTFAnimation, Hollow::GLTF::GLTFModel*&>(model);
-	//entity->addComponent<GLTFRenderable, Hollow::GLTF::GLTFModel*&>(model);
-	//entity->addComponent<TempRenderableComponent>();
-
-	entity->addComponent<TransformComponent, Hollow::Vector3&&, Hollow::Vector3&&, Hollow::Vector3&&>
-		(Hollow::Vector3(0.0f, 0.0f, 0.0f), Hollow::Vector3(0.1f, 0.1f, 0.1f), Hollow::Vector3(0.0f, 0.0f, 0.0f));
-	
-	entity->addComponent<MoveComponent>();
-
 	core.systemManager.AddSystem(&renderPass);
-	core.systemManager.AddSystem(&moveSystem);
+	//core.systemManager.AddSystem(&moveSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->renderSystem = &renderPass;

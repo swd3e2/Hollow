@@ -21,7 +21,11 @@ namespace Hollow {
 		class ComponentContainer : public IComponentContainer
 		{
 		public:
-			Hollow::array<T, 10> componentList;
+			Hollow::array<T> componentList;
+		public:
+			ComponentContainer() :
+				componentList(100)
+			{}
 		};
 
 		std::unordered_map<size_t, IComponentContainer*> componentContainers;

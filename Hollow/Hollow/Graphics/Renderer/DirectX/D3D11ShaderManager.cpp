@@ -203,11 +203,6 @@ namespace Hollow {
 		program->setVertexShader(compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + shaderName + ".hlsl", program->getVertexShader()));
 		program->setPixelShader(compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + shaderName + ".hlsl", program->getPixelShader()));
 	}
-
-	D3D11ShaderManager::D3D11ShaderManager()
-	{
-	}
-
 	
 	D3D11ShaderManager::~D3D11ShaderManager()
 	{
@@ -216,14 +211,16 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11ShaderManager::loadShadersFromFolder()
+	void D3D11ShaderManager::loadShadersFromFolder(const std::string& folder)
 	{
+		shaderFolder = folder + "/";
+
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		device = r->getContext().getDevice();
 
 		shaderTypeFolder = "D3D11";
 
-		std::vector<std::string> shaders = fs.read_directory(shaderFolder + "/" + shaderTypeFolder + "/vertex/");
+		std::vector<std::string> shaders = fs.read_directory(shaderFolder + shaderTypeFolder + "/vertex/");
 
 		for (auto& it : shaders)
 		{

@@ -1,13 +1,9 @@
 #include "OGLShaderManager.h"
 
 namespace Hollow {
-	OGLShaderManager::OGLShaderManager()
+	void OGLShaderManager::loadShadersFromFolder(const std::string& folder)
 	{
-
-	}
-
-	void OGLShaderManager::loadShadersFromFolder()
-	{
+		shaderFolder = folder;
 		shaderTypeFolder = "OGL";
 
 		std::vector<std::string> shaders = fs.read_directory(shaderFolder + "/" + shaderTypeFolder + "/vertex/");

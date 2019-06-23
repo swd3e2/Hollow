@@ -10,7 +10,7 @@ namespace Hollow {
 	 * Simple data-oriented container created 
 	 * for storing components and entities
 	 */
-	template<class T, size_t size = 1024>
+	template<class T>
 	class array
 	{
 	public:
@@ -19,16 +19,16 @@ namespace Hollow {
 		/* Allocator, heart of the container */
 		PoolAllocator* allocator;
 		/* Count of objects that container can handle without grow up */
-		size_t capacity;
+		size_t m_Capacity;
 		/* Count of objects */
-		size_t currentSize;
+		size_t m_Size;
 	public:
-		array() :
-			capacity(size)
+		array(size_t size) :
+			m_Capacity(size)
 		{
-			allocator = new PoolAllocator(capacity, sizeof(T), alignof(T));
+			allocator = new PoolAllocator(m_Capacity, sizeof(T), alignof(T));
 			m_data = allocator->getFirstAddress();
-			currentSize = 0;
+			m_Size = 0;
 		}
 
 		~array()
@@ -42,12 +42,12 @@ namespace Hollow {
 		template<typename ...ARGS>
 		T* createObject(ARGS&& ...args)
 		{
-			if (currentSize + 1 > capacity) {
-				this->resize(capacity * 2);
+			if (m_Size + 1 > m_Capacity) {
+				this->resize(m_Capacity * 2);
 			}
 			T* object = new (allocator->allocate()) T(std::forward<ARGS>(args)...);
 			if (object != nullptr) {
-				currentSize++;
+				m_Size++;
 			}
 
 			return object;
@@ -55,7 +55,7 @@ namespace Hollow {
 
 		void clear()
 		{
-			currentSize = 0;
+			m_Size = 0;
 			this->allocator->clear();
 		}
 
@@ -67,22 +67,36 @@ namespace Hollow {
 			allocator->deallocate(object);
 		}
 
+	   /*
+		* Return capacity of container
+		*/
 		void resize(size_t size)
 		{
-			capacity = size;
-			PoolAllocator* allocator = new PoolAllocator(capacity, sizeof(T), alignof(T));
+			m_Capacity = size;
+			PoolAllocator* allocator = new PoolAllocator(m_Capacity, sizeof(T), alignof(T));
 			memset(allocator->getFirstAddress(), 0, this->allocator->getSize());
 			memcpy(allocator->getFirstAddress(), this->allocator->getFirstAddress(), this->allocator->getSize());
-			allocator->pointer = (void**)((uintptr_t)allocator->getFirstAddress() + (this->allocator->count < this->capacity ? this->capacity : this->allocator->count) * this->allocator->objectSize);
+			allocator->pointer = (void**)((uintptr_t)allocator->getFirstAddress() + (this->allocator->count < m_Capacity ? m_Capacity : this->allocator->count) * this->allocator->objectSize);
 			clear();
 			delete this->allocator;
 			this->allocator = allocator;
 			m_data = this->allocator->getFirstAddress();
 		}
 
-		size_t getSize()
+	   /*
+	    * Return capacity of container
+	    */
+		size_t capacity() const
 		{
-			return currentSize;
+			return m_Capacity;
+		}
+
+	   /*
+		* Return size of container
+		*/
+		size_t size() const
+		{
+			return m_Size;
 		}
 
 		/*
@@ -131,7 +145,7 @@ namespace Hollow {
 
 		iterator begin() { return iterator((T*)this->m_data); }
 		iterator end() { 
-			return iterator((T*)((uintptr_t)this->m_data + this->allocator->objectSize * currentSize)); 
+			return iterator((T*)((uintptr_t)this->m_data + this->allocator->objectSize * m_Size));
 		}
 	};
 }

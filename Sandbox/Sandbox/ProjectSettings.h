@@ -13,6 +13,8 @@
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Components/RenderableComponent.h"
+#include "Sandbox/Entities/GameObject.h"
+#include "Hollow/Core/DelayedTaskManager.h"
 
 class ProjectSettings : public Hollow::CModule<ProjectSettings>
 {
@@ -20,6 +22,10 @@ public:
 	std::string MeshesFolder;
 	std::string TexturesFolder;
 	std::string ShadersFolder;
+
+	std::string projectFolder;
+	std::string projectName;
+	std::string projectFileName;
 
 	bool isProjectLoaded = false;
 public:
@@ -33,50 +39,160 @@ public:
 		setShutdown();
 	}
 
-	void loadFromFile(std::string filename) 
+	void load(std::string filename) 
 	{
-		using json = nlohmann::json;
-			
-		auto projectData = json::parse(Hollow::FileSystem::getFileContent(filename));
+		auto func = [&, filename]() {
+			using json = nlohmann::json;
 
-		Hollow::EntityManager::instance()->clear();
-		Hollow::ComponentManager::instance()->clear();
+			auto projectData = json::parse(Hollow::FileSystem::getFileContent(filename));
 
-		MeshesFolder = projectData["MeshesFolder"].get<std::string>();
-		TexturesFolder = projectData["TexturesFolder"].get<std::string>();
-		ShadersFolder = projectData["ShadersFolder"].get<std::string>();
+			Hollow::EntityManager::instance()->clear();
+			Hollow::ComponentManager::instance()->clear();
 
-		Hollow::ShaderManager::instance()->shaderTypeFolder = ShadersFolder;
-		Hollow::ShaderManager::instance()->loadShadersFromFolder();
+			MeshesFolder = projectData["MeshesFolder"].get<std::string>();
+			TexturesFolder = projectData["TexturesFolder"].get<std::string>();
+			ShadersFolder = projectData["ShadersFolder"].get<std::string>();
+			projectFileName = filename;
 
-		for (auto& it : projectData["Entities"]) {
-			GameObject* gameObject = Hollow::EntityManager::instance()->createEntity<GameObject>();
+			Hollow::ShaderManager::instance()->loadShadersFromFolder("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Shaders");
 
-			if (it.find("TransformComponent") != it.end()) {
-				TransformComponent* transform = gameObject->addComponent<TransformComponent>();
-				transform->position = Hollow::Vector3(
-					it["TransformComponent"]["translation"][0].get<float>(), 
-					it["TransformComponent"]["translation"][1].get<float>(), 
-					it["TransformComponent"]["translation"][2].get<float>()
-				);
-				transform->scale = Hollow::Vector3(
-					it["TransformComponent"]["scale"][0].get<float>(),
-					it["TransformComponent"]["scale"][1].get<float>(),
-					it["TransformComponent"]["scale"][2].get<float>()
-				);
-				transform->rotation = Hollow::Vector3(
-					it["TransformComponent"]["rotation"][0].get<float>(),
-					it["TransformComponent"]["rotation"][1].get<float>(),
-					it["TransformComponent"]["rotation"][2].get<float>()
-				);
+			for (auto& it : projectData["Entities"]) {
+				GameObject* gameObject = Hollow::EntityManager::instance()->createEntity<GameObject>();
+
+				if (it.find("TransformComponent") != it.end()) {
+					TransformComponent* transform = gameObject->addComponent<TransformComponent>();
+					transform->position = Hollow::Vector3(
+						it["TransformComponent"]["translation"][0].get<float>(),
+						it["TransformComponent"]["translation"][1].get<float>(),
+						it["TransformComponent"]["translation"][2].get<float>()
+					);
+					transform->scale = Hollow::Vector3(
+						it["TransformComponent"]["scale"][0].get<float>(),
+						it["TransformComponent"]["scale"][1].get<float>(),
+						it["TransformComponent"]["scale"][2].get<float>()
+					);
+					transform->rotation = Hollow::Vector3(
+						it["TransformComponent"]["rotation"][0].get<float>(),
+						it["TransformComponent"]["rotation"][1].get<float>(),
+						it["TransformComponent"]["rotation"][2].get<float>()
+					);
+				}
+
+				if (it.find("RenderableComponent") != it.end()) {
+					gameObject->addComponent<RenderableComponent, std::string>(it["RenderableComponent"]["filename"].get<std::string>());
+				}
 			}
 
-			if (it.find("RenderableComponent") != it.end()) {
-				RenderableComponent* transform = gameObject->addComponent<RenderableComponent, std::string>(MeshesFolder + "/" + it["RenderableComponent"]["filename"].get<std::string>());
-			}
-		}
+			projectFolder = Hollow::Helper::trim_from_last_line_entry(filename.c_str(), '\\');
 
-		isProjectLoaded = true;
+			isProjectLoaded = true;
+		};
+
+		Hollow::DelayedTaskManager::instance()->Add(func);
+	}
+
+	void create(std::string folder, std::string name)
+	{
+		auto func = [&, folder, name]() {
+			using json = nlohmann::json;
+
+			if (folder[folder.size() - 1] != '/') {
+				projectFolder = folder + "/" + name;
+			} else {
+				projectFolder = folder + name;
+			}
+
+			projectName = name;
+			projectFileName = projectFolder + "/" + name + ".json";
+
+			Hollow::FileSystem::CreateFolder(projectFolder);
+			Hollow::FileSystem::CreateFolder(projectFolder + "/Meshes");
+			Hollow::FileSystem::CreateFolder(projectFolder + "/Textures");
+			Hollow::FileSystem::CreateFolder(projectFolder + "/Shaders");
+
+			json projectData;
+
+			MeshesFolder = projectData["MeshesFolder"] = projectFolder + "/Meshes";
+			TexturesFolder = projectData["TexturesFolder"] = projectFolder + "/Textures";
+			ShadersFolder = projectData["ShadersFolder"] = projectFolder + "/Shaders";
+
+			copyShaders();
+			Hollow::ShaderManager::instance()->loadShadersFromFolder(ShadersFolder);
+
+			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());
+
+			isProjectLoaded = true;
+		};
+
+		Hollow::DelayedTaskManager::instance()->Add(func);
+	}
+
+	void save()
+	{
+		auto func = [&]() {
+			using json = nlohmann::json;
+			if (!projectFolder.size() && isProjectLoaded) {
+				return;
+			}
+
+			json projectData;
+
+			projectData["MeshesFolder"] = MeshesFolder;
+			projectData["TexturesFolder"] = TexturesFolder;
+			projectData["ShadersFolder"] = ShadersFolder;
+
+			int counter = 0;
+			for (auto& it : Hollow::EntityManager::instance()->getContainer<GameObject>()->entityList) {
+				projectData["Entities"][counter]["id"] = it.getId();
+				if (it.hasComponent<TransformComponent>()) {
+					TransformComponent* transform = it.getComponent<TransformComponent>();
+
+					projectData["Entities"][counter]["TransformComponent"] = {
+						{"rotation", { transform->rotation.x, transform->rotation.y, transform->rotation.z }},
+						{"translation", { transform->position.x, transform->position.y, transform->position.z }},
+						{"scale", { transform->scale.x, transform->scale.y, transform->scale.z }}
+					};
+				}
+
+				if (it.hasComponent<RenderableComponent>()) {
+					RenderableComponent* renderable = it.getComponent<RenderableComponent>();
+
+					projectData["Entities"][counter]["RenderableComponent"] = {
+						{"filename", renderable->filename}
+					};
+				}
+				counter++;
+			}
+
+			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());
+		};
+
+		Hollow::DelayedTaskManager::instance()->Add(func);
+	}
+private:
+	void copyShaders()
+	{
+		Hollow::FileSystem::CreateFolder(ShadersFolder + "/D3D11");
+		Hollow::FileSystem::CreateFolder(ShadersFolder + "/OGL");
+
+		Hollow::FileSystem::CreateFolder(ShadersFolder + "/D3D11/vertex");
+		Hollow::FileSystem::CreateFolder(ShadersFolder + "/D3D11/pixel");
+		Hollow::FileSystem::CreateFolder(ShadersFolder + "/OGL/vertex");
+		Hollow::FileSystem::CreateFolder(ShadersFolder + "/OGL/pixel");
+
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/vertex/default.hlsl", ShadersFolder + "/D3D11/vertex/default.hlsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/pixel/default.hlsl", ShadersFolder + "/D3D11/pixel/default.hlsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/vertex/SkyMap.hlsl", ShadersFolder + "/D3D11/vertex/SkyMap.hlsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/pixel/SkyMap.hlsl", ShadersFolder + "/D3D11/pixel/SkyMap.hlsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/vertex/picker.hlsl", ShadersFolder + "/D3D11/vertex/picker.hlsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/pixel/picker.hlsl", ShadersFolder + "/D3D11/pixel/picker.hlsl");
+
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/vertex/default.glsl", ShadersFolder + "/OGL/vertex/default.glsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/pixel/default.glsl", ShadersFolder + "/OGL/pixel/default.glsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/vertex/SkyMap.glsl", ShadersFolder + "/OGL/vertex/SkyMap.glsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/pixel/SkyMap.glsl", ShadersFolder + "/OGL/pixel/SkyMap.glsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/vertex/picker.glsl", ShadersFolder + "/OGL/vertex/picker.glsl");
+		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/pixel/picker.glsl", ShadersFolder + "/OGL/pixel/picker.glsl");
 	}
 };
 

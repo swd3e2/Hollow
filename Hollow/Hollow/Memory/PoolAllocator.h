@@ -93,7 +93,7 @@ namespace Hollow {
 			for (unsigned int i = 0; i < count; i++)
 			{
 				*p = (void*)((uintptr_t)p + objectSize);
-				p = (void**)* p;
+				p = (void**)*p;
 			}
 			this->pointer = (void**)this->memory;
 		}

@@ -14,6 +14,7 @@
     <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
+    <ClInclude Include="Hollow\Core\DelayedTaskManager.h" />
     <ClInclude Include="Hollow\Core\Task.h" />
     <ClInclude Include="Hollow\Core\TaskList.h" />
     <ClInclude Include="Hollow\Core\TaskManager.h" />
@@ -111,6 +112,7 @@
     <ClInclude Include="Hollow\Math\Vector4.h" />
     <ClInclude Include="Hollow\Memory\AllocatorUtils.h" />
     <ClInclude Include="Hollow\Memory\IAllocator.h" />
+    <ClInclude Include="Hollow\Memory\MemoryContainer.h" />
     <ClInclude Include="Hollow\Memory\PoolAllocator.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Texture.h" />
@@ -154,7 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Core.cpp" />
-    <ClCompile Include="Hollow\Core\TaskManager.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_demo.cpp" />

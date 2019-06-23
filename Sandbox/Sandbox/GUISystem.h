@@ -43,6 +43,10 @@ public:
 	GLTFRenderableObject* selectedRenderable;
 	Material* selectedMaterial;
 	int drawMode = 0;
+	bool openProjectCreationPopup = false;
+
+	char* projectFolder = new char[100]{ 0 };
+	char* projectName = new char[100]{ 0 };
 
 	GUISystem(Window* window, RenderApi* renderer)
 	{
@@ -59,7 +63,55 @@ public:
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
-		
+
+		ImGuiStyle* style = &ImGui::GetStyle();
+		ImVec4* colors = style->Colors;
+
+		colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+		colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+		colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
+		colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
+		colors[ImGuiCol_Border] = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+		colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+		colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 0.54f);
+		colors[ImGuiCol_FrameBgHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+		colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+		colors[ImGuiCol_TitleBg] = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
+		colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f);
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
+		colors[ImGuiCol_MenuBarBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+		colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+		colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+		colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+		colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+		colors[ImGuiCol_CheckMark] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.52f, 0.88f, 1.00f);
+		colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_Button] = ImVec4(1.00f, 0.6f, 0.00f, 0.40f);
+		colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
+		colors[ImGuiCol_Header] = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
+		colors[ImGuiCol_HeaderHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.80f);
+		colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_Separator] = colors[ImGuiCol_Border];
+		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.10f, 0.40f, 0.75f, 0.78f);
+		colors[ImGuiCol_SeparatorActive] = ImVec4(0.10f, 0.40f, 0.75f, 1.00f);
+		colors[ImGuiCol_ResizeGrip] = ImVec4(0.26f, 0.59f, 0.98f, 0.25f);
+		colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+		colors[ImGuiCol_ResizeGripActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.95f);
+		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+		colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+		colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+		colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+		colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
+		colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
+		colors[ImGuiCol_NavHighlight] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+		colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
+		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+
 #ifdef D3D11
 		ImGui_ImplWin32_Init(*static_cast<D3D11Win32Window*>(window)->getHWND());
 		D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
@@ -70,6 +122,9 @@ public:
 		const char* glsl_version = "#version 460";
 		result = ImGui_ImplOpenGL3_Init(glsl_version);
 #endif
+
+		strcpy_s(projectFolder, 4, "C:/");
+		strcpy_s(projectName, 8, "Project");
 	}
 
 	~GUISystem()
@@ -120,27 +175,54 @@ public:
 	void update(double dt)
 	{
 		begin();
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Load")) {
+					filename = Hollow::FileSystem::OpenFile("");
+					if (filename.size()) {
+						ProjectSettings::instance()->load(filename);
+					}
+				}
+				if (ImGui::MenuItem("Create")) {
+					openProjectCreationPopup = true;
+				}
+				if (ImGui::MenuItem("Save")) {
+					ProjectSettings::instance()->save();
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+		if (openProjectCreationPopup) {
+			ImGui::OpenPopup("Project creation");
+		}
+
+		if (ImGui::BeginPopupModal("Project creation"))
+		{
+			ImGui::InputText("##project_name", projectName, 100);
+			ImGui::InputText("##project_path", projectFolder, 100);
+			if (ImGui::Button("Select folder")) {
+				std::string tempString = Hollow::FileSystem::OpenFolder().c_str();
+				strcpy_s(projectFolder, tempString.size() + 1, tempString.c_str());
+			}
+			if (ImGui::Button("Create")) {
+				ProjectSettings::instance()->create(projectFolder, projectName);
+				ImGui::CloseCurrentPopup();
+				openProjectCreationPopup = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel")) {
+				ImGui::CloseCurrentPopup();
+				openProjectCreationPopup = false;
+			}
+			ImGui::EndPopup();
+		}
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			drawMainWindow();
-		} else {
-			drawProjectLoaderGui();
 		}
 		
 		end();
-	}
-
-	void drawProjectLoaderGui()
-	{
-		ImGui::Begin("ProjectLoader");
-		ImGui::Text("You need to load project");
-		if (ImGui::Button("Select project file")) {
-			filename = Hollow::FileSystem::OpenFile("");
-			if (filename.size()) {
-				ProjectSettings::instance()->loadFromFile(filename);
-			}
-		}
-		ImGui::End();
 	}
 
 	void drawMainWindow()
@@ -171,8 +253,6 @@ public:
 		int counter = 0;
 		if (ImGui::Button("Add enitity")) {
 			GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
-			entity->addComponent<TransformComponent, Vector3&&, Vector3&&, Vector3&&>
-				(Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), Vector3(0.0f, 0.0f, 0.0f));
 		}
 
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
@@ -317,11 +397,11 @@ public:
 	void onChangePickedMesh(Hollow::IEvent* event)
 	{
 		ChangeSelectedEntity* changeEvent = reinterpret_cast<ChangeSelectedEntity*>(event);
-		if (selectedGameObject != nullptr && selectedGameObject->hasComponent<GLTFRenderable>()) {
-			GLTFRenderable* renderable = selectedGameObject->getComponent<GLTFRenderable>();
-			std::vector<GLTFRenderableObject*>& renderables = renderable->renderables;
+		if (selectedGameObject != nullptr && selectedGameObject->hasComponent<RenderableComponent>()) {
+			RenderableComponent* renderable = selectedGameObject->getComponent<RenderableComponent>();
+			std::vector<RenderableObject>& renderables = renderable->renderables;
 			if (changeEvent->pickedId < renderables.size()) {
-				selectedMaterial = renderables[changeEvent->pickedId]->material;
+				//selectedMaterial = renderables[changeEvent->pickedId].material;
 			}
 		}
 	}

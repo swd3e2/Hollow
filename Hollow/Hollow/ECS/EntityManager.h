@@ -22,7 +22,11 @@ namespace Hollow {
 		class EntityContainer : public IEntityContainer
 		{
 		public:
-			Hollow::array<T, 10> entityList;
+			Hollow::array<T> entityList;
+		public:
+			EntityContainer() :
+				entityList(100)
+			{}
 		};
 	private:
 		std::unordered_map<size_t, IEntityContainer*> entityContainers;

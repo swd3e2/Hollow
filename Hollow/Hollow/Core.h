@@ -19,6 +19,7 @@
 #include "Common/Log.h"
 #include "Importer/FreeImgImporter.h"
 #include "Graphics/WindowManager.h"
+#include "Hollow/Core/DelayedTaskManager.h"
 
 namespace Hollow {
 	class Core
@@ -36,7 +37,7 @@ namespace Hollow {
 		RenderApiManager				renderApiManager;
 		FreeImgImporter					imgImporter;
 		WindowManager					windowManager;
-
+		DelayedTaskManager				delayedTaskManager;
 		double							dt;
 	public:
 		Core(RendererType type);

@@ -19,6 +19,28 @@ namespace Hollow {
 			ShaderProgram(vShader, pShader, gShader, cShader)
 		{}
 
+		virtual ~D3D11ShaderProgram() { 
+			release();
+			if (pixelShader != nullptr) {
+				delete static_cast<D3D11PixelShader*>(pixelShader);
+			}
+			if (vertexShader != nullptr) {
+				delete static_cast<D3D11VertexShader*>(vertexShader);
+			}
+			if (geometryShader != nullptr) {
+				delete static_cast<D3D11GeometryShader*>(geometryShader);
+			}
+			if (computeShader != nullptr) {
+				delete static_cast<D3D11ComputeShader*>(computeShader);
+			}
+			if (hullShader != nullptr) {
+				delete static_cast<D3D11HullShader*>(hullShader);
+			}
+			if (domainShader != nullptr) {
+				delete static_cast<D3D11DomainShader*>(domainShader);
+			}
+		}
+
 		virtual void release() override
 		{
 			if (pixelShader != nullptr) {
