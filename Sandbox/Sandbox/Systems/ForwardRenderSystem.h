@@ -205,18 +205,33 @@ public:
 				renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
 				for (auto& it : renderable->renderables) {
-					DrawObject(it);
+					DrawObject(it, renderable);
 				}
 			}
 		}
 	}
 
-	void DrawObject(RenderableObject& object)
+	void DrawObject(RenderableObject& object, RenderableComponent* renderable)
 	{
 		transformBuff.selected = pickedID == object.id ? true : false;
 
 		m_TransformConstantBuffer->update(&transformBuff);
 		renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+		Hollow::Material& material = renderable->materials[object.material];
+
+		if (material.diffuseTexture != nullptr) {
+			renderer->SetTexture(0, material.diffuseTexture);
+		}
+		if (material.normalTexture != nullptr) {
+			renderer->SetTexture(1, material.normalTexture);
+		}
+		if (material.specularTexture != nullptr) {
+			renderer->SetTexture(2, material.specularTexture);
+		}
+
+		materialConstantBuffer->update(&material.materialData);
+		renderer->SetGpuBuffer(materialConstantBuffer);
 
 		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		renderer->SetVertexBuffer(object.vBuffer);

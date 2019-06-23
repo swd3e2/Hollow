@@ -10,6 +10,7 @@
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/Graphics/HardwareBufferManager.h"
 #include "Hollow/Common/Helper.h"
+#include "Hollow/Resources/Material.h"
 
 using json = nlohmann::json;
 
@@ -24,6 +25,7 @@ class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
 	std::vector<RenderableObject> renderables;
+	std::vector<Hollow::Material> materials;
 	std::string filename;
 public:
 	RenderableComponent(std::string filename) :
@@ -59,7 +61,7 @@ public:
 			unsigned int* indices = new unsigned int[j["Meshes"][i]["indices_size"].get<size_t>()];
 			file.read((char*)indices, sizeof(unsigned int) * j["Meshes"][i]["indices_size"].get<int>());
 
-			renderable.iBuffer =HardwareBufferManager::instance()->createIndexBuffer(indices, j["Meshes"][i]["indices_size"].get<int>());
+			renderable.iBuffer = HardwareBufferManager::instance()->createIndexBuffer(indices, j["Meshes"][i]["indices_size"].get<int>());
 
 			renderables.push_back(renderable);
 
@@ -69,5 +71,25 @@ public:
 
 		file.close();
 
+		for (auto& it : j["Materials"]) {
+			Hollow::Material material;
+			material.name = it["name"].get<std::string>();
+			material.materialData.color = Hollow::Vector4(
+				it["base_color"][0].get<float>(), 
+				it["base_color"][1].get<float>(), 
+				it["base_color"][2].get<float>(), 
+				it["base_color"][3].get<float>()
+			);
+
+			material.materialData.metallicFactor = it["metallness"].get<float>();
+			material.materialData.roughnessFactor = it["roughness"].get<float>();
+			material.materialData.emissiveFactor = it["emissive"].get<float>();
+
+			std::string diffuseTexture = it["diffuse_texture"].get<std::string>();
+			if (diffuseTexture.size()) {
+				material.diffuseTexture = Hollow::TextureManager::instance()->CreateTextureFromFile(diffuseTexture);
+			}
+			materials.push_back(material);
+		}
 	}
 };

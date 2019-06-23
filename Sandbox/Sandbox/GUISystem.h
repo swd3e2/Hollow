@@ -40,7 +40,7 @@ public:
 	std::string filename = "";
 	GameObject* selectedGameObject;
 	ForwardRenderSystem* renderSystem;
-	GLTFRenderableObject* selectedRenderable;
+	RenderableObject* selectedRenderable;
 	Material* selectedMaterial;
 	int drawMode = 0;
 	bool openProjectCreationPopup = false;
@@ -227,11 +227,7 @@ public:
 
 	void drawMainWindow()
 	{
-		ImGui::Begin("Main");
-		if (ImGui::Button("Clear")) {
-			Hollow::EntityManager::instance()->clear();
-			Hollow::ComponentManager::instance()->clear();
-		}
+		ImGui::Begin("Shaders");
 		if (ImGui::TreeNode("Shaders")) {
 			auto& shaders = ShaderManager::instance()->shaders;
 			for (auto& it : shaders) {
@@ -245,16 +241,14 @@ public:
 			}
 			ImGui::TreePop();
 		}
+		ImGui::End();
 
-		if (ImGui::Button("Delete all textures")) {
-			TextureManager::instance()->RemoveAll();
-		}
-
-		int counter = 0;
+		ImGui::Begin("Hierarchy");
 		if (ImGui::Button("Add enitity")) {
 			GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
 		}
 
+		int counter = 0;
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
 			if (ImGui::Selectable(("Entity" + std::to_string(counter++)).c_str())) {
 				selectedGameObject = &entity;
@@ -265,10 +259,15 @@ public:
 		ImGui::Begin("Inspector");
 		ImGui::Text("Renderable component");
 		if (selectedGameObject != nullptr) {
-			if (selectedGameObject->hasComponent<GLTFRenderable>()) {
-				GLTFRenderable* renderableComponent = selectedGameObject->getComponent<GLTFRenderable>();
-				std::vector<GLTFRenderableObject*>& renderables = selectedGameObject->getComponent<GLTFRenderable>()->renderables;
-				drawNodes(renderableComponent->rootNode, renderables);
+			if (selectedGameObject->hasComponent<RenderableComponent>()) {
+				RenderableComponent* renderableComponent = selectedGameObject->getComponent<RenderableComponent>();
+				std::vector<RenderableObject>& renderables = renderableComponent->renderables;
+				for (auto& it : renderables) {
+					if (ImGui::Selectable(std::string("Mesh " + std::to_string(it.id)).c_str())) {
+						selectedRenderable = &it;
+						selectedMaterial = &renderableComponent->materials[it.material];
+					}
+				}
 			}
 		}
 
@@ -346,7 +345,7 @@ public:
 					selectedMaterial->specularTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
 				}
 			}
-				}
+		}
 
 		ImGui::End();
 		ImGui::Begin("Scene");
@@ -401,7 +400,7 @@ public:
 			RenderableComponent* renderable = selectedGameObject->getComponent<RenderableComponent>();
 			std::vector<RenderableObject>& renderables = renderable->renderables;
 			if (changeEvent->pickedId < renderables.size()) {
-				//selectedMaterial = renderables[changeEvent->pickedId].material;
+				selectedMaterial = &renderable->materials[renderables[changeEvent->pickedId].id];
 			}
 		}
 	}
