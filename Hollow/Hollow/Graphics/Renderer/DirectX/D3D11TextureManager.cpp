@@ -281,6 +281,9 @@ namespace Hollow {
 			return nullptr;
 		}
 
+		for (int i = 0; i < data.size(); i++) {
+			delete[] data[i];
+		}
 		delete desc;
 
 		return texture;

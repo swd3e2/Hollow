@@ -141,6 +141,9 @@ namespace Hollow {
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
+		for (int i = 0; i < data.size(); i++) {
+			delete[] data[i];
+		}
 		delete desc;
 
 		return texture;

@@ -2,7 +2,7 @@
   "Entities": [
     {
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Project1/Meshes/_scene.json"
+        "filename": "C:/dev/Hollow Engine/Project1/Meshes/_sponza.json"
       },
       "TransformComponent": {
         "rotation": [

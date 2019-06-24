@@ -3,10 +3,10 @@
 namespace Hollow {
 	void OGLShaderManager::loadShadersFromFolder(const std::string& folder)
 	{
-		shaderFolder = folder;
+		shaderFolder = folder + "/";
 		shaderTypeFolder = "OGL";
 
-		std::vector<std::string> shaders = fs.read_directory(shaderFolder + "/" + shaderTypeFolder + "/vertex/");
+		std::vector<std::string> shaders = fs.read_directory(shaderFolder + shaderTypeFolder + "/vertex/");
 
 		for (auto& it : shaders)
 		{
@@ -37,8 +37,7 @@ namespace Hollow {
 		{
 			if (prevShader != nullptr) {
 				shader = static_cast<OGLShader*>(prevShader);
-			}
-			else {
+			} else {
 				shader = new OGLShader(ShaderType::VERTEX);
 			}
 

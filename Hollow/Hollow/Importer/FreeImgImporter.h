@@ -23,7 +23,7 @@ namespace Hollow {
 		}
 
 		TEXTURE_DESC* import(const char* filename);
-	};
+	};	
 }
 
 #endif
