@@ -1,5 +1,5 @@
 #pragma once
-#define OPENGL
+#define D3D11
 #include <Hollow/Core.h>
 #include <Hollow/Importer/gltf/GLTFImporter.h>
 #include "Sandbox/Components/GLTFRenderable.h"
@@ -22,7 +22,7 @@
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	Hollow::Core core(Hollow::RendererType::OpenGL);
+	Hollow::Core core(Hollow::RendererType::DirectX);
 
 	Hollow::Window* window = Hollow::WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	Hollow::RenderApi* renderer = Hollow::RenderApiManager::instance()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);

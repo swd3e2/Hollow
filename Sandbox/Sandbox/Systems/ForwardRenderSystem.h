@@ -95,7 +95,7 @@ public:
 
 		shadow.renderTarget = RenderTargetManager::instance()->create(1600, 900);
 		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetProjectionValues(90, static_cast<float>(1600) / static_cast<float>(900), 0.1f, 10000.0f);
+		shadow.shadowCamera->SetProjectionValues(90.0f, static_cast<float>(1600) / static_cast<float>(900), 0.1f, 10000.0f);
 
 		renderer->SetViewport(0, 0, 1600, 900);
 	}
@@ -126,7 +126,7 @@ public:
 			updateWVP(this->m_Camera);
 			renderer->SetRenderTarget(0);
 			Draw();
-			DrawSkyMap();
+			//DrawSkyMap();
 
 			renderer->SetRenderTarget(0);
 
