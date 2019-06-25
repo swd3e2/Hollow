@@ -43,6 +43,9 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->renderSystem = &renderPass;
+	gui->mainCamera = camera;
+
+	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 
 	while (!window->isClosed()) {
 		core.PreUpdate();

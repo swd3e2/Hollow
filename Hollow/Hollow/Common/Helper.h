@@ -33,7 +33,7 @@ namespace Hollow {
 			if (lastEntry == -1) return nullptr;
 
 			char* new_string = new char[lastEntry + 2];
-			memcpy((void*)new_string, (void*)string, lastEntry + 2);
+			memcpy((void*)new_string, (void*)string, lastEntry + 1);
 			new_string[lastEntry + 1] = '\0';
 			return new_string;
 		}
@@ -51,8 +51,8 @@ namespace Hollow {
 			}
 			if (lastEntry == -1) return nullptr;
 
-			char* new_string = new char[stringLenght - lastEntry + 3];
-			memcpy((void*)new_string, (void*)string, lastEntry + 3);
+			char* new_string = new char[stringLenght - lastEntry + 1];
+			memcpy((void*)new_string, (void*)string, stringLenght - lastEntry);
 			new_string[lastEntry + 1] = '\0';
 
 			return new_string;

@@ -29,6 +29,7 @@
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
     <ClInclude Include="Sandbox\Entities\Light.h" />
     <ClInclude Include="Sandbox\Events.h" />
+    <ClInclude Include="Sandbox\Graphics\Shadow.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
     <ClInclude Include="Sandbox\GUISystem.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />

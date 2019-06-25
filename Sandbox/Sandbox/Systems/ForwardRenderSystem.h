@@ -18,6 +18,7 @@
 #include "Sandbox/Events.h"
 #include "Sandbox/Components/RenderableComponent.h"
 #include "Sandbox/ProjectSettings.h"
+#include "Sandbox/Graphics/Shadow.h"
 
 using namespace Hollow;
 
@@ -25,26 +26,6 @@ struct WVP
 {
 	Matrix4 WVP;
 	Vector3 cameraPosition;
-	Vector2 cursorPosition;
-	Vector3 outputColor;
-};
-
-struct WorldViewProjection
-{
-	Matrix4 World;
-	Matrix4 View;
-	Matrix4 Projection;
-	Vector3 cameraPosition;
-	float offset;
-};
-
-
-struct LightMatrices
-{
-	Matrix4 View;
-	Matrix4 Projection;
-	Vector3 lightPosition;
-	float bias;
 };
 
 struct TransformBuff
@@ -64,6 +45,7 @@ struct LightInfo
 class ForwardRenderSystem : public Hollow::System<ForwardRenderSystem>
 {
 public:
+	Shadow shadow;
 	LightInfo				pointLights;
 	Camera* m_Camera;
 	SkyMap* skyMap;
@@ -74,9 +56,7 @@ private:
 	RenderApi* renderer;
 private:
 	WVP						m_wvp;
-	WorldViewProjection		m_worldViewProjection;
 	TransformBuff			transformBuff;
-	LightMatrices			lightMatrices;
 
 	GPUBuffer* m_WVPConstantBuffer;
 	GPUBuffer* m_WorldViewProjectionBuffer;
@@ -91,7 +71,6 @@ private:
 
 	const UINT uavs = 0;
 
-	int rasterizer = 0;
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -99,7 +78,6 @@ public:
 	ForwardRenderSystem(RenderApi* renderer) : renderer(renderer)
 	{
 		m_WVPConstantBuffer = GPUBufferManager::instance()->create(0, sizeof(WVP));
-		m_WorldViewProjectionBuffer = GPUBufferManager::instance()->create(1, sizeof(WorldViewProjection));
 		m_TransformConstantBuffer = GPUBufferManager::instance()->create(2, sizeof(TransformBuff));
 		materialConstantBuffer = GPUBufferManager::instance()->create(4, sizeof(MaterialData));
 		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
@@ -107,26 +85,31 @@ public:
 
 		debug = RenderTargetManager::instance()->create(1600, 900, RenderTargetFlags::ACCESS_BY_CPU);
 
+		shadow.renderTarget = RenderTargetManager::instance()->create(1600, 900);
+		shadow.shadowCamera = new Camera(false);
+		shadow.shadowCamera->SetProjectionValues(90, 1, 0.0f, 1000.0f);
+
 		renderer->SetViewport(0, 0, 1600, 900);
-		m_worldViewProjection.offset = 0.0f;
 	}
 
 	virtual void PreUpdate(double dt)
 	{
+		shadow.shadowCamera->Update(dt);
+
 		renderer->ClearRenderTarget(0, (float*)ClearColor);
 		renderer->ClearRenderTarget(main, ClearColor);
 		renderer->ClearRenderTarget(debug, ClearColor);
-		m_worldViewProjection.cameraPosition = m_Camera->GetPositionVec3();
-		renderer->SetRenderTarget(0);
+		renderer->ClearRenderTarget(shadow.renderTarget, ClearColor);
 	}
 
 	virtual void Update(double dt)
 	{
 		if (ProjectSettings::instance()->isProjectLoaded) {
-			updateWVP(m_Camera);
-			renderer->SetRenderTarget(debug);
-			DrawSceneForPicker();
-
+			renderer->SetRenderTarget(shadow.renderTarget);
+			updateWVP(shadow.shadowCamera);
+			Draw();
+			DrawSkyMap();
+			
 			renderer->SetRenderTarget(0);
 			Draw();
 			DrawSkyMap();
@@ -218,7 +201,7 @@ public:
 		m_TransformConstantBuffer->update(&transformBuff);
 		renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
-		Hollow::Material& material = renderable->materials[object.material];
+		/*Hollow::Material& material = renderable->materials[object.material];
 
 		if (material.diffuseTexture != nullptr) {
 			renderer->SetTexture(0, material.diffuseTexture);
@@ -228,10 +211,10 @@ public:
 		}
 		if (material.specularTexture != nullptr) {
 			renderer->SetTexture(2, material.specularTexture);
-		}
+		}*/
 
-		materialConstantBuffer->update(&material.materialData);
-		renderer->SetGpuBuffer(materialConstantBuffer);
+		/*materialConstantBuffer->update(&material.materialData);
+		renderer->SetGpuBuffer(materialConstantBuffer);*/
 
 		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 		renderer->SetVertexBuffer(object.vBuffer);
@@ -280,17 +263,9 @@ public:
 	void updateWVP(Camera* camera)
 	{
 		m_wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
-		m_wvp.cursorPosition = Vector2(InputManager::mcx, InputManager::mcy);
 
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->SetGpuBuffer(m_WVPConstantBuffer);
-
-		m_worldViewProjection.World = Matrix4::Identity();
-		m_worldViewProjection.View = camera->GetViewMatrix();
-		m_worldViewProjection.Projection = camera->GetProjectionMatrix();
-		m_WorldViewProjectionBuffer->update(&m_worldViewProjection);
-
-		renderer->SetGpuBuffer(m_WorldViewProjectionBuffer);
 	}
 
 	void DrawObject(Model * object)

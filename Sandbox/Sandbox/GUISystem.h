@@ -19,6 +19,7 @@
 #include <Hollow/Events/IEventListener.h>
 #include <Hollow/Events/EventSystem.h>
 #include "Sandbox/ProjectSettings.h"
+#include "Hollow/Graphics/Camera.h"
 
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
@@ -36,6 +37,9 @@ enum DrawTypes {
 class GUISystem : public Hollow::IEventListener
 {
 public:
+	Camera* mainCamera;
+	Camera* shadowCamera;
+
 	bool open = true;
 	std::string filename = "";
 	GameObject* selectedGameObject;
@@ -183,6 +187,15 @@ public:
 	void drawMainWindow()
 	{
 		ImGui::Begin("Shaders");
+		if (ImGui::Button("Toggle camera")) {
+			if (mainCamera->mainCamera) {
+				mainCamera->mainCamera = false;
+				renderSystem->shadow.shadowCamera->mainCamera = true;
+			} else {
+				mainCamera->mainCamera = true;
+				renderSystem->shadow.shadowCamera->mainCamera = false;
+			}
+		}
 		if (ImGui::TreeNode("Shaders")) {
 			auto& shaders = ShaderManager::instance()->shaders;
 			for (auto& it : shaders) {
@@ -304,11 +317,17 @@ public:
 
 		ImGui::End();
 		ImGui::Begin("Scene");
+//#ifdef OPENGL
+//		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug)->texture, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+//#endif
+//#ifdef D3D11
+//		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->debug)->GetShaderResourceView(), ImVec2(100, 100));
+//#endif
 #ifdef OPENGL
-		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug)->texture, ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug->renderTarget)->texture, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 #endif
 #ifdef D3D11
-		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->debug)->GetShaderResourceView(), ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
+		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->GetShaderResourceView(), ImVec2(200, 200));
 #endif
 		ImGui::End();
 	}
