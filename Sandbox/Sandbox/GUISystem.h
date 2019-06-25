@@ -317,14 +317,14 @@ public:
 
 		ImGui::End();
 		ImGui::Begin("Scene");
-//#ifdef OPENGL
-//		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug)->texture, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-//#endif
-//#ifdef D3D11
-//		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->debug)->GetShaderResourceView(), ImVec2(100, 100));
-//#endif
 #ifdef OPENGL
-		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->debug->renderTarget)->texture, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->shadow.renderTarget)->depth, ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+#endif
+#ifdef D3D11
+		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->GetDepthStencilResource(), ImVec2(200, 200));
+#endif
+#ifdef OPENGL
+		ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->shadow.renderTarget)->texture, ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 #endif
 #ifdef D3D11
 		ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->GetShaderResourceView(), ImVec2(200, 200));

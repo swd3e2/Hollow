@@ -43,10 +43,23 @@ namespace Hollow {
 		glActiveTexture(location + GL_TEXTURE0);
 		if (texture->type == TextureType::TEXTURE2D) {
 			glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
-		}
-		else {
+		} else {
 			glBindTexture(GL_TEXTURE_CUBE_MAP, oglTexture->textureId);
 		}
+	}
+
+	void OGLRenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget)
+	{
+		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+		glActiveTexture(slot + GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->texture);
+	}
+
+	void OGLRenderApi::SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
+	{
+		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+		glActiveTexture(slot + GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->depth);
 	}
 
 	void OGLRenderApi::SetShader(ShaderProgram* shader)
@@ -86,8 +99,9 @@ namespace Hollow {
 		if (renderTarget != nullptr) {
 			OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
-		}
-		else {
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+		} else {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}

@@ -156,18 +156,24 @@ namespace Hollow {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 			context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
-		}
-		else {
+		} else {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
 			context->getDeviceContext()->CSGetUnorderedAccessViews(slot, uavs, pUAV);
 		}
 	}
 
-	void D3D11RenderApi::SetTexture(UINT slot, RenderTarget* renderTarget)
+	void D3D11RenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget)
 	{
 		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
 		auto ptr = d3dRenderTarget->GetShaderResourceView();
+		context->getDeviceContext()->PSSetShaderResources(slot, 1, &ptr);
+	}
+
+	void D3D11RenderApi::SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
+	{
+		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
+		auto ptr = d3dRenderTarget->GetDepthStencilResource();
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &ptr);
 	}
 

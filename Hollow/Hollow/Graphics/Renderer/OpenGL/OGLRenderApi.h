@@ -34,7 +34,8 @@ namespace Hollow {
 		virtual void SetIndexBuffer(IndexBuffer*) override;
 		virtual void SetVertexBuffer(VertexBuffer*) override;
 		virtual void SetTexture(UINT, Texture*) override;
-		virtual void SetTexture(UINT, RenderTarget*) override {}
+		virtual void SetTextureColorBuffer(UINT, RenderTarget*) override;
+		virtual void SetTextureDepthBuffer(UINT, RenderTarget*) override;
 		virtual void SetShader(ShaderProgram*) override;
 		virtual void SetGpuBuffer(GPUBuffer*) override;
 		virtual void SetViewport(int w0, int y0, int w, int y) override;

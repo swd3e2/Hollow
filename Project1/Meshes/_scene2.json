@@ -1,0 +1,110 @@
+{
+  "Data": {
+    "filename": "_scene2.bin",
+    "size": 2033620
+  },
+  "Materials": [
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/map_2_island1_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "map_2_island1",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.6000000238418579,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/map_2_object1_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "map_2_object1",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.6000000238418579,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/map_2_terrain1_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "map_2_terrain1",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.6000000238418579,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "diffuse_texture": "textures/map_4lambert5SG_baseColor.png",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "map_4lambert5SG",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.6000000238418579,
+      "roughness_texture": "",
+      "specular_texture": ""
+    }
+  ],
+  "Meshes": [
+    {
+      "indices_offset": 283008,
+      "indices_size": 12147,
+      "material": 0,
+      "vertices_offset": 0,
+      "vertices_size": 3216
+    },
+    {
+      "indices_offset": 1434852,
+      "indices_size": 43896,
+      "material": 1,
+      "vertices_offset": 331596,
+      "vertices_size": 12537
+    },
+    {
+      "indices_offset": 1854988,
+      "indices_size": 13968,
+      "material": 2,
+      "vertices_offset": 1610436,
+      "vertices_size": 2779
+    },
+    {
+      "indices_offset": 2026492,
+      "indices_size": 1782,
+      "material": 3,
+      "vertices_offset": 1910860,
+      "vertices_size": 1314
+    }
+  ]
+}

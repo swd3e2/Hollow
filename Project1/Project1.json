@@ -22,6 +22,29 @@
         ]
       },
       "id": 0
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:/dev/Hollow Engine/Project1/Meshes/_scene2.json"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          50.0,
+          50.0,
+          50.0
+        ],
+        "translation": [
+          100.0,
+          0.0,
+          0.0
+        ]
+      },
+      "id": 1
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
