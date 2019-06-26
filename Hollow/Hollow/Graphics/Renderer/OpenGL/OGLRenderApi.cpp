@@ -48,6 +48,13 @@ namespace Hollow {
 		}
 	}
 
+	void OGLRenderApi::UnsetTexture(UINT slot)
+	{
+		glActiveTexture(slot + GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+	}
+
 	void OGLRenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget)
 	{
 		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);

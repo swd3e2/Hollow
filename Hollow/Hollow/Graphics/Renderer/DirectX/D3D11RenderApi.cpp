@@ -163,6 +163,12 @@ namespace Hollow {
 		}
 	}
 
+	void D3D11RenderApi::UnsetTexture(UINT slot)
+	{
+		context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
+		context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
+	}
+
 	void D3D11RenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget)
 	{
 		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);

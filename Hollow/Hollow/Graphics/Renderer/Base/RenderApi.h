@@ -23,6 +23,7 @@ namespace Hollow {
 		virtual void SetIndexBuffer(IndexBuffer*) = 0;
 		virtual void SetVertexBuffer(VertexBuffer*) = 0;
 		virtual void SetTexture(UINT, Texture*) = 0;
+		virtual void UnsetTexture(UINT) = 0;
 		virtual void SetTextureColorBuffer(UINT, RenderTarget*) = 0;
 		virtual void SetTextureDepthBuffer(UINT, RenderTarget*) = 0;
 		virtual void SetShader(ShaderProgram*) = 0;

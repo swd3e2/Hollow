@@ -7,6 +7,12 @@
 #include "Hollow/Core/CModule.h"
 
 namespace Hollow {
+	enum WindowType
+	{
+		Bordered = 0,
+		Borderless = 1
+	};
+
 	class Window : public CModule<Window>
 	{
 	private:

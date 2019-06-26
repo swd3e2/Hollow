@@ -76,13 +76,17 @@ private:
 	int directionalLightNum = 0;
 	int spotLifhtNum = 0;
 
+	int width;
+	int height;
+
 	const UINT uavs = 0;
 
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 public:
-	ForwardRenderSystem(RenderApi* renderer) : renderer(renderer)
+	ForwardRenderSystem(RenderApi* renderer, int width, int height) :
+		renderer(renderer), width(width), height(height)
 	{
 		m_WVPConstantBuffer = GPUBufferManager::instance()->create(0, sizeof(WVP));
 		shadowConstantBuffer = GPUBufferManager::instance()->create(1, sizeof(ShadowStruct));
@@ -91,13 +95,13 @@ public:
 		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		debug = RenderTargetManager::instance()->create(1600, 900, RenderTargetFlags::ACCESS_BY_CPU);
+		debug = RenderTargetManager::instance()->create(this->width, this->height, RenderTargetFlags::ACCESS_BY_CPU);
 
-		shadow.renderTarget = RenderTargetManager::instance()->create(1600, 900);
+		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height);
 		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetProjectionValues(90, static_cast<float>(1600) / static_cast<float>(900), 0.1f, 10000.0f);
+		shadow.shadowCamera->SetProjectionValues(90, static_cast<float>(this->width) / static_cast<float>(this->height), 0.1f, 10000.0f);
 
-		renderer->SetViewport(0, 0, 1600, 900);
+		renderer->SetViewport(0, 0, this->width, this->height);
 	}
 
 	virtual void PreUpdate(double dt)
@@ -113,18 +117,17 @@ public:
 		shadow.shadowCamera->Update(dt);
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
+			renderer->UnsetTexture(3);
 			updateWVP(shadow.shadowCamera);
 			renderer->SetRenderTarget(shadow.renderTarget);
 			Draw();
 
+			renderer->SetRenderTarget(0);
 			shadowStruct.ShadowWVP = m_wvp.WVP;
 			shadowConstantBuffer->update(&shadowStruct);
 			renderer->SetGpuBuffer(shadowConstantBuffer);
-
 			renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
-
 			updateWVP(this->m_Camera);
-			renderer->SetRenderTarget(0);
 			Draw();
 			DrawSkyMap();
 

@@ -1,7 +1,7 @@
 #include "D3D11Win32Window.h"
 
 namespace Hollow {
-	D3D11Win32Window::D3D11Win32Window(HINSTANCE hInst, int width, int height)
+	D3D11Win32Window::D3D11Win32Window(HINSTANCE hInst, int width, int height, WindowType type)
 		: Win32Window(hInst)
 	{
 		// Creating window class
@@ -30,10 +30,17 @@ namespace Hollow {
 		windowRect.bottom = height + windowRect.top;
 		AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-		hWnd = CreateWindow("HollowAppClass", "Hollow", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, /* WS_POPUPWINDOW*/
+		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+
+		if (type == WindowType::Borderless) {
+			styles |= WS_POPUPWINDOW;
+		}
+
+		hWnd = CreateWindow("HollowAppClass", "Hollow", styles,
 			windowRect.left, windowRect.top,
 			windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 			nullptr, nullptr, hInst, this);
+		
 
 		RAWINPUTDEVICE Rid[2];
 

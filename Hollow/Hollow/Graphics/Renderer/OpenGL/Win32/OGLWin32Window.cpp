@@ -15,7 +15,7 @@ MessageCallback(GLenum source,
 }
 
 namespace Hollow {
-	OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height)
+	OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height, WindowType type)
 		: Win32Window(hInst)
 	{
 		// Creating window class
@@ -121,7 +121,13 @@ namespace Hollow {
 			0
 		};
 
-		hWnd = CreateWindow("HollowAppClass", "Hollow", WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, /* WS_POPUPWINDOW*/
+		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+
+		if (type == WindowType::Borderless) {
+			styles |= WS_POPUPWINDOW;
+		}
+
+		hWnd = CreateWindow("HollowAppClass", "Hollow", styles,
 			windowRect.left, windowRect.top,
 			windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 			nullptr, nullptr, hInst, this);

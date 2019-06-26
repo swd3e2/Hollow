@@ -28,14 +28,14 @@ namespace Hollow {
 			setShutdown(); 
 		}
 
-		Window* Initialize(int width, int height)
+		Window* Initialize(int width, int height, WindowType type)
 		{
 			window = nullptr;
 			switch (rendererType)
 			{
 				case RendererType::None: return nullptr;
-				case RendererType::OpenGL: return (window = new OGLWin32Window(GetModuleHandle(NULL), width, height));
-				case RendererType::DirectX: return (window = new D3D11Win32Window(GetModuleHandle(NULL), width, height));
+				case RendererType::OpenGL: return (window = new OGLWin32Window(GetModuleHandle(NULL), width, height, type));
+				case RendererType::DirectX: return (window = new D3D11Win32Window(GetModuleHandle(NULL), width, height, type));
 			}
 		}
 

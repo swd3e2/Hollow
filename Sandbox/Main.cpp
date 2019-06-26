@@ -16,15 +16,15 @@
 #include "Sandbox/Components/RenderableComponent.h"
 #include "Sandbox/ProjectSettings.h"
 
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 900
+#define SCREEN_WIDTH 2560
+#define SCREEN_HEIGHT 1440
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
 	Hollow::Core core(Hollow::RendererType::OpenGL);
 
-	Hollow::Window* window = Hollow::WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	Hollow::Window* window = Hollow::WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
 	Hollow::RenderApi* renderer = Hollow::RenderApiManager::instance()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	ProjectSettings settings;
@@ -32,7 +32,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
-	ForwardRenderSystem renderPass(renderer);
+	ForwardRenderSystem renderPass(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	renderPass.skyMap = new SkyMap();
 	renderPass.m_Camera = camera;
 
