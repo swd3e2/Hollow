@@ -4,6 +4,11 @@ cbuffer ConstantBuffer : register(b0)
 	float3 cameraPosition;
 }
 
+cbuffer ConstantBuffer : register(b1)
+{
+	matrix ShadowWVP;
+}
+
 cbuffer ConstantBuffer : register(b2)
 {
 	matrix transform;
@@ -22,6 +27,7 @@ struct PixelShaderOutput
 	float2 texCoord : TEXCOORD;
 	float3 normal : NORMAL0;
 	float3 cubemapDirection : CUBEMAPCOORD;
+	float4 shadowPos : SHADOWPOS;
 };
 
 struct VertexShaderInput
@@ -53,7 +59,7 @@ PixelShaderOutput main(VertexShaderInput input)
 	}*/
 
 	output.pos = mul(output.pos, transform);
-	
+	output.shadowPos = mul(output.pos, ShadowWVP);
 	float3 temp = cameraPosition - output.pos;
 	output.cubemapDirection = reflect(temp, output.normal);
 
