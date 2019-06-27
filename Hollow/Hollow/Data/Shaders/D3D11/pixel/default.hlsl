@@ -53,7 +53,8 @@ float4 main(PixelShaderInput input) : SV_TARGET
 	}
 	float shadowColor = shadow_map2.Sample(SampleTypeWrap, uv).r;
 
-	if (saturate(uv.x) == uv.x && saturate(uv.y) == uv.y) {
+	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && clamp(uv.y, 0.0f, 1.0f) == uv.y) {
+		return float4(uv.x, uv.y, 0.0f, 1.0f);
 		if (shadowColor < (depth - 0.000001f)) {
 			result = ambient_map.Sample(SampleTypeClamp, input.texCoord) - 0.3f;
 		}

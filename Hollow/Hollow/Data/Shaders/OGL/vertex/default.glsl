@@ -10,12 +10,12 @@ layout(location = 6) in vec4 weights;
 
 out VS_OUT
 {
-	vec4 shadowPos;
 	vec2 texCoord;
 	vec3 normal;
 	vec3 tangent;
 	vec3 bitangent;
 	vec3 cubemapDirection;
+	vec4 shadowPos;
 } vs_out;
 
 layout(std140, binding = 0) uniform Matrices
@@ -46,7 +46,7 @@ void main()
 
 	vs_out.normal = normalize(normal * mat3(transform));
 
-	//gl_Position = gl_Position * transform;
+	gl_Position = gl_Position * transform;
 	gl_Position = gl_Position * WVP;
 
 	vs_out.texCoord = texCoord;
@@ -55,5 +55,6 @@ void main()
 
 	vec3 temp = cameraPosition - vec3(gl_Position);
 	vs_out.cubemapDirection = reflect(temp, normal);
-	vs_out.shadowPos = vec4(pos.x, pos.y, pos.z, 1.0f) * WVP;
+
+	vs_out.shadowPos = vec4(pos.x, pos.y, pos.z, 1.0f) * transform * ShadowWVP;
 }

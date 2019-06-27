@@ -4,13 +4,18 @@ out vec4 FragColor;
 
 in VS_OUT
 {
-	vec4 shadowPos;
 	vec2 texCoord;
 	vec3 normal;
 	vec3 tangent;
 	vec3 bitangent;
 	vec3 cubemapDirection;
+	vec4 shadowPos;
 } fs_in;
+
+layout(std140, binding = 1) uniform ShadowMatrices
+{
+	mat4 ShadowWVP;
+};
 
 layout(std140, binding = 2) uniform PerObject
 {
@@ -42,23 +47,18 @@ uniform samplerCube environmentMap;
 
 void main()
 {
-	//FragColor = vec4(texture(shadow_map, fs_in.texCoord).r);
-	//return;
-	FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	FragColor = texture(ambient_map, fs_in.texCoord);
 
 	vec3 ProjCoords = fs_in.shadowPos.xyz / fs_in.shadowPos.w;
 	vec2 uv;
-	uv.x = -0.5f + fs_in.shadowPos.x * 0.5f;
-	uv.y = -0.5f + fs_in.shadowPos.y * 0.5f;
-	float z = ProjCoords.z;
-
+	uv.x = 0.5f + ProjCoords.x * 0.5f;
+	uv.y = 0.5f + ProjCoords.y * 0.5f;
+	float z = 0.5 * ProjCoords.z + 0.5;
 
 	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && clamp(uv.y, 0.0f, 1.0f) == uv.y) {
-		FragColor = vec4(uv.x, uv.y, 0.0f, 1.0f);
-
-		/*float shadowColor = texture(shadow_map, uv).r;
-		if (shadowColor < (z - 0.00001)) {
+		float shadowColor = texture(shadow_map, uv).r;
+		if (shadowColor < (z - 0.000001f)) {
 			FragColor -= 0.3f;
-		}*/
+		}
 	}
 }

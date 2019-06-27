@@ -165,7 +165,7 @@ namespace Hollow {
 		glUniform1i(tex0, 0);
 		glUniform1i(tex1, 1);
 		glUniform1i(tex2, 2);
-		glUniform1i(tex3, 3);
+		glUniform1i(tex3, 5);
 		glUniform1i(tex4, 4);
 
 		glDeleteShader(static_cast<OGLShader*>(vertexShader)->shaderId);
