@@ -187,6 +187,8 @@ public:
 	void drawMainWindow()
 	{
 		ImGui::Begin("Shaders");
+		ImGui::DragFloat("Main camera speed", &renderSystem->m_Camera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
+		ImGui::DragFloat("Shadow camera speed", &renderSystem->shadow.shadowCamera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
 		if (ImGui::Button("Toggle camera")) {
 			if (mainCamera->mainCamera) {
 				mainCamera->mainCamera = false;

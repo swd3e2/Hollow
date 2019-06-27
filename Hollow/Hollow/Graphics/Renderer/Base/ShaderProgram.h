@@ -8,6 +8,8 @@
 namespace Hollow {
 	class ShaderProgram
 	{
+	public:
+		std::string name;
 	protected:
 		Shader* pixelShader;
 		Shader* vertexShader;

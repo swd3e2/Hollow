@@ -1,7 +1,6 @@
-cbuffer ConstantBuffer : register(b0)
+cbuffer ConstantBuffer : register(b1)
 {
-    matrix WVP;
-	float3 cameraPosition;
+	matrix shadowWVP;
 }
 
 cbuffer ConstantBuffer : register(b2)
@@ -12,6 +11,7 @@ cbuffer ConstantBuffer : register(b2)
 struct VertexShaderOutput
 {
     float4 pos : SV_POSITION;
+	float4 spos : SHADOW_POSITION;
 };
 
 struct VertexShaderInput
@@ -31,7 +31,8 @@ VertexShaderOutput main(VertexShaderInput input)
     VertexShaderOutput output;
     output.pos = float4(input.pos, 1.0f);
     output.pos = mul(output.pos, transform);
-    output.pos = mul(output.pos, WVP);
+    output.pos = mul(output.pos, shadowWVP);
+	output.spos = output.pos;
 
     return output;
 }

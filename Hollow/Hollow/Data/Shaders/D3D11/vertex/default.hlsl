@@ -48,18 +48,9 @@ PixelShaderOutput main(VertexShaderInput input)
 
 	output.normal = mul(input.normal, transform);
 
-	/*if (hasAnimation) {
-		matrix BoneTransform = boneInfo[input.boneId.x] * input.weight.x;
-		BoneTransform += boneInfo[input.boneId.y] * input.weight.y;
-		BoneTransform += boneInfo[input.boneId.z] * input.weight.z;
-		BoneTransform += boneInfo[input.boneId.w] * input.weight.w;
-
-		output.pos = mul(output.pos, BoneTransform);
-		output.normal = mul(output.normal, BoneTransform);
-	}*/
-
 	output.pos = mul(output.pos, transform);
 	output.shadowPos = mul(output.pos, ShadowWVP);
+
 	float3 temp = cameraPosition - output.pos;
 	output.cubemapDirection = reflect(temp, output.normal);
 

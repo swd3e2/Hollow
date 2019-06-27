@@ -95,11 +95,11 @@ public:
 		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		debug = RenderTargetManager::instance()->create(this->width, this->height, RenderTargetFlags::ACCESS_BY_CPU);
+		debug = RenderTargetManager::instance()->create(this->width, this->height);
 
 		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height);
 		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetProjectionValues(90, static_cast<float>(this->width) / static_cast<float>(this->height), 0.1f, 10000.0f);
+		shadow.shadowCamera->SetProjectionValues(90, static_cast<float>(this->width) / static_cast<float>(this->height), 0.01f, 10000.0f);
 
 		renderer->SetViewport(0, 0, this->width, this->height);
 	}
@@ -117,21 +117,23 @@ public:
 		shadow.shadowCamera->Update(dt);
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
-			renderer->UnsetTexture(3);
-			updateWVP(shadow.shadowCamera);
 			renderer->SetRenderTarget(shadow.renderTarget);
-			Draw();
 
-			renderer->SetRenderTarget(0);
-			shadowStruct.ShadowWVP = m_wvp.WVP;
+			shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
 			shadowConstantBuffer->update(&shadowStruct);
 			renderer->SetGpuBuffer(shadowConstantBuffer);
-			renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
-			updateWVP(this->m_Camera);
-			Draw();
-			DrawSkyMap();
+
+			DrawDepth();
 
 			renderer->SetRenderTarget(0);
+			renderer->SetTextureDepthBuffer(5, shadow.renderTarget);
+			updateWVP(this->m_Camera);
+
+			Draw();
+
+			//DrawSkyMap();
+
+			renderer->UnsetTexture(5);
 
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
 				Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
@@ -146,8 +148,36 @@ public:
 		renderer->Present();
 	}
 
+	void DrawDepth()
+	{
+		renderer->SetShader(ShaderManager::instance()->getShader("depth"));
+
+		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+				transformBuff.transform = Matrix4::Transpose(
+					Matrix4::Scaling(transform->scale)
+					* Matrix4::Rotation(transform->rotation)
+					* Matrix4::Translation(transform->position)
+				);
+				m_TransformConstantBuffer->update(&transformBuff);
+				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+				for (auto& object : renderable->renderables) {
+					renderer->SetVertexBuffer(object.vBuffer);
+					renderer->SetIndexBuffer(object.iBuffer);
+					renderer->DrawIndexed(object.iBuffer->getSize());
+				}
+			}
+		}
+	}
+
 	void Draw()
 	{
+		renderer->SetShader(ShaderManager::instance()->getShader("default"));
+
 		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
@@ -161,39 +191,28 @@ public:
 				m_TransformConstantBuffer->update(&transformBuff);
 				renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
-				for (auto& it : renderable->renderables) {
-					DrawObject(it, renderable);
+				for (auto& object : renderable->renderables) {
+					Hollow::Material& material = renderable->materials[object.material];
+
+					if (material.diffuseTexture != nullptr) {
+						renderer->SetTexture(0, material.diffuseTexture);
+					}
+					if (material.normalTexture != nullptr) {
+						renderer->SetTexture(1, material.normalTexture);
+					}
+					if (material.specularTexture != nullptr) {
+						renderer->SetTexture(2, material.specularTexture);
+					}
+
+					materialConstantBuffer->update(&material.materialData);
+					renderer->SetGpuBuffer(materialConstantBuffer);
+
+					renderer->SetVertexBuffer(object.vBuffer);
+					renderer->SetIndexBuffer(object.iBuffer);
+					renderer->DrawIndexed(object.iBuffer->getSize());
 				}
 			}
 		}
-	}
-
-	void DrawObject(RenderableObject& object, RenderableComponent* renderable)
-	{
-		transformBuff.selected = pickedID == object.id ? true : false;
-
-		m_TransformConstantBuffer->update(&transformBuff);
-		renderer->SetGpuBuffer(m_TransformConstantBuffer);
-
-		Hollow::Material& material = renderable->materials[object.material];
-
-		if (material.diffuseTexture != nullptr) {
-			renderer->SetTexture(0, material.diffuseTexture);
-		}
-		if (material.normalTexture != nullptr) {
-			renderer->SetTexture(1, material.normalTexture);
-		}
-		if (material.specularTexture != nullptr) {
-			renderer->SetTexture(2, material.specularTexture);
-		}
-
-		materialConstantBuffer->update(&material.materialData);
-		renderer->SetGpuBuffer(materialConstantBuffer);
-
-		renderer->SetShader(ShaderManager::instance()->getShader("default"));
-		renderer->SetVertexBuffer(object.vBuffer);
-		renderer->SetIndexBuffer(object.iBuffer);
-		renderer->DrawIndexed(object.iBuffer->getSize());
 	}
 
 	void DrawSceneForPicker()

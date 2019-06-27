@@ -52,7 +52,6 @@ namespace Hollow {
 	{
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
 	}
 
 	void OGLRenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget)
@@ -94,8 +93,7 @@ namespace Hollow {
 			glClearColor(color[0], color[1], color[2], color[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-		else {
+		} else {
 			glClearColor(color[0], color[1], color[2], color[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}

@@ -10,6 +10,7 @@ layout(location = 6) in vec4 weights;
 
 out VS_OUT
 {
+	vec4 shadowPos;
 	vec2 texCoord;
 	vec3 normal;
 	vec3 tangent;
@@ -20,50 +21,32 @@ out VS_OUT
 layout(std140, binding = 0) uniform Matrices
 {
 	mat4 WVP;
+	vec3 cameraPosition;
+};
+
+layout(std140, binding = 1) uniform ShadowMatrices
+{
+	mat4 ShadowWVP;
 };
 
 layout(std140, binding = 2) uniform PerObject
 {
 	mat4 transform;
-	vec3 cameraPosition;
+	vec3 color;
 	float pad2;
 	bool selected;
 	bool hasAnimation;
 };
 
-layout(std140, binding = 4) uniform MaterialData
-{
-	vec4 color;
-	float metallicFactor;
-	float roughnessFactor;
-	float emmisiveFactor;
-	float pad;
-	bool hasDiffuseTexture;
-	bool hasNormalMap;
-	bool hasSpecularMap;
-};
-
-layout(std140, binding = 7) uniform Bones
-{
-	mat4 boneInfo[100];
-};
-
 void main()
 {
 	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
+
 	vs_out.normal = normal;
 
-	/*if (hasAnimation) {
-		mat4 BoneTransform	= boneInfo[boneIDs[0]] * weights[0];
-		BoneTransform	   += boneInfo[boneIDs[1]] * weights[1];
-		BoneTransform	   += boneInfo[boneIDs[2]] * weights[2];
-		BoneTransform	   += boneInfo[boneIDs[3]] * weights[3];
+	vs_out.normal = normalize(normal * mat3(transform));
 
-		gl_Position = gl_Position * BoneTransform;
-	}*/
-	vs_out.normal = normal * mat3(transform);
-
-	gl_Position = gl_Position * transform;
+	//gl_Position = gl_Position * transform;
 	gl_Position = gl_Position * WVP;
 
 	vs_out.texCoord = texCoord;
@@ -72,4 +55,5 @@ void main()
 
 	vec3 temp = cameraPosition - vec3(gl_Position);
 	vs_out.cubemapDirection = reflect(temp, normal);
+	vs_out.shadowPos = vec4(pos.x, pos.y, pos.z, 1.0f) * WVP;
 }

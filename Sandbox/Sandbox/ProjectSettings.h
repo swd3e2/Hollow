@@ -54,7 +54,7 @@ public:
 			ShadersFolder = projectData["ShadersFolder"].get<std::string>();
 			projectFileName = filename;
 
-			Hollow::ShaderManager::instance()->loadShadersFromFolder("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Shaders");
+			Hollow::ShaderManager::instance()->loadShadersFromFolder("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders");
 
 			for (auto& it : projectData["Entities"]) {
 				GameObject* gameObject = Hollow::EntityManager::instance()->createEntity<GameObject>();

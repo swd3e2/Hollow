@@ -16,7 +16,8 @@ namespace Hollow {
 					compileShader(ShaderType::VERTEX, shaderFolder + shaderTypeFolder + "/vertex/" + it),
 					compileShader(ShaderType::PIXEL, shaderFolder + shaderTypeFolder + "/pixel/" + it)
 				);
-				this->shaders[Hollow::Helper::trim_to_symbol(it.c_str(), '.')] = shader;
+				shader->name = Hollow::Helper::trim_to_symbol(it.c_str(), '.');
+				this->shaders[shader->name] = shader;
 			}
 		}
 	}
