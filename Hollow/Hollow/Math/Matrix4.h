@@ -75,6 +75,7 @@ namespace Hollow {
 		Matrix4 operator*(const Matrix4& other) const;
 
 		static Matrix4 Projection(float fov, float aspect, float n, float f);
+		static Matrix4 Orthographic(float right, float left, float top, float bottom, float near, float far);
 		static Matrix4 LookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector);
 
 		void SetTranslation(const Vector4& vecPos);

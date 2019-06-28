@@ -288,6 +288,22 @@ namespace Hollow {
 		return projection;
 	}
 
+	Matrix4 Matrix4::Orthographic(float right, float left, float top, float bottom, float near, float far)
+	{
+		Matrix4 ortho;
+
+		ortho.md[0][0] = 2 / (right - left);
+		ortho.md[1][1] = 2 / (top - bottom);
+		ortho.md[2][2] = -2 / (far - near);
+
+		ortho.md[0][3] = - ((right + left) / (right - left));
+		ortho.md[1][3] = -((top + bottom) / (top - bottom));
+		ortho.md[2][3] = -((far + near) / (far - near));
+		ortho.md[3][3] = 1.0f;
+
+		return ortho;
+	}
+
 	Matrix4 Matrix4::LookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector)
 	{
 		Vector4 forward = Vector4::Normalize(eyeDirection - eyePosition);
