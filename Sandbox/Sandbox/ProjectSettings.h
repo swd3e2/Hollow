@@ -57,7 +57,7 @@ public:
 			Hollow::ShaderManager::instance()->loadShadersFromFolder("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders");
 
 			for (auto& it : projectData["Entities"]) {
-				GameObject* gameObject = Hollow::EntityManager::instance()->createEntity<GameObject>();
+				GameObject* gameObject = Hollow::EntityManager::instance()->create<GameObject>();
 
 				if (it.find("TransformComponent") != it.end()) {
 					TransformComponent* transform = gameObject->addComponent<TransformComponent>(

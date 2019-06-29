@@ -9,8 +9,8 @@
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Platform.h"
 #include "Entity.h"
-
-#define DEFAULT_ENTITY_CONTAINER_GROW_SIZE 2048
+#include "Hollow/Memory/MemoryContainer.h"
+#include <unordered_map>
 
 namespace Hollow {
 	class EntityManager : public CModule<EntityManager>
@@ -22,14 +22,14 @@ namespace Hollow {
 		class EntityContainer : public IEntityContainer
 		{
 		public:
-			Hollow::array<T> entityList;
+			MemoryContainer<T> entityList;
 		public:
-			EntityContainer() :
-				entityList(100)
-			{}
+			EntityContainer() {}
 		};
 	private:
 		std::unordered_map<size_t, IEntityContainer*> entityContainers;
+		std::unordered_map<size_t, IEntity*> entities;
+
 		size_t entityIdCounter;
 	public:
 		EntityManager()
@@ -68,13 +68,23 @@ namespace Hollow {
 		}
 
 		template<class T, typename ...ARGS>
-		T* createEntity(ARGS&& ...args)
+		T* create(ARGS&& ...args)
 		{
 			EntityContainer<T>* container = getContainer<T>();
-			T* entity = container->entityList.createObject(std::forward<ARGS>(args)...);
+			T* entity = new (container->entityList.allocate()) T(std::forward<ARGS>(args)...);
 			entity->entityId = getNextEntityId();
+			entities[entity->entityId] = entity;
 
 			return entity;
+		}
+
+		template<class T>
+		void destroy(size_t entityId)
+		{
+			size_t typeId = T::staticGetTypeId();
+
+			EntityContainer<T>* container = getContainer<T>();
+			container->entityList.deallocate((T*)entities[typeId]);
 		}
 
 		void startUp() { setStartedUp(); }
@@ -86,13 +96,13 @@ namespace Hollow {
 		}
 
 		template<class E>
-		typename Hollow::array<E>::iterator& begin()
+		typename MemoryContainer<E>::iterator& begin()
 		{
 			return getContainer<E>()->entityList.begin();
 		}
 
 		template<class E>
-		typename Hollow::array<E>::iterator& end()
+		typename MemoryContainer<E>::iterator& end()
 		{
 			return getContainer<E>()->entityList.end();
 		}

@@ -6,6 +6,7 @@
 #define DEFAULT_CAPACITY 1000
 
 #include "PoolAllocator.h"
+
 #include <vector>
 #include <list>
 
@@ -13,15 +14,16 @@ namespace Hollow {
 	template<typename T>
 	class MemoryContainer
 	{
-	protected:
-		struct MemoryChunk
+	public:
+		class MemoryChunk
 		{
+		public:
 			PoolAllocator* allocator;
 			std::list<T*> objects;
 
 			uintptr_t start;
 			uintptr_t end;
-
+		public:
 			MemoryChunk(PoolAllocator* allocator) :
 				allocator(allocator)
 			{
@@ -30,7 +32,57 @@ namespace Hollow {
 			}
 		};
 
-		std::vector<MemoryChunk*> chunks;
+		class iterator : public std::iterator<std::forward_iterator_tag, T>
+		{
+		private:
+			typename std::list<MemoryChunk*>::iterator currentChunk;
+			typename std::list<MemoryChunk*>::iterator end;
+
+			typename std::list<T*>::iterator currentObject;
+		public:
+			iterator(typename std::list<MemoryChunk*>::iterator begin, typename std::list<MemoryChunk*>::iterator end)
+				: currentChunk(begin), end(end)
+			{
+				if (begin != end) {
+					currentObject = (*currentChunk)->objects.begin();
+				} else {
+					currentObject = (*std::prev(end))->objects.end();
+				}
+			}
+
+			inline iterator& operator++()
+			{
+				currentObject++;
+				if (currentObject == (*currentChunk)->objects.end()) {
+					currentChunk++;
+					if (currentChunk != end) {
+						currentObject = (*currentChunk)->objects.begin();
+					}
+				}
+				return *this;
+			}
+
+			inline bool operator==(const iterator& other) const { 
+				if (currentChunk == other.currentChunk) {
+					return currentObject == other.currentObject;
+				} else {
+					return false;
+				}
+			};
+
+			inline bool operator!=(const iterator& other) const { 
+				if (currentChunk != other.currentChunk) {
+					return true;
+				} else {
+					return currentObject != other.currentObject;
+				}
+			};
+
+			inline T& operator*() const { return *(*currentObject); }
+			inline T* operator->() const { return *currentObject; }
+		};
+	public:
+		std::list<MemoryChunk*> chunks;
 	public:
 		MemoryContainer()
 		{
@@ -59,50 +111,14 @@ namespace Hollow {
 			return allocatedMemory;
 		}
 
-		void* deallocate(void* memory) {
+		void deallocate(void* memory) {
 			for (auto& it : chunks) {
 				if (it->start > (uintptr_t)memory && (uintptr_t)memory < it->end) {
 					it->objects.remove((T*)memory);
-					it->deallocate(memory);
+					it->allocator->deallocate(memory);
 				}
 			}
 		}
-
-		class iterator : public std::iterator<std::forward_iterator_tag, T>
-		{
-		private:
-			typename std::vector<MemoryChunk*>::iterator currentChunk;
-			typename std::vector<MemoryChunk*>::iterator end;
-
-			typename std::list<T*>::iterator currentObject;
-		public:
-			iterator(typename std::vector<MemoryChunk*>::iterator* begin, typename std::vector<MemoryChunk*>::iterator* end)
-				: currentChunk(begin), end(end)
-			{
-				if (begin != end) {
-					currentObject = (*currentChunk)->objects.begin();
-				} else {
-					currentObject = (*std::prev(end))->objects.end();
-				}
-			}
-
-			inline iterator& operator++()
-			{
-				currentObject++;
-				if (currentObject == (*begin)->objects.end()) {
-					currentChunk++;
-					if (currentChunk != end) {
-						currentObject = (*currentChunk)->objects.begin();
-					}
-				}
-				return *this;
-			}
-
-			inline bool operator==(iterator& other) const { return currentChunk == other.currentChunk && currentObject == other.currentObject; };
-			inline bool operator!=(iterator& other) const { return currentChunk != other.currentChunk && currentObject != other.currentObject; };
-			inline T& operator*() const { return *currentChunk; }
-			inline T* operator->() const { return *currentChunk; }
-		};
 
 		iterator begin() { return iterator(chunks.begin(), chunks.end()); }
 		iterator end() { return iterator(chunks.end(), chunks.end()); }

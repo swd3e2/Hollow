@@ -7,9 +7,9 @@
 
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Containers/vector.h"
-#include "Hollow/Containers/array.h"
 #include "Hollow/Platform.h"
 #include "Component.h"
+#include "Hollow/Memory/MemoryContainer.h"
 
 namespace Hollow {
 	class ComponentManager : public CModule<ComponentManager>
@@ -21,11 +21,9 @@ namespace Hollow {
 		class ComponentContainer : public IComponentContainer
 		{
 		public:
-			Hollow::array<T> componentList;
+			MemoryContainer<T> componentList;
 		public:
-			ComponentContainer() :
-				componentList(100)
-			{}
+			ComponentContainer() {}
 		};
 
 		std::unordered_map<size_t, IComponentContainer*> componentContainers;
@@ -84,7 +82,7 @@ namespace Hollow {
 			destroy<T>(entityId);
 
 			ComponentContainer<T>* container = getContainer<T>();
-			T* component = container->componentList.createObject(std::forward<ARGS>(args)...);
+			T* component = new (container->componentList.allocate()) T(std::forward<ARGS>(args)...);
 			componentMap[entityId][componentTypeId] = component;
 
 			return component;
@@ -98,7 +96,7 @@ namespace Hollow {
 				size_t componentTypeId = T::staticGetTypeId();
 
 				ComponentContainer<T>* container = getContainer<T>();
-				container->componentList.destroyObject((T*)componentMap[entityId][componentTypeId]);
+				container->componentList.deallocate((T*)componentMap[entityId][componentTypeId]);
 			}
 		}
 

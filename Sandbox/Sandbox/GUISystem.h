@@ -214,7 +214,7 @@ public:
 
 		ImGui::Begin("Hierarchy");
 		if (ImGui::Button("Add enitity")) {
-			GameObject* entity = EntityManager::instance()->createEntity<GameObject>();
+			GameObject* entity = EntityManager::instance()->create<GameObject>();
 		}
 
 		int counter = 0;
