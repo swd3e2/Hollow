@@ -14,7 +14,7 @@ namespace Hollow {
 	class MemoryContainer
 	{
 	protected:
-		class MemoryChunk
+		struct MemoryChunk
 		{
 			PoolAllocator* allocator;
 			std::list<T*> objects;
@@ -71,12 +71,12 @@ namespace Hollow {
 		class iterator : public std::iterator<std::forward_iterator_tag, T>
 		{
 		private:
-			std::vector<MemoryChunk*>::iterator currentChunk;
-			std::vector<MemoryChunk*>::iterator end;
+			typename std::vector<MemoryChunk*>::iterator currentChunk;
+			typename std::vector<MemoryChunk*>::iterator end;
 
-			std::list<T*>::iterator currentObject;
+			typename std::list<T*>::iterator currentObject;
 		public:
-			iterator(std::vector<MemoryChunk*>::iterator* begin, std::vector<MemoryChunk*>::iterator* end)
+			iterator(typename std::vector<MemoryChunk*>::iterator* begin, typename std::vector<MemoryChunk*>::iterator* end)
 				: currentChunk(begin), end(end)
 			{
 				if (begin != end) {
