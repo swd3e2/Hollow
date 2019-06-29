@@ -112,7 +112,7 @@ namespace Hollow {
 			}
 
 			fileStream.close();
-			std::cout << "'" << content << "'" << std::endl;
+
 			return content.c_str();
 		}
 

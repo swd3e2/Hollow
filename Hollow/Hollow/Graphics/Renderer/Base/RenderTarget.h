@@ -6,6 +6,17 @@
 #include "Hollow/Math/Vector4.h"
 
 namespace Hollow {
+	struct RenderTargetDesc
+	{
+		struct {
+
+		} colorBufferDesc;
+
+		struct {
+
+		} depthStencilBufferDesc;
+	};
+
 	enum RenderTargetFlags {
 		NONE = 0,
 		ACCESS_BY_CPU = 1

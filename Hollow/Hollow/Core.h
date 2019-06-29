@@ -20,6 +20,7 @@
 #include "Importer/FreeImgImporter.h"
 #include "Graphics/WindowManager.h"
 #include "Hollow/Core/DelayedTaskManager.h"
+#include "Hollow/Resources/MeshManager.h"
 
 namespace Hollow {
 	class Core
@@ -36,6 +37,7 @@ namespace Hollow {
 		TaskManager						taskManager;
 		RenderApiManager				renderApiManager;
 		FreeImgImporter					imgImporter;
+		MeshManager						meshManager;
 		WindowManager					windowManager;
 		DelayedTaskManager				delayedTaskManager;
 		double							dt;

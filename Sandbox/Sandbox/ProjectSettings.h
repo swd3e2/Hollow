@@ -5,7 +5,7 @@
 
 #include <string>
 #include "Hollow/Core/CModule.h"
-#include "Hollow/Importer/gltf/json.hpp"
+#include "vendor/tinygltf/json.hpp"
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/ECS/EntityManager.h"
 #include "Hollow/ECS/ComponentManager.h"
@@ -60,26 +60,26 @@ public:
 				GameObject* gameObject = Hollow::EntityManager::instance()->createEntity<GameObject>();
 
 				if (it.find("TransformComponent") != it.end()) {
-					TransformComponent* transform = gameObject->addComponent<TransformComponent>();
-					transform->position = Hollow::Vector3(
+					TransformComponent* transform = gameObject->addComponent<TransformComponent>(
+					Hollow::Vector3(
 						it["TransformComponent"]["translation"][0].get<float>(),
 						it["TransformComponent"]["translation"][1].get<float>(),
 						it["TransformComponent"]["translation"][2].get<float>()
-					);
-					transform->scale = Hollow::Vector3(
+					),
+					Hollow::Vector3(
 						it["TransformComponent"]["scale"][0].get<float>(),
 						it["TransformComponent"]["scale"][1].get<float>(),
 						it["TransformComponent"]["scale"][2].get<float>()
-					);
-					transform->rotation = Hollow::Vector3(
+					),
+					Hollow::Vector3(
 						it["TransformComponent"]["rotation"][0].get<float>(),
 						it["TransformComponent"]["rotation"][1].get<float>(),
 						it["TransformComponent"]["rotation"][2].get<float>()
-					);
+					));
 				}
 
 				if (it.find("RenderableComponent") != it.end()) {
-					gameObject->addComponent<RenderableComponent, std::string>(it["RenderableComponent"]["filename"].get<std::string>());
+					gameObject->addComponent<RenderableComponent>(it["RenderableComponent"]["filename"].get<std::string>());
 				}
 			}
 

@@ -1,13 +1,9 @@
 #pragma once
 #define OPENGL
 #include <Hollow/Core.h>
-#include <Hollow/Importer/gltf/GLTFImporter.h>
-#include "Sandbox/Components/GLTFRenderable.h"
-#include "Sandbox/Components/GLTFAnimation.h"
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
-#include "Sandbox/Systems/AnimationSystem.h"
 #include <Hollow/Graphics/RenderApiManager.h>
 #include "Sandbox/GUISystem.h"
 #include "Sandbox/Systems/MoveSystem.h"
@@ -15,12 +11,15 @@
 #include "Sandbox/Components/SelectComponent.h"
 #include "Sandbox/Components/RenderableComponent.h"
 #include "Sandbox/ProjectSettings.h"
+#include "Hollow/ECS/EntityManager.h"
+#include "Hollow/ECS/ComponentManager.h"
+#include "Sandbox/Components/TransformComponent.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
 // App entrypoint
-int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
+int main()
 {
 	Hollow::Core core(Hollow::RendererType::OpenGL);
 
@@ -45,7 +44,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	gui->renderSystem = &renderPass;
 	gui->mainCamera = camera;
 
-	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
+	settings.load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 
 	while (!window->isClosed()) {
 		core.PreUpdate();

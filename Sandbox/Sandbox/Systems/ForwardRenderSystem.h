@@ -10,7 +10,6 @@
 #include "Hollow/Graphics/ShaderManager.h"
 #include "Sandbox/Graphics/SkyMap.h"
 #include "Hollow/Input/InputManager.h"
-#include "Sandbox/Components/GLTFRenderable.h"
 #include "Hollow/Graphics/GPUBufferManager.h"
 #include "Hollow/Graphics/RenderTargetManager.h"
 #include "Hollow/Graphics/Renderer/Base/RenderApi.h"
@@ -126,14 +125,14 @@ public:
 			DrawDepth();
 
 			renderer->SetRenderTarget(0);
-			renderer->SetTextureDepthBuffer(5, shadow.renderTarget);
+			renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
 			updateWVP(this->m_Camera);
 
 			Draw();
 
-			//DrawSkyMap();
+			DrawSkyMap();
 
-			renderer->UnsetTexture(5);
+			renderer->UnsetTexture(3);
 
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
 				Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);

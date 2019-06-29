@@ -11,32 +11,9 @@
           0.0
         ],
         "scale": [
-          0.699999988079071,
-          0.699999988079071,
-          0.699999988079071
-        ],
-        "translation": [
-          234.60000610351563,
-          70.5999984741211,
-          0.0
-        ]
-      },
-      "id": 0
-    },
-    {
-      "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Project1/Meshes/_scene2.json"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "scale": [
-          50.0,
-          50.0,
-          50.0
+          1.0,
+          1.0,
+          1.0
         ],
         "translation": [
           100.0,
@@ -44,7 +21,7 @@
           0.0
         ]
       },
-      "id": 1
+      "id": 0
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",

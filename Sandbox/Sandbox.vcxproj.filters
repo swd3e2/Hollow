@@ -5,15 +5,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
-    <ClInclude Include="Sandbox\Components\GLTFAnimation.h" />
-    <ClInclude Include="Sandbox\Components\GLTFRenderable.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
     <ClInclude Include="Sandbox\Components\TransformComponent.h" />
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
     <ClInclude Include="Sandbox\Entities\Light.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
-    <ClInclude Include="Sandbox\Systems\AnimationSystem.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
     <ClInclude Include="Sandbox\GUISystem.h" />

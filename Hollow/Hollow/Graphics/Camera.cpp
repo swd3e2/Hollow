@@ -13,7 +13,7 @@ namespace Hollow {
 	void Camera::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
 	{
 		float fovRadians = fovDegrees / 360.0f * XM_2PI;
-		projectionMatrix = Matrix4::Orthographic(0.0f, 800.0f, 600.0f, 0.0f, 0.0f, 1000.0f);
+		projectionMatrix = Matrix4::Projection(fovRadians, aspectRatio, nearZ, farZ);
 	}
 
 	const Matrix4& Camera::GetViewMatrix() const

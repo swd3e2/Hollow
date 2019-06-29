@@ -86,6 +86,7 @@
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>C:\dev\Hollow Engine\Hollow\vendor\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>C:\dev\Hollow Engine\Hollow;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDIr)\Hollow\vendor\assimp;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>

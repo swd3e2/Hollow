@@ -24,7 +24,6 @@
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
-#include "Sandbox/Components/GLTFRenderable.h"
 #include "Sandbox/Events.h"
 
 using namespace Hollow;
@@ -351,21 +350,6 @@ public:
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-		}
-	}
-
-	void drawNodes(Hollow::GLTF::Node* node, std::vector<GLTFRenderableObject*>& renderables) {
-		if (ImGui::TreeNode(node->name.c_str())) {
-			if (node->mesh >= 0) {
-				if (ImGui::Selectable(renderables[node->mesh]->name.c_str())) {
-					selectedMaterial = renderables[node->mesh]->material;
-				}
-			}
-			
-			for (auto& it : node->childrens) {
-				drawNodes(it, renderables);
-			}
-			ImGui::TreePop();
 		}
 	}
 

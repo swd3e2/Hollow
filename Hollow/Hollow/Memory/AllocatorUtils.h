@@ -6,7 +6,7 @@
 
 namespace Hollow {
 	// Returns first address that fits given aligment
-// more on https://www.gamedev.net/articles/programming/general-and-gameplay-programming/c-custom-memory-allocation-r3010/
+	// more on https://www.gamedev.net/articles/programming/general-and-gameplay-programming/c-custom-memory-allocation-r3010/
 	inline void* AlignForward(const void* address, size_t alignment)
 	{
 		// + alignment - 1 для того, если при побитовом и адрес уменьшится не было segfault

@@ -1,0 +1,310 @@
+{
+  "Data": {
+    "filename": "_girl_complete_03.bin",
+    "size": 44937836
+  },
+  "Materials": [
+    {
+      "base_color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "ground",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "body",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "cloth",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "ring",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "light",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "hair_inner",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "hair_outer",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "eyes_inner",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "eyes_outer",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "eyelash",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    },
+    {
+      "base_color": [
+        0.5882350206375122,
+        0.5882350206375122,
+        0.5882350206375122,
+        1.0
+      ],
+      "diffuse_texture": "",
+      "emissive": 0.0,
+      "emissive_texture": "",
+      "metallness": 0.0,
+      "name": "tear",
+      "normal_texture": "",
+      "occlusion_texture": "",
+      "roughness": 0.0,
+      "roughness_texture": "",
+      "specular_texture": ""
+    }
+  ],
+  "Meshes": [
+    {
+      "indices_offset": 352,
+      "indices_size": 6,
+      "material": 1,
+      "vertices_offset": 0,
+      "vertices_size": 4
+    },
+    {
+      "indices_offset": 2389928,
+      "indices_size": 146802,
+      "material": 2,
+      "vertices_offset": 376,
+      "vertices_size": 27154
+    },
+    {
+      "indices_offset": 6008648,
+      "indices_size": 199125,
+      "material": 3,
+      "vertices_offset": 2977136,
+      "vertices_size": 34449
+    },
+    {
+      "indices_offset": 6819668,
+      "indices_size": 432,
+      "material": 4,
+      "vertices_offset": 6805148,
+      "vertices_size": 165
+    },
+    {
+      "indices_offset": 6830372,
+      "indices_size": 252,
+      "material": 5,
+      "vertices_offset": 6821396,
+      "vertices_size": 102
+    },
+    {
+      "indices_offset": 7554300,
+      "indices_size": 30576,
+      "material": 6,
+      "vertices_offset": 6831380,
+      "vertices_size": 8215
+    },
+    {
+      "indices_offset": 7884988,
+      "indices_size": 8724,
+      "material": 7,
+      "vertices_offset": 7676604,
+      "vertices_size": 2368
+    },
+    {
+      "indices_offset": 7954292,
+      "indices_size": 2208,
+      "material": 8,
+      "vertices_offset": 7919884,
+      "vertices_size": 391
+    },
+    {
+      "indices_offset": 7997532,
+      "indices_size": 2208,
+      "material": 9,
+      "vertices_offset": 7963124,
+      "vertices_size": 391
+    },
+    {
+      "indices_offset": 8044556,
+      "indices_size": 1728,
+      "material": 10,
+      "vertices_offset": 8006364,
+      "vertices_size": 434
+    },
+    {
+      "indices_offset": 8061412,
+      "indices_size": 432,
+      "material": 11,
+      "vertices_offset": 8051468,
+      "vertices_size": 113
+    },
+    {
+      "indices_offset": 42584132,
+      "indices_size": 588426,
+      "material": 12,
+      "vertices_offset": 8063140,
+      "vertices_size": 392284
+    }
+  ]
+}

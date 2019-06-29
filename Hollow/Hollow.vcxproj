@@ -57,15 +57,13 @@
     <ClInclude Include="Hollow\Graphics\RenderTargetManager.h" />
     <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.h" />
+    <ClInclude Include="Hollow\Importer\Animation.h" />
     <ClInclude Include="Hollow\Importer\AnimationData.h" />
-    <ClInclude Include="Hollow\Importer\gltf\Animation.h" />
-    <ClInclude Include="Hollow\Importer\gltf\GLTFImporter.h" />
-    <ClInclude Include="Hollow\Importer\gltf\json.hpp" />
-    <ClInclude Include="Hollow\Importer\gltf\stb_image.h" />
-    <ClInclude Include="Hollow\Importer\gltf\stb_image_write.h" />
-    <ClInclude Include="Hollow\Importer\gltf\tiny_gltf.h" />
-    <ClInclude Include="Hollow\Importer\gltf\tiny_gltf_loader.h" />
+    <ClInclude Include="Hollow\Importer\GLTFImporter.h" />
+    <ClInclude Include="Hollow\Importer\HollowModelImporter.h" />
+    <ClInclude Include="Hollow\Importer\Mesh.h" />
     <ClInclude Include="Hollow\Importer\MeshData.h" />
+    <ClInclude Include="Hollow\Importer\AssimpImporter.h" />
     <ClInclude Include="Hollow\Layers\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
@@ -144,7 +142,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11PixelShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11VertexShader.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
-    <ClInclude Include="Hollow\Resources\Mesh\Model.h" />
     <ClInclude Include="Hollow\Resources\Mesh\SubMesh.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Window.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11Win32Window.h" />
@@ -186,7 +183,7 @@
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
     <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp" />
-    <ClCompile Include="Hollow\Importer\gltf\GLTFImporter.cpp" />
+    <ClCompile Include="Hollow\Importer\GLTFImporter.cpp" />
     <ClCompile Include="Hollow\Importer\gltf\tinygltf.cpp" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
@@ -241,13 +238,17 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(SolutionDir)Hollow\vendor\lib\debug;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinygltf;$(IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(SolutionDir)Hollow\vendor\lib\release;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinygltf;$(IncludePath)</IncludePath>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -261,6 +262,7 @@
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtd.lib;IrrXMLd.lib;zlibstatic.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -271,7 +273,7 @@
 copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Test"</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;zlibstatic.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -287,6 +289,7 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engin
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -297,7 +300,7 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engin
       <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\release"</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;IrrXML.lib;zlibstatic.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
