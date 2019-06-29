@@ -12,18 +12,25 @@
 #include <unordered_map>
 
 namespace Hollow {
+	/**
+	 * Entity manager
+	 */
 	class EntityManager : public CModule<EntityManager>
 	{
 	private:
-		class IEntityContainer {};
+		class IEntityContainer {
+		public:
+			virtual ~IEntityContainer() {}
+		};
 
 		template<class T>
 		class EntityContainer : public IEntityContainer
 		{
 		public:
-			MemoryContainer<T> entityList;
+			MemoryContainer<T> container;
 		public:
 			EntityContainer() {}
+			virtual ~EntityContainer() {}
 		};
 	private:
 		std::unordered_map<size_t, IEntityContainer*> entityContainers;
@@ -31,10 +38,7 @@ namespace Hollow {
 
 		size_t entityIdCounter;
 	public:
-		EntityManager()
-		{
-			entityIdCounter = 0;
-		}
+		EntityManager() : entityIdCounter(0) {}
 
 		~EntityManager()
 		{
@@ -49,6 +53,39 @@ namespace Hollow {
 			entityContainers.clear();
 		}
 
+		template<class T, typename ...ARGS>
+		T* create(ARGS&& ...args)
+		{
+			EntityContainer<T>* container = getContainer<T>();
+			T* entity = new (container->container.allocate()) T(std::forward<ARGS>(args)...);
+			entity->entityId = getNextEntityId();
+			entities[entity->entityId] = entity;
+
+			return entity;
+		}
+
+		template<class T>
+		void destroy(size_t entityId)
+		{
+			size_t typeId = T::staticGetTypeId();
+
+			EntityContainer<T>* container = getContainer<T>();
+			container->container.deallocate((T*)entities[typeId]);
+		}
+
+		template<class E>
+		typename MemoryContainer<E>::iterator& begin()
+		{
+			return getContainer<E>()->container.begin();
+		}
+
+		template<class E>
+		typename MemoryContainer<E>::iterator& end()
+		{
+			return getContainer<E>()->container.end();
+		}
+
+	private:
 		template<class T>
 		EntityContainer<T>* getContainer()
 		{
@@ -66,41 +103,9 @@ namespace Hollow {
 			return container;
 		}
 
-		template<class T, typename ...ARGS>
-		T* create(ARGS&& ...args)
-		{
-			EntityContainer<T>* container = getContainer<T>();
-			T* entity = new (container->entityList.allocate()) T(std::forward<ARGS>(args)...);
-			entity->entityId = getNextEntityId();
-			entities[entity->entityId] = entity;
-
-			return entity;
-		}
-
-		template<class T>
-		void destroy(size_t entityId)
-		{
-			size_t typeId = T::staticGetTypeId();
-
-			EntityContainer<T>* container = getContainer<T>();
-			container->entityList.deallocate((T*)entities[typeId]);
-		}
-
 		size_t getNextEntityId()
 		{
 			return entityIdCounter++;
-		}
-
-		template<class E>
-		typename MemoryContainer<E>::iterator& begin()
-		{
-			return getContainer<E>()->entityList.begin();
-		}
-
-		template<class E>
-		typename MemoryContainer<E>::iterator& end()
-		{
-			return getContainer<E>()->entityList.end();
 		}
 	};
 }

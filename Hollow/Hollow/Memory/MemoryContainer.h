@@ -89,6 +89,18 @@ namespace Hollow {
 			chunks.push_back(new MemoryChunk(new PoolAllocator(DEFAULT_CAPACITY, sizeof(T), alignof(T))));
 		}
 
+		~MemoryContainer()
+		{
+			for (auto it : chunks) {
+				for (T*& object : it->objects) {
+					object->~T();
+					it->allocator->deallocate(object);
+				}
+				delete it;
+			}
+			chunks.clear();
+		}
+
 		void* allocate()
 		{
 			void* allocatedMemory = nullptr;

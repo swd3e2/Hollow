@@ -15,15 +15,19 @@ namespace Hollow {
 	class ComponentManager : public CModule<ComponentManager>
 	{
 	private:
-		class IComponentContainer {};
+		class IComponentContainer {
+		public:
+			virtual ~IComponentContainer() {}
+		};
 
 		template<class T>
 		class ComponentContainer : public IComponentContainer
 		{
 		public:
-			MemoryContainer<T> componentList;
+			MemoryContainer<T> container;
 		public:
 			ComponentContainer() {}
+			virtual ~ComponentContainer() {}
 		};
 
 		std::unordered_map<size_t, IComponentContainer*> componentContainers;
@@ -82,7 +86,7 @@ namespace Hollow {
 			destroy<T>(entityId);
 
 			ComponentContainer<T>* container = getContainer<T>();
-			T* component = new (container->componentList.allocate()) T(std::forward<ARGS>(args)...);
+			T* component = new (container->container.allocate()) T(std::forward<ARGS>(args)...);
 			componentMap[entityId][componentTypeId] = component;
 
 			return component;
@@ -96,7 +100,7 @@ namespace Hollow {
 				size_t componentTypeId = T::staticGetTypeId();
 
 				ComponentContainer<T>* container = getContainer<T>();
-				container->componentList.deallocate((T*)componentMap[entityId][componentTypeId]);
+				container->container.deallocate((T*)componentMap[entityId][componentTypeId]);
 			}
 		}
 
@@ -127,6 +131,18 @@ namespace Hollow {
 			}
 
 			return nullptr;
+		}
+
+		template<class T>
+		typename MemoryContainer<T>::iterator& begin()
+		{
+			return getContainer<T>()->container.begin();
+		}
+
+		template<class T>
+		typename MemoryContainer<T>::iterator& end()
+		{
+			return getContainer<T>()->container.end();
 		}
 	};
 }

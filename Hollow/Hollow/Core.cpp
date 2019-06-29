@@ -30,6 +30,7 @@ namespace Hollow {
 		DelayedTaskManager::shutdown();
 		MeshManager::shutdown();
 		TaskManager::shutdown();
+		FreeImgImporter::shutdown();
 	}
 
 	void Core::PreUpdate()
