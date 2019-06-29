@@ -128,9 +128,6 @@ namespace Hollow {
 
 			return nullptr;
 		}
-
-		void startUp() { setStartedUp(); }
-		void shutdown() { setShutdown(); }
 	};
 }
 

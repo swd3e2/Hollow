@@ -3,20 +3,17 @@
 namespace Hollow {
 	OGLRenderApi::OGLRenderApi(int width, int height)
 	{
-		hardwareBufferManager = new OGLHardwareBufferManager();
-		textureManager = new OGLTextureManager();
-		shaderManager = new OGLShaderManager();
-		gpuBufferManager = new OGLGPUBufferManager();
-		renderTargetManager = new OGLRenderTargetManager();
-		hwnd = static_cast<OGLWin32Window*>(WindowManager::instance()->getWindow())->getHWND();
+		HardwareBufferManager::startUp<OGLHardwareBufferManager>();
+		TextureManager::startUp<OGLTextureManager>();
+		ShaderManager::startUp<OGLShaderManager>();
+		GPUBufferManager::startUp<OGLGPUBufferManager>();
+		RenderTargetManager::startUp<OGLRenderTargetManager>();
+
+		hwnd = static_cast<OGLWin32Window*>(Window::instance())->getHWND();
 		glEnable(GL_DEPTH_TEST);
 		//glCullFace(GL_BACK);
 		glDepthFunc(GL_LEQUAL);
-		setStartedUp();
 	}
-
-	void OGLRenderApi::startUp()
-	{}
 
 	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 	{

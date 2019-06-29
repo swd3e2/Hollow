@@ -12,16 +12,7 @@ namespace Hollow {
 	class FreeImgImporter : public CModule<FreeImgImporter>
 	{
 	public:
-		FreeImgImporter()
-		{
-			FreeImage_Initialise();
-			setStartedUp();
-		}
-		~FreeImgImporter()
-		{
-			setShutdown();
-		}
-
+		virtual void onStartUp() override { FreeImage_Initialise(); }
 		TEXTURE_DESC* import(const char* filename);
 	};	
 }

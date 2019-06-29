@@ -28,16 +28,9 @@ namespace Hollow {
 		vp.MaxDepth = 1.0f;
 		vp.TopLeftX = 0;
 		vp.TopLeftY = 0;
-
-		startUp();
 	}
 
-	D3D11RenderApi::~D3D11RenderApi()
-	{
-		setShutdown();
-	}
-
-	void D3D11RenderApi::startUp()
+	void D3D11RenderApi::onStartUp()
 	{
 		HRESULT hr = S_OK;
 		RECT rc;
@@ -59,7 +52,7 @@ namespace Hollow {
 		swapChainDesc.Windowed = TRUE;
 		swapChainDesc.SampleDesc.Quality = 0;
 		swapChainDesc.SampleDesc.Count = 1;
-		swapChainDesc.OutputWindow = *(static_cast<D3D11Win32Window*>(WindowManager::instance()->getWindow())->getHWND());
+		swapChainDesc.OutputWindow = *(static_cast<D3D11Win32Window*>(Window::instance())->getHWND());
 
 		D3D_FEATURE_LEVEL featureLevels[] = {
 			D3D_FEATURE_LEVEL_11_1,
@@ -124,7 +117,6 @@ namespace Hollow {
 
 		deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		setStartedUp();
 		// Texture samplers
 		m_SamplerStateClamp = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
 		m_SamplerStateWrap = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
@@ -142,11 +134,11 @@ namespace Hollow {
 
 		blendState = new D3D11BlendState();
 
-		textureManager = new D3D11TextureManager();
-		hardwareBufferManager = new D3D11HardwareBufferManager();
-		shaderManager = new D3D11ShaderManager();
-		gpuBufferManager = new D3D11BufferManager();
-		renderTargetManager = new D3D11RenderTargetManager();
+		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();
+		TextureManager::startUp<D3D11TextureManager>();
+		ShaderManager::startUp<D3D11ShaderManager>();
+		GPUBufferManager::startUp<D3D11GPUBufferManager>();
+		RenderTargetManager::startUp<D3D11RenderTargetManager>();
 	}
 
 	void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)

@@ -12,7 +12,7 @@
 #include "Log.h"
 #include "Hollow/Platform.h"
 #include <fstream>
-#include "Hollow/Graphics/WindowManager.h"
+#include "Hollow/WindowManager.h"
 #include "Hollow/Graphics/Renderer/DirectX/D3D11Win32Window.h"
 #include "Hollow/Graphics/Renderer/OpenGL/Win32/OGLWin32Window.h"
 #include <Commdlg.h>
@@ -131,7 +131,7 @@ namespace Hollow {
 			// Initialize OPENFILENAME
 			ZeroMemory(&ofn, sizeof(OPENFILENAME));
 			ofn.lStructSize = sizeof(OPENFILENAME);
-			ofn.hwndOwner = *(static_cast<OGLWin32Window*>(WindowManager::instance()->getWindow()))->getHWND();
+			ofn.hwndOwner = *(static_cast<OGLWin32Window*>(Window::instance()))->getHWND();
 			ofn.lpstrFile = szFile;
 			ofn.nMaxFile = sizeof(szFile);
 			ofn.lpstrFilter = "All\0*.*\0";
@@ -154,7 +154,7 @@ namespace Hollow {
 			LPITEMIDLIST pidl;
 
 			BROWSEINFOA desc = { 0 };
-			desc.hwndOwner = *(static_cast<OGLWin32Window*>(WindowManager::instance()->getWindow()))->getHWND();
+			desc.hwndOwner = *(static_cast<OGLWin32Window*>(Window::instance()))->getHWND();
 			desc.lpszTitle = "select folder";
 			desc.pszDisplayName = szFile;
 			pidl = SHBrowseForFolder(&desc);

@@ -15,22 +15,16 @@
 #include "OGLShaderManager.h"
 #include "OGLGPUBufferManager.h"
 #include "OGLRenderTargetManager.h"
-#include "Hollow/Graphics/WindowManager.h"
+#include "Hollow/Graphics/Renderer/Base/Window.h"
 
 namespace Hollow {
 	class OGLRenderApi : public RenderApi
 	{
 	private:
 		HWND* hwnd;
-		OGLHardwareBufferManager* hardwareBufferManager;
-		OGLTextureManager* textureManager;
-		OGLShaderManager* shaderManager;
-		OGLGPUBufferManager* gpuBufferManager;
-		OGLRenderTargetManager* renderTargetManager;
 	public:
 		OGLRenderApi(int width, int height);
 
-		virtual void startUp() override;
 		virtual void SetIndexBuffer(IndexBuffer*) override;
 		virtual void SetVertexBuffer(VertexBuffer*) override;
 		virtual void SetTexture(UINT, Texture*) override;

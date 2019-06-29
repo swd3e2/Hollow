@@ -14,15 +14,6 @@ namespace Hollow {
 	private:
 		std::list<ISystem*> m_Systems;
 	public:
-		void startUp()
-		{
-			setStartedUp();
-		}
-
-		void shutdown()
-		{
-			setShutdown();
-		}
 		void AddSystem(ISystem* system)
 		{
 			this->m_Systems.push_back(system);

@@ -43,15 +43,6 @@ namespace Hollow {
 		}
 
 		/*
-		 * Creates object T
-		 */
-		template<class T, typename ...Args>
-		T* createObject()
-		{
-			return new (allocate()) T(std::forward(Args...));
-		}
-
-		/*
 		 * Returns memory address for next object
 		 */
 		void* allocate()

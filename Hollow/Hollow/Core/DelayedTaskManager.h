@@ -13,9 +13,6 @@ namespace Hollow {
 	private:
 		std::queue<std::function<void()>> taskList;
 	public:
-		DelayedTaskManager() { setStartedUp(); }
-		~DelayedTaskManager() { setShutdown(); }
-
 		void Add(std::function<void()> task) 
 		{
 			taskList.push(task);

@@ -25,8 +25,9 @@ namespace Hollow {
 		int currentLabel;
 		std::atomic_int finishedLabel;
 	public:
-		TaskManager() :
-			numTasks(0), currentLabel(0)
+		TaskManager() : numTasks(0), currentLabel(0) {}
+
+		virtual void onStartUp() override
 		{
 			finishedLabel.store(0);
 			workers = new std::thread * [numWorkers];
@@ -53,12 +54,6 @@ namespace Hollow {
 				worker.detach();
 				workers[i] = &worker;
 			}
-			setStartedUp();
-		}
-
-		~TaskManager()
-		{
-			setShutdown();
 		}
 
 		void add(std::function<void()> job)

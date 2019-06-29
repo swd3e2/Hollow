@@ -28,12 +28,6 @@ namespace Hollow {
 
 		D3D11_VIEWPORT vp;
 
-		D3D11TextureManager* textureManager;
-		D3D11HardwareBufferManager* hardwareBufferManager;
-		D3D11ShaderManager* shaderManager;
-		D3D11BufferManager* gpuBufferManager;
-		D3D11RenderTargetManager* renderTargetManager;
-
 		ID3D11ShaderResourceView* const pSRV[1] = { NULL };
 		ID3D11UnorderedAccessView* pUAV[1] = { NULL };
 
@@ -49,7 +43,6 @@ namespace Hollow {
 		const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	public:
 		D3D11RenderApi(int width, int height);
-		~D3D11RenderApi();
 
 		virtual void SetIndexBuffer(IndexBuffer* buffer) override;
 		virtual void SetVertexBuffer(VertexBuffer* buffer) override;
@@ -66,7 +59,7 @@ namespace Hollow {
 		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 
-		virtual void startUp() override;
+		virtual void onStartUp() override;
 
 
 		void FreeShaderResource(UINT slot);

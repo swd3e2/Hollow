@@ -16,29 +16,30 @@
 #include "Sandbox/Entities/GameObject.h"
 #include "Hollow/Core/DelayedTaskManager.h"
 
+/**
+ * Project settings class
+ */
 class ProjectSettings : public Hollow::CModule<ProjectSettings>
 {
 public:
+	/** Project folders where app will find files */
 	std::string MeshesFolder;
 	std::string TexturesFolder;
 	std::string ShadersFolder;
 
+	/** Project folders */
 	std::string projectFolder;
+	/** Project name */
 	std::string projectName;
+	/** Project settings filename for saving */
 	std::string projectFileName;
 
 	bool isProjectLoaded = false;
 public:
-	ProjectSettings()
-	{
-		setStartedUp();
-	}
-
-	~ProjectSettings()
-	{
-		setShutdown();
-	}
-
+	/**
+	 * Loads settings from json file
+	 * @param[in] filename	Filename of settings file
+	 */
 	void load(std::string filename) 
 	{
 		auto func = [&, filename]() {
@@ -91,6 +92,11 @@ public:
 		Hollow::DelayedTaskManager::instance()->Add(func);
 	}
 
+	/**
+	 * Creates new project
+	 * @param[in] folder	Path to folder where project needs to be created
+	 * @param[in] name		Name of new project
+	 */
 	void create(std::string folder, std::string name)
 	{
 		auto func = [&, folder, name]() {
@@ -127,6 +133,9 @@ public:
 		Hollow::DelayedTaskManager::instance()->Add(func);
 	}
 
+	/**
+	 * Saves project to project settings file
+	 */
 	void save()
 	{
 		auto func = [&]() {

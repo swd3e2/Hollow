@@ -12,8 +12,6 @@ namespace Hollow {
 	class HardwareBufferManager : public CModule<HardwareBufferManager>
 	{
 	public:
-		HardwareBufferManager() { setStartedUp(); }
-		~HardwareBufferManager() { setShutdown(); }
 		virtual VertexBuffer* createVertexBuffer(Vertex* data, size_t numVertices) = 0;
 		virtual IndexBuffer* createIndexBuffer(unsigned int* data, size_t numIndices) = 0;
 	};

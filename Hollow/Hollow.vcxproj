@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Hollow\Containers\array.h" />
     <ClInclude Include="Hollow\Core.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\Core\DelayedTaskManager.h" />
@@ -77,7 +76,7 @@
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
     <ClInclude Include="Hollow\Layers\ApplicationLayer.h" />
-    <ClInclude Include="Hollow\Graphics\RenderApiManager.h" />
+    <ClInclude Include="Hollow\RenderApiManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\IndexBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTarget.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Shader.h" />
@@ -100,7 +99,7 @@
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLVertexBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\WindowManager.h" />
+    <ClInclude Include="Hollow\WindowManager.h" />
     <ClInclude Include="Hollow\Importer\FreeImgImporter.h" />
     <ClInclude Include="Hollow\Math\EAngle.h" />
     <ClInclude Include="Hollow\Math\Matrix4.h" />
@@ -181,6 +180,7 @@
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\OGLTextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Renderer\OpenGL\Win32\OGLWin32Window.cpp" />
+    <ClCompile Include="Hollow\Graphics\ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
     <ClCompile Include="Hollow\Importer\FreeImgImporter.cpp" />
     <ClCompile Include="Hollow\Importer\GLTFImporter.cpp" />

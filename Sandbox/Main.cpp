@@ -4,7 +4,6 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
-#include <Hollow/Graphics/RenderApiManager.h>
 #include "Sandbox/GUISystem.h"
 #include "Sandbox/Systems/MoveSystem.h"
 #include "Sandbox/Components/MoveComponent.h"
@@ -23,10 +22,10 @@ int main()
 {
 	Hollow::Core core(Hollow::RendererType::OpenGL);
 
-	Hollow::Window* window = Hollow::WindowManager::instance()->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
-	Hollow::RenderApi* renderer = Hollow::RenderApiManager::instance()->initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	Hollow::Window* window = core.windowManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
+	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	ProjectSettings settings;
+	ProjectSettings::startUp();
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
@@ -37,14 +36,14 @@ int main()
 
 	MoveSystem moveSystem(camera);
 
-	core.systemManager.AddSystem(&renderPass);
+	SystemManager::instance()->AddSystem(&renderPass);
 	//core.systemManager.AddSystem(&moveSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->renderSystem = &renderPass;
 	gui->mainCamera = camera;
 
-	settings.load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
+	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 
 	while (!window->isClosed()) {
 		core.PreUpdate();

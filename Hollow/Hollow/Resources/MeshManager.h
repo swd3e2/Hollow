@@ -16,16 +16,6 @@ namespace Hollow {
 		GLTFImporter gltfImporter;
 		HollowModelImporter hwImporter;
 	public:
-		MeshManager()
-		{
-			setStartedUp();
-		}
-
-		~MeshManager()
-		{
-			setShutdown();
-		}
-
 		Import::Model* import(const char* filename)
 		{
 			Import::Model* model = nullptr;

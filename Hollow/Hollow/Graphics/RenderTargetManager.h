@@ -10,8 +10,6 @@ namespace Hollow {
 	class RenderTargetManager : public CModule<RenderTargetManager>
 	{
 	public:
-		RenderTargetManager() { setStartedUp(); }
-		~RenderTargetManager() { setShutdown(); }
 		virtual RenderTarget* create(int width, int height, RenderTargetFlags flags = RenderTargetFlags::NONE) = 0;
 	};
 }

@@ -1,16 +1,6 @@
 #include "TextureManager.h"
 
 namespace Hollow {
-	TextureManager::TextureManager()
-	{
-		setStartedUp();
-	}
-
-	TextureManager::~TextureManager()
-	{
-		setShutdown();
-	}
-
 	Texture* TextureManager::CreateTextureFromFile(const std::string& filename, bool fromDefaultFolder)
 	{
 		std::string pathToFile = filename;

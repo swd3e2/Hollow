@@ -8,7 +8,7 @@
 #include "D3D11GPUBuffer.h"
 
 namespace Hollow {
-	class D3D11BufferManager : public GPUBufferManager
+	class D3D11GPUBufferManager : public GPUBufferManager
 	{
 	public:
 		virtual GPUBuffer* create(unsigned int location, unsigned int size) override;

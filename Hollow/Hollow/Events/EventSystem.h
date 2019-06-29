@@ -18,16 +18,6 @@ namespace Hollow {
 		std::vector<IEventDelegate*>  eventListeners;
 		std::vector<IEvent*> events;
 	public:
-		void startUp()
-		{
-			setStartedUp();
-		}
-
-		void shutdown()
-		{
-			setShutdown();
-		}
-
 		template<class T>
 		void addEventListener(IEventListener* listener, void (T::* func)(IEvent*), eventId id)
 		{

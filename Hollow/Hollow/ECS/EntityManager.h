@@ -5,7 +5,6 @@
 
 #include <unordered_map>
 
-#include "Hollow/Containers/array.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Platform.h"
 #include "Entity.h"
@@ -86,9 +85,6 @@ namespace Hollow {
 			EntityContainer<T>* container = getContainer<T>();
 			container->entityList.deallocate((T*)entities[typeId]);
 		}
-
-		void startUp() { setStartedUp(); }
-		void shutdown() { setShutdown(); }
 
 		size_t getNextEntityId()
 		{

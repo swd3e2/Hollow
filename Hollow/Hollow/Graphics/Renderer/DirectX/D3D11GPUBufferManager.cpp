@@ -3,7 +3,7 @@
 #include "D3D11Context.h"
 
 namespace Hollow {
-	GPUBuffer* D3D11BufferManager::create(unsigned int location, unsigned int size)
+	GPUBuffer* D3D11GPUBufferManager::create(unsigned int location, unsigned int size)
 	{
 		HRESULT result = S_OK;
 		unsigned int usize = static_cast<UINT>(size + (16 - size % 16));

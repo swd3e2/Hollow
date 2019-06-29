@@ -22,13 +22,7 @@ namespace Hollow {
 	protected:
 		FileSystem fs;
 	public:
-		ShaderManager() { setStartedUp(); }
-		~ShaderManager() {
-			for (auto& it : shaders) {
-				delete it.second;
-			}
-			setShutdown(); 
-		}
+		virtual void onShutdown() override;
 
 		virtual void loadShadersFromFolder(const std::string& folder) = 0;
 		inline ShaderProgram* getShader(const std::string& name) { return shaders[name]; }

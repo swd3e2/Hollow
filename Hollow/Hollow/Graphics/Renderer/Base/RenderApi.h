@@ -19,7 +19,6 @@ namespace Hollow {
 	{
 	protected:
 	public:
-		virtual void startUp() = 0;
 		virtual void SetIndexBuffer(IndexBuffer*) = 0;
 		virtual void SetVertexBuffer(VertexBuffer*) = 0;
 		virtual void SetTexture(UINT, Texture*) = 0;

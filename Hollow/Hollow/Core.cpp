@@ -1,28 +1,35 @@
 #include "Core.h"
 
 namespace Hollow {
-	Core::Core(RendererType type) : 
-		renderApiManager(type), windowManager(type)
+	Core::Core(RendererType type) :
+		windowManager(type), renderApiManager(type)
 	{
-		Hollow::Console::RedirectIOToConsole();
-		Hollow::Log::Init();
+		Console::RedirectIOToConsole();
+		Log::Init();
 
-		eventSystem.startUp();
-		inputManager.startUp();
-		componentManager.startUp();
-		entityManager.startUp();
-		systemManager.startUp();
+		FreeImgImporter::startUp();
+		TaskManager::startUp();
+		MeshManager::startUp();
+		DelayedTaskManager::startUp();
+		EventSystem::startUp();
+		InputManager::startUp();
+		ComponentManager::startUp();
+		EntityManager::startUp();
+		SystemManager::startUp();
 
 		m_Timer.Start();
 	}
 
 	Core::~Core()
 	{
-		systemManager.shutdown();
-		entityManager.shutdown();
-		componentManager.shutdown();
-		inputManager.shutdown();
-		eventSystem.shutdown();
+		SystemManager::shutdown();
+		EntityManager::shutdown();
+		ComponentManager::shutdown();
+		InputManager::shutdown();
+		EventSystem::shutdown();
+		DelayedTaskManager::shutdown();
+		MeshManager::shutdown();
+		TaskManager::shutdown();
 	}
 
 	void Core::PreUpdate()
@@ -30,24 +37,24 @@ namespace Hollow {
 		dt = m_Timer.GetMilisecondsElapsed();
 		m_Timer.Restart();
 
-		systemManager.PreUpdateSystems(dt);
+		SystemManager::instance()->PreUpdateSystems(dt);
 	}
 
 	void Core::Update()
 	{
-		systemManager.UpdateSystems(dt);
+		SystemManager::instance()->UpdateSystems(dt);
 	}
 
 	void Core::PostUpdate()
 	{
-		systemManager.PostUpdateSystems(dt);
+		SystemManager::instance()->PostUpdateSystems(dt);
 			
-		eventSystem.dispatch();
-		inputManager.Clear();
+		EventSystem::instance()->dispatch();
+		InputManager::instance()->Clear();
 
 		m_Timer.Stop();
 
-		delayedTaskManager.Update();
+		DelayedTaskManager::instance()->Update();
 	}
 }
 

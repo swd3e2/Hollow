@@ -9,6 +9,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <string>
+#include <vector>
 
 #define COMPONENT_TYPE_UNSIGNED_SHORT 5123
 #define COMPONENT_TYPE_UNSIGNED_INT 5125

@@ -6,6 +6,7 @@
 #include "Hollow/Platform.h"
 #include <assert.h>
 #include <typeinfo>
+#include <utility>
 
 namespace Hollow {
 	/* Base class for all core main engine systems */
@@ -17,10 +18,7 @@ namespace Hollow {
 		static bool _startedUp;
 		static bool _shutdown;
 	protected:
-		CModule()
-		{
-			_instance = static_cast<T*>(this);
-		}
+		CModule() = default;
 		virtual ~CModule() = default;
 
 		CModule(const CModule&) = delete;
@@ -43,18 +41,37 @@ namespace Hollow {
 			return _instance;
 		}
 
-	protected:
-		static bool isStartedUp()
+		template<typename ...ARGS>
+		static void startUp(ARGS&& ...args)
 		{
-			return _startedUp;
+			_instance = new T(std::forward(args)...);
+			_startedUp = true;
+			_instance->onStartUp();
 		}
 
-		static bool isShutdown()
+		template<class SubClass, typename ...Args>
+		static void startUp(Args&& ...args)
 		{
-			return _shutdown;
+			_instance = (T*)(new SubClass(std::forward<Args>(args)...));
+			_startedUp = true;
+			_instance->onStartUp();
 		}
-		inline void setStartedUp() { _startedUp = true; }
-		inline void setShutdown() { _shutdown = true; }
+
+		static void shutdown()
+		{
+			if (isShutdown()) {
+				assert(false && "Module is already shutdown");
+			}
+			_instance->onShutdown();
+			_shutdown = true;
+			delete _instance;
+		}
+
+		virtual void onStartUp() {}
+		virtual void onShutdown() {}
+	protected:
+		static bool isStartedUp() { return _startedUp; }
+		static bool isShutdown() { return _shutdown; }
 	};
 
 	template<class T> T* CModule<T>::_instance = nullptr;

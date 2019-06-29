@@ -34,7 +34,7 @@ namespace Hollow {
 		static float mcx;
 		static float mcy;
 	public:
-		void startUp()
+		virtual void onStartUp() override
 		{
 			for (int i = 0; i < 256; i++) {
 				KeyboardKeys[i] = false;
@@ -45,13 +45,6 @@ namespace Hollow {
 
 			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonReleased, ButtonReleasedEvent::getStaticEventId()));
 			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonPressed, ButtonPressedEvent::getStaticEventId()));
-
-			setStartedUp();
-		}
-
-		void shutdown()
-		{
-			setShutdown();
 		}
 
 		void onButtonPressed(IEvent* ev)
