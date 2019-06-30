@@ -22,7 +22,6 @@ namespace Hollow {
 			SAFE_RELEASE(m_ShaderResourceView);
 			SAFE_RELEASE(m_DepthStencilView);
 			SAFE_RELEASE(m_DepthStencilBuffer);
-			SAFE_RELEASE(m_DepthStencilState);
 			SAFE_RELEASE(m_DepthResourceView);
 		}
 
@@ -30,7 +29,6 @@ namespace Hollow {
 		inline ID3D11ShaderResourceView* GetShaderResourceView() const { return m_ShaderResourceView; }
 
 		inline ID3D11DepthStencilView* GetDepthStencilView() const { return m_DepthStencilView; }
-		inline ID3D11DepthStencilState* GetDepthStencilState() const { return m_DepthStencilState; }
 		inline ID3D11ShaderResourceView* GetDepthStencilResource() const { return m_DepthResourceView; }
 		virtual Vector4 readPixel(int x, int y) override;
 	private:
@@ -40,7 +38,6 @@ namespace Hollow {
 
 		ID3D11DepthStencilView* m_DepthStencilView;
 		ID3D11Texture2D* m_DepthStencilBuffer;
-		ID3D11DepthStencilState* m_DepthStencilState;
 		ID3D11ShaderResourceView* m_DepthResourceView;
 	};
 }

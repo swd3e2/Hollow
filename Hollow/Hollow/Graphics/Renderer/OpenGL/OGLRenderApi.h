@@ -36,6 +36,7 @@ namespace Hollow {
 		virtual void SetViewport(int w0, int y0, int w, int y) override;
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
+		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
 
 		virtual void Draw(UINT count)override {}
 		virtual void DrawIndexed(UINT count) override;

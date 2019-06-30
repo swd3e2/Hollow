@@ -114,14 +114,6 @@ namespace Hollow {
 
 		hr = device->CreateShaderResourceView(m_DepthStencilBuffer, &srvd, &m_DepthResourceView);
 
-		D3D11_DEPTH_STENCIL_DESC dssDesc;
-		ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-		dssDesc.DepthEnable = true;
-		dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-
-		device->CreateDepthStencilState(&dssDesc, &m_DepthStencilState);
-
 		deviceContext->RSSetViewports(1, &vp);
 
 		deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -135,13 +127,46 @@ namespace Hollow {
 		deviceContext->PSSetSamplers(1, 1, m_SamplerStateWrap->GetSamplerState());
 
 		// Rasterizers
-		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
+		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 		m_Wireframe = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_WIREFRAME);
 		m_cullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
 		SetRasterizerState(m_cullNone);
 
 		blendState = new D3D11BlendState();
+
+		D3D11_DEPTH_STENCIL_DESC dssDesc;
+		ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+		dssDesc.DepthEnable = true;
+		dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNever);
+		}
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLess);
+		}
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateEqual);
+		}
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLequal);
+		}
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateGreater);
+		}
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNotEqual);
+		}
+		{
+			dssDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateAlways);
+		}
 
 		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();
 		TextureManager::startUp<D3D11TextureManager>();
@@ -231,6 +256,40 @@ namespace Hollow {
 		}
 	}
 
+	void D3D11RenderApi::SetDepthTestFunction(DEPTH_TEST_FUNCTION func)
+	{
+		switch (func) {
+			case DEPTH_TEST_FUNCTION::NEVER:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateNever, 0);
+			} break;
+			case DEPTH_TEST_FUNCTION::LESS:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateLess, 0);
+			} break;
+			case DEPTH_TEST_FUNCTION::EQUAL:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateEqual, 0);
+			} break;
+			case DEPTH_TEST_FUNCTION::LEQUAL:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateLequal, 0);
+			} break;
+			case DEPTH_TEST_FUNCTION::GREATER:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateGreater, 0);
+			} break;
+			case DEPTH_TEST_FUNCTION::NOT_EQUAL:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateNotEqual, 0);
+			} break;
+			case DEPTH_TEST_FUNCTION::ALWAYS:
+			{
+				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateAlways, 0);
+			} break;
+		}
+	}
+
 	void D3D11RenderApi::SetSampler(int slot, D3D11SamplerState* sampler)
 	{
 		context->getDeviceContext()->PSSetSamplers(slot, 1, sampler->GetSamplerState());
@@ -243,10 +302,8 @@ namespace Hollow {
 			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
 			auto ptr = d3d11RenderTarget->GetRenderTaget();
 			context->getDeviceContext()->OMSetRenderTargets(1, &ptr, d3d11RenderTarget->GetDepthStencilView());
-			context->getDeviceContext()->OMSetDepthStencilState(d3d11RenderTarget->GetDepthStencilState(), 0);
 		} else {
 			context->getDeviceContext()->OMSetRenderTargets(1, &this->renderTarget, this->m_DepthStencilView);
-			context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilState, 0);
 		}
 	}
 

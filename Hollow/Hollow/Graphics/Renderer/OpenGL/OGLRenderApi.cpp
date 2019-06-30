@@ -12,7 +12,6 @@ namespace Hollow {
 		hwnd = static_cast<OGLWin32Window*>(Window::instance())->getHWND();
 		glEnable(GL_DEPTH_TEST);
 		//glCullFace(GL_BACK);
-		glDepthFunc(GL_LEQUAL);
 	}
 
 	OGLRenderApi::~OGLRenderApi()
@@ -114,6 +113,40 @@ namespace Hollow {
 			glDepthFunc(GL_LEQUAL);
 		} else {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+	}
+
+	void OGLRenderApi::SetDepthTestFunction(DEPTH_TEST_FUNCTION func)
+	{
+		switch (func) {
+		case DEPTH_TEST_FUNCTION::NEVER:
+		{
+			glDepthFunc(GL_NEVER);
+		} break;
+		case DEPTH_TEST_FUNCTION::LESS:
+		{
+			glDepthFunc(GL_LESS);
+		} break;
+		case DEPTH_TEST_FUNCTION::EQUAL:
+		{
+			glDepthFunc(GL_EQUAL);
+		} break;
+		case DEPTH_TEST_FUNCTION::LEQUAL:
+		{
+			glDepthFunc(GL_LEQUAL);
+		} break;
+		case DEPTH_TEST_FUNCTION::GREATER:
+		{
+			glDepthFunc(GL_GREATER);
+		} break;
+		case DEPTH_TEST_FUNCTION::NOT_EQUAL:
+		{
+			glDepthFunc(GL_NOTEQUAL);
+		} break;
+		case DEPTH_TEST_FUNCTION::ALWAYS:
+		{
+			glDepthFunc(GL_ALWAYS);
+		} break;
 		}
 	}
 

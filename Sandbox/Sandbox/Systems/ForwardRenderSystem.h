@@ -118,6 +118,7 @@ public:
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			renderer->SetRenderTarget(shadow.renderTarget);
+			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
 
 			shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
 			shadowConstantBuffer->update(&shadowStruct);
@@ -126,11 +127,12 @@ public:
 			DrawDepth();
 
 			renderer->SetRenderTarget(main);
+
 			renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
 			updateWVP(this->m_Camera);
 
 			Draw();
-
+			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
 			DrawSkyMap();
 
 			renderer->UnsetTexture(3);

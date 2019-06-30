@@ -22,8 +22,16 @@ namespace Hollow {
 		ID3D11Texture2D* m_BackBuffer;
 
 		ID3D11DepthStencilView* m_DepthStencilView;
+
+		ID3D11DepthStencilState* m_DepthStencilStateNever;
+		ID3D11DepthStencilState* m_DepthStencilStateLess;
+		ID3D11DepthStencilState* m_DepthStencilStateEqual;
+		ID3D11DepthStencilState* m_DepthStencilStateLequal;
+		ID3D11DepthStencilState* m_DepthStencilStateGreater;
+		ID3D11DepthStencilState* m_DepthStencilStateNotEqual;
+		ID3D11DepthStencilState* m_DepthStencilStateAlways;
+
 		ID3D11Texture2D* m_DepthStencilBuffer;
-		ID3D11DepthStencilState* m_DepthStencilState;
 		ID3D11ShaderResourceView* m_DepthResourceView;
 
 		D3D11_VIEWPORT vp;
@@ -59,6 +67,7 @@ namespace Hollow {
 		virtual void SetViewport(int w0, int y0, int w, int y) override;
 		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
+		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
 
 		virtual void onStartUp() override;
 

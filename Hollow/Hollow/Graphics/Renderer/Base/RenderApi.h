@@ -15,6 +15,16 @@
 #include "RenderTarget.h"
 
 namespace Hollow {
+	enum DEPTH_TEST_FUNCTION {
+		NEVER = 0,
+		LESS = 1,
+		EQUAL = 2,
+		LEQUAL = 3,
+		GREATER = 4,
+		NOT_EQUAL = 5,
+		ALWAYS = 6
+	};
+
 	class RenderApi : public CModule<RenderApi>
 	{
 	protected:
@@ -32,6 +42,7 @@ namespace Hollow {
 		virtual void SetViewport(int w0, int y0, int w, int y) = 0;
 		virtual void SetRenderTarget(RenderTarget* renderTarget) = 0;
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) = 0;
+		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) = 0;
 		virtual void Present() = 0;
 	};
 }
