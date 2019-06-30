@@ -3,6 +3,7 @@
 namespace Hollow {
 	Texture* OGLTextureManager::Create2dTexture(TEXTURE_DESC* desc)
 	{
+		Hollow::Logger::instance()->log("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		OGLTexture* texture = new OGLTexture(desc->width, desc->height);
 
@@ -26,7 +27,8 @@ namespace Hollow {
 
 	Texture* OGLTextureManager::Create3dTexture(TEXTURE_DESC** desc)
 	{
-		HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
+		Hollow::Logger::instance()->log("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
+		HW_INFO("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 		OGLTexture* texture = new OGLTexture(desc[0]->width, desc[0]->height);
 		texture->type = TextureType::TEXTURE_CUBE;
 

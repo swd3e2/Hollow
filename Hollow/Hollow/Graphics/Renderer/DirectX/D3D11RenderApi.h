@@ -43,6 +43,7 @@ namespace Hollow {
 		const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	public:
 		D3D11RenderApi(int width, int height);
+		~D3D11RenderApi();
 
 		virtual void SetIndexBuffer(IndexBuffer* buffer) override;
 		virtual void SetVertexBuffer(VertexBuffer* buffer) override;
@@ -60,7 +61,6 @@ namespace Hollow {
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 
 		virtual void onStartUp() override;
-
 
 		void FreeShaderResource(UINT slot);
 

@@ -30,7 +30,7 @@ namespace Hollow {
 		virtual void onStartUp() override
 		{
 			finishedLabel.store(0);
-			workers = new std::thread * [numWorkers];
+			workers = new std::thread*[numWorkers];
 
 			for (int i = 0; i < numWorkers; i++)
 			{

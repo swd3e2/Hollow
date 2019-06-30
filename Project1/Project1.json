@@ -11,19 +11,70 @@
           0.0
         ],
         "scale": [
-          1.0,
-          1.0,
-          1.0
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
         ],
         "translation": [
           100.0,
-          247.89999389648438,
+          -3.9000000953674316,
           0.0
         ]
       },
       "id": 0
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          200.0,
+          200.0,
+          200.0
+        ],
+        "translation": [
+          82.69999694824219,
+          -51.599998474121094,
+          3.700000047683716
+        ]
+      },
+      "id": 1
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\Ball.obj"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          10.0,
+          10.0,
+          10.0
+        ],
+        "translation": [
+          -1.0,
+          -32.400001525878906,
+          0.0
+        ]
+      },
+      "id": 2
     }
   ],
+  "Renderer" : {
+    "type" : 0,
+    "width": 1920,
+    "height" : 1080
+  },
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
   "ShadersFolder": "C:/dev/Hollow Engine/Project1/Shaders",
   "TexturesFolder": "C:/dev/Hollow Engine/Project1/Textures"

@@ -7,6 +7,7 @@ namespace Hollow {
 		Console::RedirectIOToConsole();
 		Log::Init();
 
+		Logger::startUp();
 		FreeImgImporter::startUp();
 		TaskManager::startUp();
 		MeshManager::startUp();
@@ -29,8 +30,9 @@ namespace Hollow {
 		EventSystem::shutdown();
 		DelayedTaskManager::shutdown();
 		MeshManager::shutdown();
-		TaskManager::shutdown();
+		//TaskManager::shutdown();
 		FreeImgImporter::shutdown();
+		Logger::shutdown();
 	}
 
 	void Core::PreUpdate()

@@ -22,6 +22,7 @@
 #include "Hollow/Core/DelayedTaskManager.h"
 #include "Hollow/Resources/MeshManager.h"
 #include "Hollow/Core/DelayedTaskManager.h"
+#include "Common/Logger.h"
 
 namespace Hollow {
 	/**
@@ -30,12 +31,13 @@ namespace Hollow {
 	class Core
 	{
 	public:
-		HWND* m_HWND;
-		Timer						m_Timer;
-		LayerStack					m_LayerStack;
-		WindowManager				windowManager;
-		RenderApiManager			renderApiManager;
-		double						dt;
+		HWND*			 m_HWND;
+		Timer			 m_Timer;
+		LayerStack		 m_LayerStack;
+		WindowManager	 windowManager;
+		RenderApiManager renderApiManager;
+		RendererType	 type;
+		double			 dt;
 	public:
 		Core(RendererType type);
 		~Core();

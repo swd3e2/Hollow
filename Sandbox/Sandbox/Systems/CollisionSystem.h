@@ -16,7 +16,7 @@ private:
 public:
 	virtual void Update(double dt) override
 	{
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<CollisionComponent>() && entity.hasComponent<TransformComponent>()) {
 				collisionComponent = entity.getComponent<CollisionComponent>();
 				posComponent = entity.getComponent<TransformComponent>();

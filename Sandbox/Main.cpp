@@ -4,7 +4,7 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
-#include "Sandbox/GUISystem.h"
+#include "Sandbox/GUI/GUISystem.h"
 #include "Sandbox/Systems/MoveSystem.h"
 #include "Sandbox/Components/MoveComponent.h"
 #include "Sandbox/Components/SelectComponent.h"
@@ -25,7 +25,7 @@ int main()
 	Hollow::Window* window = core.windowManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
 	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	ProjectSettings::startUp();
+	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
@@ -40,8 +40,7 @@ int main()
 	//core.systemManager.AddSystem(&moveSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
-	gui->renderSystem = &renderPass;
-	gui->mainCamera = camera;
+	gui->rendererTab.renderSystem = &renderPass;
 
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 

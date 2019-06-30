@@ -34,8 +34,11 @@ public:
 	/** Project settings filename for saving */
 	std::string projectFileName;
 
+	Hollow::RendererType rendererType;
+
 	bool isProjectLoaded = false;
 public:
+	ProjectSettings(Hollow::RendererType type) : rendererType(type) {}
 	/**
 	 * Loads settings from json file
 	 * @param[in] filename	Filename of settings file
@@ -151,7 +154,7 @@ public:
 			projectData["ShadersFolder"] = ShadersFolder;
 
 			int counter = 0;
-			for (auto& it : Hollow::EntityManager::instance()->getContainer<GameObject>()->entityList) {
+			for (auto& it : Hollow::EntityManager::instance()->container<GameObject>()) {
 				projectData["Entities"][counter]["id"] = it.getId();
 				if (it.hasComponent<TransformComponent>()) {
 					TransformComponent* transform = it.getComponent<TransformComponent>();
@@ -178,6 +181,8 @@ public:
 
 		Hollow::DelayedTaskManager::instance()->Add(func);
 	}
+
+	Hollow::RendererType getRendererType() const { return rendererType; }
 private:
 	void copyShaders()
 	{

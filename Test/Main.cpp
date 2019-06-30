@@ -1,6 +1,7 @@
 #include "Hollow/Core.h"
 #include "Hollow/Memory/MemoryContainer.h"
-
+#include "Hollow/Common/Logger.h"
+#include <iostream>
 class Transform
 {
 public:
@@ -12,17 +13,13 @@ public:
 
 int main() 
 {
-	Hollow::Core;
+	Hollow::Logger::startUp();
 
-	Hollow::MemoryContainer<Transform> container;
-	Transform* mem = new (container.allocate()) Transform(1,1,1);
-	Transform* mem1 = new (container.allocate()) Transform(2,2,2);
-	Transform* mem2 = new (container.allocate()) Transform(3,3,3);
-	Transform* mem3 = new (container.allocate()) Transform(4,4,4);
-	Transform* mem4 = new (container.allocate()) Transform(5,5,5);
-	Transform* mem5 = new (container.allocate()) Transform(6,6,6);
-	Transform* mem6 = new (container.allocate()) Transform(7,7,7);
-	Transform* mem7 = new (container.allocate()) Transform(8,8,8);
+	for (int i = 0; i < 1000; i++) {
+		Hollow::Logger::instance()->log("{}: {} {}", "some", 1.0f, 2);
+	}
+
+	std::cin.get();
 
 	return 0;
 }

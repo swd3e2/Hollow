@@ -66,7 +66,12 @@ namespace Hollow {
 				material.roughnessFactor = j["Materials"][i]["roughness"].get<float>();
 				material.emissiveFactor = j["Materials"][i]["emissive"].get<float>();
 
-				std::string diffuseTexture = j["Materials"][i]["diffuse_texture"].get<std::string>();
+				material.diffuseTexture = j["Materials"][i]["diffuse_texture"].get<std::string>();
+				material.emisiveTexture = j["Materials"][i]["emissive_texture"].get<std::string>();
+				material.normalTexture = j["Materials"][i]["normal_texture"].get<std::string>();
+				material.occlusionTexture = j["Materials"][i]["occlusion_texture"].get<std::string>();
+				material.roughnesTexture = j["Materials"][i]["roughness_texture"].get<std::string>();
+				material.specularTexture = j["Materials"][i]["specular_texture"].get<std::string>();
 				model->materials[i] = material;
 			}
 

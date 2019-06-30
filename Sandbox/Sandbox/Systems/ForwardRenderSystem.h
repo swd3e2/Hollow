@@ -95,6 +95,7 @@ public:
 		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
 		debug = RenderTargetManager::instance()->create(this->width, this->height);
+		main = RenderTargetManager::instance()->create(this->width, this->height);
 
 		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height);
 		shadow.shadowCamera = new Camera(false);
@@ -124,7 +125,7 @@ public:
 
 			DrawDepth();
 
-			renderer->SetRenderTarget(0);
+			renderer->SetRenderTarget(main);
 			renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
 			updateWVP(this->m_Camera);
 
@@ -134,11 +135,13 @@ public:
 
 			renderer->UnsetTexture(3);
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+			renderer->SetRenderTarget(0);
+
+			/*if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
 				Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
 				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
-			}
+			}*/
 		}
 	}
 
@@ -151,7 +154,7 @@ public:
 	{
 		renderer->SetShader(ShaderManager::instance()->getShader("depth"));
 
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
@@ -177,7 +180,7 @@ public:
 	{
 		renderer->SetShader(ShaderManager::instance()->getShader("default"));
 
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
@@ -195,12 +198,18 @@ public:
 
 					if (material.diffuseTexture != nullptr) {
 						renderer->SetTexture(0, material.diffuseTexture);
+					} else {
+						renderer->UnsetTexture(0);
 					}
 					if (material.normalTexture != nullptr) {
 						renderer->SetTexture(1, material.normalTexture);
+					} else {
+						renderer->UnsetTexture(1);
 					}
 					if (material.specularTexture != nullptr) {
 						renderer->SetTexture(2, material.specularTexture);
+					} else {
+						renderer->UnsetTexture(2);
 					}
 
 					materialConstantBuffer->update(&material.materialData);
@@ -216,7 +225,7 @@ public:
 
 	void DrawSceneForPicker()
 	{
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();

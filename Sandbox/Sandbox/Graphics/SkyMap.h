@@ -20,12 +20,11 @@ public:
 
 	SkyMap()
 	{
-		Hollow::TEXTURE_DESC* desc = Hollow::FreeImgImporter::instance()->import("Sandbox/Resources/Textures/cube.jpg");
+		Hollow::TEXTURE_DESC* desc = Hollow::FreeImgImporter::instance()->import("Sandbox/Resources/Textures/Irradiance.tga");
 		Hollow::Texture* cubemap = Hollow::TextureManager::instance()->Create3dTexture(desc);
 
 		mesh = getCube();
 		mesh->models[0]->material = new Hollow::Material();
-		mesh->models[0]->material->shader = Hollow::ShaderManager::instance()->getShader("SkyMap");
 		mesh->models[0]->material->diffuseTexture = cubemap;
 	}
 };

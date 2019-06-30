@@ -45,16 +45,16 @@ float4 main(PixelShaderInput input) : SV_TARGET
 	float depth = ProjCoords.z;
 
 
-	float4 result = ambient_map.Sample(SampleTypeClamp, input.texCoord);
+	float4 result = float4(0.5f, 0.5f, 0.5f, 1.0f) + dot(input.normal, float3(1.0f, 0.0f, 0.0f)) * float4(0.3f, 0.3f, 0.3f, 1.0f);
 	if (result.a < 0.05f) {
 		//discard;
 	}
-	float shadowColor = shadow_map.Sample(SampleTypeWrap, uv).r;
 
 	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && clamp(uv.y, 0.0f, 1.0f) == uv.y) {
-		return float4(uv.x, uv.y, 0.0f, 1.0f);
+		float shadowColor = shadow_map.Sample(SampleTypeWrap, uv).r;
 		if (shadowColor < (depth - 0.000001f)) {
-			result = ambient_map.Sample(SampleTypeClamp, input.texCoord) - 0.3f;
+			//result = ambient_map.Sample(SampleTypeClamp, input.texCoord) - 0.3f;
+			result -= 0.3f;
 		}
 	}
 	

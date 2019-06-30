@@ -12,7 +12,7 @@
 #include "Hollow/Resources/Material.h"
 #include "Hollow/Resources/MeshManager.h"
 
-using json = nlohmann::json;
+#include <unordered_map>
 
 struct RenderableObject {
 	Hollow::VertexBuffer* vBuffer;
@@ -25,14 +25,21 @@ class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
 	std::vector<RenderableObject> renderables;
-	std::vector<Hollow::Material> materials;
+	std::unordered_map<unsigned int,Hollow::Material> materials;
 	std::string filename;
 public:
-	RenderableComponent(std::string filename) :
+	RenderableComponent() {}
+
+	RenderableComponent(const std::string& filename) :
 		filename(filename)
 	{
-		using namespace Hollow;
+		load(filename);
+	}
 
+	void load(const std::string& filename)
+	{
+		this->filename = filename;
+		using namespace Hollow;
 		Import::Model* model = MeshManager::instance()->import(filename.c_str());
 
 		for (int i = 0; i < model->meshes.size(); i++) {
@@ -45,7 +52,6 @@ public:
 
 			renderables.push_back(renderable);
 		}
-
 
 		for (auto& it : model->materials) {
 			Hollow::Material material;
@@ -60,7 +66,7 @@ public:
 			if (diffuseTexture.size()) {
 				material.diffuseTexture = Hollow::TextureManager::instance()->CreateTextureFromFile(diffuseTexture);
 			}
-			materials.push_back(material);
+			materials[it.first] = material;
 		}
 
 		delete model;

@@ -24,7 +24,7 @@ namespace Hollow {
 		HWND* hwnd;
 	public:
 		OGLRenderApi(int width, int height);
-
+		~OGLRenderApi();
 		virtual void SetIndexBuffer(IndexBuffer*) override;
 		virtual void SetVertexBuffer(VertexBuffer*) override;
 		virtual void SetTexture(UINT, Texture*) override;

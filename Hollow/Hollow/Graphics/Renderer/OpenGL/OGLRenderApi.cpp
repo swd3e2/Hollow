@@ -15,6 +15,15 @@ namespace Hollow {
 		glDepthFunc(GL_LEQUAL);
 	}
 
+	OGLRenderApi::~OGLRenderApi()
+	{
+		HardwareBufferManager::shutdown();
+		TextureManager::shutdown();
+		ShaderManager::shutdown();
+		GPUBufferManager::shutdown();
+		RenderTargetManager::shutdown();
+	}
+
 	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 	{
 		OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);

@@ -29,7 +29,12 @@
     <ClInclude Include="Sandbox\Events.h" />
     <ClInclude Include="Sandbox\Graphics\Shadow.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
-    <ClInclude Include="Sandbox\GUISystem.h" />
+    <ClInclude Include="Sandbox\GUI\GUISystem.h" />
+    <ClInclude Include="Sandbox\GUI\HierarchyTab.h" />
+    <ClInclude Include="Sandbox\GUI\InspectorTab.h" />
+    <ClInclude Include="Sandbox\GUI\LogTab.h" />
+    <ClInclude Include="Sandbox\GUI\MaterialTab.h" />
+    <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Systems\ForwardRenderSystem.h" />

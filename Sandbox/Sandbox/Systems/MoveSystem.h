@@ -186,7 +186,7 @@ public:
 
 	virtual void Update(double dt) override
 	{
-		for (auto& entity : EntityManager::instance()->getContainer<GameObject>()->entityList) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			posComponent = entity.getComponent<TransformComponent>();
 			moveComponent = entity.getComponent<MoveComponent>();
 			selectComponent = entity.getComponent<SelectComponent>();

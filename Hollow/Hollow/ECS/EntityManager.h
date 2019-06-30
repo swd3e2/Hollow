@@ -74,17 +74,10 @@ namespace Hollow {
 		}
 
 		template<class E>
-		typename MemoryContainer<E>::iterator& begin()
+		typename MemoryContainer<E>& container()
 		{
-			return getContainer<E>()->container.begin();
+			return getContainer<E>()->container;
 		}
-
-		template<class E>
-		typename MemoryContainer<E>::iterator& end()
-		{
-			return getContainer<E>()->container.end();
-		}
-
 	private:
 		template<class T>
 		EntityContainer<T>* getContainer()

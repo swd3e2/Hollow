@@ -30,6 +30,15 @@ namespace Hollow {
 		vp.TopLeftY = 0;
 	}
 
+	D3D11RenderApi::~D3D11RenderApi()
+	{
+		HardwareBufferManager::shutdown();
+		TextureManager::shutdown();
+		ShaderManager::shutdown();
+		GPUBufferManager::shutdown();
+		RenderTargetManager::shutdown();
+	}
+
 	void D3D11RenderApi::onStartUp()
 	{
 		HRESULT hr = S_OK;
