@@ -3,7 +3,7 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	RenderTarget* D3D11RenderTargetManager::create(int width, int height, RenderTargetFlags flags)
+	RenderTarget* D3D11RenderTargetManager::create(int width, int height, RenderTargetDesc desc)
 	{
 		D3D11RenderTarget* renderTarget = new D3D11RenderTarget(width, height);
 
@@ -22,10 +22,6 @@ namespace Hollow {
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
 		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-		
-		if (flags == RenderTargetFlags::ACCESS_BY_CPU) {
-			textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
-		}
 
 		textureDesc.MiscFlags = 0;
 		textureDesc.CPUAccessFlags = 0;

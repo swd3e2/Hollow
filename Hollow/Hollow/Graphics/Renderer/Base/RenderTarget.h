@@ -8,6 +8,8 @@
 namespace Hollow {
 	struct RenderTargetDesc
 	{
+		int count = 1;
+
 		struct {
 
 		} colorBufferDesc;

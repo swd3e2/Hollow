@@ -127,7 +127,7 @@ namespace Hollow {
 		deviceContext->PSSetSamplers(1, 1, m_SamplerStateWrap->GetSamplerState());
 
 		// Rasterizers
-		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
+		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 		m_Wireframe = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_WIREFRAME);
 		m_cullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
@@ -141,31 +141,31 @@ namespace Hollow {
 		dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_NEVER;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNever);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNever);
 		}
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLess);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLess);
 		}
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateEqual);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateEqual);
 		}
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLequal);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLequal);
 		}
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_GREATER;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateGreater);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateGreater);
 		}
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNotEqual);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNotEqual);
 		}
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-			device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateAlways);
+			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateAlways);
 		}
 
 		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();

@@ -1,7 +1,7 @@
 #include "OGLRenderTargetManager.h"
 
 namespace Hollow {
-	RenderTarget* OGLRenderTargetManager::create(int width, int height, RenderTargetFlags flags)
+	RenderTarget* OGLRenderTargetManager::create(int width, int height, RenderTargetDesc desc)
 	{
 		OGLRenderTarget* renderTarget = new OGLRenderTarget(width, height);
 

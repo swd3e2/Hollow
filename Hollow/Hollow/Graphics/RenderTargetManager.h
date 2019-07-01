@@ -10,7 +10,7 @@ namespace Hollow {
 	class RenderTargetManager : public CModule<RenderTargetManager>
 	{
 	public:
-		virtual RenderTarget* create(int width, int height, RenderTargetFlags flags = RenderTargetFlags::NONE) = 0;
+		virtual RenderTarget* create(int width, int height, RenderTargetDesc desc) = 0;
 	};
 }
 
