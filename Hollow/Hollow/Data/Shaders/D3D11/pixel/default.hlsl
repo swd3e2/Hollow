@@ -38,26 +38,25 @@ SamplerState SampleTypeWrap : register(s1);
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
-	float3 ProjCoords = input.shadowPos.xyz / input.shadowPos.w;
-	float2 uv;
-	uv.x = 0.5f * ProjCoords.x + 0.5f;
-	uv.y = 0.5f * -ProjCoords.y + 0.5f;
-	float depth = ProjCoords.z;
+	//float3 ProjCoords = input.shadowPos.xyz / input.shadowPos.w;
+	//float2 uv;
+	//uv.x = 0.5f * ProjCoords.x + 0.5f;
+	//uv.y = 0.5f * -ProjCoords.y + 0.5f;
+	//float depth = ProjCoords.z;
 
 
-	float4 result = float4(0.5f, 0.5f, 0.5f, 1.0f) + dot(input.normal, float3(1.0f, 0.0f, 0.0f)) * float4(0.3f, 0.3f, 0.3f, 1.0f);
-	if (result.a < 0.05f) {
-		//discard;
-	}
+	//float4 result = float4(0.5f, 0.5f, 0.5f, 1.0f) + dot(input.normal, float3(1.0f, 0.0f, 0.0f)) * float4(0.3f, 0.3f, 0.3f, 1.0f);
+	//if (result.a < 0.05f) {
+	//	//discard;
+	//}
 
-	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && clamp(uv.y, 0.0f, 1.0f) == uv.y) {
-		float shadowColor = shadow_map.Sample(SampleTypeWrap, uv).r;
-		if (shadowColor < (depth - 0.000001f)) {
-			//result = ambient_map.Sample(SampleTypeClamp, input.texCoord) - 0.3f;
-			result -= 0.3f;
-		}
-	}
+	//if (clamp(uv.x, 0.0f, 1.0f) == uv.x && clamp(uv.y, 0.0f, 1.0f) == uv.y) {
+	//	float shadowColor = shadow_map.Sample(SampleTypeWrap, uv).r;
+	//	if (shadowColor < (depth - 0.000001f)) {
+	//		//result = ambient_map.Sample(SampleTypeClamp, input.texCoord) - 0.3f;
+	//		result -= 0.3f;
+	//	}
+	//}
 	
-
-	return result;
+	return ambient_map.Sample(SampleTypeClamp, input.texCoord);
 }

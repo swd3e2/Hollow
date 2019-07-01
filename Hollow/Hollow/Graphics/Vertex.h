@@ -17,6 +17,26 @@ namespace Hollow {
 
 	struct Vertex
 	{
+		Vertex(float px, float py, float pz) :
+			pos(px, py, pz)
+		{
+			for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
+			{
+				boneData.IDs[i] = 0;
+				boneData.Weights[i] = 0.0f;
+			}
+		}
+
+		Vertex(float px, float py, float pz, float tv, float tu)
+			: pos(px, py, pz), texCoord(tv, tu)
+		{
+			for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
+			{
+				boneData.IDs[i] = 0;
+				boneData.Weights[i] = 0.0f;
+			}
+		}
+
 		Vertex() :
 			pos(0.0f, 0.0f, 0.0f), texCoord(0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
 		{

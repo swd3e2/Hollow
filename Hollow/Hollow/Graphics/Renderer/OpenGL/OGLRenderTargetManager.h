@@ -12,7 +12,7 @@ namespace Hollow {
 	class OGLRenderTargetManager : public RenderTargetManager
 	{
 	public:
-		virtual RenderTarget* create(int width, int height, RenderTargetDesc desc);
+		virtual RenderTarget* create(int width, int height, RENDER_TARGET_DESC desc);
 	};
 }
 

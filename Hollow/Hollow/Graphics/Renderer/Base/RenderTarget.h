@@ -6,9 +6,16 @@
 #include "Hollow/Math/Vector4.h"
 
 namespace Hollow {
-	struct RenderTargetDesc
+	enum RENDER_TARGET_TEXTURE_FORMAT
+	{
+		R8G8B8A8 = 0,
+		R32G32B32A32 = 1
+	};
+
+	struct RENDER_TARGET_DESC
 	{
 		int count = 1;
+		RENDER_TARGET_TEXTURE_FORMAT textureFormat;
 
 		struct {
 
@@ -30,8 +37,10 @@ namespace Hollow {
 		int width;
 		int height;
 	public:
-		RenderTarget(int width, int height) :
-			width(width), height(height)
+		int count;
+	public:
+		RenderTarget(int width, int height, int count) :
+			width(width), height(height), count(count)
 		{}
 
 		int getWidth() const { return width; }

@@ -195,11 +195,10 @@ namespace Hollow {
 		context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
 	}
 
-	void D3D11RenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget)
+	void D3D11RenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
 	{
 		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
-		auto ptr = d3dRenderTarget->GetShaderResourceView();
-		context->getDeviceContext()->PSSetShaderResources(slot, 1, &ptr);
+		context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dRenderTarget->GetShaderResourceView()[targetNum]);
 	}
 
 	void D3D11RenderApi::SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
@@ -248,7 +247,9 @@ namespace Hollow {
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
-			context->getDeviceContext()->ClearRenderTargetView(d3d11RenderTarget->GetRenderTaget(), color);
+			for (int i = 0; i < d3d11RenderTarget->count; i++) {
+				context->getDeviceContext()->ClearRenderTargetView(d3d11RenderTarget->GetRenderTaget()[i], color);
+			}
 			context->getDeviceContext()->ClearDepthStencilView(d3d11RenderTarget->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		} else {
 			context->getDeviceContext()->ClearRenderTargetView(this->renderTarget, color);
@@ -300,9 +301,9 @@ namespace Hollow {
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
-			auto ptr = d3d11RenderTarget->GetRenderTaget();
-			context->getDeviceContext()->OMSetRenderTargets(1, &ptr, d3d11RenderTarget->GetDepthStencilView());
+			context->getDeviceContext()->OMSetRenderTargets(d3d11RenderTarget->count, d3d11RenderTarget->GetRenderTaget(), d3d11RenderTarget->GetDepthStencilView());
 		} else {
+			context->getDeviceContext()->OMSetRenderTargets(3, nullRTV, NULL);
 			context->getDeviceContext()->OMSetRenderTargets(1, &this->renderTarget, this->m_DepthStencilView);
 		}
 	}

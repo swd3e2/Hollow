@@ -11,11 +11,11 @@ namespace Hollow {
 	{
 	public:
 		unsigned int FBO;
-		unsigned int texture;
+		unsigned int* texture;
 		unsigned int depth;
 	public:
-		OGLRenderTarget(int width, int height) :
-			RenderTarget(width, height), FBO(0)
+		OGLRenderTarget(int width, int height, int count) :
+			RenderTarget(width, height, count), FBO(0)
 		{}
 		virtual Vector4 readPixel(int x, int y) override;
 	};

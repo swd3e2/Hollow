@@ -54,7 +54,9 @@ public:
 	Camera* m_Camera;
 	SkyMap* skyMap;
 	RenderTarget* main;
-	RenderTarget* debug;
+
+	RenderTarget* gBuffer;
+
 	int pickedID;
 private:
 	RenderApi* renderer;
@@ -83,6 +85,8 @@ private:
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Hollow::VertexBuffer* quadVB;
+	Hollow::IndexBuffer* quadIB;
 public:
 	ForwardRenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -94,12 +98,28 @@ public:
 		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 
-		debug = RenderTargetManager::instance()->create(this->width, this->height);
-		main = RenderTargetManager::instance()->create(this->width, this->height);
+		Hollow::RENDER_TARGET_DESC desc;
+		desc.count = 3;
+		desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32;
+		gBuffer = RenderTargetManager::instance()->create(this->width, this->height, desc);
 
-		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height);
-		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetProjectionValues(90, static_cast<float>(this->width) / static_cast<float>(this->height), 0.01f, 10000.0f);
+		Hollow::RENDER_TARGET_DESC desc2;
+		desc2.count = 1;
+		desc2.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
+		main = RenderTargetManager::instance()->create(this->width, this->height, desc2);
+
+		std::vector<Hollow::Vertex> vertices;
+		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
+		quadVB = Hollow::HardwareBufferManager::instance()->createVertexBuffer(vertices.data(), 4);
+
+		unsigned int indices[] = {
+			0, 1, 2,
+			2, 1, 3
+		};
+		quadIB = Hollow::HardwareBufferManager::instance()->createIndexBuffer(indices, 6);
 
 		renderer->SetViewport(0, 0, this->width, this->height);
 	}
@@ -108,43 +128,85 @@ public:
 	{
 		renderer->ClearRenderTarget(0, (float*)ClearColor);
 		renderer->ClearRenderTarget(main, ClearColor);
-		renderer->ClearRenderTarget(debug, ClearColor);
-		renderer->ClearRenderTarget(shadow.renderTarget, ClearColor);
+		renderer->ClearRenderTarget(gBuffer, ClearColor);
 	}
 
 	virtual void Update(double dt)
 	{
-		shadow.shadowCamera->Update(dt);
-
 		if (ProjectSettings::instance()->isProjectLoaded) {
-			renderer->SetRenderTarget(shadow.renderTarget);
-			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
-
-			shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
-			shadowConstantBuffer->update(&shadowStruct);
-			renderer->SetGpuBuffer(shadowConstantBuffer);
-
-			DrawDepth();
-
-			renderer->SetRenderTarget(main);
-
-			renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
 			updateWVP(this->m_Camera);
 
-			Draw();
-			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
-			DrawSkyMap();
+			renderer->SetRenderTarget(gBuffer);
 
-			renderer->UnsetTexture(3);
+			renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
+
+			for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+				if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+					RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
+					TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+					transformBuff.transform = Matrix4::Transpose(
+						Matrix4::Scaling(transform->scale)
+						* Matrix4::Rotation(transform->rotation)
+						* Matrix4::Translation(transform->position)
+					);
+					m_TransformConstantBuffer->update(&transformBuff);
+					renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+					for (auto& object : renderable->renderables) {
+						Hollow::Material& material = renderable->materials[object.material];
+						if (material.diffuseTexture != nullptr) {
+							renderer->SetTexture(0, material.diffuseTexture);
+						} else {
+							renderer->UnsetTexture(0);
+						}
+						renderer->SetVertexBuffer(object.vBuffer);
+						renderer->SetIndexBuffer(object.iBuffer);
+						renderer->DrawIndexed(object.iBuffer->getSize());
+					}
+				}
+			}
+
+			renderer->SetRenderTarget(main);
+			renderer->SetTextureColorBuffer(0, gBuffer, 0);
+			renderer->SetTextureColorBuffer(1, gBuffer, 1);
+			renderer->SetTextureColorBuffer(2, gBuffer, 2);
+			renderer->SetShader(ShaderManager::instance()->getShader("light"));
+			renderer->SetVertexBuffer(quadVB);
+			renderer->SetIndexBuffer(quadIB);
+			renderer->DrawIndexed(6);
+
+			renderer->UnsetTexture(0);
+			renderer->UnsetTexture(1);
+			renderer->UnsetTexture(2);
 
 			renderer->SetRenderTarget(0);
-
-			/*if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
-				Vector4 selectedColor = debug->readPixel(InputManager::mcx, InputManager::mcy);
-				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
-				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
-			}*/
 		}
+	}
+
+	void drawShadow()
+	{
+		renderer->SetRenderTarget(shadow.renderTarget);
+		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
+
+		shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
+		shadowConstantBuffer->update(&shadowStruct);
+		renderer->SetGpuBuffer(shadowConstantBuffer);
+
+		DrawDepth();
+
+		renderer->SetRenderTarget(main);
+
+		renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
+		updateWVP(this->m_Camera);
+
+		Draw();
+		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
+		DrawSkyMap();
+
+		renderer->UnsetTexture(3);
+
+		renderer->SetRenderTarget(0);
 	}
 
 	virtual void PostUpdate(double dt)

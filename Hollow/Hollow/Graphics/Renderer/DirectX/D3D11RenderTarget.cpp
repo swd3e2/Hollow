@@ -18,10 +18,10 @@ namespace Hollow {
 		sourceRegion.back = 1;
 
 		ID3D11Resource* resource = nullptr;
-		m_ShaderResourceView->GetResource(&resource);
+		m_ShaderResourceView[0]->GetResource(&resource);
 
 		D3D11_TEXTURE2D_DESC desc;
-		m_BackBuffer->GetDesc(&desc);
+		m_BackBuffer[0]->GetDesc(&desc);
 		desc.BindFlags = 0;
 		desc.Width = 1;
 		desc.Height = 1;

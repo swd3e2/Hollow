@@ -38,6 +38,7 @@ namespace Hollow {
 
 		ID3D11ShaderResourceView* const pSRV[1] = { NULL };
 		ID3D11UnorderedAccessView* pUAV[1] = { NULL };
+		ID3D11RenderTargetView* nullRTV[3] = { NULL };
 
 		D3D11RasterizerState* m_cullNone;
 		D3D11RasterizerState* m_Wireframe;
@@ -57,7 +58,7 @@ namespace Hollow {
 		virtual void SetVertexBuffer(VertexBuffer* buffer) override;
 		virtual void SetTexture(UINT slot, Texture* texture) override;
 		virtual void UnsetTexture(UINT) override;
-		virtual void SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget) override;
+		virtual void SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum) override;
 		virtual void SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget) override;
 		virtual void SetShader(ShaderProgram* shader) override;
 		virtual void Present() override;

@@ -24,7 +24,6 @@
     <ClInclude Include="Sandbox\GUI\InspectorTab.h" />
     <ClInclude Include="Sandbox\GUI\MaterialTab.h" />
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
-    <ClInclude Include="Sandbox\Systems\DefferedRenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />
