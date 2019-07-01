@@ -4,7 +4,7 @@ namespace Hollow {
 	Core::Core(RendererType type) :
 		windowManager(type), renderApiManager(type)
 	{
-		Console::RedirectIOToConsole();
+		//Console::RedirectIOToConsole();
 		Log::Init();
 
 		Logger::startUp();
