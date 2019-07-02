@@ -13,6 +13,7 @@ namespace Hollow {
 	public:
 		int shaderId;
 		int prevShaderId;
+
 	public:
 		OGLShader(ShaderType type) :
 			Shader(type), shaderId(DEFAULT_SHADER_ID)

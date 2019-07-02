@@ -7,10 +7,13 @@ namespace Hollow {
 
 		renderTarget->texture = new unsigned int[desc.count];
 
+		unsigned int* temp = new unsigned int[desc.count];
+
 		glGenFramebuffers(1, &renderTarget->FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, renderTarget->FBO);
 
 		glGenTextures(desc.count, renderTarget->texture);
+
 		for (int i = 0; i < desc.count; i++) {
 			glBindTexture(GL_TEXTURE_2D, renderTarget->texture[i]);
 
@@ -23,7 +26,10 @@ namespace Hollow {
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, renderTarget->texture[i], 0);
+			temp[i] = GL_COLOR_ATTACHMENT0 + i;
 		}
+
+		glDrawBuffers(desc.count, temp);
 
 		glGenTextures(1, &renderTarget->depth);
 		glBindTexture(GL_TEXTURE_2D, renderTarget->depth);

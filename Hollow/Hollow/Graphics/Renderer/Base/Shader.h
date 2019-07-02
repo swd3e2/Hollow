@@ -2,6 +2,7 @@
 
 #ifndef HW_SHADER_H
 #define HW_SHADER_H
+#include <string>
 
 namespace Hollow {
 	enum ShaderType
@@ -13,6 +14,8 @@ namespace Hollow {
 	{
 	protected:
 		ShaderType type;
+	public:
+		std::string shaderContent;
 	public:
 		Shader(ShaderType type) :
 			type(type)

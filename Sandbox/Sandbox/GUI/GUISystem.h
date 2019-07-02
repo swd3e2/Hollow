@@ -26,7 +26,7 @@ enum DrawTypes {
 class GUISystem : public Hollow::IEventListener
 {
 public:
-	bool open = true;
+	bool open = NULL;
 	std::string filename = "";
 	int drawMode = 0;
 	bool openProjectCreationPopup = false;
@@ -76,15 +76,12 @@ public:
 		style->Colors[ImGuiCol_CheckMark]				= ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
 		style->Colors[ImGuiCol_SliderGrab]				= ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
 		style->Colors[ImGuiCol_SliderGrabActive]		= ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-		style->Colors[ImGuiCol_Button]					= ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_ButtonHovered]			= ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-		style->Colors[ImGuiCol_ButtonActive]			= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+		style->Colors[ImGuiCol_Button]					= ImVec4(0.78f, 0.48f, 0.18f, 1.00f);
+		style->Colors[ImGuiCol_ButtonHovered]			= ImVec4(0.72f, 0.38f, 0.16f, 1.00f);
+		style->Colors[ImGuiCol_ButtonActive]			= ImVec4(0.72f, 0.38f, 0.16f, 1.00f);
 		style->Colors[ImGuiCol_Header]					= ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 		style->Colors[ImGuiCol_HeaderHovered]			= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 		style->Colors[ImGuiCol_HeaderActive]			= ImVec4(0.06f, 0.05f, 0.00f, 1.00f);
-		style->Colors[ImGuiCol_Column]					= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-		style->Colors[ImGuiCol_ColumnHovered]			= ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-		style->Colors[ImGuiCol_ColumnActive]			= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 		style->Colors[ImGuiCol_ResizeGrip]				= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 		style->Colors[ImGuiCol_ResizeGripHovered]		= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 		style->Colors[ImGuiCol_ResizeGripActive]		= ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
@@ -158,6 +155,8 @@ public:
 		ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
 		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
 	}
 
 	void update(double dt)
@@ -219,6 +218,7 @@ public:
 
 	void end()
 	{
+		ImGui::PopStyleVar();
 		ImGui::End();
 
 		ImGui::Render();

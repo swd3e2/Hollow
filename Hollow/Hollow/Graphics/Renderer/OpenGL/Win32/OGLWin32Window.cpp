@@ -9,8 +9,9 @@ MessageCallback(GLenum source,
 	const GLchar* message,
 	const void* userParam)
 {
-	if (type != 33361 && type != 33356) {
+	if (severity != 33387) {
 		HW_ERROR("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
+		Hollow::Logger::instance()->log("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 	}
 }
 

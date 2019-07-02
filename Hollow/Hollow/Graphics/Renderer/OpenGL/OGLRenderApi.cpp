@@ -109,7 +109,6 @@ namespace Hollow {
 		if (renderTarget != nullptr) {
 			OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
-			glDrawBuffers(oglRenderTarget->count, oglRenderTarget->texture);
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LEQUAL);
 		} else {

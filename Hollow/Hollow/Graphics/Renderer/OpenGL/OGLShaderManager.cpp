@@ -41,6 +41,7 @@ namespace Hollow {
 			} else {
 				shader = new OGLShader(ShaderType::VERTEX);
 			}
+			shader->shaderContent = fileContent;
 
 			int shaderId = glCreateShader(GL_VERTEX_SHADER);
 
@@ -52,8 +53,8 @@ namespace Hollow {
 				glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
 				glDeleteShader(shaderId);
 				HW_ERROR("{}", infoLog);
-			}
-			else {
+				Logger::instance()->log("{} {}", path, infoLog);
+			} else {
 				shader->prevShaderId = shader->shaderId;
 				shader->shaderId = shaderId;
 			}
@@ -62,10 +63,10 @@ namespace Hollow {
 		{
 			if (prevShader != nullptr) {
 				shader = static_cast<OGLShader*>(prevShader);
-			}
-			else {
+			} else {
 				shader = new OGLShader(ShaderType::PIXEL);
 			}
+			shader->shaderContent = fileContent;
 
 			int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -77,6 +78,7 @@ namespace Hollow {
 				glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
 				glDeleteShader(shaderId);
 				HW_ERROR("{}", infoLog);
+				Logger::instance()->log("{} {}", path, infoLog);
 			}
 			else {
 				shader->prevShaderId = shader->shaderId;
@@ -143,6 +145,7 @@ namespace Hollow {
 		{
 			glGetProgramInfoLog(shaderProgram->shaderId, 512, NULL, infoLog);
 			HW_ERROR("{}", infoLog);
+			Logger::instance()->log("{}", infoLog);
 
 			shaderProgram->linked = false;
 			int size = 0;

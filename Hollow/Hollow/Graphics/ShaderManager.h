@@ -11,6 +11,7 @@
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/Common/Helper.h"
 #include <string>
+#include "Hollow/Common/Logger.h"
 
 namespace Hollow {
 	class ShaderManager : public CModule<ShaderManager>
