@@ -85,6 +85,7 @@ private:
 	const UINT offset = 0;
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 	Hollow::VertexBuffer* quadVB;
 	Hollow::IndexBuffer* quadIB;
 public:
@@ -108,6 +109,10 @@ public:
 		desc2.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 		main = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 
+		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height, desc2);
+		shadow.shadowCamera = new Camera(false);
+		shadow.shadowCamera->SetProjectionValues(90.0f, (float)this->width / (float)this->height, 0.0f, 10000.0f);
+
 		std::vector<Hollow::Vertex> vertices;
 		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
 		vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));
@@ -122,6 +127,7 @@ public:
 		quadIB = Hollow::HardwareBufferManager::instance()->createIndexBuffer(indices, 6);
 
 		renderer->SetViewport(0, 0, this->width, this->height);
+		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
 	}
 
 	virtual void PreUpdate(double dt)
@@ -129,56 +135,101 @@ public:
 		renderer->ClearRenderTarget(0, (float*)ClearColor);
 		renderer->ClearRenderTarget(main, ClearColor);
 		renderer->ClearRenderTarget(gBuffer, ClearColor);
+		renderer->ClearRenderTarget(shadow.renderTarget, ClearColor);
 	}
 
 	virtual void Update(double dt)
 	{
+		shadow.shadowCamera->Update(dt);
+
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
 
-			renderer->SetRenderTarget(gBuffer);
+			// GBuffer pass
+			{
+				renderer->SetRenderTarget(gBuffer);
+				renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
 
-			renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
+				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
+						TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-			for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-				if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
-					RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
-					TransformComponent* transform = entity.getComponent<TransformComponent>();
+						transformBuff.transform = Matrix4::Transpose(
+							Matrix4::Scaling(transform->scale)
+							* Matrix4::Rotation(transform->rotation)
+							* Matrix4::Translation(transform->position)
+						);
+						m_TransformConstantBuffer->update(&transformBuff);
+						renderer->SetGpuBuffer(m_TransformConstantBuffer);
 
-					transformBuff.transform = Matrix4::Transpose(
-						Matrix4::Scaling(transform->scale)
-						* Matrix4::Rotation(transform->rotation)
-						* Matrix4::Translation(transform->position)
-					);
-					m_TransformConstantBuffer->update(&transformBuff);
-					renderer->SetGpuBuffer(m_TransformConstantBuffer);
-
-					for (auto& object : renderable->renderables) {
-						Hollow::Material& material = renderable->materials[object.material];
-						if (material.diffuseTexture != nullptr) {
-							renderer->SetTexture(0, material.diffuseTexture);
-						} else {
-							renderer->UnsetTexture(0);
+						for (auto& object : renderable->renderables) {
+							Hollow::Material& material = renderable->materials[object.material];
+							if (material.diffuseTexture != nullptr) {
+								renderer->SetTexture(0, material.diffuseTexture);
+							}
+							else {
+								renderer->UnsetTexture(0);
+							}
+							renderer->SetVertexBuffer(object.vBuffer);
+							renderer->SetIndexBuffer(object.iBuffer);
+							renderer->DrawIndexed(object.iBuffer->getSize());
 						}
-						renderer->SetVertexBuffer(object.vBuffer);
-						renderer->SetIndexBuffer(object.iBuffer);
-						renderer->DrawIndexed(object.iBuffer->getSize());
+					}
+				}
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
+				DrawSkyMap();
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
+			}
+			// Shadow pass
+			{
+				shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
+				shadowConstantBuffer->update(&shadowStruct);
+				renderer->SetGpuBuffer(shadowConstantBuffer);
+
+				renderer->SetRenderTarget(shadow.renderTarget);
+				renderer->SetShader(ShaderManager::instance()->getShader("depth"));
+
+				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
+						TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+						transformBuff.transform = Matrix4::Transpose(
+							Matrix4::Scaling(transform->scale)
+							* Matrix4::Rotation(transform->rotation)
+							* Matrix4::Translation(transform->position)
+						);
+						m_TransformConstantBuffer->update(&transformBuff);
+						renderer->SetGpuBuffer(m_TransformConstantBuffer);
+
+						for (auto& object : renderable->renderables) {
+							Hollow::Material& material = renderable->materials[object.material];
+							renderer->SetVertexBuffer(object.vBuffer);
+							renderer->SetIndexBuffer(object.iBuffer);
+							renderer->DrawIndexed(object.iBuffer->getSize());
+						}
 					}
 				}
 			}
+			// Light pass
+			{
+				renderer->SetRenderTarget(main);
+				renderer->SetTextureColorBuffer(0, gBuffer, 0);
+				renderer->SetTextureColorBuffer(1, gBuffer, 1);
+				renderer->SetTextureColorBuffer(2, gBuffer, 2);
+				renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
 
-			renderer->SetRenderTarget(main);
-			renderer->SetTextureColorBuffer(0, gBuffer, 0);
-			renderer->SetTextureColorBuffer(1, gBuffer, 1);
-			renderer->SetTextureColorBuffer(2, gBuffer, 2);
-			renderer->SetShader(ShaderManager::instance()->getShader("light"));
-			renderer->SetVertexBuffer(quadVB);
-			renderer->SetIndexBuffer(quadIB);
-			renderer->DrawIndexed(6);
+				renderer->SetShader(ShaderManager::instance()->getShader("light"));
+				renderer->SetVertexBuffer(quadVB);
+				renderer->SetIndexBuffer(quadIB);
+				renderer->DrawIndexed(6);
 
-			renderer->UnsetTexture(0);
-			renderer->UnsetTexture(1);
-			renderer->UnsetTexture(2);
+				renderer->UnsetTexture(0);
+				renderer->UnsetTexture(1);
+				renderer->UnsetTexture(2);
+				renderer->UnsetTexture(3);
+			}
 
 			renderer->SetRenderTarget(0);
 		}

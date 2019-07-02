@@ -16,5 +16,7 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 	float3 normal = normalBuffer.Sample(SampleTypeClamp, input.texCoord).rgb;
 	float4 diffuse = diffuseBuffer.Sample(SampleTypeClamp, input.texCoord);
 
+
+
 	return diffuse + float4(0.5f, 0.5f, 0.5f,1.0f) * dot(normal, float3(0.0f, 1.0f, 0.0f));
 }
