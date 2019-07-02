@@ -17,7 +17,7 @@ namespace Hollow {
 		for (int i = 0; i < desc.count; i++) {
 			glBindTexture(GL_TEXTURE_2D, renderTarget->texture[i]);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GetTextureFormat(desc.textureFormat), width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -55,5 +55,20 @@ namespace Hollow {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		return renderTarget;
+	}
+
+	unsigned int OGLRenderTargetManager::GetTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format)
+	{
+		switch (format)
+		{
+		case R8G8B8A8: {
+			return GL_RGBA;
+		} break;
+		case R32G32B32A32: {
+			return GL_RGBA32F;
+		} break;
+		default:
+			return GL_RGBA;
+		}
 	}
 }

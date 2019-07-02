@@ -22,7 +22,13 @@ uniform sampler2D ambient_map;
 
 void main()
 {
-	diffuse = texture(ambient_map, fs_in.texCoord);
+	vec4 color = texture(ambient_map, fs_in.texCoord);
+
+	if (color.a < 0.55f) {
+		discard;
+	}
+
+	diffuse = color;
 	normal = vec4(fs_in.normal, 1.0f);
 	position = fs_in.position;
 }

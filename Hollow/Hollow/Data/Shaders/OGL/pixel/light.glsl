@@ -20,6 +20,12 @@ uniform sampler2D specular_map;
 
 void main()
 {
-	FragColor = texture(normal_map, vec2(fs_in.texCoord.x, 1.0f-fs_in.texCoord.y));
-	//FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	vec2 texCoords = vec2(fs_in.texCoord.x, 1.0f - fs_in.texCoord.y);
+
+	vec3 position = texture(specular_map, texCoords).rgb;
+	vec3 normal = texture(normal_map, texCoords).rgb;
+	vec4 diffuse = texture(ambient_map, texCoords);
+
+	FragColor = diffuse + clamp(dot(normal, vec3(0.0f, 1.0f, 0.0f)), 0.0f, 1.0f) * vec4(0.5f, 0.5f, 0.5f,1.0f);
+	//FragColor = vec4(normal, 1.0f);
 }

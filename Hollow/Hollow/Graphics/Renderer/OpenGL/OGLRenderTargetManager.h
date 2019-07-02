@@ -13,6 +13,8 @@ namespace Hollow {
 	{
 	public:
 		virtual RenderTarget* create(int width, int height, RENDER_TARGET_DESC desc);
+	private:
+		unsigned int GetTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format);
 	};
 }
 

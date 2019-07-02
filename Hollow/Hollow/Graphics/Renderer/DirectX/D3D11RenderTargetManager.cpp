@@ -71,7 +71,7 @@ namespace Hollow {
 		depthTextureDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
 		depthTextureDesc.Width = width;
 
-		hr = device->CreateTexture2D(&depthTextureDesc, NULL, &renderTarget->m_DepthStencilBuffer);
+		device->CreateTexture2D(&depthTextureDesc, NULL, &renderTarget->m_DepthStencilBuffer);
 		
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC ddesc = {};
@@ -79,7 +79,7 @@ namespace Hollow {
 		ddesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		ddesc.Texture2D.MipSlice = 0;
 
-		hr = device->CreateDepthStencilView(renderTarget->m_DepthStencilBuffer, &ddesc, &renderTarget->m_DepthStencilView);
+		device->CreateDepthStencilView(renderTarget->m_DepthStencilBuffer, &ddesc, &renderTarget->m_DepthStencilView);
 		
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvd = {};
@@ -88,66 +88,65 @@ namespace Hollow {
 		srvd.Texture2D.MipLevels = 1;
 		srvd.Texture2D.MostDetailedMip = 0;
 
-		hr = device->CreateShaderResourceView(renderTarget->m_DepthStencilBuffer, &srvd, &renderTarget->m_DepthResourceView);
+		device->CreateShaderResourceView(renderTarget->m_DepthStencilBuffer, &srvd, &renderTarget->m_DepthResourceView);
 		
 		return renderTarget;
 	}
 
 	DXGI_FORMAT D3D11RenderTargetManager::GetDepthResourceFormat(DXGI_FORMAT depthformat)
 	{
-		DXGI_FORMAT resformat;
 		switch (depthformat)
 		{
 		case DXGI_FORMAT::DXGI_FORMAT_D16_UNORM:
-			resformat = DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS;
+			return DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS;
 			break;
 		case DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT:
-			resformat = DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS;
+			return DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS;
 			break;
 		case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT:
-			resformat = DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS;
+			return DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS;
 			break;
 		case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
-			resformat = DXGI_FORMAT::DXGI_FORMAT_R32G8X24_TYPELESS;
+			return DXGI_FORMAT::DXGI_FORMAT_R32G8X24_TYPELESS;
 			break;
+		default:
+			return DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS;
 		}
-
-		return resformat;
 	}
 
 	DXGI_FORMAT D3D11RenderTargetManager::GetDepthSRVFormat(DXGI_FORMAT depthformat)
 	{
-		DXGI_FORMAT srvformat;
 		switch (depthformat)
 		{
 		case DXGI_FORMAT::DXGI_FORMAT_D16_UNORM:
-			srvformat = DXGI_FORMAT::DXGI_FORMAT_R16_FLOAT;
+			return DXGI_FORMAT::DXGI_FORMAT_R16_FLOAT;
 			break;
 		case DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT:
-			srvformat = DXGI_FORMAT::DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+			return DXGI_FORMAT::DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 			break;
 		case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT:
-			srvformat = DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT;
+			return DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT;
 			break;
 		case DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
-			srvformat = DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS;
+			return DXGI_FORMAT::DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS;
 			break;
+		default:
+			return DXGI_FORMAT::DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		}
-		return srvformat;
 	}
 
 	DXGI_FORMAT D3D11RenderTargetManager::GetTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format)
 	{
 		switch (format)
 		{
-		case R8G8B8A8: {
-			return DXGI_FORMAT_R8G8B8A8_UNORM;
-		} break;
-		case R32G32B32A32: {
-			return DXGI_FORMAT_R32G32B32A32_FLOAT;
-		} break;
-		default:
-			return DXGI_FORMAT_R8G8B8A8_UNORM;
+			case R8G8B8A8: {
+				return DXGI_FORMAT_R8G8B8A8_UNORM;
+			} break;
+			case R32G32B32A32: {
+				return DXGI_FORMAT_R32G32B32A32_FLOAT;
+			} break;
+			default:
+				return DXGI_FORMAT_R8G8B8A8_UNORM;
 		}
 	}
 }
