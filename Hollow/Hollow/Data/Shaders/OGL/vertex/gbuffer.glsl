@@ -30,11 +30,8 @@ layout(std140, binding = 2) uniform PerObject
 
 void main()
 {
-	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
 	vs_out.normal = normalize(normal * mat3(transform));
 	vs_out.texCoord = texCoord;
-	gl_Position = gl_Position * transform;
-	vs_out.position = gl_Position;
-
+	vs_out.position = vec4(pos.x, pos.y, pos.z, 1.0f) * transform;
 	gl_Position = vs_out.position * WVP;
 }

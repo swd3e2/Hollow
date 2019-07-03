@@ -29,21 +29,21 @@ void main()
 {
 	vec2 texCoords = vec2(fs_in.texCoord.x, 1.0f - fs_in.texCoord.y);
 
-	vec4 position = texture(specular_map, texCoords);
+	vec3 position = texture(specular_map, texCoords).rgb;
 	vec3 normal = texture(normal_map, texCoords).rgb;
 	vec4 diffuse = texture(ambient_map, texCoords);
 
-	vec4 shadowPos = position * ShadowWVP;
+	vec4 shadowPos = vec4(position, 1.0f) * ShadowWVP;
 
 	vec3 ProjCoords = shadowPos.xyz / shadowPos.w;
 	vec2 uv;
-	uv.x = 0.5f + ProjCoords.x * 0.5f;
-	uv.y = 0.5f + ProjCoords.y * 0.5f;
-	float z = 0.5 * ProjCoords.z + 0.5;
+	uv.x = 0.5f * ProjCoords.x + 0.5f;
+	uv.y = 0.5f * ProjCoords.y + 0.5f;
+	float z = 0.5f * ProjCoords.z + 0.5f;
 
-	if (clamp(ProjCoords.x, 0.0f, 1.0f) == ProjCoords.x && ProjCoords.y == clamp(ProjCoords.y, 0.0f, 1.0f)) {
+	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && uv.y == clamp(uv.y, 0.0f, 1.0f)) {
 		float shadowDepth = texture(shadow_map, uv).r;
-		if (shadowDepth < (z - 0.000001f)) {
+		if (shadowDepth < (z - 0.00001f)) {
 			diffuse -= 0.3f;
 		}
 	}

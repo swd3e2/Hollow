@@ -111,7 +111,7 @@ public:
 
 		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetProjectionValues(90.0f, (float)this->width / (float)this->height, 0.0f, 10000.0f);
+		shadow.shadowCamera->SetProjectionValues(90.0f, (float)this->width / (float)this->height, 0.1f, 10000.0f);
 
 		std::vector<Hollow::Vertex> vertices;
 		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
@@ -144,6 +144,7 @@ public:
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
+			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
 
 			// GBuffer pass
 			{
@@ -177,9 +178,7 @@ public:
 						}
 					}
 				}
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
 				DrawSkyMap();
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
 			}
 			// Shadow pass
 			{

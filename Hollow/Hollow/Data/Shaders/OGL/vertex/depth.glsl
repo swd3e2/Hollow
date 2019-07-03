@@ -11,6 +11,7 @@ layout(location = 6) in vec4 weights;
 out VS_OUT
 {
 	vec4 pos;
+	vec3 normal;
 } vout;
 
 layout(std140, binding = 1) uniform Matrices
@@ -30,7 +31,7 @@ layout(std140, binding = 2) uniform PerObject
 void main()
 {
 	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
-	gl_Position = gl_Position * transform;
-	gl_Position = gl_Position * shadowWVP;
+	gl_Position = gl_Position * transform * shadowWVP;
 	vout.pos = gl_Position;
+	vout.normal = normal;
 }
