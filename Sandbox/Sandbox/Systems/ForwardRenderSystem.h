@@ -27,13 +27,18 @@ struct WVP
 	Vector3 cameraPosition;
 };
 
-struct TransformBuff
+struct PerModel
 {
 	Matrix4 transform;
+	int selected;
+	int hasAnimation;
+};
+
+struct PerMesh
+{
 	Vector3 color;
 	float pad;
 	int selected;
-	int hasAnimation;
 };
 
 struct ShadowStruct
@@ -50,28 +55,33 @@ class ForwardRenderSystem : public Hollow::System<ForwardRenderSystem>
 {
 public:
 	Shadow shadow;
-	LightInfo pointLights;
 	Camera* m_Camera;
 	SkyMap* skyMap;
 	RenderTarget* main;
 
 	RenderTarget* gBuffer;
+	RenderTarget* picker;
 
 	int pickedID;
 private:
 	RenderApi* renderer;
 private:
 	WVP						m_wvp;
-	TransformBuff			transformBuff;
+	
+
 	ShadowStruct shadowStruct;
 
 	GPUBuffer* shadowConstantBuffer;
 	GPUBuffer* m_WVPConstantBuffer;
 	GPUBuffer* m_WorldViewProjectionBuffer;
-	GPUBuffer* m_TransformConstantBuffer;
 	GPUBuffer* materialConstantBuffer;
 	GPUBuffer* lightInfoBuffer;
 	GPUBuffer* boneInfo;
+
+	GPUBuffer* perModel;
+	GPUBuffer* perMesh;
+	PerModel perModelData;
+	PerMesh perMeshData;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -92,13 +102,20 @@ public:
 	ForwardRenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
 	{
-		m_WVPConstantBuffer = GPUBufferManager::instance()->create(0, sizeof(WVP));
-		shadowConstantBuffer = GPUBufferManager::instance()->create(1, sizeof(ShadowStruct));
-		m_TransformConstantBuffer = GPUBufferManager::instance()->create(2, sizeof(TransformBuff));
-		materialConstantBuffer = GPUBufferManager::instance()->create(4, sizeof(MaterialData));
-		lightInfoBuffer = GPUBufferManager::instance()->create(6, sizeof(LightInfo));
-		boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
+		// Gpu buffers
+		{
+			m_WVPConstantBuffer		= GPUBufferManager::instance()->create(0, sizeof(WVP));
+			shadowConstantBuffer	= GPUBufferManager::instance()->create(1, sizeof(ShadowStruct));
 
+			perModel				= GPUBufferManager::instance()->create(2, sizeof(PerModel));
+			perMesh					= GPUBufferManager::instance()->create(3, sizeof(PerMesh));
+
+			materialConstantBuffer	= GPUBufferManager::instance()->create(4, sizeof(MaterialData));
+			lightInfoBuffer			= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
+			boneInfo				= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
+		}
+		
+		// Render targets
 		Hollow::RENDER_TARGET_DESC desc;
 		desc.count = 3;
 		desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32;
@@ -109,9 +126,11 @@ public:
 		desc2.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 		main = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 
-		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height, desc2);
+		shadow.renderTarget = RenderTargetManager::instance()->create(6000, 6000, desc2);
 		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetProjectionValues(90.0f, (float)this->width / (float)this->height, 0.1f, 10000.0f);
+		shadow.shadowCamera->SetOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
+
+		picker = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 
 		std::vector<Hollow::Vertex> vertices;
 		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
@@ -146,6 +165,41 @@ public:
 			updateWVP(this->m_Camera);
 			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
 
+			// picker pass
+			{
+				renderer->SetRenderTarget(picker);
+				renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+
+				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
+						TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+						perModelData.transform = Matrix4::Transpose(
+							Matrix4::Scaling(transform->scale)
+							* Matrix4::Rotation(transform->rotation)
+							* Matrix4::Translation(transform->position)
+						);
+						perModel->update(&perModelData);
+						renderer->SetGpuBuffer(perModel);
+
+						for (auto& object : renderable->renderables) {
+
+							float r = ((object.id & 0x000000FF) >> 0) / 255.0f;
+							float g = ((object.id & 0x0000FF00) >> 8) / 255.0f;
+							float b = ((object.id & 0x00FF0000) >> 16) / 255.0f;
+
+							perMeshData.color = Vector3(r, g, b);
+							perMesh->update(&perMeshData);
+							renderer->SetGpuBuffer(perMesh);
+
+							renderer->SetVertexBuffer(object.vBuffer);
+							renderer->SetIndexBuffer(object.iBuffer);
+							renderer->DrawIndexed(object.iBuffer->getSize());
+						}
+					}
+				}
+			}
 			// GBuffer pass
 			{
 				renderer->SetRenderTarget(gBuffer);
@@ -156,13 +210,13 @@ public:
 						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 						TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-						transformBuff.transform = Matrix4::Transpose(
+						perModelData.transform = Matrix4::Transpose(
 							Matrix4::Scaling(transform->scale)
 							* Matrix4::Rotation(transform->rotation)
 							* Matrix4::Translation(transform->position)
 						);
-						m_TransformConstantBuffer->update(&transformBuff);
-						renderer->SetGpuBuffer(m_TransformConstantBuffer);
+						perModel->update(&perModelData);
+						renderer->SetGpuBuffer(perModel);
 
 						for (auto& object : renderable->renderables) {
 							Hollow::Material& material = renderable->materials[object.material];
@@ -182,6 +236,8 @@ public:
 			}
 			// Shadow pass
 			{
+				renderer->SetViewport(0, 0, 6000, 6000);
+
 				shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
 				shadowConstantBuffer->update(&shadowStruct);
 				renderer->SetGpuBuffer(shadowConstantBuffer);
@@ -194,13 +250,13 @@ public:
 						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 						TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-						transformBuff.transform = Matrix4::Transpose(
+						perModelData.transform = Matrix4::Transpose(
 							Matrix4::Scaling(transform->scale)
 							* Matrix4::Rotation(transform->rotation)
 							* Matrix4::Translation(transform->position)
 						);
-						m_TransformConstantBuffer->update(&transformBuff);
-						renderer->SetGpuBuffer(m_TransformConstantBuffer);
+						perModel->update(&perModelData);
+						renderer->SetGpuBuffer(perModel);
 
 						for (auto& object : renderable->renderables) {
 							Hollow::Material& material = renderable->materials[object.material];
@@ -210,10 +266,11 @@ public:
 						}
 					}
 				}
+				renderer->SetViewport(0, 0, this->width, this->height);
 			}
 			// Light pass
 			{
-				renderer->SetRenderTarget(main);
+				renderer->SetRenderTarget(0);
 				renderer->SetTextureColorBuffer(0, gBuffer, 0);
 				renderer->SetTextureColorBuffer(1, gBuffer, 1);
 				renderer->SetTextureColorBuffer(2, gBuffer, 2);
@@ -230,7 +287,11 @@ public:
 				renderer->UnsetTexture(3);
 			}
 
-			renderer->SetRenderTarget(0);
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+				Vector4 selectedColor = picker->readPixel(InputManager::mcx, InputManager::mcy);
+				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
+				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
+			}
 		}
 	}
 
@@ -273,13 +334,13 @@ public:
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				transformBuff.transform = Matrix4::Transpose(
+				perModelData.transform = Matrix4::Transpose(
 					Matrix4::Scaling(transform->scale)
 					* Matrix4::Rotation(transform->rotation)
 					* Matrix4::Translation(transform->position)
 				);
-				m_TransformConstantBuffer->update(&transformBuff);
-				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+				perModel->update(&perModelData);
+				renderer->SetGpuBuffer(perModel);
 
 				for (auto& object : renderable->renderables) {
 					renderer->SetVertexBuffer(object.vBuffer);
@@ -299,13 +360,13 @@ public:
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				transformBuff.transform = Matrix4::Transpose(
+				perModelData.transform = Matrix4::Transpose(
 					Matrix4::Scaling(transform->scale) 
 					* Matrix4::Rotation(transform->rotation) 
 					* Matrix4::Translation(transform->position)
 				);
-				m_TransformConstantBuffer->update(&transformBuff);
-				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+				perModel->update(&perModelData);
+				renderer->SetGpuBuffer(perModel);
 
 				for (auto& object : renderable->renderables) {
 					Hollow::Material& material = renderable->materials[object.material];
@@ -344,12 +405,12 @@ public:
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				transformBuff.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale) 
+				perModelData.transform = Matrix4::Transpose(Matrix4::Scaling(transform->scale)
 					* Matrix4::Rotation(transform->rotation) 
 					* Matrix4::Translation(transform->position));
 
-				m_TransformConstantBuffer->update(&transformBuff);
-				renderer->SetGpuBuffer(m_TransformConstantBuffer);
+				perModel->update(&perModelData);
+				renderer->SetGpuBuffer(perModel);
 
 				for (auto& it : renderable->renderables) {
 					DrawForPicker(it);
@@ -360,13 +421,8 @@ public:
 
 	void DrawForPicker(RenderableObject& object)
 	{
-		float r = ((object.id & 0x000000FF) >> 0) / 255.0f;
-		float g = ((object.id & 0x0000FF00) >> 8) / 255.0f;
-		float b = ((object.id & 0x00FF0000) >> 16) / 255.0f;
-
-		transformBuff.color = Vector3(r, g, b);
-		m_TransformConstantBuffer->update(&transformBuff);
-		renderer->SetGpuBuffer(m_TransformConstantBuffer);
+		perModel->update(&perModelData);
+		renderer->SetGpuBuffer(perModel);
 
 		renderer->SetShader(ShaderManager::instance()->getShader("picker"));
 		renderer->SetVertexBuffer(object.vBuffer);

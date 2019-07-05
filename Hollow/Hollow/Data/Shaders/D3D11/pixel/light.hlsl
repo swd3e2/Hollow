@@ -28,13 +28,22 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 	uv.x = 0.5f * ProjCoords.x + 0.5f;
 	uv.y = 0.5f * -ProjCoords.y + 0.5f;
 	float depth = ProjCoords.z;
+	
+	float2 shadowMapOffset = (1.0 / 1920.0f, 1.0f / 1080.0f);
 
-	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && clamp(uv.y, 0.0f, 1.0f) == uv.y) {
-		float shadowColor = shadow_map.Sample(SampleTypeClamp, uv).r;
-		if (shadowColor < (depth - 0.000001f)) {
-			diffuse -= 0.3f;
+	float shadowFactor = 0.0f;
+
+	for (int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= -1; y++) {
+			float2 offsets = float2(x, y);
+			float shadowColor = shadow_map.Sample(SampleTypeClamp, (uv + offsets * shadowMapOffset)).r;
+			shadowFactor += shadowColor > (depth - 0.000001f) ? 1.0f : 0.0f;
 		}
 	}
+
+	shadowFactor /= 9.0f;
+
+	diffuse -= shadowFactor * -1.0f;
 
 	return diffuse + float4(0.5f, 0.5f, 0.5f,1.0f) * dot(normal, float3(0.0f, 1.0f, 0.0f));
 }

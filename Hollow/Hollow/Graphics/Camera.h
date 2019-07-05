@@ -16,6 +16,7 @@ namespace Hollow {
 		Camera(bool mainCamera);
 
 		void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ);
+		void SetOrthoValues(float left, float right, float up, float down, float near, float far);
 
 		const Matrix4& GetViewMatrix() const;
 		const Matrix4& GetProjectionMatrix() const;

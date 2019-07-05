@@ -17,7 +17,7 @@
         ],
         "translation": [
           100.0,
-          -3.9000000953674316,
+          -4.099999904632568,
           0.0
         ]
       },
@@ -70,11 +70,6 @@
       "id": 2
     }
   ],
-  "Renderer" : {
-    "type" : 0,
-    "width": 1920,
-    "height" : 1080
-  },
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
   "ShadersFolder": "C:/dev/Hollow Engine/Project1/Shaders",
   "TexturesFolder": "C:/dev/Hollow Engine/Project1/Textures"

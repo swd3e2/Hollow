@@ -16,6 +16,11 @@ namespace Hollow {
 		projectionMatrix = Matrix4::Projection(fovRadians, aspectRatio, nearZ, farZ);
 	}
 
+	void Camera::SetOrthoValues(float right, float left, float top, float bottom, float nearZ, float farZ)
+	{
+		projectionMatrix = Matrix4::Orthographic(right, left, top, bottom, nearZ, farZ);
+	}
+
 	const Matrix4& Camera::GetViewMatrix() const
 	{
 		return viewMatrix;
@@ -51,13 +56,13 @@ namespace Hollow {
 
 			if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT)) {
 				rotation.x -= InputManager::my * 0.0006 * dt;
-				if (rotation.x > Math::HALF_PI - bias)
+				/*if (rotation.x > Math::HALF_PI - bias)
 				{
 					rotation.x = Math::HALF_PI - bias;
 				} else if (rotation.x < -Math::HALF_PI + bias)
 				{
 					rotation.x = -Math::HALF_PI + bias;
-				}
+				}*/
 				rotation.y -= InputManager::mx * 0.0006 * dt;
 				UpdateViewMatrix();
 			}
