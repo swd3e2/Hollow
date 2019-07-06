@@ -11,7 +11,7 @@ namespace Hollow {
 
 		hwnd = static_cast<OGLWin32Window*>(Window::instance())->getHWND();
 		glEnable(GL_DEPTH_TEST);
-		//glCullFace(GL_BACK);
+		glFrontFace(GL_CW);
 	}
 
 	OGLRenderApi::~OGLRenderApi()
@@ -145,6 +145,31 @@ namespace Hollow {
 		{
 			glDepthFunc(GL_ALWAYS);
 		} break;
+		}
+	}
+
+	void OGLRenderApi::SetCullMode(CULL_MODE mode)
+	{
+		switch (mode)
+		{
+		case Hollow::CULL_NONE:
+			glDisable(GL_CULL_FACE);
+			cullEnabled = false;
+			break;
+		case Hollow::CULL_FRONT:
+			if (!cullEnabled) {
+				glEnable(GL_CULL_FACE);
+				cullEnabled = true;
+			}
+			glCullFace(GL_FRONT);
+			break;
+		case Hollow::CULL_BACK:
+			if (!cullEnabled) {
+				glEnable(GL_CULL_FACE);
+				cullEnabled = true;
+			}
+			glCullFace(GL_BACK);
+			break;
 		}
 	}
 

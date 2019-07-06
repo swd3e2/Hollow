@@ -25,6 +25,12 @@ namespace Hollow {
 		ALWAYS = 6
 	};
 
+	enum CULL_MODE {
+		CULL_NONE = 0,
+		CULL_FRONT = 1,
+		CULL_BACK = 2
+	};
+
 	class RenderApi : public CModule<RenderApi>
 	{
 	protected:
@@ -43,6 +49,7 @@ namespace Hollow {
 		virtual void SetRenderTarget(RenderTarget* renderTarget) = 0;
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) = 0;
 		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) = 0;
+		virtual void SetCullMode(CULL_MODE mode) = 0;
 		virtual void Present() = 0;
 	};
 }

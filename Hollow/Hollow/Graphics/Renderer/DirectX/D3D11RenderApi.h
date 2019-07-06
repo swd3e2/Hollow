@@ -41,7 +41,7 @@ namespace Hollow {
 		ID3D11RenderTargetView* nullRTV[3] = { NULL };
 
 		D3D11RasterizerState* m_cullNone;
-		D3D11RasterizerState* m_Wireframe;
+		D3D11RasterizerState* m_cullFront;
 		D3D11RasterizerState* m_cullBack;
 
 		D3D11BlendState* blendState;
@@ -69,6 +69,7 @@ namespace Hollow {
 		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
+		virtual void SetCullMode(CULL_MODE mode) override;
 
 		virtual void onStartUp() override;
 

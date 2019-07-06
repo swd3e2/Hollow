@@ -27,8 +27,11 @@ PixelOutDeffered main(PixelShaderInput input) : SV_TARGET
 {
 	PixelOutDeffered output;
 	output.diffuse = ambient_map.Sample(SampleTypeClamp, input.texCoord);
+	/*if (output.diffuse.a < 0.1f) {
+		discard;
+	}*/
 	output.normal = float4(input.normal, 1.0f);
-	output.position = mul(input.hPos, transform);
+	output.position = input.hPos;
 
 	return output;
 }

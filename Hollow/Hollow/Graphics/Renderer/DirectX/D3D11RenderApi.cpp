@@ -128,7 +128,7 @@ namespace Hollow {
 
 		// Rasterizers
 		m_cullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
-		m_Wireframe = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_WIREFRAME);
+		m_cullFront = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_FRONT, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 		m_cullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
 		SetRasterizerState(m_cullNone);
@@ -288,6 +288,22 @@ namespace Hollow {
 			{
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateAlways, 0);
 			} break;
+		}
+	}
+
+	void D3D11RenderApi::SetCullMode(CULL_MODE mode)
+	{
+		switch (mode)
+		{
+		case Hollow::CULL_NONE:
+			SetRasterizerState(m_cullNone);
+			break;
+		case Hollow::CULL_FRONT:
+			SetRasterizerState(m_cullFront);
+			break;
+		case Hollow::CULL_BACK:
+			SetRasterizerState(m_cullBack);
+			break;
 		}
 	}
 

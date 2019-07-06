@@ -20,6 +20,7 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 {
 	float3 position = positionBuffer.Sample(SampleTypeClamp, input.texCoord).rgb;
 	float3 normal = normalBuffer.Sample(SampleTypeClamp, input.texCoord).rgb;
+	normal = normal * 2.0f - 1.0f;
 	float4 diffuse = diffuseBuffer.Sample(SampleTypeClamp, input.texCoord);
 
 	float4 shadowPos = mul(float4(position, 1.0f), ShadowWVP);
@@ -45,5 +46,5 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 
 	diffuse -= shadowFactor * -1.0f;
 
-	return diffuse + float4(0.5f, 0.5f, 0.5f,1.0f) * dot(normal, float3(0.0f, 1.0f, 0.0f));
+	return diffuse + float4(0.00f, 0.01f, 0.03f,1.0f) * dot(normal, float3(0.0f, 1.0f, 0.0f));
 }

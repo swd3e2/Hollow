@@ -22,6 +22,7 @@ namespace Hollow {
 	{
 	private:
 		HWND* hwnd;
+		bool cullEnabled = false;
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();
@@ -37,6 +38,7 @@ namespace Hollow {
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
 		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
+		virtual void SetCullMode(CULL_MODE mode) override;
 
 		virtual void Draw(UINT count)override {}
 		virtual void DrawIndexed(UINT count) override;

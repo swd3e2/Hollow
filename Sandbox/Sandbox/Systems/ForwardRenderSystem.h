@@ -126,7 +126,7 @@ public:
 		desc2.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 		main = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 
-		shadow.renderTarget = RenderTargetManager::instance()->create(6000, 6000, desc2);
+		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 		shadow.shadowCamera = new Camera(false);
 		shadow.shadowCamera->SetOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
 
@@ -163,13 +163,11 @@ public:
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
-			renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
-
 			// picker pass
 			{
 				renderer->SetRenderTarget(picker);
 				renderer->SetShader(ShaderManager::instance()->getShader("picker"));
-
+				
 				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
@@ -204,6 +202,7 @@ public:
 			{
 				renderer->SetRenderTarget(gBuffer);
 				renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
+				renderer->SetCullMode(Hollow::CULL_MODE::CULL_BACK);
 
 				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
@@ -232,12 +231,13 @@ public:
 						}
 					}
 				}
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
+				renderer->SetCullMode(Hollow::CULL_MODE::CULL_FRONT);
 				DrawSkyMap();
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
 			}
 			// Shadow pass
 			{
-				renderer->SetViewport(0, 0, 6000, 6000);
-
 				shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
 				shadowConstantBuffer->update(&shadowStruct);
 				renderer->SetGpuBuffer(shadowConstantBuffer);
@@ -266,10 +266,10 @@ public:
 						}
 					}
 				}
-				renderer->SetViewport(0, 0, this->width, this->height);
 			}
 			// Light pass
 			{
+				renderer->SetCullMode(Hollow::CULL_MODE::CULL_BACK);
 				renderer->SetRenderTarget(0);
 				renderer->SetTextureColorBuffer(0, gBuffer, 0);
 				renderer->SetTextureColorBuffer(1, gBuffer, 1);
@@ -295,107 +295,9 @@ public:
 		}
 	}
 
-	void drawShadow()
-	{
-		renderer->SetRenderTarget(shadow.renderTarget);
-		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
-
-		shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
-		shadowConstantBuffer->update(&shadowStruct);
-		renderer->SetGpuBuffer(shadowConstantBuffer);
-
-		DrawDepth();
-
-		renderer->SetRenderTarget(main);
-
-		renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
-		updateWVP(this->m_Camera);
-
-		Draw();
-		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
-		DrawSkyMap();
-
-		renderer->UnsetTexture(3);
-
-		renderer->SetRenderTarget(0);
-	}
-
 	virtual void PostUpdate(double dt)
 	{
 		renderer->Present();
-	}
-
-	void DrawDepth()
-	{
-		renderer->SetShader(ShaderManager::instance()->getShader("depth"));
-
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
-				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
-				TransformComponent* transform = entity.getComponent<TransformComponent>();
-
-				perModelData.transform = Matrix4::Transpose(
-					Matrix4::Scaling(transform->scale)
-					* Matrix4::Rotation(transform->rotation)
-					* Matrix4::Translation(transform->position)
-				);
-				perModel->update(&perModelData);
-				renderer->SetGpuBuffer(perModel);
-
-				for (auto& object : renderable->renderables) {
-					renderer->SetVertexBuffer(object.vBuffer);
-					renderer->SetIndexBuffer(object.iBuffer);
-					renderer->DrawIndexed(object.iBuffer->getSize());
-				}
-			}
-		}
-	}
-
-	void Draw()
-	{
-		renderer->SetShader(ShaderManager::instance()->getShader("default"));
-
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
-				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
-				TransformComponent* transform = entity.getComponent<TransformComponent>();
-
-				perModelData.transform = Matrix4::Transpose(
-					Matrix4::Scaling(transform->scale) 
-					* Matrix4::Rotation(transform->rotation) 
-					* Matrix4::Translation(transform->position)
-				);
-				perModel->update(&perModelData);
-				renderer->SetGpuBuffer(perModel);
-
-				for (auto& object : renderable->renderables) {
-					Hollow::Material& material = renderable->materials[object.material];
-
-					if (material.diffuseTexture != nullptr) {
-						renderer->SetTexture(0, material.diffuseTexture);
-					} else {
-						renderer->UnsetTexture(0);
-					}
-					if (material.normalTexture != nullptr) {
-						renderer->SetTexture(1, material.normalTexture);
-					} else {
-						renderer->UnsetTexture(1);
-					}
-					if (material.specularTexture != nullptr) {
-						renderer->SetTexture(2, material.specularTexture);
-					} else {
-						renderer->UnsetTexture(2);
-					}
-
-					materialConstantBuffer->update(&material.materialData);
-					renderer->SetGpuBuffer(materialConstantBuffer);
-
-					renderer->SetVertexBuffer(object.vBuffer);
-					renderer->SetIndexBuffer(object.iBuffer);
-					renderer->DrawIndexed(object.iBuffer->getSize());
-				}
-			}
-		}
 	}
 
 	void DrawSceneForPicker()
@@ -436,34 +338,6 @@ public:
 		m_wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->SetGpuBuffer(m_WVPConstantBuffer);
-	}
-
-	void DrawObject(Model * object)
-	{
-		if (object->material != nullptr) {
-			if (object->material->diffuseTexture != nullptr) {
-				renderer->SetTexture(0, object->material->diffuseTexture);
-			}
-			if (object->material->normalTexture != nullptr) {
-				renderer->SetTexture(1, object->material->normalTexture);
-			}
-			if (object->material->specularTexture != nullptr) {
-				renderer->SetTexture(2, object->material->specularTexture);
-			}
-
-			materialConstantBuffer->update(&object->material->materialData);
-			renderer->SetGpuBuffer(materialConstantBuffer);
-			if (object->material->shader != nullptr) {
-				renderer->SetShader(object->material->shader);
-			} else {
-				renderer->SetShader(ShaderManager::instance()->getShader("default"));
-			}
-		} else {
-			renderer->SetShader(ShaderManager::instance()->getShader("default"));
-		}
-		renderer->SetVertexBuffer(object->vBuffer);
-		renderer->SetIndexBuffer(object->iBuffer);
-		renderer->DrawIndexed(object->iBuffer->getSize());
 	}
 
 	void DrawSkyMap()

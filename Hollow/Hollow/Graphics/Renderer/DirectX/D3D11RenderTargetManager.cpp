@@ -28,21 +28,11 @@ namespace Hollow {
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
 		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-
 		textureDesc.MiscFlags = 0;
 		textureDesc.CPUAccessFlags = 0;
 
 		for (int i = 0; i < desc.count; i++) {
 			device->CreateTexture2D(&textureDesc, NULL, &renderTarget->m_BackBuffer[i]);
-		}
-
-		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-		renderTargetViewDesc.Format = textureFormat;
-		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-		renderTargetViewDesc.Texture2D.MipSlice = 0;
-
-		for (int i = 0; i < desc.count; i++) {
-			hr = device->CreateRenderTargetView(renderTarget->m_BackBuffer[i], &renderTargetViewDesc, &renderTarget->renderTarget[i]);
 		}
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
@@ -53,6 +43,15 @@ namespace Hollow {
 
 		for (int i = 0; i < desc.count; i++) {
 			device->CreateShaderResourceView(renderTarget->m_BackBuffer[i], &shaderResourceViewDesc, &renderTarget->m_ShaderResourceView[i]);
+		}
+
+		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+		renderTargetViewDesc.Format = textureFormat;
+		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+		for (int i = 0; i < desc.count; i++) {
+			hr = device->CreateRenderTargetView(renderTarget->m_BackBuffer[i], &renderTargetViewDesc, &renderTarget->renderTarget[i]);
 		}
 
 		// Depth buffer
@@ -73,7 +72,6 @@ namespace Hollow {
 
 		device->CreateTexture2D(&depthTextureDesc, NULL, &renderTarget->m_DepthStencilBuffer);
 		
-
 		D3D11_DEPTH_STENCIL_VIEW_DESC ddesc = {};
 		ddesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		ddesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;

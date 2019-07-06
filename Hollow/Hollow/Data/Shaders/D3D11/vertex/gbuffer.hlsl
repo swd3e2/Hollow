@@ -38,10 +38,11 @@ struct VertexShaderInput
 PixelShaderOutput main(VertexShaderInput input)
 {
 	PixelShaderOutput output;
-	output.hPos = float4(input.pos, 1.0f);
-	output.position = mul(output.hPos, transform);
+	output.position = mul(float4(input.pos, 1.0f), transform);
+	output.hPos = output.position;
+
 	output.position = mul(output.position, WVP);
-	output.normal	= normalize(mul(input.normal, transform));
+	output.normal	= normalize(mul(input.normal, transform)) + 1.0f * 0.5f;
 	output.texCoord = input.texCoord;
 
 	return output;
