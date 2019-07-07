@@ -36,6 +36,7 @@
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
     <ClInclude Include="Hollow\Graphics\RendererType.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ComputeShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11DomainShader.h" />
@@ -44,6 +45,7 @@
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11GPUBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11HullShader.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTargetManager.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11RenderTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLGpuBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLGPUBufferManager.h" />

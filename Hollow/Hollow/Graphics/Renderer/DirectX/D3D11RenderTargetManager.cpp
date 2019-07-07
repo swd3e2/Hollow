@@ -75,6 +75,7 @@ namespace Hollow {
 		D3D11_DEPTH_STENCIL_VIEW_DESC ddesc = {};
 		ddesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		ddesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		ddesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		ddesc.Texture2D.MipSlice = 0;
 
 		device->CreateDepthStencilView(renderTarget->m_DepthStencilBuffer, &ddesc, &renderTarget->m_DepthStencilView);

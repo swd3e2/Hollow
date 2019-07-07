@@ -139,6 +139,7 @@ namespace Hollow {
 		ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 		dssDesc.DepthEnable = true;
 		dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+
 		{
 			dssDesc.DepthFunc = D3D11_COMPARISON_NEVER;
 			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNever);

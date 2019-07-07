@@ -72,7 +72,7 @@ namespace Hollow {
 				material.occlusionTexture = j["Materials"][i]["occlusion_texture"].get<std::string>();
 				material.roughnesTexture = j["Materials"][i]["roughness_texture"].get<std::string>();
 				material.specularTexture = j["Materials"][i]["specular_texture"].get<std::string>();
-				model->materials[i] = material;
+				model->materials[j["Materials"][i]["id"].get<int>()] = material;
 			}
 
 			return model;

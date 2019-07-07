@@ -12,8 +12,15 @@ namespace Hollow {
 		R32G32B32A32 = 1
 	};
 
+	enum RenderTargetFlags {
+		NONE = 0,
+		ACCESS_BY_CPU = 1
+	};
+
 	struct RENDER_TARGET_DESC
 	{
+		int width;
+		int height;
 		int count = 1;
 		RENDER_TARGET_TEXTURE_FORMAT textureFormat;
 
@@ -26,10 +33,7 @@ namespace Hollow {
 		} depthStencilBufferDesc;
 	};
 
-	enum RenderTargetFlags {
-		NONE = 0,
-		ACCESS_BY_CPU = 1
-	};
+	
 
 	class RenderTarget
 	{

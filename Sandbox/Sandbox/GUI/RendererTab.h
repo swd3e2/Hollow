@@ -23,14 +23,24 @@ namespace GUI {
 			ImGui::DragFloat("##Maincameraspeed", &renderSystem->m_Camera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
 
 			if (ImGui::CollapsingHeader("Shadow orthographic projection settings")) {
+				ImGui::Text("Right");
 				ImGui::DragInt("##right", &r);
+				ImGui::Text("Left");
 				ImGui::DragInt("##left", &l);
 
+				ImGui::Text("Top");
 				ImGui::DragInt("##top", &t);
+				ImGui::Text("Bottom");
 				ImGui::DragInt("##bottom", &b);
 
+				ImGui::Text("Near");
 				ImGui::DragInt("##near", &n);
+				ImGui::Text("Far");
 				ImGui::DragInt("##far", &f);
+
+				ImGui::Text("Bias");
+				ImGui::DragFloat("##bias", &renderSystem->shadow.bias, 0.0000001f, 0.0f, 0.0001f);
+
 				renderSystem->shadow.shadowCamera->SetOrthoValues(r, l, t, b, n, f);
 			}
 
@@ -44,7 +54,7 @@ namespace GUI {
 					renderSystem->shadow.shadowCamera->mainCamera = false;
 				}
 			}
-			if (ImGui::TreeNode("Shaders")) {
+			if (ImGui::CollapsingHeader("Shaders")) {
 				auto& shaders = ShaderManager::instance()->shaders;
 				for (auto& it : shaders) {
 					ImGui::Text(it.first.c_str());
@@ -54,7 +64,6 @@ namespace GUI {
 						ShaderManager::instance()->reloadShader(it.second);
 					}
 				}
-				ImGui::TreePop();
 			}
 			ImGui::End();
 

@@ -44,6 +44,8 @@ struct PerMesh
 struct ShadowStruct
 {
 	Matrix4 ShadowWVP;
+	Hollow::Vector2 texelSize;
+	float bias;
 };
 
 struct LightInfo
@@ -129,6 +131,7 @@ public:
 		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 		shadow.shadowCamera = new Camera(false);
 		shadow.shadowCamera->SetOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
+		shadow.texelSize = Hollow::Vector2(1.0f / this->width, 1.0f / this->height);
 
 		picker = RenderTargetManager::instance()->create(this->width, this->height, desc2);
 
@@ -163,41 +166,41 @@ public:
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
-			// picker pass
-			{
-				renderer->SetRenderTarget(picker);
-				renderer->SetShader(ShaderManager::instance()->getShader("picker"));
-				
-				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
-						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
-						TransformComponent* transform = entity.getComponent<TransformComponent>();
+			//// picker pass
+			//{
+			//	renderer->SetRenderTarget(picker);
+			//	renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+			//	
+			//	for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			//		if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+			//			RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
+			//			TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-						perModelData.transform = Matrix4::Transpose(
-							Matrix4::Scaling(transform->scale)
-							* Matrix4::Rotation(transform->rotation)
-							* Matrix4::Translation(transform->position)
-						);
-						perModel->update(&perModelData);
-						renderer->SetGpuBuffer(perModel);
+			//			perModelData.transform = Matrix4::Transpose(
+			//				Matrix4::Scaling(transform->scale)
+			//				* Matrix4::Rotation(transform->rotation)
+			//				* Matrix4::Translation(transform->position)
+			//			);
+			//			perModel->update(&perModelData);
+			//			renderer->SetGpuBuffer(perModel);
 
-						for (auto& object : renderable->renderables) {
+			//			for (auto& object : renderable->renderables) {
 
-							float r = ((object.id & 0x000000FF) >> 0) / 255.0f;
-							float g = ((object.id & 0x0000FF00) >> 8) / 255.0f;
-							float b = ((object.id & 0x00FF0000) >> 16) / 255.0f;
+			//				float r = ((object.id & 0x000000FF) >> 0) / 255.0f;
+			//				float g = ((object.id & 0x0000FF00) >> 8) / 255.0f;
+			//				float b = ((object.id & 0x00FF0000) >> 16) / 255.0f;
 
-							perMeshData.color = Vector3(r, g, b);
-							perMesh->update(&perMeshData);
-							renderer->SetGpuBuffer(perMesh);
+			//				perMeshData.color = Vector3(r, g, b);
+			//				perMesh->update(&perMeshData);
+			//				renderer->SetGpuBuffer(perMesh);
 
-							renderer->SetVertexBuffer(object.vBuffer);
-							renderer->SetIndexBuffer(object.iBuffer);
-							renderer->DrawIndexed(object.iBuffer->getSize());
-						}
-					}
-				}
-			}
+			//				renderer->SetVertexBuffer(object.vBuffer);
+			//				renderer->SetIndexBuffer(object.iBuffer);
+			//				renderer->DrawIndexed(object.iBuffer->getSize());
+			//			}
+			//		}
+			//	}
+			//}
 			// GBuffer pass
 			{
 				renderer->SetRenderTarget(gBuffer);
@@ -221,8 +224,7 @@ public:
 							Hollow::Material& material = renderable->materials[object.material];
 							if (material.diffuseTexture != nullptr) {
 								renderer->SetTexture(0, material.diffuseTexture);
-							}
-							else {
+							} else {
 								renderer->UnsetTexture(0);
 							}
 							renderer->SetVertexBuffer(object.vBuffer);
@@ -231,14 +233,12 @@ public:
 						}
 					}
 				}
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LEQUAL);
-				renderer->SetCullMode(Hollow::CULL_MODE::CULL_FRONT);
-				DrawSkyMap();
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
 			}
 			// Shadow pass
 			{
 				shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
+				shadowStruct.texelSize = shadow.texelSize;
+				shadowStruct.bias = shadow.bias;
 				shadowConstantBuffer->update(&shadowStruct);
 				renderer->SetGpuBuffer(shadowConstantBuffer);
 
@@ -269,22 +269,30 @@ public:
 			}
 			// Light pass
 			{
+				renderer->SetViewport(0, 0, this->width, this->height);
 				renderer->SetCullMode(Hollow::CULL_MODE::CULL_BACK);
 				renderer->SetRenderTarget(0);
 				renderer->SetTextureColorBuffer(0, gBuffer, 0);
 				renderer->SetTextureColorBuffer(1, gBuffer, 1);
 				renderer->SetTextureColorBuffer(2, gBuffer, 2);
 				renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
+				renderer->SetTextureDepthBuffer(5, gBuffer);
 
 				renderer->SetShader(ShaderManager::instance()->getShader("light"));
 				renderer->SetVertexBuffer(quadVB);
 				renderer->SetIndexBuffer(quadIB);
 				renderer->DrawIndexed(6);
 
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::GREATER);
+				renderer->SetCullMode(Hollow::CULL_MODE::CULL_FRONT);
+				DrawSkyMap();
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
+
 				renderer->UnsetTexture(0);
 				renderer->UnsetTexture(1);
 				renderer->UnsetTexture(2);
 				renderer->UnsetTexture(3);
+				renderer->UnsetTexture(5);
 			}
 
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {

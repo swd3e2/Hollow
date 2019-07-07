@@ -18,11 +18,6 @@ struct VertexShaderInput
 {
 	float3 pos			: POSITION;
 	float2 texCoord		: TEXCOORD;
-	float3 normal		: NORMAL;
-	float3 tangent		: TANGENT;
-	float3 bitangent	: BITANGENT;
-	int4 boneId			: BONEID;
-	float4 weight		: WEIGHT;
 };
 
 SKYMAP_VS_OUTPUT main(VertexShaderInput input)

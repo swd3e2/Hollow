@@ -17,14 +17,14 @@
 #define SCREEN_HEIGHT 1080
 
 // App entrypoint
-int main()
+int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	Hollow::Core core(Hollow::RendererType::OpenGL);
+	Hollow::Core core(Hollow::RendererType::DirectX);
 
 	Hollow::Window* window = core.windowManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
 	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
+	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::DirectX);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
@@ -36,7 +36,7 @@ int main()
 	MoveSystem moveSystem(camera);
 
 	SystemManager::instance()->AddSystem(&renderPass);
-	//core.systemManager.AddSystem(&moveSystem);
+	SystemManager::instance()->AddSystem(&moveSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;

@@ -21,15 +21,15 @@ cbuffer ConstantBuffer : register(b2)
 
 Texture2D ambient_map		: TEXTUTRE: register(t0);
 
-SamplerState SampleTypeClamp : register(s0);
+SamplerState Sampler : register(s1);
 
 PixelOutDeffered main(PixelShaderInput input) : SV_TARGET
 {
 	PixelOutDeffered output;
-	output.diffuse = ambient_map.Sample(SampleTypeClamp, input.texCoord);
-	/*if (output.diffuse.a < 0.1f) {
-		discard;
-	}*/
+	output.diffuse = ambient_map.Sample(Sampler, input.texCoord);
+	//if (output.diffuse.a < 0.91f) {
+	//	discard;
+	//}
 	output.normal = float4(input.normal, 1.0f);
 	output.position = input.hPos;
 

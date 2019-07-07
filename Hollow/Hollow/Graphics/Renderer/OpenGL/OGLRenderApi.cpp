@@ -150,7 +150,7 @@ namespace Hollow {
 
 	void OGLRenderApi::SetCullMode(CULL_MODE mode)
 	{
-		switch (mode)
+		/*switch (mode)
 		{
 		case Hollow::CULL_NONE:
 			glDisable(GL_CULL_FACE);
@@ -170,7 +170,7 @@ namespace Hollow {
 			}
 			glCullFace(GL_BACK);
 			break;
-		}
+		}*/
 	}
 
 	void OGLRenderApi::DrawIndexed(UINT count)
