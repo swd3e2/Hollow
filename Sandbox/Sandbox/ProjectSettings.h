@@ -50,8 +50,8 @@ public:
 
 			auto projectData = json::parse(Hollow::FileSystem::getFileContent(filename));
 
-			Hollow::EntityManager::instance()->clear();
-			Hollow::ComponentManager::instance()->clear();
+			/*Hollow::EntityManager::instance()->clear();
+			Hollow::ComponentManager::instance()->clear();*/
 
 			MeshesFolder = projectData["MeshesFolder"].get<std::string>();
 			TexturesFolder = projectData["TexturesFolder"].get<std::string>();

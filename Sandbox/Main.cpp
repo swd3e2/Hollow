@@ -12,6 +12,8 @@
 #include "Hollow/ECS/EntityManager.h"
 #include "Hollow/ECS/ComponentManager.h"
 #include "Sandbox/Components/TransformComponent.h"
+#include "Sandbox/Entities/Terrain.h"
+#include "Sandbox/Components/TerrainData.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -40,6 +42,9 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;
+
+	Terrain* terrain = Hollow::EntityManager::instance()->create<Terrain>();
+	terrain->addComponent<TerrainData>();
 
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 

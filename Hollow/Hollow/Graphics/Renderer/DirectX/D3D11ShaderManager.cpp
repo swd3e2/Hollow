@@ -16,14 +16,13 @@ namespace Hollow {
 
 			if (prevShader != nullptr) {
 				vShader = static_cast<D3D11VertexShader*>(prevShader);
-			}
-			else {
+			} else {
 				vShader = new D3D11VertexShader();
 			}
 
 			if (CompileShaderInternal(path, "main", "vs_5_0", &shaderBlob) == S_OK) {
 				vShader->release();
-
+				
 				device->CreateVertexShader(shaderBlob->GetBufferPointer(),
 					shaderBlob->GetBufferSize(), NULL, &vShader->m_Shader);
 

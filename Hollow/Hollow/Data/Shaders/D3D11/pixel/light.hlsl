@@ -36,7 +36,7 @@ float calculateShadowAmount(float3 position)
 			shadowFactor += shadowColor > (depth - bias) ? 1.0f : 0.0f;
 		}
 	}
-	shadowFactor /= 9.0f;/
+	shadowFactor /= 9.0f;
 
 	return shadowFactor;
 }

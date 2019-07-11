@@ -18,6 +18,8 @@
 #include "Sandbox/Components/RenderableComponent.h"
 #include "Sandbox/ProjectSettings.h"
 #include "Sandbox/Graphics/Shadow.h"
+#include "Sandbox/Entities/Terrain.h"
+#include "Sandbox/Components/TerrainData.h"
 
 using namespace Hollow;
 
@@ -231,6 +233,19 @@ public:
 							renderer->SetIndexBuffer(object.iBuffer);
 							renderer->DrawIndexed(object.iBuffer->getSize());
 						}
+					}
+				}
+				for (auto& entity : EntityManager::instance()->container<Terrain>()) {
+					if (entity.hasComponent<TerrainData>()) {
+						TerrainData* data = entity.getComponent<TerrainData>();
+
+						perModelData.transform = Matrix4::Identity();
+						perModel->update(&perModelData);
+						renderer->SetGpuBuffer(perModel);
+
+						renderer->SetVertexBuffer(data->vBuffer);
+						renderer->SetIndexBuffer(data->iBuffer);
+						renderer->DrawIndexed(data->iBuffer->getSize());
 					}
 				}
 			}

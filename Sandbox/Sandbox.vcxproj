@@ -23,9 +23,11 @@
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
     <ClInclude Include="Sandbox\Components\RenderableComponent.h" />
+    <ClInclude Include="Sandbox\Components\TerrainData.h" />
     <ClInclude Include="Sandbox\Components\TransformComponent.h" />
     <ClInclude Include="Sandbox\Entities\GameObject.h" />
     <ClInclude Include="Sandbox\Entities\Light.h" />
+    <ClInclude Include="Sandbox\Entities\Terrain.h" />
     <ClInclude Include="Sandbox\Events.h" />
     <ClInclude Include="Sandbox\Graphics\Shadow.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />

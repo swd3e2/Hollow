@@ -13,12 +13,13 @@ namespace Hollow {
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(samplerDesc));
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		samplerDesc.AddressU = mode; // D3D11_TEXTURE_ADDRESS_WRAP || D3D11_TEXTURE_ADDRESS_CLAMP
+		samplerDesc.AddressU = mode;
 		samplerDesc.AddressV = mode;
 		samplerDesc.AddressW = mode;
 		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 		samplerDesc.MinLOD = 0;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		
 		hr = device->CreateSamplerState(&samplerDesc, &m_SamplerState);
 
 		if (hr != S_OK) {
