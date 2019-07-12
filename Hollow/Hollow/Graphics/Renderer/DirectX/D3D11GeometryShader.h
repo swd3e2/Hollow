@@ -12,9 +12,6 @@ namespace Hollow {
 	private:
 		friend class D3D11ShaderManager;
 	public:
-		D3D11GeometryShader() :
-			Shader(ShaderType::GEOMERTY)
-		{}
 		~D3D11GeometryShader()
 		{
 			release();

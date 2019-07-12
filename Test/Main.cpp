@@ -1,6 +1,7 @@
 #include "Hollow/Core.h"
-#include "Hollow/Memory/MemoryContainer.h"
-#include "Hollow/Common/Logger.h"
+#include "Hollow/Graphics/Renderer/Base/InputLayout.h"
+
+
 #include <iostream>
 class Transform
 {
@@ -13,12 +14,13 @@ public:
 
 int main() 
 {
-	Hollow::Logger::startUp();
-
-	for (int i = 0; i < 1000; i++) {
-		Hollow::Logger::instance()->log("{}: {} {}", "some", 1.0f, 2);
-	}
-
+	Hollow::InputLayout layout = {
+		Hollow::InputDataType::Float,
+		Hollow::InputDataType::Float,
+		Hollow::InputDataType::Float,
+		Hollow::InputDataType::Float
+	};
+	
 	std::cin.get();
 
 	return 0;

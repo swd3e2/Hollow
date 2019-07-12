@@ -12,9 +12,6 @@ namespace Hollow {
 	private:
 		friend class D3D11ShaderManager;
 	public:
-		D3D11HullShader() :
-			Shader(ShaderType::HULL)
-		{}
 		~D3D11HullShader()
 		{
 			release();

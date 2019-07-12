@@ -40,7 +40,7 @@ namespace Hollow {
 
 		Material()
 		{
-			shader = ShaderManager::instance()->getShader("default");
+			//shader = ShaderManager::instance()->getShader("default");
 		}
 
 		~Material()

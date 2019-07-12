@@ -13,9 +13,6 @@ namespace Hollow{
 	private:
 		friend class D3D11ShaderManager;
 	public:
-		D3D11VertexShader() :
-			Shader(ShaderType::VERTEX)
-		{}
 		~D3D11VertexShader()
 		{
 			release();

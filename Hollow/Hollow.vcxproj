@@ -36,6 +36,7 @@
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
     <ClInclude Include="Hollow\Graphics\RendererType.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\GPUBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\Renderer\Base\InputLayout.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\RenderTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\Base\ShaderProgram.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\DirectX\D3D11ComputeShader.h" />
@@ -102,6 +103,8 @@
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLTexture.h" />
     <ClInclude Include="Hollow\Graphics\Renderer\OpenGL\OGLVertexBuffer.h" />
+    <ClInclude Include="Hollow\Resources\D3D11ShaderManager.h" />
+    <ClInclude Include="Hollow\Resources\ShaderManager.h" />
     <ClInclude Include="Hollow\WindowManager.h" />
     <ClInclude Include="Hollow\Importer\FreeImgImporter.h" />
     <ClInclude Include="Hollow\Math\EAngle.h" />

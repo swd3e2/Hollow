@@ -12,9 +12,6 @@ namespace Hollow {
 	private:
 		friend class D3D11ShaderManager;
 	public:
-		D3D11ComputeShader() :
-			Shader(ShaderType::COMPUTE), m_Shader(nullptr)
-		{}
 		~D3D11ComputeShader()
 		{
 			release();
