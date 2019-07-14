@@ -26,12 +26,12 @@ namespace Hollow {
 	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 	{
 		OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBuffer->IBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<OGLHardwareBuffer*>(iBuffer->mHardwareBuffer)->mVertexArrayObject);
 	}
 
 	void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 	{
-		glBindVertexArray(static_cast<OGLVertexBuffer*>(buffer)->VAO);
+		glBindVertexArray(static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer)->mVertexArrayObject);
 	}
 
 	void OGLRenderApi::SetTexture(UINT location, Texture* texture)
@@ -176,7 +176,8 @@ namespace Hollow {
 			
 		for (int i = 0; i < desc.layout.size(); i++) {
 			glEnableVertexArrayAttrib(layout->vao, i);
-			glVertexArrayAttribFormat(layout->vao, i, desc.layout[i].getNumberElements(), OGLHelper::getInputLayoutFormat(desc.layout[i].type), GL_FALSE, desc.layout[i].offset);
+			glVertexArrayAttribFormat(layout->vao, i, desc.layout[i].getNumberElements(), 
+				OGLHelper::getInputLayoutFormat(desc.layout[i].type), GL_FALSE, desc.layout[i].offset);
 			glVertexArrayAttribBinding(layout->vao, i, 0);
 		}
 

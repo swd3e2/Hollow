@@ -39,8 +39,10 @@
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11HardwareBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11Helper.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11InputLayout.h" />
+    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLHardwareBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLHelper.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayout.h" />
+    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineState.h" />
     <ClInclude Include="Hollow\Graphics\RendererType.h" />
     <ClInclude Include="Hollow\Graphics\Base\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Base\InputLayout.h" />
@@ -64,6 +66,7 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShader.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderProgram.h" />
+    <ClInclude Include="Hollow\Graphics\RenderStateManager.h" />
     <ClInclude Include="Hollow\Graphics\RenderTargetManager.h" />
     <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLTextureManager.h" />

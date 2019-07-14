@@ -36,8 +36,8 @@ namespace Hollow {
 	protected:
 		InputLayout* mCurrentLayout;
 	public:
-		virtual void SetIndexBuffer(HardwareBuffer*) = 0;
-		virtual void SetVertexBuffer(HardwareBuffer*) = 0;
+		virtual void SetIndexBuffer(IndexBuffer*) = 0;
+		virtual void SetVertexBuffer(VertexBuffer*) = 0;
 		virtual void SetTexture(UINT, Texture*) = 0;
 		virtual void UnsetTexture(UINT) = 0;
 		virtual void SetTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) = 0;
