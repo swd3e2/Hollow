@@ -32,13 +32,13 @@ struct PixelShaderOutput
 
 struct VertexShaderInput
 {
-	float3 pos				: POSITION;
-	float2 texCoord			: TEXCOORD;
-	float3 normal			: NORMAL;
-	float3 tangent			: TANGENT;
-	float3 bitangent		: BITANGENT;
-	int4   boneId			: BONEID;
-	float4 weight			: WEIGHT;
+	float3 pos		 : POSITION;
+	float2 texCoord	 : TEXCOORD;
+	float3 normal	 : NORMAL;
+	float3 tangent	 : TANGENT;
+	float3 bitangent : BITANGENT;
+	int4   boneId	 : BONEID;
+	float4 weight	 : WEIGHT;
 };
 
 PixelShaderOutput main(VertexShaderInput input)

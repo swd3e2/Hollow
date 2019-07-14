@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Hollow/ECS/Component.h"
-#include "Hollow/Graphics/Renderer/Base/VertexBuffer.h"
-#include "Hollow/Graphics/Renderer/Base/IndexBuffer.h"
+#include "Hollow/Graphics/Base/VertexBuffer.h"
+#include "Hollow/Graphics/Base/IndexBuffer.h"
 #include <string>
 #include "Hollow/Graphics/Vertex.h"
 #include "vendor/tinygltf/json.hpp"

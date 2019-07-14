@@ -13,8 +13,8 @@
 #include "Hollow/Platform.h"
 #include <fstream>
 #include "Hollow/WindowManager.h"
-#include "Hollow/Graphics/Renderer/DirectX/D3D11Win32Window.h"
-#include "Hollow/Graphics/Renderer/OpenGL/Win32/OGLWin32Window.h"
+#include "Hollow/Graphics/Platform/DirectX/D3D11Win32Window.h"
+#include "Hollow/Graphics/Platform/OpenGL/Win32/OGLWin32Window.h"
 #include <Commdlg.h>
 #include "Shlobj.h"
 

@@ -2,7 +2,7 @@
 
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Sandbox/Systems/ForwardRenderSystem.h"
-#include "Hollow/Graphics/Renderer/DirectX/D3D11RenderTarget.h"
+#include "Hollow/Graphics/Platform/DirectX/D3D11RenderTarget.h"
 
 using namespace Hollow;
 

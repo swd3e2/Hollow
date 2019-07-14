@@ -10,7 +10,16 @@ namespace Hollow {
 	class Helper
 	{
 	public:
-		inline static wchar_t* converToWideChar(const char* string)
+		inline static wchar_t* to_wide_char(const char* string)
+		{
+			size_t cSize = strlen(string) + 1;
+			wchar_t* wc = new wchar_t[cSize];
+			size_t outSize;
+			mbstowcs_s(&outSize, wc, cSize, string, cSize - 1);
+			return wc;
+		}
+
+		inline static std::wstring to_wide_string(const char* string)
 		{
 			size_t cSize = strlen(string) + 1;
 			wchar_t* wc = new wchar_t[cSize];

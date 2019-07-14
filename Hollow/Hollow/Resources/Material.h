@@ -4,7 +4,7 @@
 #define HW_MATERIAL_H
 
 #include <string>
-#include "Hollow/Graphics/Renderer/Base/Texture.h"
+#include "Hollow/Graphics/Base/Texture.h"
 #include "Hollow/Graphics/ShaderManager.h"
 #include "Hollow/Math/Vector4.h"
 

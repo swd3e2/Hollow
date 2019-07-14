@@ -3,7 +3,7 @@
 #ifndef HW_FREE_IMG_IMPORTER_H
 #define HW_FREE_IMG_IMPORTER_H
 
-#include "Hollow/Graphics/Renderer/Base/Texture.h"
+#include "Hollow/Graphics/Base/Texture.h"
 #include "Hollow/Platform.h"
 #include "FreeImage.h"
 #include "Hollow/Core/CModule.h"

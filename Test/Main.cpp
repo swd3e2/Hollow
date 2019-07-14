@@ -1,8 +1,8 @@
 #include "Hollow/Core.h"
-#include "Hollow/Graphics/Renderer/Base/InputLayout.h"
-
-
+#include "Hollow/Graphics/Base/InputLayout.h"
 #include <iostream>
+#include "Hollow/Common/FileSystem.h"
+
 class Transform
 {
 public:
@@ -14,13 +14,21 @@ public:
 
 int main() 
 {
-	Hollow::InputLayout layout = {
-		Hollow::InputDataType::Float,
-		Hollow::InputDataType::Float,
-		Hollow::InputDataType::Float,
-		Hollow::InputDataType::Float
+	Hollow::Core core(Hollow::RendererType::DirectX);
+
+	Hollow::Window* window = core.windowManager.Initialize(160, 120, Hollow::WindowType::Borderless);
+	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(160, 120);
+
+	Hollow::INPUT_LAYOUT_DESC layout = {
+		{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" }, // pos
+		{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" }, // texcoord
+		{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
+		{ Hollow::INPUT_DATA_TYPE::Float3, "TANGENT" }, // tangent
+		{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, // bitangent 
 	};
-	
+
+	Hollow::InputLayout* la1yout = renderer->CreateLayout(layout);
+	Hollow::ShaderManager::instance()->create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent(""), "main" });
 	std::cin.get();
 
 	return 0;

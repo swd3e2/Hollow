@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Renderer/Base/RenderTarget.h"
+#include "Hollow/Graphics/Base/RenderTarget.h"
 #include "Hollow/Graphics/Camera.h"
 #include "Hollow/Math/Vector2.h"
 

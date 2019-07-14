@@ -3,11 +3,11 @@
 #ifndef HW_WINDOW_MANAGER_H
 #define HW_WINDOW_MANAGER_H
 
-#include "Graphics/Renderer/Base/Window.h"
+#include "Graphics/Base/Window.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Platform.h"
-#include "Hollow/Graphics/Renderer/DirectX/D3D11Win32Window.h"
-#include "Hollow/Graphics/Renderer/OpenGL/Win32/OGLWin32Window.h"
+#include "Hollow/Graphics/Platform/DirectX/D3D11Win32Window.h"
+#include "Hollow/Graphics/Platform/OpenGL/Win32/OGLWin32Window.h"
 #include "Hollow/Graphics/RendererType.h"
 
 namespace Hollow {

@@ -3,7 +3,7 @@
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Sandbox/Components/RenderableComponent.h"
 #include "Hollow/Graphics/TextureManager.h"
-#include "Hollow/Graphics/Renderer/DirectX/D3D11Texture.h"
+#include "Hollow/Graphics/Platform/DirectX/D3D11Texture.h"
 
 using namespace Hollow;
 namespace GUI {

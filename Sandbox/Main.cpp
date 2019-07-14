@@ -14,7 +14,7 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/Terrain.h"
 #include "Sandbox/Components/TerrainData.h"
-#include "Hollow/Graphics/Renderer/Base/InputLayout.h"
+#include "Hollow/Graphics/Base/InputLayout.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -22,12 +22,6 @@
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	Hollow::InputLayout layout = { 
-		Hollow::InputDataType::Float,
-		Hollow::InputDataType::Float,
-		Hollow::InputDataType::Float,
-		Hollow::InputDataType::Float
-	};
 	/*
 	Hollow::Core core(Hollow::RendererType::DirectX);
 

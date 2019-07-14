@@ -5,9 +5,9 @@
 
 #include "Hollow/Platform.h"
 #include "Hollow/Core/CModule.h"
-#include "Graphics/Renderer/Base/RenderApi.h"
-#include "Graphics/Renderer/DirectX/D3D11RenderApi.h"
-#include "Graphics/Renderer/OpenGL/OGLRenderApi.h"
+#include "Graphics/Base/RenderApi.h"
+#include "Graphics/Platform/DirectX/D3D11RenderApi.h"
+#include "Graphics/Platform/OpenGL/OGLRenderApi.h"
 #include "Graphics/RendererType.h"
 
 namespace Hollow {

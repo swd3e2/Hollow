@@ -1,24 +1,15 @@
 #pragma once
 #include "Hollow/Core/CModule.h"
-#include "Hollow/Graphics/Renderer/Base/Shader.h"
-#include "Hollow/Graphics/Renderer/Base/ShaderProgram.h"
+#include "Hollow/Graphics/Base/Shader.h"
+#include "Hollow/Graphics/Base/ShaderProgram.h"
 #include <string>
 
 namespace Hollow {
-	enum ShaderType
-	{
-		VERTEX = 0, 
-		PIXEL = 1, 
-		GEOMERTY = 2, 
-		COMPUTE = 3, 
-		HULL = 4, 
-		DOMAINS = 5
-	};
-
 	struct SHADER_DESC
 	{
-		ShaderType type;
+		SHADER_TYPE type;
 		std::string content;
+		SHADER_DESC()
 	};
 
 	struct SHADER_PROGRAM_DESC

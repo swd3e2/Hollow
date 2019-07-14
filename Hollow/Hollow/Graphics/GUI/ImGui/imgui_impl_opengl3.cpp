@@ -102,7 +102,7 @@
 #if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
 #include <GL/gl3w.h>    // Needs to be initialized with gl3wInit() in user's code
 #elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-#include "Hollow/Graphics/Renderer/OpenGL/GL/glew.h"    // Needs to be initialized with glewInit() in user's code
+#include "Hollow/Graphics/Platform/OpenGL/GL/glew.h"    // Needs to be initialized with glewInit() in user's code
 #elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
 #include <glad/glad.h>  // Needs to be initialized with gladLoadGL() in user's code
 #else

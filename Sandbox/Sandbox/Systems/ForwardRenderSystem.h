@@ -12,7 +12,7 @@
 #include "Hollow/Input/InputManager.h"
 #include "Hollow/Graphics/GPUBufferManager.h"
 #include "Hollow/Graphics/RenderTargetManager.h"
-#include "Hollow/Graphics/Renderer/Base/RenderApi.h"
+#include "Hollow/Graphics/Base/RenderApi.h"
 #include "Hollow/Common/Log.h"
 #include "Sandbox/Events.h"
 #include "Sandbox/Components/RenderableComponent.h"
@@ -122,20 +122,24 @@ public:
 		// Render targets
 		Hollow::RENDER_TARGET_DESC desc;
 		desc.count = 3;
+		desc.width = this->width;
+		desc.height = this->height;
 		desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32;
-		gBuffer = RenderTargetManager::instance()->create(this->width, this->height, desc);
+		gBuffer = RenderTargetManager::instance()->create(desc);
 
 		Hollow::RENDER_TARGET_DESC desc2;
 		desc2.count = 1;
+		desc2.width = this->width;
+		desc2.height = this->height;
 		desc2.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
-		main = RenderTargetManager::instance()->create(this->width, this->height, desc2);
+		main = RenderTarget::create(desc2);
 
-		shadow.renderTarget = RenderTargetManager::instance()->create(this->width, this->height, desc2);
+		shadow.renderTarget = RenderTargetManager::instance()->create(desc2);
 		shadow.shadowCamera = new Camera(false);
 		shadow.shadowCamera->SetOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
 		shadow.texelSize = Hollow::Vector2(1.0f / this->width, 1.0f / this->height);
 
-		picker = RenderTargetManager::instance()->create(this->width, this->height, desc2);
+		picker = RenderTarget::create(desc2);
 
 		std::vector<Hollow::Vertex> vertices;
 		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));

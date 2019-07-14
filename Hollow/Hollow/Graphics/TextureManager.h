@@ -6,7 +6,7 @@
 #include "Hollow/Common/Log.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Importer/FreeImgImporter.h"
-#include "Renderer/Base/Texture.h"
+#include "Base/Texture.h"
 #include <unordered_map>
 #include <string>
 #include "Hollow/Platform.h"
