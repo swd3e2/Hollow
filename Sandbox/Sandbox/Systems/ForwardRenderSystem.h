@@ -141,18 +141,23 @@ public:
 
 		picker = RenderTarget::create(desc2);
 
-		std::vector<Hollow::Vertex> vertices;
-		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
-		vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));
-		vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));
-		vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
-		quadVB = Hollow::HardwareBufferManager::instance()->createVertexBuffer(vertices.data(), 4);
+		std::vector<Hollow::Vertex> vertices = { 
+			Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f),
+			Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f),
+			Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f),
+			Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f)
+		};
+
+		Hollow::VERTEX_BUFFER_DESC vdesc = { vertices.data(), vertices.size(), sizeof(Hollow::Vertex) };
+		quadVB = Hollow::VertexBuffer::create(vdesc);
 
 		unsigned int indices[] = {
 			0, 1, 2,
 			2, 1, 3
 		};
-		quadIB = Hollow::HardwareBufferManager::instance()->createIndexBuffer(indices, 6);
+
+		Hollow::INDEX_BUFFER_DESC idesc = { vertices.data(), vertices.size(), sizeof(Hollow::Vertex) };
+		quadIB = Hollow::IndexBuffer::create(idesc);
 
 		renderer->SetViewport(0, 0, this->width, this->height);
 		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
@@ -235,7 +240,7 @@ public:
 							}
 							renderer->SetVertexBuffer(object.vBuffer);
 							renderer->SetIndexBuffer(object.iBuffer);
-							renderer->DrawIndexed(object.iBuffer->getSize());
+							renderer->DrawIndexed(object.iBuffer->mHardwareBuffer->getSize());
 						}
 					}
 				}
@@ -249,7 +254,7 @@ public:
 
 						renderer->SetVertexBuffer(data->vBuffer);
 						renderer->SetIndexBuffer(data->iBuffer);
-						renderer->DrawIndexed(data->iBuffer->getSize());
+						renderer->DrawIndexed(data->iBuffer->mHardwareBuffer->getSize());
 					}
 				}
 			}
@@ -281,7 +286,7 @@ public:
 							Hollow::Material& material = renderable->materials[object.material];
 							renderer->SetVertexBuffer(object.vBuffer);
 							renderer->SetIndexBuffer(object.iBuffer);
-							renderer->DrawIndexed(object.iBuffer->getSize());
+							renderer->DrawIndexed(object.iBuffer->mHardwareBuffer->getSize());
 						}
 					}
 				}
@@ -356,7 +361,7 @@ public:
 		renderer->SetShader(ShaderManager::instance()->getShader("picker"));
 		renderer->SetVertexBuffer(object.vBuffer);
 		renderer->SetIndexBuffer(object.iBuffer);
-		renderer->DrawIndexed(object.iBuffer->getSize());
+		renderer->DrawIndexed(object.iBuffer->mHardwareBuffer->getSize());
 	}
 
 	// Update world view projection matrix
@@ -383,6 +388,6 @@ public:
 		renderer->SetShader(Hollow::ShaderManager::instance()->getShader("SkyMap"));
 		renderer->SetVertexBuffer(skyMap->mesh->models[0]->vBuffer);
 		renderer->SetIndexBuffer(skyMap->mesh->models[0]->iBuffer);
-		renderer->DrawIndexed(skyMap->mesh->models[0]->iBuffer->getSize());
+		renderer->DrawIndexed(skyMap->mesh->models[0]->iBuffer->mHardwareBuffer->getSize());
 	}
 };

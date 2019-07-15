@@ -69,13 +69,13 @@ namespace Hollow {
 		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
 		virtual void SetCullMode(CULL_MODE mode) override;
-
+		virtual void SetPipelineState(PipelineState* pipeline) override;
 
 		void SetSampler(int slot, D3D11SamplerState* sampler);
 		void SetRasterizerState(D3D11RasterizerState* rasterizer);
 		void SetBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
 
-		virtual void SetLayout(const INPUT_LAYOUT_DESC& desc) override;
+		virtual void SetLayout(InputLayout* layout) override;
 
 		virtual InputLayout* CreateLayout(const INPUT_LAYOUT_DESC& desc) override;
 		D3D11Context& getContext() { return *context; }

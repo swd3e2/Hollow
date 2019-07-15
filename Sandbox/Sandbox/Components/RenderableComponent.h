@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Hollow/ECS/Component.h"
-#include "Hollow/Graphics/Base/VertexBuffer.h"
-#include "Hollow/Graphics/Base/IndexBuffer.h"
+#include "Hollow/Graphics/Base/HardwareBuffer.h"
 #include <string>
 #include "Hollow/Graphics/Vertex.h"
 #include "vendor/tinygltf/json.hpp"
@@ -47,8 +46,19 @@ public:
 			renderable.id = i;
 			renderable.material = model->meshes[i]->material;
 
-			renderable.vBuffer = HardwareBufferManager::instance()->createVertexBuffer(model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size());
-			renderable.iBuffer = HardwareBufferManager::instance()->createIndexBuffer(model->meshes[i]->indices.data(), model->meshes[i]->indices.size());
+			Hollow::VERTEX_BUFFER_DESC vdesc;
+			vdesc.data = model->meshes[i]->vertices.data();
+			vdesc.size = model->meshes[i]->vertices.size();
+			vdesc.stride = sizeof(Hollow::Vertex);
+
+			renderable.vBuffer = HardwareBufferManager::instance()->create(vdesc);
+
+			Hollow::INDEX_BUFFER_DESC idesc;
+			idesc.data = model->meshes[i]->indices.data();
+			idesc.size = model->meshes[i]->indices.size();
+			idesc.stride = sizeof(unsigned int);
+
+			renderable.iBuffer = HardwareBufferManager::instance()->create(idesc);
 
 			renderables.push_back(renderable);
 		}

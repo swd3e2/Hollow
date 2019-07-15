@@ -7,12 +7,18 @@
 namespace Hollow {
 	enum SHADER_TYPE
 	{
-		VERTEX = 0,
-		PIXEL = 1,
-		GEOMERTY = 2,
-		COMPUTE = 3,
-		HULL = 4,
-		DOMAINS = 5
+		VERTEX, PIXEL, GEOMERTY, COMPUTE, HULL, DOMAINS
+	};
+
+	struct SHADER_DESC
+	{
+		SHADER_TYPE type;
+		std::string content;
+		std::string entryPoint;
+
+		SHADER_DESC(SHADER_TYPE type, const std::string& content, const std::string& entryPoint) :
+			type(type), content(content), entryPoint(entryPoint)
+		{}
 	};
 
 	class Shader

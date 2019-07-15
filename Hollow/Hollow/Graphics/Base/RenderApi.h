@@ -13,6 +13,8 @@
 #include "GPUBuffer.h"
 #include "RenderTarget.h"
 #include "InputLayout.h"
+#include "PipelineState.h"
+
 
 namespace Hollow {
 	enum DEPTH_TEST_FUNCTION {
@@ -52,7 +54,8 @@ namespace Hollow {
 		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) = 0;
 		virtual void SetCullMode(CULL_MODE mode) = 0;
 		virtual void Present() = 0;
-		virtual void SetLayout(const INPUT_LAYOUT_DESC& desc) = 0;
+		virtual void SetLayout(InputLayout* layout) = 0;
+		virtual void SetPipelineState(PipelineState* pipeline) = 0;
 		virtual InputLayout* CreateLayout(const INPUT_LAYOUT_DESC& desc) = 0;
 	};
 }

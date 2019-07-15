@@ -9,7 +9,6 @@
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/ECS/EntityManager.h"
 #include "Hollow/ECS/ComponentManager.h"
-#include "Hollow/Graphics/ShaderManager.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Components/RenderableComponent.h"
@@ -25,7 +24,6 @@ public:
 	/** Project folders where app will find files */
 	std::string MeshesFolder;
 	std::string TexturesFolder;
-	std::string ShadersFolder;
 
 	/** Project folders */
 	std::string projectFolder;
@@ -55,10 +53,7 @@ public:
 
 			MeshesFolder = projectData["MeshesFolder"].get<std::string>();
 			TexturesFolder = projectData["TexturesFolder"].get<std::string>();
-			ShadersFolder = projectData["ShadersFolder"].get<std::string>();
 			projectFileName = filename;
-
-			Hollow::ShaderManager::instance()->loadShadersFromFolder("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders");
 
 			for (auto& it : projectData["Entities"]) {
 				GameObject* gameObject = Hollow::EntityManager::instance()->create<GameObject>();
@@ -117,16 +112,11 @@ public:
 			Hollow::FileSystem::CreateFolder(projectFolder);
 			Hollow::FileSystem::CreateFolder(projectFolder + "/Meshes");
 			Hollow::FileSystem::CreateFolder(projectFolder + "/Textures");
-			Hollow::FileSystem::CreateFolder(projectFolder + "/Shaders");
 
 			json projectData;
 
 			MeshesFolder = projectData["MeshesFolder"] = projectFolder + "/Meshes";
 			TexturesFolder = projectData["TexturesFolder"] = projectFolder + "/Textures";
-			ShadersFolder = projectData["ShadersFolder"] = projectFolder + "/Shaders";
-
-			copyShaders();
-			Hollow::ShaderManager::instance()->loadShadersFromFolder(ShadersFolder);
 
 			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());
 
@@ -151,7 +141,6 @@ public:
 
 			projectData["MeshesFolder"] = MeshesFolder;
 			projectData["TexturesFolder"] = TexturesFolder;
-			projectData["ShadersFolder"] = ShadersFolder;
 
 			int counter = 0;
 			for (auto& it : Hollow::EntityManager::instance()->container<GameObject>()) {
@@ -184,30 +173,6 @@ public:
 
 	Hollow::RendererType getRendererType() const { return rendererType; }
 private:
-	void copyShaders()
-	{
-		Hollow::FileSystem::CreateFolder(ShadersFolder + "/D3D11");
-		Hollow::FileSystem::CreateFolder(ShadersFolder + "/OGL");
-
-		Hollow::FileSystem::CreateFolder(ShadersFolder + "/D3D11/vertex");
-		Hollow::FileSystem::CreateFolder(ShadersFolder + "/D3D11/pixel");
-		Hollow::FileSystem::CreateFolder(ShadersFolder + "/OGL/vertex");
-		Hollow::FileSystem::CreateFolder(ShadersFolder + "/OGL/pixel");
-
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/vertex/default.hlsl", ShadersFolder + "/D3D11/vertex/default.hlsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/pixel/default.hlsl", ShadersFolder + "/D3D11/pixel/default.hlsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/vertex/SkyMap.hlsl", ShadersFolder + "/D3D11/vertex/SkyMap.hlsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/pixel/SkyMap.hlsl", ShadersFolder + "/D3D11/pixel/SkyMap.hlsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/vertex/picker.hlsl", ShadersFolder + "/D3D11/vertex/picker.hlsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/D3D11/pixel/picker.hlsl", ShadersFolder + "/D3D11/pixel/picker.hlsl");
-
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/vertex/default.glsl", ShadersFolder + "/OGL/vertex/default.glsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/pixel/default.glsl", ShadersFolder + "/OGL/pixel/default.glsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/vertex/SkyMap.glsl", ShadersFolder + "/OGL/vertex/SkyMap.glsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/pixel/SkyMap.glsl", ShadersFolder + "/OGL/pixel/SkyMap.glsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/vertex/picker.glsl", ShadersFolder + "/OGL/vertex/picker.glsl");
-		Hollow::FileSystem::Copy("Sandbox/Resources/Shaders/OGL/pixel/picker.glsl", ShadersFolder + "/OGL/pixel/picker.glsl");
-	}
 };
 
 #endif

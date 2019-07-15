@@ -18,6 +18,7 @@
 #include "Hollow/Graphics/Base/Window.h"
 #include "OGLInputLayout.h"
 #include "OGLHelper.h"
+#include "OGLPipelineStateManager.h"
 
 namespace Hollow {
 	class OGLRenderApi : public RenderApi
@@ -25,7 +26,6 @@ namespace Hollow {
 	private:
 		HWND* hwnd;
 		bool cullEnabled = false;
-		OGLInputLayout* currentLayout;
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();
@@ -42,8 +42,9 @@ namespace Hollow {
 		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
 		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
 		virtual void SetCullMode(CULL_MODE mode) override;
-		virtual void SetLayout(const INPUT_LAYOUT_DESC& desc) override;
+		virtual void SetLayout(InputLayout* layout) override;
 		virtual InputLayout* CreateLayout(const INPUT_LAYOUT_DESC& desc) override;
+		virtual void SetPipelineState(PipelineState* pipeline) override;
 
 		virtual void Draw(UINT count)override {}
 		virtual void DrawIndexed(UINT count) override;

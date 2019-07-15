@@ -8,6 +8,7 @@ namespace Hollow {
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		device = r->getContext().getDevice();
 	}
+
 	Shader* D3D11ShaderManager::create(const SHADER_DESC& desc)
 	{
 		switch (desc.type)
@@ -35,11 +36,6 @@ namespace Hollow {
 		default:
 			break;
 		}
-	}
-
-	ShaderProgram* D3D11ShaderManager::createShaderProgram(const SHADER_PROGRAM_DESC& desc)
-	{
-		return nullptr;
 	}
 
 	HRESULT D3D11ShaderManager::compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob)

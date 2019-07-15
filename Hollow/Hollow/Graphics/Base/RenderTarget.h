@@ -23,8 +23,6 @@ namespace Hollow {
 	class RenderTarget
 	{
 	private:
-		friend class RenderTargetManager;
-	private:
 		int width;
 		int height;
 	public:
@@ -34,7 +32,7 @@ namespace Hollow {
 			width(width), height(height), count(count)
 		{}
 
-		static RenderTarget* create(RENDER_TARGET_DESC desc) { return RenderTargetManager::instance()->create(desc); }
+		static RenderTarget* create(RENDER_TARGET_DESC desc);
 
 		int getWidth() const { return width; }
 		int getHeight() const { return height; }

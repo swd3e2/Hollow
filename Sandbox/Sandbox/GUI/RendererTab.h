@@ -54,7 +54,7 @@ namespace GUI {
 					renderSystem->shadow.shadowCamera->mainCamera = false;
 				}
 			}
-			if (ImGui::CollapsingHeader("Shaders")) {
+			/*if (ImGui::CollapsingHeader("Shaders")) {
 				auto& shaders = ShaderManager::instance()->shaders;
 				for (auto& it : shaders) {
 					ImGui::Text(it.first.c_str());
@@ -64,7 +64,7 @@ namespace GUI {
 						ShaderManager::instance()->reloadShader(it.second);
 					}
 				}
-			}
+			}*/
 			ImGui::End();
 
 			ImGui::Begin("Scene");

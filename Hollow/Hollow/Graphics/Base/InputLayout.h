@@ -90,28 +90,7 @@ namespace Hollow {
 
 	class InputLayout
 	{
-		
+	public:
+		std::vector<INPUT_LAYOUT_ELEMENT> layout;
 	};
 }
-
-/*
-		glVertexAttribFormat(0, 4, GL_FLOAT, GL_FALSE, 0)
-		glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 16)
-		glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 24)
-
-		glVertexAttribPointer(POSITION_LOCATION,	3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glVertexAttribPointer(TEX_COORD_LOCATION,	2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
-		glVertexAttribPointer(NORMAL_LOCATION,		3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);
-		glVertexAttribPointer(TANGENT_LOCATION,		3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32);
-		glVertexAttribPointer(BITANGENT_LOCATION,	3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)44);
-		glVertexAttribIPointer(BONE_ID_LOCATION,	4, GL_INT,	sizeof(Vertex), (const GLvoid*)56);
-		glVertexAttribPointer(WEIGHTS_LOCATION,		4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)72);
-
-		{ "POSITION",   0, DXGI_FORMAT_R32G32B32_FLOAT,	   0,							 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",   0, DXGI_FORMAT_R32G32_FLOAT,	   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT,	   0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BITANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BONEID",     0, DXGI_FORMAT_R32G32B32A32_SINT,  0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "WEIGHT",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	*/

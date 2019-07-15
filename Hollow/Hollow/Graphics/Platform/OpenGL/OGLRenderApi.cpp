@@ -8,6 +8,7 @@ namespace Hollow {
 		ShaderManager::startUp<OGLShaderManager>();
 		GPUBufferManager::startUp<OGLGPUBufferManager>();
 		RenderTargetManager::startUp<OGLRenderTargetManager>();
+		PipelineStateManager::startUp<OGLPipelineStateManager>();
 
 		hwnd = static_cast<OGLWin32Window*>(Window::instance())->getHWND();
 		glEnable(GL_DEPTH_TEST);
@@ -21,6 +22,7 @@ namespace Hollow {
 		ShaderManager::shutdown();
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
+		PipelineStateManager::shutdown();
 	}
 
 	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
@@ -31,7 +33,19 @@ namespace Hollow {
 
 	void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 	{
-		glBindVertexArray(static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer)->mVertexArrayObject);
+		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
+		glBindVertexBuffer(0, oglBuffer->mVertexArrayBuffer, 0, oglBuffer->getStride());
+
+		if (mCurrentLayout != nullptr && oglBuffer->mCurrentInputLayout != mCurrentLayout) {
+			oglBuffer->mCurrentInputLayout = mCurrentLayout;
+
+			for (int i = 0; i < mCurrentLayout->layout.size(); i++) {
+				glEnableVertexArrayAttrib(oglBuffer->mVertexArrayObject, i);
+				glVertexArrayAttribFormat(oglBuffer->mVertexArrayObject, i, mCurrentLayout->layout[i].getNumberElements(),
+					OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type), GL_FALSE, mCurrentLayout->layout[i].offset);
+				glVertexArrayAttribBinding(oglBuffer->mVertexArrayObject, i, 0);
+			}
+		}
 	}
 
 	void OGLRenderApi::SetTexture(UINT location, Texture* texture)
@@ -165,13 +179,16 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::SetLayout(const INPUT_LAYOUT_DESC& desc)
+	void OGLRenderApi::SetLayout(InputLayout* layout)
 	{
+		mCurrentLayout = layout;
 	}
 
 	InputLayout* OGLRenderApi::CreateLayout(const INPUT_LAYOUT_DESC& desc)
 	{
 		OGLInputLayout* layout = new OGLInputLayout();
+		layout->layout = desc.layout;
+
 		glCreateVertexArrays(1, &layout->vao);
 			
 		for (int i = 0; i < desc.layout.size(); i++) {
@@ -183,6 +200,13 @@ namespace Hollow {
 
 		return nullptr;
 	}
+
+	void OGLRenderApi::SetPipelineState(PipelineState* pipeline)
+	{
+		OGLPipelineState* oglPipeline = static_cast<OGLPipelineState*>(pipeline);
+		glBindProgramPipeline(oglPipeline->pipelineId);
+	}
+
 
 	void OGLRenderApi::DrawIndexed(UINT count)
 	{

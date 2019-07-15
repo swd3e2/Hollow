@@ -303,9 +303,6 @@
     <ClInclude Include="Hollow\Graphics\Base\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Base\ShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Base\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -372,9 +369,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderResourceMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -400,9 +394,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLHardwareBufferManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLIndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPrerequisites.h">
@@ -463,6 +454,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\RenderStateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\PipelineStateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PipelineState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PipelineStateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -609,6 +612,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Base\HardwareBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11PipelineStateManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Base\PipelineState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineStateManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Base\RenderTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
