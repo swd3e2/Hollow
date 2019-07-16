@@ -10,7 +10,7 @@ namespace Hollow {
 		UINT size;
 
 		VERTEX_BUFFER_DESC() = default;
-		VERTEX_BUFFER_DESC(void* data, UINT size, UINT stride) :
+		VERTEX_BUFFER_DESC(void* data, size_t size, UINT stride) :
 			data(data), size(size), stride(stride)
 		{}
 	};
@@ -22,7 +22,7 @@ namespace Hollow {
 		UINT size;
 
 		INDEX_BUFFER_DESC() = default;
-		INDEX_BUFFER_DESC(void* data, UINT size, UINT stride) :
+		INDEX_BUFFER_DESC(void* data, size_t size, UINT stride) :
 			data(data), size(size), stride(stride)
 		{}
 	};

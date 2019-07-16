@@ -87,6 +87,11 @@ private:
 	PerModel perModelData;
 	PerMesh perMeshData;
 
+	PipelineState* gBufferPipeline; 
+	PipelineState* depthPipeline;
+	PipelineState* lightPipeline;
+	PipelineState* skyMapPipeline;
+
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
 	int spotLifhtNum = 0;
@@ -118,7 +123,81 @@ public:
 			lightInfoBuffer			= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
 			boneInfo				= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 		}
-		
+		// Shaders
+		{
+			Hollow::INPUT_LAYOUT_DESC layoutDesc = {
+				{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" }, // pos
+				{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" }, // texcoord
+				{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
+				{ Hollow::INPUT_DATA_TYPE::Float3, "TANGENT" }, // tangent
+				{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, // bitangent 
+			};
+
+			Hollow::InputLayout* layout = Hollow::InputLayout::create(layoutDesc);
+
+			renderer->SetLayout(layout);
+
+			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/gbuffer.hlsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/gbuffer.hlsl"), "main" });
+
+					gBufferPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/depth.hlsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/depth.hlsl"), "main" });
+
+					depthPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/light.hlsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/light.hlsl"), "main" });
+
+					lightPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/SkyMap.hlsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/SkyMap.hlsl"), "main" });
+
+					skyMapPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+			} else {
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/gbuffer.glsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/gbuffer.glsl"), "main" });
+
+					gBufferPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/depth.glsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/depth.glsl"), "main" });
+
+					depthPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/light.glsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/light.glsl"), "main" });
+
+					lightPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/SkyMap.glsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/SkyMap.glsl"), "main" });
+
+					skyMapPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
+			}
+			
+		}
 		// Render targets
 		Hollow::RENDER_TARGET_DESC desc;
 		desc.count = 3;
@@ -141,23 +220,20 @@ public:
 
 		picker = RenderTarget::create(desc2);
 
-		std::vector<Hollow::Vertex> vertices = { 
-			Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f),
-			Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f),
-			Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f),
-			Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f)
-		};
+		std::vector<Hollow::Vertex> vertices;			
+		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));				
+		vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));				
+		vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));				
+		vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
 
-		Hollow::VERTEX_BUFFER_DESC vdesc = { vertices.data(), vertices.size(), sizeof(Hollow::Vertex) };
-		quadVB = Hollow::VertexBuffer::create(vdesc);
+		quadVB = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Hollow::Vertex) });
 
 		unsigned int indices[] = {
 			0, 1, 2,
 			2, 1, 3
 		};
 
-		Hollow::INDEX_BUFFER_DESC idesc = { vertices.data(), vertices.size(), sizeof(Hollow::Vertex) };
-		quadIB = Hollow::IndexBuffer::create(idesc);
+		quadIB = Hollow::IndexBuffer::create({ indices, 6, sizeof(Hollow::Vertex) });
 
 		renderer->SetViewport(0, 0, this->width, this->height);
 		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
@@ -215,7 +291,8 @@ public:
 			// GBuffer pass
 			{
 				renderer->SetRenderTarget(gBuffer);
-				renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
+				//renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
+				renderer->SetPipelineState(gBufferPipeline);
 				renderer->SetCullMode(Hollow::CULL_MODE::CULL_BACK);
 
 				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
@@ -267,7 +344,7 @@ public:
 				renderer->SetGpuBuffer(shadowConstantBuffer);
 
 				renderer->SetRenderTarget(shadow.renderTarget);
-				renderer->SetShader(ShaderManager::instance()->getShader("depth"));
+				renderer->SetPipelineState(depthPipeline);
 
 				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
@@ -294,7 +371,7 @@ public:
 			// Light pass
 			{
 				renderer->SetViewport(0, 0, this->width, this->height);
-				renderer->SetCullMode(Hollow::CULL_MODE::CULL_BACK);
+				renderer->SetCullMode(Hollow::CULL_MODE::CULL_NONE);
 				renderer->SetRenderTarget(0);
 				renderer->SetTextureColorBuffer(0, gBuffer, 0);
 				renderer->SetTextureColorBuffer(1, gBuffer, 1);
@@ -302,7 +379,8 @@ public:
 				renderer->SetTextureDepthBuffer(3, shadow.renderTarget);
 				renderer->SetTextureDepthBuffer(5, gBuffer);
 
-				renderer->SetShader(ShaderManager::instance()->getShader("light"));
+				renderer->SetPipelineState(lightPipeline);
+
 				renderer->SetVertexBuffer(quadVB);
 				renderer->SetIndexBuffer(quadIB);
 				renderer->DrawIndexed(6);
@@ -358,7 +436,7 @@ public:
 		perModel->update(&perModelData);
 		renderer->SetGpuBuffer(perModel);
 
-		renderer->SetShader(ShaderManager::instance()->getShader("picker"));
+		//renderer->SetShader(ShaderManager::instance()->getShader("picker"));
 		renderer->SetVertexBuffer(object.vBuffer);
 		renderer->SetIndexBuffer(object.iBuffer);
 		renderer->DrawIndexed(object.iBuffer->mHardwareBuffer->getSize());
@@ -385,7 +463,8 @@ public:
 
 		renderer->SetTexture(4, skyMap->mesh->models[0]->material->diffuseTexture);
 		
-		renderer->SetShader(Hollow::ShaderManager::instance()->getShader("SkyMap"));
+		renderer->SetPipelineState(skyMapPipeline);
+		
 		renderer->SetVertexBuffer(skyMap->mesh->models[0]->vBuffer);
 		renderer->SetIndexBuffer(skyMap->mesh->models[0]->iBuffer);
 		renderer->DrawIndexed(skyMap->mesh->models[0]->iBuffer->mHardwareBuffer->getSize());

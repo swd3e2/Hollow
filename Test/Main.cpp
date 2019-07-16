@@ -27,8 +27,24 @@ int main()
 		{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, // bitangent 
 	};
 
-	Hollow::InputLayout* layout = renderer->CreateLayout(layoutDesc);
-	Hollow::ShaderManager::instance()->create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent(""), "main" });
+	Hollow::InputLayout* layout = Hollow::InputLayout::create(layoutDesc);
+	Hollow::Shader* vertexShader = Hollow::Shader::create({ 
+		Hollow::SHADER_TYPE::VERTEX, 
+		Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/default.hlsl"), 
+		"main" 
+	});
+	Hollow::Shader* pixelShader = Hollow::Shader::create({
+		Hollow::SHADER_TYPE::PIXEL,
+		Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/default.hlsl"),
+		"main"
+	});
+
+	Hollow::PIPELINE_STATE_DESC pdesc;
+	pdesc.vertexShader = vertexShader;
+	pdesc.pixelShader = pixelShader;
+
+	Hollow::PipelineState* pipeline = Hollow::PipelineState::create(pdesc);
+
 	std::cin.get();
 
 	return 0;

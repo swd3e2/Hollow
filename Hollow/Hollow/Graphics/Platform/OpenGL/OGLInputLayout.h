@@ -6,7 +6,7 @@
 namespace Hollow {
 	class OGLInputLayout : public InputLayout
 	{
-	private:
+	public:
 		friend class OGLRenderApi;
 		GLuint vao;
 	};

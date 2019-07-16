@@ -59,7 +59,6 @@ namespace Hollow {
 		virtual void UnsetTexture(UINT) override;
 		virtual void SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum) override;
 		virtual void SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget) override;
-		virtual void SetShader(ShaderProgram* shader) override;
 		virtual void Present() override;
 		virtual void Draw(UINT count) override;
 		virtual void DrawIndexed(UINT count) override;
@@ -77,7 +76,6 @@ namespace Hollow {
 
 		virtual void SetLayout(InputLayout* layout) override;
 
-		virtual InputLayout* CreateLayout(const INPUT_LAYOUT_DESC& desc) override;
 		D3D11Context& getContext() { return *context; }
 	};
 }

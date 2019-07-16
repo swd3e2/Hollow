@@ -9,7 +9,6 @@
 #include "Texture.h"
 #include "RenderTarget.h"
 #include "Shader.h"
-#include "ShaderProgram.h"
 #include "GPUBuffer.h"
 #include "RenderTarget.h"
 #include "InputLayout.h"
@@ -44,7 +43,6 @@ namespace Hollow {
 		virtual void UnsetTexture(UINT) = 0;
 		virtual void SetTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) = 0;
 		virtual void SetTextureDepthBuffer(UINT, RenderTarget*) = 0;
-		virtual void SetShader(ShaderProgram*) = 0;
 		virtual void SetGpuBuffer(GPUBuffer*) = 0;
 		virtual void Draw(UINT count) = 0;
 		virtual void DrawIndexed(UINT count) = 0;
@@ -56,7 +54,6 @@ namespace Hollow {
 		virtual void Present() = 0;
 		virtual void SetLayout(InputLayout* layout) = 0;
 		virtual void SetPipelineState(PipelineState* pipeline) = 0;
-		virtual InputLayout* CreateLayout(const INPUT_LAYOUT_DESC& desc) = 0;
 	};
 }
 

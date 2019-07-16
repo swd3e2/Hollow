@@ -15,7 +15,7 @@ namespace Hollow {
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;
 		bufferDesc.StructureByteStride = 0;
-
+		
 		D3D11_SUBRESOURCE_DATA bufferData;
 		bufferData.pSysMem = desc.data;
 		bufferData.SysMemPitch = 0;

@@ -12,11 +12,52 @@ namespace Hollow {
 	class D3D11PipelineState : public PipelineState
 	{
 	public:
-		D3D11VertexShader* getVertexShader() { return dynamic_cast<D3D11VertexShader*>(this->vertexShader); }
-		D3D11PixelShader* getPixelShader() { return dynamic_cast<D3D11PixelShader*>(this->pixelShader); }
-		D3D11GeometryShader* getGeometryShader() { return dynamic_cast<D3D11GeometryShader*>(this->geometryShader); }
-		D3D11DomainShader* getDomainShader() { return dynamic_cast<D3D11DomainShader*>(this->domainShader); }
-		D3D11HullShader* getHullShader() { return dynamic_cast<D3D11HullShader*>(this->hullShader); }
-		D3D11ComputeShader* getComputeShader() { return dynamic_cast<D3D11ComputeShader*>(this->computeShader); }
+		D3D11VertexShader* getVertexShader() 
+		{ 
+			if (this->vertexShader != nullptr) {
+				return dynamic_cast<D3D11VertexShader*>(this->vertexShader);
+			}
+			return nullptr;
+		}
+		
+		D3D11PixelShader* getPixelShader() 
+		{ 
+			if (this->pixelShader != nullptr) {
+				return dynamic_cast<D3D11PixelShader*>(this->pixelShader);
+			}
+			return nullptr;
+		}
+		
+		D3D11GeometryShader* getGeometryShader() 
+		{ 
+			if (this->geometryShader != nullptr) {
+				return dynamic_cast<D3D11GeometryShader*>(this->geometryShader);
+			}
+			return nullptr;
+		}
+		
+		D3D11DomainShader* getDomainShader() 
+		{ 
+			if (this->domainShader != nullptr) {
+				return dynamic_cast<D3D11DomainShader*>(this->domainShader);
+			}
+			return nullptr;
+		}
+		
+		D3D11HullShader* getHullShader() 
+		{ 
+			if (this->hullShader != nullptr) {
+				return dynamic_cast<D3D11HullShader*>(this->hullShader);
+			}
+			return nullptr;
+		}
+		
+		D3D11ComputeShader* getComputeShader() 
+		{ 
+			if (this->computeShader != nullptr) {
+				return dynamic_cast<D3D11ComputeShader*>(this->computeShader);
+			}
+			return nullptr;
+		}
 	};
 }

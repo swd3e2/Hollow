@@ -9,6 +9,7 @@ namespace Hollow {
 		GPUBufferManager::startUp<OGLGPUBufferManager>();
 		RenderTargetManager::startUp<OGLRenderTargetManager>();
 		PipelineStateManager::startUp<OGLPipelineStateManager>();
+		InputLayoutManager::startUp<OGLInputLayoutManager>();
 
 		hwnd = static_cast<OGLWin32Window*>(Window::instance())->getHWND();
 		glEnable(GL_DEPTH_TEST);
@@ -23,6 +24,7 @@ namespace Hollow {
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
 		PipelineStateManager::shutdown();
+		InputLayoutManager::shutdown();
 	}
 
 	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
@@ -77,11 +79,6 @@ namespace Hollow {
 		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->depth);
-	}
-
-	void OGLRenderApi::SetShader(ShaderProgram* shader)
-	{
-		glUseProgram(static_cast<OGLShaderProgram*>(shader)->shaderId);
 	}
 
 	void OGLRenderApi::SetGpuBuffer(GPUBuffer* buffer)
@@ -182,23 +179,6 @@ namespace Hollow {
 	void OGLRenderApi::SetLayout(InputLayout* layout)
 	{
 		mCurrentLayout = layout;
-	}
-
-	InputLayout* OGLRenderApi::CreateLayout(const INPUT_LAYOUT_DESC& desc)
-	{
-		OGLInputLayout* layout = new OGLInputLayout();
-		layout->layout = desc.layout;
-
-		glCreateVertexArrays(1, &layout->vao);
-			
-		for (int i = 0; i < desc.layout.size(); i++) {
-			glEnableVertexArrayAttrib(layout->vao, i);
-			glVertexArrayAttribFormat(layout->vao, i, desc.layout[i].getNumberElements(), 
-				OGLHelper::getInputLayoutFormat(desc.layout[i].type), GL_FALSE, desc.layout[i].offset);
-			glVertexArrayAttribBinding(layout->vao, i, 0);
-		}
-
-		return nullptr;
 	}
 
 	void OGLRenderApi::SetPipelineState(PipelineState* pipeline)

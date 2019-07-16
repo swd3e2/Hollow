@@ -22,13 +22,13 @@
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
-	/*
-	Hollow::Core core(Hollow::RendererType::DirectX);
+	
+	Hollow::Core core(Hollow::RendererType::OpenGL);
 
 	Hollow::Window* window = core.windowManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
 	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::DirectX);
+	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
@@ -60,6 +60,6 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 		core.PostUpdate();
 	}
-	*/
+	
 	return 0;
 }

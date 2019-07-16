@@ -36,8 +36,6 @@ namespace Hollow {
 		Texture* emisiveTexture;
 		Texture* occlusionTexture;
 
-		ShaderProgram* shader;
-
 		Material()
 		{
 			//shader = ShaderManager::instance()->getShader("default");

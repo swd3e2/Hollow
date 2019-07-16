@@ -21,8 +21,6 @@ struct VertexShaderInput
 	float3 normal		: NORMAL;
 	float3 tangent		: TANGENT;
 	float3 bitangent	: BITANGENT;
-	int4 boneId			: BONEID;
-	float4 weight		: WEIGHT;
 };
 
 

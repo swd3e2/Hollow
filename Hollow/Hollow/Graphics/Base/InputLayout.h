@@ -49,15 +49,15 @@ namespace Hollow {
 		{
 			switch (type)
 			{
-			case Hollow::Float:		return 1;
-			case Hollow::Float2:	return 2;
-			case Hollow::Float3:	return 3;
-			case Hollow::Float4:	return 4;
-			case Hollow::Int:		return 1;
-			case Hollow::Int2:		return 2;
-			case Hollow::Int3:		return 3;
-			case Hollow::Int4:		return 4;
-			case Hollow::Bool:		return 1;
+				case Hollow::Float:		return 1;
+				case Hollow::Float2:	return 2;
+				case Hollow::Float3:	return 3;
+				case Hollow::Float4:	return 4;
+				case Hollow::Int:		return 1;
+				case Hollow::Int2:		return 2;
+				case Hollow::Int3:		return 3;
+				case Hollow::Int4:		return 4;
+				case Hollow::Bool:		return 1;
 			}
 			return 0;
 		}
@@ -92,5 +92,7 @@ namespace Hollow {
 	{
 	public:
 		std::vector<INPUT_LAYOUT_ELEMENT> layout;
+	public:
+		static InputLayout* create(const INPUT_LAYOUT_DESC& desc);
 	};
 }

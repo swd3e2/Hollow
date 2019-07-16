@@ -4,9 +4,7 @@
 #define HW_OGL_SHADER_MANAGER_H
 
 #include "Hollow/Graphics/ShaderManager.h"
-#include "OGLShaderProgram.h"
 #include "OGLShader.h"
-#include "OGLShaderProgram.h"
 
 namespace Hollow {
 	class OGLShaderManager : public ShaderManager
@@ -19,12 +17,12 @@ namespace Hollow {
 			{
 				case SHADER_TYPE::VERTEX: {
 					OGLShader* shader = new OGLShader(SHADER_TYPE::VERTEX);
-					glCreateShaderProgramv(GL_VERTEX_SHADER, shader->shaderId, &shaderCode);
+					shader->shaderId = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &shaderCode);
 					return shader;
 				} break;
 				case SHADER_TYPE::PIXEL: {
 					OGLShader* shader = new OGLShader(SHADER_TYPE::PIXEL);
-					glCreateShaderProgramv(GL_FRAGMENT_SHADER, shader->shaderId, &shaderCode);
+					shader->shaderId = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &shaderCode);
 					return shader;
 				} break;
 				default:

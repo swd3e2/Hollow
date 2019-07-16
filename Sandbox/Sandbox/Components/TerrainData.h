@@ -38,9 +38,7 @@ public:
 			}
 		}
 
-		vBuffer = Hollow::HardwareBufferManager::instance()->createVertexBuffer(vertices.data(), vertices.size());
-		iBuffer = Hollow::HardwareBufferManager::instance()->createIndexBuffer(indices.data(), indices.size());
-
-		if (0) {}
+		vBuffer = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Hollow::Vertex)});
+		iBuffer = Hollow::IndexBuffer::create({ indices.data(), indices.size(), sizeof(unsigned int) });
 	}
 };

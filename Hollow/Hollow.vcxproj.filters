@@ -303,9 +303,6 @@
     <ClInclude Include="Hollow\Graphics\Base\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Base\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Base\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -414,9 +411,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -466,6 +460,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineStateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\InputLayoutManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Base\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11InputLayoutManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayoutManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -624,6 +630,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Base\RenderTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11InputLayoutManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayoutManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Base\InputLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Base\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

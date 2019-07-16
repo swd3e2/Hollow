@@ -46,9 +46,9 @@ Hollow::Mesh* getCube()
 		6, 7, 3
 	};
 	Hollow::INDEX_BUFFER_DESC idesc;
-	desc.data = cube_elements;
-	desc.size = 36;
-	desc.stride = sizeof(unsigned int);
+	idesc.data = cube_elements;
+	idesc.size = 36;
+	idesc.stride = sizeof(unsigned int);
 
 	model->iBuffer = Hollow::HardwareBufferManager::instance()->create(idesc);
 

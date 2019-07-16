@@ -7,7 +7,6 @@
 #include "Base/Shader.h"
 #include <unordered_map>
 #include "Hollow/Platform.h"
-#include "Base/ShaderProgram.h"
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/Common/Helper.h"
 #include <string>

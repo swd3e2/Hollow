@@ -20,6 +20,7 @@
 #include "D3D11Helper.h"
 #include "Hollow/Common/Helper.h"
 #include "D3D11PipelineStateManager.h"
+#include "D3D11InputLayoutManager.h"
 
 namespace Hollow {
 	D3D11RenderApi::D3D11RenderApi(int width, int height)
@@ -40,6 +41,8 @@ namespace Hollow {
 		ShaderManager::shutdown();
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
+		PipelineStateManager::shutdown();
+		InputLayoutManager::shutdown();
 	}
 
 	void D3D11RenderApi::onStartUp()
@@ -178,6 +181,7 @@ namespace Hollow {
 		GPUBufferManager::startUp<D3D11GPUBufferManager>();
 		RenderTargetManager::startUp<D3D11RenderTargetManager>();
 		PipelineStateManager::startUp<D3D11PipelineStateManager>();
+		InputLayoutManager::startUp<D3D11InputLayoutManager>();
 	}
 
 	void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)
@@ -211,17 +215,6 @@ namespace Hollow {
 		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
 		auto ptr = d3dRenderTarget->GetDepthStencilResource();
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &ptr);
-	}
-
-	void D3D11RenderApi::SetShader(ShaderProgram* shader)
-	{
-		if (shader->getVertexShader() != nullptr) {
-			context->getDeviceContext()->VSSetShader(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetShader(), NULL, 0);
-			context->getDeviceContext()->IASetInputLayout(static_cast<D3D11VertexShader*>(shader->getVertexShader())->GetInputLayout());
-		}
-		if (shader->getPixelShader() != nullptr) {
-			context->getDeviceContext()->PSSetShader(static_cast<D3D11PixelShader*>(shader->getPixelShader())->GetShader(), NULL, 0);
-		}
 	}
 
 	void D3D11RenderApi::SetIndexBuffer(IndexBuffer* buffer)
@@ -308,24 +301,27 @@ namespace Hollow {
 		if (d3dVertexShader != nullptr) {
 			context->getDeviceContext()->VSSetShader(d3dVertexShader->GetShader(), NULL, 0);
 		}
+
 		D3D11PixelShader* d3dPixelShader = d3dPipeline->getPixelShader();
 		if (d3dPixelShader != nullptr) {
 			context->getDeviceContext()->PSSetShader(d3dPixelShader->GetShader(), NULL, 0);
 		}
+
 		D3D11GeometryShader* d3dGeometryShader = d3dPipeline->getGeometryShader();
 		if (d3dGeometryShader != nullptr) {
 			context->getDeviceContext()->GSSetShader(d3dGeometryShader->GetShader(), NULL, 0);
 		}
-		D3D11DomainShader* d3dDomainShader = d3dPipeline->getDomainShader();
 
+		D3D11DomainShader* d3dDomainShader = d3dPipeline->getDomainShader();
 		if (d3dDomainShader != nullptr) {
 			context->getDeviceContext()->DSSetShader(d3dDomainShader->GetShader(), NULL, 0);
 		}
-		D3D11HullShader* d3dHullShader = d3dPipeline->getHullShader();
 
+		D3D11HullShader* d3dHullShader = d3dPipeline->getHullShader();
 		if (d3dHullShader != nullptr) {
 			context->getDeviceContext()->HSSetShader(d3dHullShader->GetShader(), NULL, 0);
 		}
+
 		D3D11ComputeShader* d3dComputeShader = d3dPipeline->getComputeShader();
 		if (d3dComputeShader != nullptr) {
 			context->getDeviceContext()->CSSetShader(d3dComputeShader->GetShader(), NULL, 0);
@@ -363,57 +359,6 @@ namespace Hollow {
 	{
 		D3D11InputLayout* inputLayout = static_cast<D3D11InputLayout*>(layout);
 		context->getDeviceContext()->IASetInputLayout(inputLayout->m_InputLayout);
-	}
-
-	InputLayout* D3D11RenderApi::CreateLayout(const INPUT_LAYOUT_DESC& desc)
-	{
-		D3D11InputLayout* inputLayout = new D3D11InputLayout();
-		inputLayout->layout = desc.layout;
-
-		ID3DBlob* shaderBlob = nullptr;
-		ID3DBlob* errorBlob = nullptr;
-
-		std::string temp = "struct VertexShaderInput {";
-		for (int i = 0; i < desc.layout.size(); i++) {
-			temp += D3D11Helper::getInputLayoutShaderFormat(desc.layout[i].type) + " attr" + std::to_string(i) + ": " + desc.layout[i].name + ";";
-		}
-
-		temp += "}; float4 main(VertexShaderInput input) : SV_POSITION { return float4(1.0f, 1.0f, 1.0f, 1.0f); }";
-
-
-		const D3D_SHADER_MACRO defines[] =
-		{
-			{ "HLSL", "1" },
-			{ nullptr, nullptr }
-		};
-		HRESULT hr = D3DCompile(temp.data(), temp.size(), NULL, defines, NULL, "main",
-			"vs_5_0", D3DCOMPILE_ENABLE_STRICTNESS,
-			0, &shaderBlob, &errorBlob);
-		
-		ID3D11VertexShader* vertexTempShader;
-		context->getDevice()->CreateVertexShader(shaderBlob->GetBufferPointer(),
-			shaderBlob->GetBufferSize(), NULL, &vertexTempShader);
-
-		D3D11_INPUT_ELEMENT_DESC* layout = new D3D11_INPUT_ELEMENT_DESC[desc.layout.size()];
-
-		for (int i = 0; i < desc.layout.size(); i++) {
-			if (i == 0) {
-				layout[i] = { desc.layout[i].name.c_str(), 0, D3D11Helper::getInputLayoutFormat(desc.layout[i].type), 0,							0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-			} else {
-				layout[i] = { desc.layout[i].name.c_str(), 0, D3D11Helper::getInputLayoutFormat(desc.layout[i].type), 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-			}
-		}
-		
-		context->getDevice()->CreateInputLayout(layout, desc.layout.size(),
-			shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(),
-			&inputLayout->m_InputLayout);
-
-		SAFE_RELEASE(errorBlob);
-		SAFE_RELEASE(vertexTempShader);
-		SAFE_RELEASE(shaderBlob);
-		delete[] layout;
-
-		return inputLayout;
 	}
 
 	void D3D11RenderApi::DrawIndexed(UINT count)

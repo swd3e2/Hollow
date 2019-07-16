@@ -28,7 +28,7 @@ namespace Hollow {
 		std::string shaderContent;
 	public:
 		Shader(SHADER_TYPE type) : type(type) {}
-
+		static Shader* create(const SHADER_DESC& desc);
 		virtual void release() = 0;
 	};
 }
