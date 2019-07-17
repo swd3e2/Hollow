@@ -9,10 +9,10 @@ MessageCallback(GLenum source,
 	const GLchar* message,
 	const void* userParam)
 {
-	if (severity != 33387) {
+	//if (severity != 33387) {
 		HW_ERROR("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 		Hollow::Logger::instance()->log("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
-	}
+	//}
 }
 
 namespace Hollow {
@@ -89,7 +89,6 @@ namespace Hollow {
 		DescribePixelFormat(hdc, suggestedPixelFormatIndex, sizeof(PIXELFORMATDESCRIPTOR), &suggestedPixelFormat);
 		SetPixelFormat(hdc, suggestedPixelFormatIndex, &suggestedPixelFormat);
 
-
 		HGLRC tempContext = wglCreateContext(hdc);
 		wglMakeCurrent(hdc, tempContext);
 
@@ -99,13 +98,8 @@ namespace Hollow {
 			HW_ERROR("{}", glewGetErrorString(error));
 		}
 
-		PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-		PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-
 		wglMakeCurrent(NULL, NULL);
 		wglDeleteContext(tempContext);
-
-		DestroyWindow(hWnd);
 
 		const int pixelAttribs[] = {
 			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
@@ -122,17 +116,6 @@ namespace Hollow {
 			0
 		};
 
-		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
-
-		if (type == WindowType::Borderless) {
-			styles |= WS_POPUPWINDOW;
-		}
-
-		hWnd = CreateWindow("HollowAppClass", "Hollow", styles,
-			windowRect.left, windowRect.top,
-			windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
-			nullptr, nullptr, hInst, this);
-
 		hdc = GetDC(hWnd);
 
 		int pixelFormatID;
@@ -146,16 +129,13 @@ namespace Hollow {
 		{
 			WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
 			WGL_CONTEXT_MINOR_VERSION_ARB, 6,
-			WGL_CONTEXT_FLAGS_ARB, 0,
+			WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
 			0
 		};
 
 		HGLRC hrc = wglCreateContextAttribsARB(hdc, 0, attribs);
 
 		wglMakeCurrent(hdc, hrc);
-
-		const GLubyte* GLVersionString = glGetString(GL_VERSION);
-		const GLubyte* extensions_string = glGetString(GL_EXTENSIONS);
 
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(MessageCallback, 0);

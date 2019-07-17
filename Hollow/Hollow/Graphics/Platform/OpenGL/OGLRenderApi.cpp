@@ -36,18 +36,33 @@ namespace Hollow {
 	void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 	{
 		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
-		glBindVertexBuffer(0, oglBuffer->mVertexArrayBuffer, 0, oglBuffer->getStride());
+		glBindVertexArray(oglBuffer->mVertexArrayObject);
+		glBindBuffer(GL_ARRAY_BUFFER, oglBuffer->mVertexArrayBuffer);
+		//glBindVertexBuffer(0, oglBuffer->mVertexArrayBuffer, 0, oglBuffer->getStride());
 
-		if (mCurrentLayout != nullptr && oglBuffer->mCurrentInputLayout != mCurrentLayout) {
-			oglBuffer->mCurrentInputLayout = mCurrentLayout;
+		//if (mCurrentLayout != nullptr && oglBuffer->mCurrentInputLayout != mCurrentLayout) {
+		//	oglBuffer->mCurrentInputLayout = mCurrentLayout;
 
-			for (int i = 0; i < mCurrentLayout->layout.size(); i++) {
-				glEnableVertexArrayAttrib(oglBuffer->mVertexArrayObject, i);
-				glVertexArrayAttribFormat(oglBuffer->mVertexArrayObject, i, mCurrentLayout->layout[i].getNumberElements(),
-					OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type), GL_FALSE, mCurrentLayout->layout[i].offset);
-				glVertexArrayAttribBinding(oglBuffer->mVertexArrayObject, i, 0);
-			}
-		}
+		//	for (int i = 0; i < mCurrentLayout->layout.size(); i++) {
+		//		glEnableVertexAttribArray(i);
+		//		GLuint format = OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type);
+		//		if (format == GL_FLOAT) {
+		//			glVertexAttribFormat(i, mCurrentLayout->layout[i].getNumberElements(), OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type), GL_FALSE, mCurrentLayout->layout[i].offset);
+		//		} else if (format == GL_INT) {
+		//			glVertexAttribIFormat(i, mCurrentLayout->layout[i].getNumberElements(), OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type), mCurrentLayout->layout[i].offset);
+		//		}
+		//		/*
+		//			glVertexAttribPointer(POSITION_LOCATION,	3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	
+		//			glVertexAttribPointer(TEX_COORD_LOCATION,	2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);	
+		//			glVertexAttribPointer(NORMAL_LOCATION,		3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);	
+		//			glVertexAttribPointer(TANGENT_LOCATION,		3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32);	
+		//			glVertexAttribPointer(BITANGENT_LOCATION,	3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)44);	
+		//			glVertexAttribIPointer(BONE_ID_LOCATION,	4, GL_INT,	sizeof(Vertex), (const GLvoid*)56);	
+		//			glVertexAttribPointer(WEIGHTS_LOCATION,		4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)72);
+		//		*/
+		//		glVertexAttribBinding(i, 0);
+		//	}
+		//}
 	}
 
 	void OGLRenderApi::SetTexture(UINT location, Texture* texture)
@@ -187,9 +202,9 @@ namespace Hollow {
 		glBindProgramPipeline(oglPipeline->pipelineId);
 	}
 
-
 	void OGLRenderApi::DrawIndexed(UINT count)
 	{
+		GLenum err = glGetError();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 	}
 

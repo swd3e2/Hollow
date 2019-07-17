@@ -8,6 +8,12 @@ layout(location = 4) in vec3 bitangent;
 layout(location = 5) in int[4] boneIDs;
 layout(location = 6) in vec4 weights;
 
+out gl_PerVertex
+{
+  vec4 gl_Position;
+  float gl_PointSize;
+  float gl_ClipDistance[];
+};
 
 layout(std140, binding = 0) uniform Matrices
 {

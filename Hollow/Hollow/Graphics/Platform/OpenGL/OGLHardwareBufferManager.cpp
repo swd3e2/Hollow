@@ -7,8 +7,27 @@ namespace Hollow {
 		OGLHardwareBuffer* temp = new OGLHardwareBuffer(desc.size, desc.stride);
 
 		glCreateVertexArrays(1, &temp->mVertexArrayObject);
-		glCreateBuffers(1, &temp->mVertexArrayBuffer);
-		glNamedBufferStorage(temp->mVertexArrayBuffer, desc.size * desc.stride, desc.data, GL_STATIC_DRAW);
+		glBindVertexArray(temp->mVertexArrayObject);
+
+		glGenBuffers(1, &temp->mVertexArrayBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, temp->mVertexArrayBuffer);
+
+		glBufferData(GL_ARRAY_BUFFER, desc.size * desc.stride, desc.data, GL_STATIC_DRAW);
+
+		/*glCreateBuffers(1, &temp->mVertexArrayBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, temp->mVertexArrayBuffer);
+		glBufferStorage(GL_ARRAY_BUFFER, desc.size * desc.stride, desc.data, GL_DYNAMIC_STORAGE_BIT);*/
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)44);
+		glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (const GLvoid*)56);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)72);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 
 		buffer->mHardwareBuffer = temp;
 
@@ -20,8 +39,16 @@ namespace Hollow {
 		OGLIndexBuffer* buffer = new OGLIndexBuffer();
 		OGLHardwareBuffer* temp = new OGLHardwareBuffer(desc.size, desc.stride);
 
-		glCreateBuffers(1, &temp->mVertexArrayBuffer);
-		glNamedBufferStorage(temp->mVertexArrayBuffer, desc.size * desc.stride, desc.data, GL_STATIC_DRAW);
+		glGenBuffers(1, &temp->mVertexArrayBuffer);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, temp->mVertexArrayBuffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, desc.size * desc.stride, desc.data, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		GLenum error = glGetError();
+
+		/*glCreateBuffers(1, &temp->mVertexArrayBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, temp->mVertexArrayBuffer);
+		glBufferStorage(GL_ELEMENT_ARRAY_BUFFER, desc.size * desc.stride, desc.data, GL_DYNAMIC_STORAGE_BIT);*/
 
 		buffer->mHardwareBuffer = temp;
 		

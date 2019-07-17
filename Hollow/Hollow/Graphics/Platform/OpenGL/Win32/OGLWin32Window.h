@@ -15,7 +15,8 @@
 #include "Hollow/Graphics/Base/Platform/Win32Window.h"
 #include <memory>
 #include "../OGLPrerequisites.h"
-#include "../GL/wglext.h"
+#include "../GL/glew.h"
+#include "../GL/wglew.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_win32.h"
 #include "Hollow/Common/Logger.h"
