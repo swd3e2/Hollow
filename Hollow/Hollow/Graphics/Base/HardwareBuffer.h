@@ -3,6 +3,12 @@
 #include "Hollow/Platform.h"
 
 namespace Hollow {
+	enum class INDEX_FORMAT
+	{
+		UINT,
+		INT
+	};
+
 	struct VERTEX_BUFFER_DESC
 	{
 		void* data;
@@ -18,12 +24,13 @@ namespace Hollow {
 	struct INDEX_BUFFER_DESC
 	{
 		void* data;
-		UINT stride;
+		INDEX_FORMAT format;
 		UINT size;
+		
 
 		INDEX_BUFFER_DESC() = default;
-		INDEX_BUFFER_DESC(void* data, size_t size, UINT stride) :
-			data(data), size(size), stride(stride)
+		INDEX_BUFFER_DESC(void* data, size_t size, INDEX_FORMAT format) :
+			data(data), size(size), format(format)
 		{}
 	};
 

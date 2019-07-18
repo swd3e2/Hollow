@@ -38,6 +38,7 @@ SamplerState SampleTypeWrap : register(s1);
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
+	return vec4(1.0f, 0.0f, 0.0f,1.0f);
 	//float3 ProjCoords = input.shadowPos.xyz / input.shadowPos.w;
 	//float2 uv;
 	//uv.x = 0.5f * ProjCoords.x + 0.5f;

@@ -6,6 +6,7 @@
 #include "Hollow/Graphics/HardwareBufferManager.h"
 #include "D3D11Prerequisites.h"
 #include "D3D11HardwareBuffer.h"
+#include "D3D11Helper.h"
 
 namespace Hollow {
 	class D3D11HardwareBufferManager : public HardwareBufferManager

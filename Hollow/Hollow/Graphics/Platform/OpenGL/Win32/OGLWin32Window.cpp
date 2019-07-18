@@ -45,7 +45,13 @@ namespace Hollow {
 		windowRect.bottom = height + windowRect.top;
 		AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-		hWnd = CreateWindow("HollowAppClass", "Hollow", WS_POPUPWINDOW, /* WS_POPUP*/
+		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+
+		if (type == WindowType::Borderless) {
+			styles |= WS_POPUPWINDOW;
+		}
+
+		hWnd = CreateWindow("HollowAppClass", "Hollow", styles,
 			windowRect.left, windowRect.top,
 			windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 			nullptr, nullptr, hInst, this);

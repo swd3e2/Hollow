@@ -26,6 +26,7 @@ namespace Hollow {
 	private:
 		HWND* hwnd;
 		bool cullEnabled = false;
+		OGLIndexBuffer* mCurrentIndexBuffer;
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();

@@ -16,7 +16,7 @@ int main()
 {
 	Hollow::Core core(Hollow::RendererType::DirectX);
 
-	Hollow::Window* window = core.windowManager.Initialize(160, 120, Hollow::WindowType::Borderless);
+	Hollow::Window* window = core.windowManager.Initialize(160, 120, Hollow::WindowType::Bordered);
 	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(160, 120);
 
 	Hollow::INPUT_LAYOUT_DESC layoutDesc = {
@@ -44,7 +44,6 @@ int main()
 	pdesc.pixelShader = pixelShader;
 
 	Hollow::PipelineState* pipeline = Hollow::PipelineState::create(pdesc);
-
 	std::cin.get();
 
 	return 0;

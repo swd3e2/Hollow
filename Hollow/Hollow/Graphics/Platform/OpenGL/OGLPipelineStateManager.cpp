@@ -25,6 +25,7 @@ namespace Hollow {
 			glProgramUniform1i(pixelShader, tex2, 2);
 			glProgramUniform1i(pixelShader, tex3, 3);
 			glProgramUniform1i(pixelShader, tex4, 4);
+			glActiveShaderProgram(pipeline->pipelineId, 0);
 		}
 		if (desc.geometryShader != nullptr) {
 			glUseProgramStages(pipeline->pipelineId, GL_GEOMETRY_SHADER_BIT, static_cast<OGLShader*>(desc.geometryShader)->shaderId);

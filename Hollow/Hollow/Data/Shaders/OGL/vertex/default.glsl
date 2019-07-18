@@ -48,7 +48,7 @@ layout(std140, binding = 2) uniform PerObject
 void main()
 {
 	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
-
+	return;
 	vs_out.normal = normal;
 
 	vs_out.normal = normalize(normal * mat3(transform));

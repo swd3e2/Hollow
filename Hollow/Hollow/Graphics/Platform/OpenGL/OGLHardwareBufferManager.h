@@ -6,6 +6,7 @@
 #include "Hollow/Graphics/HardwareBufferManager.h"
 #include "OGLPrerequisites.h"
 #include "OGLHardwareBuffer.h"
+#include "OGLHelper.h"
 
 namespace Hollow {
 	class OGLHardwareBufferManager : public HardwareBufferManager

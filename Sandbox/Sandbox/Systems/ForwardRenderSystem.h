@@ -196,13 +196,6 @@ public:
 
 					skyMapPipeline = Hollow::PipelineState::create(pipelineDesc);
 				}
-				{
-					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/default.glsl"), "main" });
-					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/default.glsl"), "main" });
-
-					defaultPipeline = Hollow::PipelineState::create(pipelineDesc);
-				}
 			}
 			
 		}
@@ -242,7 +235,7 @@ public:
 			2, 1, 3
 		};
 
-		quadIB = Hollow::IndexBuffer::create({ indices, 6, sizeof(Hollow::Vertex) });
+		quadIB = Hollow::IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
 
 		renderer->SetViewport(0, 0, this->width, this->height);
 		renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
@@ -259,18 +252,10 @@ public:
 	virtual void Update(double dt)
 	{
 		shadow.shadowCamera->Update(dt);
-		updateWVP(this->m_Camera);
 
-		renderer->SetCullMode(Hollow::CULL_MODE::CULL_NONE);
-		renderer->SetRenderTarget(0);
+		if (ProjectSettings::instance()->isProjectLoaded) {
+			updateWVP(this->m_Camera);
 
-		renderer->SetPipelineState(defaultPipeline);
-
-		renderer->SetVertexBuffer(quadVB);
-		renderer->SetIndexBuffer(quadIB);
-		renderer->DrawIndexed(6);
-
-		if (false && ProjectSettings::instance()->isProjectLoaded) {
 			//// picker pass
 			//{
 			//	renderer->SetRenderTarget(picker);
@@ -403,10 +388,10 @@ public:
 				renderer->SetIndexBuffer(quadIB);
 				renderer->DrawIndexed(6);
 
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::GREATER);
+				/*renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::GREATER);
 				renderer->SetCullMode(Hollow::CULL_MODE::CULL_FRONT);
 				DrawSkyMap();
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
+				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);*/
 
 				renderer->UnsetTexture(0);
 				renderer->UnsetTexture(1);

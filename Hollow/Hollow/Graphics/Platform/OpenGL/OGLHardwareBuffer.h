@@ -8,10 +8,11 @@ namespace Hollow {
 	class OGLHardwareBuffer : public HardwareBuffer
 	{
 	public:
-		GLuint mVertexArrayObject;
-		GLuint mVertexArrayBuffer;
+		GLuint mVao;
+		GLuint mVbo;
 		size_t vboSize;
 		InputLayout* mCurrentInputLayout;
+		GLuint format;
 	public:
 		OGLHardwareBuffer(size_t size, size_t stride) : HardwareBuffer(size, stride) {}
 	};

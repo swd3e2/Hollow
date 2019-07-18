@@ -30,14 +30,16 @@ namespace Hollow {
 	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
 	{
 		OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<OGLHardwareBuffer*>(iBuffer->mHardwareBuffer)->mVertexArrayObject);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<OGLHardwareBuffer*>(iBuffer->mHardwareBuffer)->mVbo);
+		mCurrentIndexBuffer = iBuffer;
 	}
 
 	void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
 	{
 		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
-		glBindVertexArray(oglBuffer->mVertexArrayObject);
-		glBindBuffer(GL_ARRAY_BUFFER, oglBuffer->mVertexArrayBuffer);
+		glBindVertexArray(oglBuffer->mVao);
+		glBindVertexArray(oglBuffer->mVao);
+		glBindBuffer(GL_ARRAY_BUFFER, oglBuffer->mVbo);
 		//glBindVertexBuffer(0, oglBuffer->mVertexArrayBuffer, 0, oglBuffer->getStride());
 
 		//if (mCurrentLayout != nullptr && oglBuffer->mCurrentInputLayout != mCurrentLayout) {
@@ -204,7 +206,6 @@ namespace Hollow {
 
 	void OGLRenderApi::DrawIndexed(UINT count)
 	{
-		GLenum err = glGetError();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 	}
 

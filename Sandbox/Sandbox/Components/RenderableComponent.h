@@ -46,19 +46,8 @@ public:
 			renderable.id = i;
 			renderable.material = model->meshes[i]->material;
 
-			Hollow::VERTEX_BUFFER_DESC vdesc;
-			vdesc.data = model->meshes[i]->vertices.data();
-			vdesc.size = model->meshes[i]->vertices.size();
-			vdesc.stride = sizeof(Hollow::Vertex);
-
-			renderable.vBuffer = HardwareBufferManager::instance()->create(vdesc);
-
-			Hollow::INDEX_BUFFER_DESC idesc;
-			idesc.data = model->meshes[i]->indices.data();
-			idesc.size = model->meshes[i]->indices.size();
-			idesc.stride = sizeof(unsigned int);
-
-			renderable.iBuffer = HardwareBufferManager::instance()->create(idesc);
+			renderable.vBuffer = VertexBuffer::create({ model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size(), sizeof(Hollow::Vertex) });
+			renderable.iBuffer = IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), INDEX_FORMAT::UINT });
 
 			renderables.push_back(renderable);
 		}

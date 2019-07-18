@@ -18,12 +18,6 @@ Hollow::Mesh* getCube()
 		Hollow::Vertex(-1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0),
 	};
 
-	Hollow::VERTEX_BUFFER_DESC desc;
-	desc.data = cube_vertices;
-	desc.size = 8;
-	desc.stride = sizeof(Hollow::Vertex);
-
-	model->vBuffer = Hollow::HardwareBufferManager::instance()->create(desc);
 
 	unsigned int cube_elements[] = {
 		// front
@@ -45,12 +39,9 @@ Hollow::Mesh* getCube()
 		3, 2, 6,
 		6, 7, 3
 	};
-	Hollow::INDEX_BUFFER_DESC idesc;
-	idesc.data = cube_elements;
-	idesc.size = 36;
-	idesc.stride = sizeof(unsigned int);
 
-	model->iBuffer = Hollow::HardwareBufferManager::instance()->create(idesc);
+	model->vBuffer = Hollow::VertexBuffer::create({ cube_vertices, 8, sizeof(Hollow::Vertex) });
+	model->iBuffer = Hollow::HardwareBufferManager::instance()->create({ cube_elements , 36, Hollow::INDEX_FORMAT::UINT});
 
 	mesh->models.push_back(model);
 

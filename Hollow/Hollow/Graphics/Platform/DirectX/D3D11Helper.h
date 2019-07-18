@@ -2,6 +2,7 @@
 
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Base/InputLayout.h"
+#include "Hollow/Graphics/Base/HardwareBuffer.h"
 #include <string>
 
 namespace Hollow {
@@ -38,6 +39,17 @@ namespace Hollow {
 				case Hollow::Int4:		return "int4";
 				case Hollow::Bool:		return "bool";
 			}
+		}
+
+		static unsigned int getSize(INDEX_FORMAT format)
+		{
+			switch (format)
+			{
+				case Hollow::INDEX_FORMAT::UINT:	return 4;
+				case Hollow::INDEX_FORMAT::INT:		return 4;
+			}
+
+			return 0;
 		}
 	};
 }
