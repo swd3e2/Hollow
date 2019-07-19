@@ -37,23 +37,23 @@ namespace Hollow {
 	protected:
 		InputLayout* mCurrentLayout;
 	public:
-		virtual void SetIndexBuffer(IndexBuffer*) = 0;
-		virtual void SetVertexBuffer(VertexBuffer*) = 0;
-		virtual void SetTexture(UINT, Texture*) = 0;
-		virtual void UnsetTexture(UINT) = 0;
-		virtual void SetTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) = 0;
-		virtual void SetTextureDepthBuffer(UINT, RenderTarget*) = 0;
-		virtual void SetGpuBuffer(GPUBuffer*) = 0;
-		virtual void Draw(UINT count) = 0;
-		virtual void DrawIndexed(UINT count) = 0;
-		virtual void SetViewport(int w0, int y0, int w, int y) = 0;
-		virtual void SetRenderTarget(RenderTarget* renderTarget) = 0;
-		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) = 0;
-		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) = 0;
-		virtual void SetCullMode(CULL_MODE mode) = 0;
-		virtual void Present() = 0;
-		virtual void SetLayout(InputLayout* layout) = 0;
-		virtual void SetPipelineState(PipelineState* pipeline) = 0;
+		virtual void setIndexBuffer(IndexBuffer*) = 0;
+		virtual void setVertexBuffer(VertexBuffer*) = 0;
+		virtual void setTexture(UINT, Texture*) = 0;
+		virtual void unsetTexture(UINT) = 0;
+		virtual void setTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) = 0;
+		virtual void setTextureDepthBuffer(UINT, RenderTarget*) = 0;
+		virtual void setGpuBuffer(GPUBuffer*) = 0;
+		virtual void draw(UINT count) = 0;
+		virtual void drawIndexed(UINT count) = 0;
+		virtual void setViewport(int w0, int y0, int w, int y) = 0;
+		virtual void setRenderTarget(RenderTarget* renderTarget) = 0;
+		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) = 0;
+		virtual void setDepthTestFunction(DEPTH_TEST_FUNCTION func) = 0;
+		virtual void setCullMode(CULL_MODE mode) = 0;
+		virtual void present() = 0;
+		virtual void setInputLayout(InputLayout* layout) = 0;
+		virtual void setPipelineState(PipelineState* pipeline) = 0;
 	};
 }
 

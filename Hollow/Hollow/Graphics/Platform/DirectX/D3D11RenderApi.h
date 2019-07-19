@@ -53,28 +53,27 @@ namespace Hollow {
 
 		virtual void onStartUp() override;
 
-		virtual void SetIndexBuffer(IndexBuffer* buffer) override;
-		virtual void SetVertexBuffer(VertexBuffer* buffer) override;
-		virtual void SetTexture(UINT slot, Texture* texture) override;
-		virtual void UnsetTexture(UINT) override;
-		virtual void SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum) override;
-		virtual void SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget) override;
-		virtual void Present() override;
-		virtual void Draw(UINT count) override;
-		virtual void DrawIndexed(UINT count) override;
-		virtual void SetGpuBuffer(GPUBuffer*) override;
-		virtual void SetViewport(int w0, int y0, int w, int y) override;
-		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
-		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
-		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
-		virtual void SetCullMode(CULL_MODE mode) override;
-		virtual void SetPipelineState(PipelineState* pipeline) override;
+		virtual void setIndexBuffer(IndexBuffer* buffer) override;
+		virtual void setVertexBuffer(VertexBuffer* buffer) override;
+		virtual void setTexture(UINT slot, Texture* texture) override;
+		virtual void unsetTexture(UINT) override;
+		virtual void setTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum) override;
+		virtual void setTextureDepthBuffer(UINT slot, RenderTarget* renderTarget) override;
+		virtual void present() override;
+		virtual void draw(UINT count) override;
+		virtual void drawIndexed(UINT count) override;
+		virtual void setGpuBuffer(GPUBuffer*) override;
+		virtual void setViewport(int w0, int y0, int w, int y) override;
+		virtual void setRenderTarget(RenderTarget* renderTarget) override;
+		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) override;
+		virtual void setDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
+		virtual void setCullMode(CULL_MODE mode) override;
+		virtual void setPipelineState(PipelineState* pipeline) override;
+		virtual void setInputLayout(InputLayout* layout) override;
 
-		void SetSampler(int slot, D3D11SamplerState* sampler);
-		void SetRasterizerState(D3D11RasterizerState* rasterizer);
-		void SetBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
-
-		virtual void SetLayout(InputLayout* layout) override;
+		void setSampler(int slot, D3D11SamplerState* sampler);
+		void setRasterizerState(D3D11RasterizerState* rasterizer);
+		void setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
 
 		D3D11Context& getContext() { return *context; }
 	};

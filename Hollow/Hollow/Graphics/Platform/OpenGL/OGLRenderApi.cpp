@@ -27,47 +27,20 @@ namespace Hollow {
 		InputLayoutManager::shutdown();
 	}
 
-	void OGLRenderApi::SetIndexBuffer(IndexBuffer* buffer)
+	void OGLRenderApi::setIndexBuffer(IndexBuffer* buffer)
 	{
 		OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<OGLHardwareBuffer*>(iBuffer->mHardwareBuffer)->mVbo);
 		mCurrentIndexBuffer = iBuffer;
 	}
 
-	void OGLRenderApi::SetVertexBuffer(VertexBuffer* buffer)
+	void OGLRenderApi::setVertexBuffer(VertexBuffer* buffer)
 	{
 		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
-		glBindVertexArray(oglBuffer->mVao);
-		glBindVertexArray(oglBuffer->mVao);
-		glBindBuffer(GL_ARRAY_BUFFER, oglBuffer->mVbo);
-		//glBindVertexBuffer(0, oglBuffer->mVertexArrayBuffer, 0, oglBuffer->getStride());
-
-		//if (mCurrentLayout != nullptr && oglBuffer->mCurrentInputLayout != mCurrentLayout) {
-		//	oglBuffer->mCurrentInputLayout = mCurrentLayout;
-
-		//	for (int i = 0; i < mCurrentLayout->layout.size(); i++) {
-		//		glEnableVertexAttribArray(i);
-		//		GLuint format = OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type);
-		//		if (format == GL_FLOAT) {
-		//			glVertexAttribFormat(i, mCurrentLayout->layout[i].getNumberElements(), OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type), GL_FALSE, mCurrentLayout->layout[i].offset);
-		//		} else if (format == GL_INT) {
-		//			glVertexAttribIFormat(i, mCurrentLayout->layout[i].getNumberElements(), OGLHelper::getInputLayoutFormat(mCurrentLayout->layout[i].type), mCurrentLayout->layout[i].offset);
-		//		}
-		//		/*
-		//			glVertexAttribPointer(POSITION_LOCATION,	3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);	
-		//			glVertexAttribPointer(TEX_COORD_LOCATION,	2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);	
-		//			glVertexAttribPointer(NORMAL_LOCATION,		3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);	
-		//			glVertexAttribPointer(TANGENT_LOCATION,		3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32);	
-		//			glVertexAttribPointer(BITANGENT_LOCATION,	3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)44);	
-		//			glVertexAttribIPointer(BONE_ID_LOCATION,	4, GL_INT,	sizeof(Vertex), (const GLvoid*)56);	
-		//			glVertexAttribPointer(WEIGHTS_LOCATION,		4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)72);
-		//		*/
-		//		glVertexAttribBinding(i, 0);
-		//	}
-		//}
+		glBindVertexBuffer(0, oglBuffer->mVbo, 0, static_cast<OGLInputLayout*>(mCurrentLayout)->size);
 	}
 
-	void OGLRenderApi::SetTexture(UINT location, Texture* texture)
+	void OGLRenderApi::setTexture(UINT location, Texture* texture)
 	{
 		OGLTexture* oglTexture = static_cast<OGLTexture*>(texture);
 		glActiveTexture(location + GL_TEXTURE0);
@@ -78,38 +51,38 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::UnsetTexture(UINT slot)
+	void OGLRenderApi::unsetTexture(UINT slot)
 	{
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void OGLRenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
+	void OGLRenderApi::setTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
 	{
 		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->texture[targetNum]);
 	}
 
-	void OGLRenderApi::SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
+	void OGLRenderApi::setTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
 	{
 		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->depth);
 	}
 
-	void OGLRenderApi::SetGpuBuffer(GPUBuffer* buffer)
+	void OGLRenderApi::setGpuBuffer(GPUBuffer* buffer)
 	{
 		OGLGpuBuffer* gpuBuffer = static_cast<OGLGpuBuffer*>(buffer);
 		glBindBufferBase(GL_UNIFORM_BUFFER, gpuBuffer->getLocation(), gpuBuffer->UBO);
 	}
 
-	void OGLRenderApi::SetViewport(int w0, int y0, int w, int y)
+	void OGLRenderApi::setViewport(int w0, int y0, int w, int y)
 	{
 		glViewport(w0, y0, w, y);
 	}
 
-	void OGLRenderApi::ClearRenderTarget(RenderTarget* renderTarget, const float* color)
+	void OGLRenderApi::clearRenderTarget(RenderTarget* renderTarget, const float* color)
 	{
 		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 
@@ -124,7 +97,7 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::SetRenderTarget(RenderTarget* renderTarget)
+	void OGLRenderApi::setRenderTarget(RenderTarget* renderTarget)
 	{
 		if (renderTarget != nullptr) {
 			OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
@@ -134,7 +107,7 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::SetDepthTestFunction(DEPTH_TEST_FUNCTION func)
+	void OGLRenderApi::setDepthTestFunction(DEPTH_TEST_FUNCTION func)
 	{
 		switch (func) {
 		case DEPTH_TEST_FUNCTION::NEVER:
@@ -168,7 +141,7 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::SetCullMode(CULL_MODE mode)
+	void OGLRenderApi::setCullMode(CULL_MODE mode)
 	{
 		switch (mode)
 		{
@@ -193,23 +166,25 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::SetLayout(InputLayout* layout)
+	void OGLRenderApi::setInputLayout(InputLayout* layout)
 	{
 		mCurrentLayout = layout;
+		OGLInputLayout* oglLayout = static_cast<OGLInputLayout*>(layout);
+		glBindVertexArray(oglLayout->vao);
 	}
 
-	void OGLRenderApi::SetPipelineState(PipelineState* pipeline)
+	void OGLRenderApi::setPipelineState(PipelineState* pipeline)
 	{
 		OGLPipelineState* oglPipeline = static_cast<OGLPipelineState*>(pipeline);
 		glBindProgramPipeline(oglPipeline->pipelineId);
 	}
 
-	void OGLRenderApi::DrawIndexed(UINT count)
+	void OGLRenderApi::drawIndexed(UINT count)
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 	}
 
-	void OGLRenderApi::Present()
+	void OGLRenderApi::present()
 	{
 		SwapBuffers(GetDC(*hwnd));
 	}

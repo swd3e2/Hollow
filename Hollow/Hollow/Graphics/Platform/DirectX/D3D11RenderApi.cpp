@@ -137,7 +137,7 @@ namespace Hollow {
 		m_cullFront = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_FRONT, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 		m_cullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
-		SetRasterizerState(m_cullNone);
+		setRasterizerState(m_cullNone);
 
 		blendState = new D3D11BlendState();
 
@@ -184,7 +184,7 @@ namespace Hollow {
 		InputLayoutManager::startUp<D3D11InputLayoutManager>();
 	}
 
-	void D3D11RenderApi::SetTexture(UINT slot, Texture* texture)
+	void D3D11RenderApi::setTexture(UINT slot, Texture* texture)
 	{
 		D3D11Texture* d3dTexture = static_cast<D3D11Texture*>(texture);
 		if (texture != nullptr && d3dTexture->m_TextureShaderResource != nullptr) {
@@ -198,38 +198,38 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::UnsetTexture(UINT slot)
+	void D3D11RenderApi::unsetTexture(UINT slot)
 	{
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
 		context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
 	}
 
-	void D3D11RenderApi::SetTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
+	void D3D11RenderApi::setTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
 	{
 		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dRenderTarget->GetShaderResourceView()[targetNum]);
 	}
 
-	void D3D11RenderApi::SetTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
+	void D3D11RenderApi::setTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
 	{
 		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
 		auto ptr = d3dRenderTarget->GetDepthStencilResource();
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &ptr);
 	}
 
-	void D3D11RenderApi::SetIndexBuffer(IndexBuffer* buffer)
+	void D3D11RenderApi::setIndexBuffer(IndexBuffer* buffer)
 	{
 		D3D11IndexBuffer* buff = (D3D11IndexBuffer*)(buffer);
 		context->getDeviceContext()->IASetIndexBuffer(static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->Get(), DXGI_FORMAT_R32_UINT, 0);
 	}
 
-	void D3D11RenderApi::SetVertexBuffer(VertexBuffer* buffer)
+	void D3D11RenderApi::setVertexBuffer(VertexBuffer* buffer)
 	{
 		D3D11VertexBuffer* buff = (D3D11VertexBuffer*)(buffer);
 		context->getDeviceContext()->IASetVertexBuffers(0, 1, static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->GetAddressOf(), static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getStridePtr(), &this->offset);
 	}
 
-	void D3D11RenderApi::ClearRenderTarget(RenderTarget* renderTarget, const float* color)
+	void D3D11RenderApi::clearRenderTarget(RenderTarget* renderTarget, const float* color)
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
@@ -243,7 +243,7 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::SetDepthTestFunction(DEPTH_TEST_FUNCTION func)
+	void D3D11RenderApi::setDepthTestFunction(DEPTH_TEST_FUNCTION func)
 	{
 		switch (func) {
 			case DEPTH_TEST_FUNCTION::NEVER:
@@ -277,23 +277,23 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::SetCullMode(CULL_MODE mode)
+	void D3D11RenderApi::setCullMode(CULL_MODE mode)
 	{
 		switch (mode)
 		{
 		case Hollow::CULL_NONE:
-			SetRasterizerState(m_cullNone);
+			setRasterizerState(m_cullNone);
 			break;
 		case Hollow::CULL_FRONT:
-			SetRasterizerState(m_cullFront);
+			setRasterizerState(m_cullFront);
 			break;
 		case Hollow::CULL_BACK:
-			SetRasterizerState(m_cullBack);
+			setRasterizerState(m_cullBack);
 			break;
 		}
 	}
 
-	void D3D11RenderApi::SetPipelineState(PipelineState* pipeline)
+	void D3D11RenderApi::setPipelineState(PipelineState* pipeline)
 	{
 		D3D11PipelineState* d3dPipeline = static_cast<D3D11PipelineState*>(pipeline);
 
@@ -328,13 +328,13 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::SetSampler(int slot, D3D11SamplerState* sampler)
+	void D3D11RenderApi::setSampler(int slot, D3D11SamplerState* sampler)
 	{
 		context->getDeviceContext()->PSSetSamplers(slot, 1, sampler->GetSamplerState());
 		context->getDeviceContext()->DSSetSamplers(slot, 1, sampler->GetSamplerState());
 	}
 
-	void D3D11RenderApi::SetRenderTarget(RenderTarget* renderTarget)
+	void D3D11RenderApi::setRenderTarget(RenderTarget* renderTarget)
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
@@ -345,28 +345,28 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::SetRasterizerState(D3D11RasterizerState* rasterizer)
+	void D3D11RenderApi::setRasterizerState(D3D11RasterizerState* rasterizer)
 	{
 		context->getDeviceContext()->RSSetState(rasterizer->GetRasterizerState());
 	}
 
-	void D3D11RenderApi::SetBlendState(D3D11BlendState* blend, float* factor, unsigned int mask)
+	void D3D11RenderApi::setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask)
 	{
 		context->getDeviceContext()->OMSetBlendState(blend != nullptr ? blend->GetBlendState() : 0, factor, mask);
 	}
 
-	void D3D11RenderApi::SetLayout(InputLayout* layout)
+	void D3D11RenderApi::setInputLayout(InputLayout* layout)
 	{
 		D3D11InputLayout* inputLayout = static_cast<D3D11InputLayout*>(layout);
 		context->getDeviceContext()->IASetInputLayout(inputLayout->m_InputLayout);
 	}
 
-	void D3D11RenderApi::DrawIndexed(UINT count)
+	void D3D11RenderApi::drawIndexed(UINT count)
 	{
 		context->getDeviceContext()->DrawIndexed(count, 0, 0);
 	}
 
-	void D3D11RenderApi::SetGpuBuffer(GPUBuffer* buffer)
+	void D3D11RenderApi::setGpuBuffer(GPUBuffer* buffer)
 	{
 		D3D11GPUBuffer* gpuBuffer = static_cast<D3D11GPUBuffer*>(buffer);
 		context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
@@ -375,7 +375,7 @@ namespace Hollow {
 		context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 	}
 
-	void D3D11RenderApi::SetViewport(int w0, int y0, int w, int y)
+	void D3D11RenderApi::setViewport(int w0, int y0, int w, int y)
 	{
 		vp.Width = (float)w;
 		vp.Height = (float)y;
@@ -385,12 +385,12 @@ namespace Hollow {
 		context->getDeviceContext()->RSSetViewports(1, &vp);
 	}
 
-	void D3D11RenderApi::Draw(UINT count)
+	void D3D11RenderApi::draw(UINT count)
 	{
 		context->getDeviceContext()->Draw(count, 0);
 	}
 
-	void D3D11RenderApi::Present()
+	void D3D11RenderApi::present()
 	{
 		context->getSwapChain()->Present(1, 0);
 	}

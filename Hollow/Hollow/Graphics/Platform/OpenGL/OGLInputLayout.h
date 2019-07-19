@@ -8,6 +8,7 @@ namespace Hollow {
 	{
 	public:
 		friend class OGLRenderApi;
+		size_t size;
 		GLuint vao;
 	};
 }

@@ -33,44 +33,56 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
-	/*ForwardRenderSystem renderPass(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+	ForwardRenderSystem renderPass(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	renderPass.skyMap = new SkyMap();
-	renderPass.m_Camera = camera;*/
+	renderPass.m_Camera = camera;
 
-	//MoveSystem moveSystem(camera);
+	MoveSystem moveSystem(camera);
 
-	//SystemManager::instance()->AddSystem(&renderPass);
-	//SystemManager::instance()->AddSystem(&moveSystem);
+	SystemManager::instance()->AddSystem(&renderPass);
+	SystemManager::instance()->AddSystem(&moveSystem);
 
-	//GUISystem* gui = new GUISystem(window, renderer);
-	//gui->rendererTab.renderSystem = &renderPass;
+	GUISystem* gui = new GUISystem(window, renderer);
+	gui->rendererTab.renderSystem = &renderPass;
 
-	/*Terrain* terrain = Hollow::EntityManager::instance()->create<Terrain>();
-	terrain->addComponent<TerrainData>();*/
+	Terrain* terrain = Hollow::EntityManager::instance()->create<Terrain>();
+	terrain->addComponent<TerrainData>();
 
-	//ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
+	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 
-	Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
-	pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/test.glsl"), "main" });
-	pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/test.glsl"), "main" });
-	PipelineState* pipeline = Hollow::PipelineState::create(pipelineDesc);
+	//Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+	//pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/test.glsl"), "main" });
+	//pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/test.glsl"), "main" });
+	//PipelineState* pipeline = Hollow::PipelineState::create(pipelineDesc);
 
-	std::vector<Hollow::Vertex> vertices;
-	vertices.push_back({ -1.0f, -1.0f, 0.0f });
-	vertices.push_back({ 1.0f, -1.0f, 0.0f });
-	vertices.push_back({ 0.0f,  1.0f, 0.0f });
-	VertexBuffer* vb = VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
+	//std::vector<Hollow::Vertex> vertices;
+	//vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
+	//vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));
+	//vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));
+	//vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
+	//VertexBuffer* vb = VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
 
-	unsigned int indices[] = { 0, 1, 2 };
-	IndexBuffer* ib = IndexBuffer::create({ indices, 3, INDEX_FORMAT::UINT });
+	//Hollow::INPUT_LAYOUT_DESC layoutDesc = {
+	//	{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" }, // pos
+	//	{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" }, // texcoord
+	//	{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
+	//	{ Hollow::INPUT_DATA_TYPE::Float3, "TANGENT" }, // tangent
+	//	{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, // bitangent 
+	//	{ Hollow::INPUT_DATA_TYPE::Int4, "BONE" },
+	//	{ Hollow::INPUT_DATA_TYPE::Float4, "WEIGHT" }
+	//};
 
-	//glDepthFunc(GL_LEQUAL);
-	glViewport(0, 0, 1920, 1080);
+	//InputLayout* layout = InputLayout::create(layoutDesc);
+	//renderer->setInputLayout(layout);
 
-	bool res = false;
-	HWND hwnd = *static_cast<OGLWin32Window*>(Window::instance())->getHWND();
+	//unsigned int indices[] = { 0, 1, 2, 2, 1, 3 };
+	//IndexBuffer* ib = IndexBuffer::create({ indices, 3, INDEX_FORMAT::UINT });
 
-	float clearColor[] = { 1.0f, 1.0f ,0.0f ,1.0f };
+	//renderer->setViewport(0, 0, 1920, 1080);
+
+	//HWND hwnd = *static_cast<OGLWin32Window*>(Window::instance())->getHWND();
+
+	//float clearColor[] = { 1.0f, 1.0f ,0.0f ,1.0f };
 
 	while (!window->isClosed()) {
 		core.PreUpdate();
@@ -79,34 +91,17 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 		camera->Update(core.dt);
 		core.Update();
 
-		{
+		/*{
 			glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			renderer->SetPipelineState(pipeline);
+			renderer->setPipelineState(pipeline);
 
-			renderer->SetVertexBuffer(vb);
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
-			glEnableVertexAttribArray(2);
-			glEnableVertexAttribArray(3);
-			glEnableVertexAttribArray(4);
-			glEnableVertexAttribArray(5);
-			glEnableVertexAttribArray(6);
-			renderer->SetIndexBuffer(ib);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)12);
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)20);
-			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)32);
-			glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)44);
-			glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (const GLvoid*)56);
-			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)72);
-
-			renderer->DrawIndexed(3);
-
+			renderer->setVertexBuffer(vb);
+			renderer->setIndexBuffer(ib);
+			renderer->drawIndexed(6);
 			SwapBuffers(GetDC(hwnd));
-		}
+		}*/
 
 		//gui->update(core.dt);
 

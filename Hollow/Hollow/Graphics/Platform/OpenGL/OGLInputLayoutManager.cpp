@@ -5,6 +5,7 @@ namespace Hollow {
 	{
 		OGLInputLayout* layout = new OGLInputLayout();
 		layout->layout = desc.layout;
+		layout->size = desc.stride;
 
 		glCreateVertexArrays(1, &layout->vao);
 

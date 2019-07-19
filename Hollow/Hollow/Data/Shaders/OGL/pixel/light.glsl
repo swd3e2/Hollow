@@ -26,8 +26,6 @@ uniform sampler2D shadow_map;
 
 void main()
 {
-	FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	return;
 	vec2 texCoords = vec2(fs_in.texCoord.x, 1.0f - fs_in.texCoord.y);
 
 	vec3 position = texture(specular_map, texCoords).rgb;

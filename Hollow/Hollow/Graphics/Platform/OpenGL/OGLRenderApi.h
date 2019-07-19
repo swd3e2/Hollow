@@ -30,24 +30,24 @@ namespace Hollow {
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();
-		virtual void SetIndexBuffer(IndexBuffer*) override;
-		virtual void SetVertexBuffer(VertexBuffer*) override;
-		virtual void SetTexture(UINT, Texture*) override;
-		virtual void UnsetTexture(UINT) override;
-		virtual void SetTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) override;
-		virtual void SetTextureDepthBuffer(UINT, RenderTarget*) override;
-		virtual void SetGpuBuffer(GPUBuffer*) override;
-		virtual void SetViewport(int w0, int y0, int w, int y) override;
-		virtual void ClearRenderTarget(RenderTarget* renderTarget, const float* color) override;
-		virtual void SetRenderTarget(RenderTarget* renderTarget) override;
-		virtual void SetDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
-		virtual void SetCullMode(CULL_MODE mode) override;
-		virtual void SetLayout(InputLayout* layout) override;
-		virtual void SetPipelineState(PipelineState* pipeline) override;
+		virtual void setIndexBuffer(IndexBuffer*) override;
+		virtual void setVertexBuffer(VertexBuffer*) override;
+		virtual void setTexture(UINT, Texture*) override;
+		virtual void unsetTexture(UINT) override;
+		virtual void setTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) override;
+		virtual void setTextureDepthBuffer(UINT, RenderTarget*) override;
+		virtual void setGpuBuffer(GPUBuffer*) override;
+		virtual void setViewport(int w0, int y0, int w, int y) override;
+		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) override;
+		virtual void setRenderTarget(RenderTarget* renderTarget) override;
+		virtual void setDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
+		virtual void setCullMode(CULL_MODE mode) override;
+		virtual void setInputLayout(InputLayout* layout) override;
+		virtual void setPipelineState(PipelineState* pipeline) override;
 
-		virtual void Draw(UINT count)override {}
-		virtual void DrawIndexed(UINT count) override;
-		virtual void Present() override;
+		virtual void draw(UINT count)override {}
+		virtual void drawIndexed(UINT count) override;
+		virtual void present() override;
 	};
 }
 
