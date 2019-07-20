@@ -206,7 +206,7 @@ public:
 		}
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
-			rendererTab.Draw();
+			rendererTab.Draw(dt);
 			hierarchyTab.Draw();
 			inspectorTab.Draw(hierarchyTab.selectedGameObject);
 			materialTab.Draw(inspectorTab.selectedMaterial);

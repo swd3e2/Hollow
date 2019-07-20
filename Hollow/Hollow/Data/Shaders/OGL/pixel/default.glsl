@@ -38,15 +38,15 @@ layout(std140, binding = 4) uniform MaterialData
 	bool hasSpecularMap;
 };
 
-uniform sampler2D ambient_map;
-uniform sampler2D normal_map;
-uniform sampler2D specular_map;
-uniform sampler2D shadow_map;
-uniform samplerCube environmentMap;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform sampler2D tex2;
+uniform sampler2D tex3;
+uniform samplerCube tex4;
 
 void main()
 {
-	FragColor = texture(ambient_map, fs_in.texCoord);
+	FragColor = texture(tex0, fs_in.texCoord);
 	FragColor = vec4(0.5f, 0.5f, 0.5f,1.0f) + dot(fs_in.normal, vec3(1.0f, 0.0f, 0.0f)) * vec4(0.3f, 0.3f, 0.3f, 1.0f);
 	vec3 ProjCoords = fs_in.shadowPos.xyz / fs_in.shadowPos.w;
 	vec2 uv;

@@ -103,7 +103,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 			SwapBuffers(GetDC(hwnd));
 		}*/
 
-		//gui->update(core.dt);
+		gui->update(core.dt);
 
 		core.PostUpdate();
 	}

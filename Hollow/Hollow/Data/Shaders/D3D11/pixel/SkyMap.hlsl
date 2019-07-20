@@ -18,5 +18,4 @@ float4 main(SKYMAP_VS_OUTPUT input) : SV_Target
 		return SkyMap.Sample(SampleTypeWrap, input.texCoord);
 	}
 	discard;
-	return float4(0.0f, 0.0f, 0.0f, 0.0f);
 }

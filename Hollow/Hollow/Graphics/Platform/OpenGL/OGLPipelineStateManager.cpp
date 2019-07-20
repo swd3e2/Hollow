@@ -14,17 +14,17 @@ namespace Hollow {
 			glUseProgramStages(pipeline->pipelineId, GL_FRAGMENT_SHADER_BIT, pixelShader);
 			
 			glActiveShaderProgram(pipeline->pipelineId, pixelShader);
-			GLint tex0 = glGetUniformLocation(pixelShader, "ambient_map");
-			GLint tex1 = glGetUniformLocation(pixelShader, "normal_map");
-			GLint tex2 = glGetUniformLocation(pixelShader, "specular_map");
-			GLint tex3 = glGetUniformLocation(pixelShader, "shadow_map");
-			GLint tex4 = glGetUniformLocation(pixelShader, "environmentMap");
 
-			glProgramUniform1i(pixelShader, tex0, 0);
-			glProgramUniform1i(pixelShader, tex1, 1);
-			glProgramUniform1i(pixelShader, tex2, 2);
-			glProgramUniform1i(pixelShader, tex3, 3);
-			glProgramUniform1i(pixelShader, tex4, 4);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex0"), 0);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex1"), 1);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex2"), 2);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex3"), 3);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex4"), 4);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex5"), 5);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex6"), 6);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex7"), 7);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex8"), 8);
+
 			glActiveShaderProgram(pipeline->pipelineId, 0);
 		}
 		if (desc.geometryShader != nullptr) {

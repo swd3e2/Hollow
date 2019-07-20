@@ -7,9 +7,16 @@ in VS_OUT
 
 out vec4 FragColor;
 
-uniform samplerCube environmentMap;
+uniform samplerCube tex4;
+uniform sampler2D tex5;
 
 void main()
 {
-	FragColor = texture(environmentMap, fs_in.texCoord);
+	float depth = texture(tex5, vec2(gl_FragCoord.x / 1920.0f, gl_FragCoord.y / 1080.0f)).r;
+
+	if (depth == 1.0f) {
+		FragColor = texture(tex4, fs_in.texCoord);
+		return;
+	}
+	discard;
 }

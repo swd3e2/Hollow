@@ -355,10 +355,10 @@ public:
 				renderer->setIndexBuffer(quadIB);
 				renderer->drawIndexed(6);
 
-				/*renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::GREATER);
-				renderer->SetCullMode(Hollow::CULL_MODE::CULL_FRONT);
+				renderer->setDepthTestFunction(DEPTH_TEST_FUNCTION::GREATER);
+				renderer->setCullMode(Hollow::CULL_MODE::CULL_FRONT);
 				DrawSkyMap();
-				renderer->SetDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);*/
+				renderer->setDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
 
 				renderer->unsetTexture(0);
 				renderer->unsetTexture(1);

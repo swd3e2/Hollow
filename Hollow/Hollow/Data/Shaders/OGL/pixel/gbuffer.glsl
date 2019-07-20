@@ -18,11 +18,11 @@ layout(std140, binding = 2) uniform PerObject
 	bool hasAnimation;
 };
 
-uniform sampler2D ambient_map;
+uniform sampler2D tex0;
 
 void main()
 {
-	vec4 color = texture(ambient_map, fs_in.texCoord);
+	vec4 color = texture(tex0, fs_in.texCoord);
 
 	if (color.a < 0.55f) {
 		discard;

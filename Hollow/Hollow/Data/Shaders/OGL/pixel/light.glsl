@@ -19,18 +19,18 @@ layout(std140, binding = 1) uniform ShadowMatrices
 	mat4 ShadowWVP;
 };
 
-uniform sampler2D ambient_map;
-uniform sampler2D normal_map;
-uniform sampler2D specular_map;
-uniform sampler2D shadow_map;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform sampler2D tex2;
+uniform sampler2D tex3;
 
 void main()
 {
 	vec2 texCoords = vec2(fs_in.texCoord.x, 1.0f - fs_in.texCoord.y);
 
-	vec3 position = texture(specular_map, texCoords).rgb;
-	vec3 normal = texture(normal_map, texCoords).rgb;
-	vec4 diffuse = texture(ambient_map, texCoords);
+	vec3 position = texture(tex2, texCoords).rgb;
+	vec3 normal = texture(tex1, texCoords).rgb;
+	vec4 diffuse = texture(tex0, texCoords);
 
 	vec4 shadowPos = vec4(position, 1.0f) * ShadowWVP;
 
@@ -41,7 +41,7 @@ void main()
 	float z = 0.5f * ProjCoords.z + 0.5f;
 
 	if (clamp(uv.x, 0.0f, 1.0f) == uv.x && uv.y == clamp(uv.y, 0.0f, 1.0f)) {
-		float shadowDepth = texture(shadow_map, uv).r;
+		float shadowDepth = texture(tex3, uv).r;
 		if (shadowDepth < (z - 0.00001f)) {
 			diffuse -= 0.3f;
 		}
