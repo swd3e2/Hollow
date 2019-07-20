@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
-#include "Sandbox/Systems/ForwardRenderSystem.h"
+#include "Sandbox/Systems/RenderSystem.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11RenderTarget.h"
 
 using namespace Hollow;
@@ -10,7 +10,7 @@ namespace GUI {
 	class RendererTab
 	{
 	public:
-		ForwardRenderSystem* renderSystem;
+		RenderSystem* renderSystem;
 
 		int r = -1000, l = 1000, t = -1000, b = 1000, n = -1000, f = 2000;
 	public:

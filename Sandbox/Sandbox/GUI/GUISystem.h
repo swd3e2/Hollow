@@ -210,7 +210,7 @@ public:
 			hierarchyTab.Draw();
 			inspectorTab.Draw(hierarchyTab.selectedGameObject);
 			materialTab.Draw(inspectorTab.selectedMaterial);
-			logTab.Draw();
+			//logTab.Draw();
 		}
 		
 		end();

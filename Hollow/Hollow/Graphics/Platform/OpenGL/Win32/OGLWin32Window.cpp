@@ -146,7 +146,7 @@ namespace Hollow {
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(MessageCallback, 0);
 
-		ShowWindow(hWnd, SW_SHOW);
+		ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 		UpdateWindow(hWnd);
 	}
 

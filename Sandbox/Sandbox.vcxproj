@@ -39,7 +39,7 @@
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
-    <ClInclude Include="Sandbox\Systems\ForwardRenderSystem.h" />
+    <ClInclude Include="Sandbox\Systems\RenderSystem.h" />
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
   </ItemGroup>
   <ItemGroup>

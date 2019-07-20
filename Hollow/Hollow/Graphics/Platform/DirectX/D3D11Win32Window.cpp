@@ -51,7 +51,7 @@ namespace Hollow {
 
 		RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 
-		ShowWindow(hWnd, SW_SHOW); // SW_SHOWMAXIMIZED
+		ShowWindow(hWnd, SW_SHOWMAXIMIZED); // SW_SHOWMAXIMIZED
 		UpdateWindow(hWnd);
 	}
 

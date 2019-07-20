@@ -21,7 +21,7 @@
           0.0
         ]
       },
-      "id": 0
+      "id": 1
     },
     {
       "RenderableComponent": {
@@ -44,7 +44,7 @@
           3.700000047683716
         ]
       },
-      "id": 1
+      "id": 2
     },
     {
       "RenderableComponent": {
@@ -67,10 +67,32 @@
           0.0
         ]
       },
-      "id": 2
+      "id": 3
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\scene.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "id": 4
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
-  "ShadersFolder": "C:/dev/Hollow Engine/Project1/Shaders",
   "TexturesFolder": "C:/dev/Hollow Engine/Project1/Textures"
 }

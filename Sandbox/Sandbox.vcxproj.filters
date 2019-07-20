@@ -13,7 +13,6 @@
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
-    <ClInclude Include="Sandbox\Systems\ForwardRenderSystem.h" />
     <ClInclude Include="Sandbox\Events.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
     <ClInclude Include="Sandbox\Components\RenderableComponent.h" />
@@ -26,6 +25,7 @@
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\Entities\Terrain.h" />
     <ClInclude Include="Sandbox\Components\TerrainData.h" />
+    <ClInclude Include="Sandbox\Systems\RenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

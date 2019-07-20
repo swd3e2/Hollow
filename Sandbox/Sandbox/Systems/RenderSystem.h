@@ -55,7 +55,7 @@ struct LightInfo
 	int pointLightsNum = 1;
 };
 
-class RenderSystem : public Hollow::System<ForwardRenderSystem>
+class RenderSystem : public Hollow::System<RenderSystem>
 {
 public:
 	Shadow shadow;
@@ -261,7 +261,6 @@ public:
 			// GBuffer pass
 			{
 				renderer->setRenderTarget(gBuffer);
-				//renderer->SetShader(ShaderManager::instance()->getShader("gbuffer"));
 				renderer->setPipelineState(gBufferPipeline);
 				renderer->setCullMode(Hollow::CULL_MODE::CULL_BACK);
 
