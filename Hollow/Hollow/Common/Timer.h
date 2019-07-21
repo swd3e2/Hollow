@@ -11,15 +11,15 @@ namespace Hollow {
 	{
 	public:
 		Timer();
-		double GetMilisecondsElapsed();
-		void Restart();
-		bool Stop();
-		bool Start();
+		double getMilisecondsElapsed();
+		void restart();
+		bool stop();
+		bool start();
 	private:
 		bool isrunning = false;
 
-		std::chrono::time_point<std::chrono::steady_clock> start;
-		std::chrono::time_point<std::chrono::steady_clock> stop;
+		std::chrono::time_point<std::chrono::steady_clock> m_Start;
+		std::chrono::time_point<std::chrono::steady_clock> m_Stop;
 	};
 }
 

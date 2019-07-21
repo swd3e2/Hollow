@@ -18,12 +18,12 @@ namespace Hollow {
 		std::unordered_map<std::string, Texture*> textureList;
 		const std::string baseTexturePapth = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/";
 	public:
-		Texture* CreateTextureFromFile(const std::string& filename, bool fromDefaultFolder = true);
-		void Remove(Texture* texture);
-		void RemoveAll();
-		virtual Texture* Create2dTexture(TEXTURE_DESC* desc) = 0;
-		virtual Texture* Create3dTexture(TEXTURE_DESC** desc) = 0;
-		virtual Texture* Create3dTexture(TEXTURE_DESC* desc) = 0;
+		Texture* createTextureFromFile(const std::string& filename, bool fromDefaultFolder = true);
+		void remove(Texture* texture);
+		void removeAll();
+		virtual Texture* create2dTexture(TEXTURE_DESC* desc) = 0;
+		virtual Texture* create3dTexture(TEXTURE_DESC** desc) = 0;
+		virtual Texture* create3dTexture(TEXTURE_DESC* desc) = 0;
 	};
 }
 

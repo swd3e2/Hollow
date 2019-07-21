@@ -1,7 +1,7 @@
 #include "OGLTextureManager.h"
 
 namespace Hollow {
-	Texture* OGLTextureManager::Create2dTexture(TEXTURE_DESC* desc)
+	Texture* OGLTextureManager::create2dTexture(TEXTURE_DESC* desc)
 	{
 		Hollow::Logger::instance()->log("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
@@ -25,7 +25,7 @@ namespace Hollow {
 		return texture;
 	}
 
-	Texture* OGLTextureManager::Create3dTexture(TEXTURE_DESC** desc)
+	Texture* OGLTextureManager::create3dTexture(TEXTURE_DESC** desc)
 	{
 		Hollow::Logger::instance()->log("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 		HW_INFO("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
@@ -54,7 +54,7 @@ namespace Hollow {
 
 		return texture;
 	}
-	Texture* OGLTextureManager::Create3dTexture(TEXTURE_DESC* desc)
+	Texture* OGLTextureManager::create3dTexture(TEXTURE_DESC* desc)
 	{
 		int xOffset = desc->width / 4;
 		int yOffset = desc->height / 3;

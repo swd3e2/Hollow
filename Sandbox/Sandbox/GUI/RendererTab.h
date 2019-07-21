@@ -42,17 +42,17 @@ namespace GUI {
 				ImGui::Text("Bias");
 				ImGui::DragFloat("##bias", &renderSystem->shadow.bias, 0.0000001f, 0.0f, 0.0001f);
 
-				renderSystem->shadow.shadowCamera->SetOrthoValues(r, l, t, b, n, f);
+				renderSystem->shadow.shadowCamera->setOrthoValues(r, l, t, b, n, f);
 			}
 
 
 			if (ImGui::Button("Toggle camera")) {
-				if (renderSystem->m_Camera->mainCamera) {
-					renderSystem->m_Camera->mainCamera = false;
-					renderSystem->shadow.shadowCamera->mainCamera = true;
+				if (renderSystem->m_Camera->m_IsMainCamera) {
+					renderSystem->m_Camera->m_IsMainCamera = false;
+					renderSystem->shadow.shadowCamera->m_IsMainCamera = true;
 				} else {
-					renderSystem->m_Camera->mainCamera = true;
-					renderSystem->shadow.shadowCamera->mainCamera = false;
+					renderSystem->m_Camera->m_IsMainCamera = true;
+					renderSystem->shadow.shadowCamera->m_IsMainCamera = false;
 				}
 			}
 			/*if (ImGui::CollapsingHeader("Shaders")) {
@@ -71,14 +71,14 @@ namespace GUI {
 			ImGui::Begin("Scene");
 			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 				if (ImGui::CollapsingHeader("G buffer")) {
-					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->GetDepthStencilResource(), ImVec2(200, 200));
-					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->GetShaderResourceView()[0], ImVec2(200, 200));
-					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->GetShaderResourceView()[1], ImVec2(200, 200));
-					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->GetShaderResourceView()[2], ImVec2(200, 200));
+					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getDepthStencilResource(), ImVec2(200, 200));
+					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getShaderResourceView()[0], ImVec2(200, 200));
+					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getShaderResourceView()[1], ImVec2(200, 200));
+					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getShaderResourceView()[2], ImVec2(200, 200));
 				}
 				if (ImGui::CollapsingHeader("Shadow map")) {
-					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->GetShaderResourceView()[0], ImVec2(200, 200));
-					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->GetDepthStencilResource(), ImVec2(200, 200));
+					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->getShaderResourceView()[0], ImVec2(200, 200));
+					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->getDepthStencilResource(), ImVec2(200, 200));
 				}
 			} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 				if (ImGui::CollapsingHeader("G buffer")) {

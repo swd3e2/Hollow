@@ -180,18 +180,6 @@
     <ClInclude Include="Hollow\Test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Layers\ApplicationLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Layers\EditorLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Layers\Layer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Layers\LayerStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Water.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -312,12 +300,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ComputeShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ConstantBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ConstBufferMapping.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11Context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -364,9 +346,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderResourceMapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11Texture.h">
@@ -447,9 +426,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\RenderStateManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\PipelineStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -476,9 +452,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Hollow\Common\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Common\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -489,9 +462,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Events\EventSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Common\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Math\Matrix3.h">
@@ -558,9 +528,6 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11BlendState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11ConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11GPUBuffer.cpp">
@@ -642,6 +609,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Base\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\Base\Platform\Win32Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Common\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Common\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

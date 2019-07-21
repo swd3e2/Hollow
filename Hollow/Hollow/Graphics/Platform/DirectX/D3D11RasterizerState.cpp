@@ -29,8 +29,8 @@ namespace Hollow {
 		}
 	}
 
-	ID3D11RasterizerState* D3D11RasterizerState::GetRasterizerState()
+	D3D11RasterizerState::~D3D11RasterizerState()
 	{
-		return m_RasterizerState;
+		SAFE_RELEASE(m_RasterizerState);
 	}
 }

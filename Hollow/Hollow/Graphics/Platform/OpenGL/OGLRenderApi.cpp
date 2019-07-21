@@ -186,6 +186,6 @@ namespace Hollow {
 
 	void OGLRenderApi::present()
 	{
-		SwapBuffers(GetDC(*hwnd));
+		SwapBuffers(GetDC(hwnd));
 	}
 }

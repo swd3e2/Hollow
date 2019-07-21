@@ -25,7 +25,7 @@ namespace Hollow {
 
 		bool isClosed() { return _isClosed; }
 		void setIsClosed(bool status) { _isClosed = status; }
-		virtual bool ProcessMessage() = 0;
+		virtual bool processMessage() = 0;
 	};
 }
 

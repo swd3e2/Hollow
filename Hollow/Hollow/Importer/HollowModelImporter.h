@@ -20,7 +20,7 @@ namespace Hollow {
 
 			std::string binFilename = j["Data"]["filename"].get<std::string>();
 
-			const char* fileFolder = Helper::trim_to_last_line_entry(filename, '/');
+			const char* fileFolder = Helper::trimToLastLineEntry(filename, '/');
 			std::string folder;
 
 			if (fileFolder) {

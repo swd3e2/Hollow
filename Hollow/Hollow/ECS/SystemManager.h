@@ -14,13 +14,13 @@ namespace Hollow {
 	private:
 		std::list<ISystem*> m_Systems;
 	public:
-		void AddSystem(ISystem* system)
+		void addSystem(ISystem* system)
 		{
 			this->m_Systems.push_back(system);
 		}
 
 		template<class S>
-		void RemoveSystem(S* system)
+		void removeSystem(S* system)
 		{
 			auto it = this->m_Systems.find(system);
 			if (it != this->m_Systems.end())
@@ -29,19 +29,19 @@ namespace Hollow {
 			}
 		}
 
-		void PreUpdateSystems(double dt)
+		void preUpdateSystems(double dt)
 		{
 			for (auto& it : m_Systems)
 				it->PreUpdate(dt);
 		}
 
-		void PostUpdateSystems(double dt)
+		void postUpdateSystems(double dt)
 		{
 			for (auto& it : m_Systems)
 				it->PostUpdate(dt);
 		}
 
-		void UpdateSystems(double dt)
+		void updateSystems(double dt)
 		{
 			for (auto& it : m_Systems)
 				it->Update(dt);

@@ -21,54 +21,31 @@
 namespace Hollow {
 	class FileSystem
 	{
-	private:
-		std::vector<std::string> pathHistory;
-		std::string fullFilePath;
-
-		void read_directory(const std::string& name, std::vector<std::string>& v)
-		{
-			std::string pattern(name);
-			pattern.append("*");
-			WIN32_FIND_DATA data;
-			HANDLE hFind;
-			if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
-				do {
-					v.push_back(data.cFileName);
-				} while (FindNextFile(hFind, &data) != 0);
-				FindClose(hFind);
-			} else {
-				pathHistory.pop_back();
-				read_directory(get_current_file_path(), v);
-				HW_ERROR("FindFirstFIle failed on path = \"{}\". Error {}\n", pattern.c_str(), GetLastError());
-			}
-		}
 	public:
-		FileSystem()
-		{
-		}
+		FileSystem() = default;
 
-		std::vector<std::string> read_next_directory(std::string filepath)
+		std::vector<std::string> readNextDirectory(std::string filepath)
 		{	
 			std::vector<std::string> v;
 
 			if (filepath != "." && filepath != "..") {
-				if (pathHistory.size() == 0) {
+				if (m_PathHistory.size() == 0) {
 					filepath.append(":\\");
 				} else {
 					filepath.append("\\");
 				}
-				pathHistory.push_back(filepath);
+				m_PathHistory.push_back(filepath);
 			}
 			else {
-				pathHistory.pop_back();
+				m_PathHistory.pop_back();
 			}
 
 			v.clear();
-			read_directory(get_current_file_path(), v);
+			readDirectory(getCurrentFilePath(), v);
 			return v;
 		}
 
-		std::vector<std::string> read_directory(const std::string& filepath)
+		std::vector<std::string> readDirectory(const std::string& filepath)
 		{
 			std::vector<std::string> v;
 
@@ -86,13 +63,13 @@ namespace Hollow {
 			return v;
 		}
 
-		std::string get_current_file_path()
+		std::string getCurrentFilePath()
 		{
-			fullFilePath.clear();
-			for (auto& it : pathHistory)
-				fullFilePath.append(it);
+			m_FullFilePath.clear();
+			for (auto& it : m_PathHistory)
+				m_FullFilePath.append(it);
 
-			return fullFilePath;
+			return m_FullFilePath;
 		}
 
 		static std::string getFileContent(const std::string& filepath)
@@ -123,7 +100,7 @@ namespace Hollow {
 			fileStream.close();
 		}
 
-		static std::string OpenFile(const std::string& filter)
+		static std::string openFile(const std::string& filter)
 		{
 			OPENFILENAMEA ofn;         // common dialog box structure
 			CHAR szFile[260] = { 0 };  // if using TCHAR macros
@@ -131,7 +108,7 @@ namespace Hollow {
 			// Initialize OPENFILENAME
 			ZeroMemory(&ofn, sizeof(OPENFILENAME));
 			ofn.lStructSize = sizeof(OPENFILENAME);
-			ofn.hwndOwner = *(static_cast<OGLWin32Window*>(Window::instance()))->getHWND();
+			ofn.hwndOwner = (static_cast<OGLWin32Window*>(Window::instance()))->getHWND();
 			ofn.lpstrFile = szFile;
 			ofn.nMaxFile = sizeof(szFile);
 			ofn.lpstrFilter = "All\0*.*\0";
@@ -148,13 +125,13 @@ namespace Hollow {
 			return std::string();
 		}
 
-		static std::string OpenFolder()
+		static std::string openFolder()
 		{
 			CHAR szFile[260] = { 0 };  // if using TCHAR macros
 			LPITEMIDLIST pidl;
 
 			BROWSEINFOA desc = { 0 };
-			desc.hwndOwner = *(static_cast<OGLWin32Window*>(Window::instance()))->getHWND();
+			desc.hwndOwner = (static_cast<OGLWin32Window*>(Window::instance()))->getHWND();
 			desc.lpszTitle = "select folder";
 			desc.pszDisplayName = szFile;
 			pidl = SHBrowseForFolder(&desc);
@@ -167,17 +144,48 @@ namespace Hollow {
 			return std::string();
 		}
 
-		static bool CreateFolder(std::string path)
+		static bool createFolder(std::string path)
 		{
 			return CreateDirectoryA(path.c_str(), NULL);
 		}
 
-		static bool Copy(const std::string& filepath, const std::string& dst)
+		static bool copy(const std::string& filepath, const std::string& dst)
 		{
 			return CopyFile(filepath.c_str(), dst.c_str(), false);
 		}
-	};
 
+		static bool exists(const std::string& name) {
+			if (FILE * file = fopen(name.c_str(), "r")) {
+				fclose(file);
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	private:
+		std::vector<std::string> m_PathHistory;
+		std::string m_FullFilePath;
+	private:
+		void readDirectory(const std::string& name, std::vector<std::string>& v)
+		{
+			std::string pattern(name);
+			pattern.append("*");
+			WIN32_FIND_DATA data;
+			HANDLE hFind;
+			if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
+				do {
+					v.push_back(data.cFileName);
+				} while (FindNextFile(hFind, &data) != 0);
+				FindClose(hFind);
+			}
+			else {
+				m_PathHistory.pop_back();
+				readDirectory(getCurrentFilePath(), v);
+				HW_ERROR("FindFirstFIle failed on path = \"{}\". Error {}\n", pattern.c_str(), GetLastError());
+			}
+		}
+	};
 }
 
 #endif

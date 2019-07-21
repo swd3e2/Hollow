@@ -344,7 +344,7 @@ namespace Hollow {
 		tinygltf::Node& modelRootNode = model.nodes[model.scenes[0].nodes[0]];
 		lModel->rootNode = new GLTF::Node(modelRootNode.name);
 
-		const char* fileFolder = Helper::trim_to_last_line_entry(filename, '\\');
+		const char* fileFolder = Helper::trimToLastLineEntry(filename, '\\');
 		std::string somestring;
 		if (fileFolder) {
 			somestring = fileFolder;

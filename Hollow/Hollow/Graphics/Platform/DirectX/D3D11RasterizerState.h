@@ -12,7 +12,9 @@ namespace Hollow {
 		ID3D11RasterizerState* m_RasterizerState;
 	public:
 		D3D11RasterizerState(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode);
-		ID3D11RasterizerState* GetRasterizerState();
+		~D3D11RasterizerState();
+
+		ID3D11RasterizerState* getRasterizerState() const { return m_RasterizerState; }
 	};
 }
 

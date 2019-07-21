@@ -2,7 +2,7 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	Texture* D3D11TextureManager::Create2dTexture(TEXTURE_DESC* desc)
+	Texture* D3D11TextureManager::create2dTexture(TEXTURE_DESC* desc)
 	{
 		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		D3D11Texture* texture = new D3D11Texture();
@@ -36,14 +36,14 @@ namespace Hollow {
 			initData.SysMemPitch = desc->pitch;
 			initData.SysMemSlicePitch = 0;
 
-			if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &texture->m_texture))) {
+			if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &texture->m_Texture))) {
 				HW_ERROR("D3DTexture: Can't create 2D texture");
 				delete texture;
 				return nullptr;
 			}
 		}
 		else {
-			if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &texture->m_texture))) {
+			if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &texture->m_Texture))) {
 				HW_ERROR("D3DTexture: Can't create 2D texture");
 				delete texture;
 				return nullptr;
@@ -56,7 +56,7 @@ namespace Hollow {
 			descUAV.Format = textureDesc.Format;
 			descUAV.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 			descUAV.Texture2D.MipSlice = 0;
-			if (FAILED(device->CreateUnorderedAccessView(texture->m_texture, &descUAV, &texture->m_UnorderedAccessView))) {
+			if (FAILED(device->CreateUnorderedAccessView(texture->m_Texture, &descUAV, &texture->m_UnorderedAccessView))) {
 				HW_ERROR("D3DTexture: Can't create unorderered access view");
 				delete texture;
 				return nullptr;
@@ -70,7 +70,7 @@ namespace Hollow {
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = 1;
 
-		if (device->CreateShaderResourceView(texture->m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
+		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 			delete texture;
 			return nullptr;
@@ -83,7 +83,7 @@ namespace Hollow {
 		return texture;
 	}
 
-	Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC** desc)
+	Texture* D3D11TextureManager::create3dTexture(TEXTURE_DESC** desc)
 	{
 		HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 		D3D11Texture* texture = new D3D11Texture();
@@ -114,7 +114,7 @@ namespace Hollow {
 			pData[i].SysMemSlicePitch = 0;
 		}
 
-		if (device->CreateTexture2D(&textureDesc, pData, &texture->m_texture) != S_OK) {
+		if (device->CreateTexture2D(&textureDesc, pData, &texture->m_Texture) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create 2D texture");
 			delete texture;
 			return nullptr;
@@ -128,7 +128,7 @@ namespace Hollow {
 		srvDesc.Texture2D.MipLevels = 1;
 
 		// Create the shader resource view for the texture.
-		if (device->CreateShaderResourceView(texture->m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
+		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 			delete texture;
 			return nullptr;
@@ -143,7 +143,7 @@ namespace Hollow {
 		return texture;
 	}
 
-	Texture* D3D11TextureManager::Create3dTexture(TEXTURE_DESC* desc)
+	Texture* D3D11TextureManager::create3dTexture(TEXTURE_DESC* desc)
 	{
 		D3D11Texture* texture = new D3D11Texture();
 
@@ -261,7 +261,7 @@ namespace Hollow {
 			pData[i].SysMemSlicePitch = 0;
 		}
 
-		if (device->CreateTexture2D(&textureDesc, pData, &texture->m_texture) != S_OK) {
+		if (device->CreateTexture2D(&textureDesc, pData, &texture->m_Texture) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create 2D texture");
 			delete texture;
 			return nullptr;
@@ -275,7 +275,7 @@ namespace Hollow {
 		srvDesc.Texture2D.MipLevels = 1;
 
 		// Create the shader resource view for the texture.
-		if (device->CreateShaderResourceView(texture->m_texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
+		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 			delete texture;
 			return nullptr;

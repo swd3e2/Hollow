@@ -25,7 +25,7 @@ namespace Hollow {
 		ID3D11Device* device = r->getContext().getDevice();
 
 		device->CreateBuffer(&bufferDesc, &bufferData,
-			&static_cast<D3D11HardwareBuffer*>(buffer->mHardwareBuffer)->mBuffer);
+			&static_cast<D3D11HardwareBuffer*>(buffer->mHardwareBuffer)->m_Buffer);
 
 		return buffer;
 	}
@@ -51,7 +51,7 @@ namespace Hollow {
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
 
-		device->CreateBuffer(&bufferDesc, &bufferData, &static_cast<D3D11HardwareBuffer*>(buffer->mHardwareBuffer)->mBuffer);
+		device->CreateBuffer(&bufferDesc, &bufferData, &static_cast<D3D11HardwareBuffer*>(buffer->mHardwareBuffer)->m_Buffer);
 
 		return buffer;
 	}

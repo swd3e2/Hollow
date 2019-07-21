@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Hollow/ECS/Component.h"
-#include "Hollow/Graphics/Base/HardwareBuffer.h"
+#include <Hollow/ECS/Component.h>
+#include <Hollow/Graphics/Base/HardwareBuffer.h>
 #include <string>
-#include "Hollow/Graphics/Vertex.h"
-#include "vendor/tinygltf/json.hpp"
-#include "Hollow/Common/FileSystem.h"
-#include "Hollow/Graphics/HardwareBufferManager.h"
-#include "Hollow/Common/Helper.h"
-#include "Hollow/Resources/Material.h"
-#include "Hollow/Resources/MeshManager.h"
+#include <Hollow/Graphics/Vertex.h>
+#include <vendor/tinygltf/json.hpp>
+#include <Hollow/Common/FileSystem.h>
+#include <Hollow/Graphics/HardwareBufferManager.h>
+#include <Hollow/Common/Helper.h>
+#include <Hollow/Resources/Material.h>
+#include <Hollow/Resources/MeshManager.h>
 
 #include <unordered_map>
 
@@ -41,6 +41,7 @@ public:
 		using namespace Hollow;
 		Import::Model* model = MeshManager::instance()->import(filename.c_str());
 
+		if (model == nullptr) { return; }
 		for (int i = 0; i < model->meshes.size(); i++) {
 			RenderableObject renderable;
 			renderable.id = i;
@@ -63,7 +64,7 @@ public:
 
 			std::string diffuseTexture = it.second.diffuseTexture;
 			if (diffuseTexture.size()) {
-				material.diffuseTexture = Hollow::TextureManager::instance()->CreateTextureFromFile(diffuseTexture);
+				material.diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
 			}
 			materials[it.first] = material;
 		}

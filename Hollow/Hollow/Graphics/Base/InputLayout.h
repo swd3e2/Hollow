@@ -78,13 +78,7 @@ namespace Hollow {
 			}
 		}
 
-		std::vector<INPUT_LAYOUT_ELEMENT>::iterator begin() {
-			return layout.begin();
-		}
-
-		std::vector<INPUT_LAYOUT_ELEMENT>::iterator end() {
-			return layout.end();
-		}
+		size_t getStride() const { return stride; }
 	};
 
 
@@ -92,7 +86,10 @@ namespace Hollow {
 	{
 	public:
 		std::vector<INPUT_LAYOUT_ELEMENT> layout;
+	private:
+		size_t stride;
 	public:
 		static InputLayout* create(const INPUT_LAYOUT_DESC& desc);
+		size_t getStride() const { return stride; }
 	};
 }

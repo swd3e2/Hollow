@@ -2,82 +2,65 @@
 
 namespace Hollow {
 	Camera::Camera(bool mainCamera) :
-		mainCamera(mainCamera)
+		m_IsMainCamera(mainCamera)
 	{
-		position = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-		rotation = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+		m_Position = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+		m_Rotation = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 		mainCamera = mainCamera;
-		UpdateViewMatrix();
+		updateViewMatrix();
 	}
 
-	void Camera::SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
+	void Camera::setProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ)
 	{
 		float fovRadians = fovDegrees / 360.0f * XM_2PI;
-		projectionMatrix = Matrix4::Projection(fovRadians, aspectRatio, nearZ, farZ);
+		m_ProjectionMatrix = Matrix4::Projection(fovRadians, aspectRatio, nearZ, farZ);
 	}
 
-	void Camera::SetOrthoValues(float right, float left, float top, float bottom, float nearZ, float farZ)
+	void Camera::setOrthoValues(float right, float left, float top, float bottom, float nearZ, float farZ)
 	{
-		projectionMatrix = Matrix4::Orthographic(right, left, top, bottom, nearZ, farZ);
+		m_ProjectionMatrix = Matrix4::Orthographic(right, left, top, bottom, nearZ, farZ);
 	}
 
-	const Matrix4& Camera::GetViewMatrix() const
+	void Camera::update(double dt)
 	{
-		return viewMatrix;
-	}
-
-	const Matrix4& Camera::GetProjectionMatrix() const
-	{
-		return projectionMatrix;
-	}
-
-	void Camera::Update(double dt)
-	{
-		if (mainCamera) {
+		if (m_IsMainCamera) {
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_UP) == true) {
-				position += forwardVec * dt * cameraMoveSpeed;
-				UpdateViewMatrix();
-			}
-
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_DOWN) == true) {
-				position -= forwardVec * dt * cameraMoveSpeed;
-				UpdateViewMatrix();
+				m_Position += forwardVec * dt * cameraMoveSpeed;
+				updateViewMatrix();
+			} else if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_DOWN) == true) {
+				m_Position -= forwardVec * dt * cameraMoveSpeed;
+				updateViewMatrix();
 			}
 
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_LEFT) == true) {
-				position -= rightVec * dt * cameraMoveSpeed;
-				UpdateViewMatrix();
-			}
-
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_RIGHT) == true) {
-				position += rightVec * dt * cameraMoveSpeed;
-				UpdateViewMatrix();
+				m_Position -= rightVec * dt * cameraMoveSpeed;
+				updateViewMatrix();
+			} else if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_RIGHT) == true) {
+				m_Position += rightVec * dt * cameraMoveSpeed;
+				updateViewMatrix();
 			}
 
 			if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT)) {
-				rotation.x -= InputManager::my * 0.008;
-				if (rotation.x > Math::HALF_PI - bias)
-				{
-					rotation.x = Math::HALF_PI - bias;
-				} else if (rotation.x < -Math::HALF_PI + bias)
-				{
-					rotation.x = -Math::HALF_PI + bias;
+				m_Rotation.x -= InputManager::my * 0.00045 * dt;
+				if (m_Rotation.x > Math::HALF_PI - bias) {
+					m_Rotation.x = Math::HALF_PI - bias;
+				} else if (m_Rotation.x < -Math::HALF_PI + bias) {
+					m_Rotation.x = -Math::HALF_PI + bias;
 				}
-				rotation.y -= InputManager::mx * 0.008;
-				UpdateViewMatrix();
+				m_Rotation.y -= InputManager::mx * 0.00045 * dt;
+				updateViewMatrix();
 			}
 		}
 	}
 
-	void Camera::UpdateViewMatrix()
+	void Camera::updateViewMatrix()
 	{
-		Vector4 fVec(0.0f, 0.0f, 1.0f, 0.0f);
-		Matrix4 rotation = Matrix4::Rotation(this->rotation.x, this->rotation.y, 0.0f);
-		camTarget = Vector4::Normalize(fVec * rotation);
-		camTarget = camTarget + position;
-		viewMatrix = Matrix4::LookAt(position, camTarget, Vector4(0.0f, 1.0f, 0.0f, 0.0f));
+		Matrix4 rotation = Matrix4::Rotation(this->m_Rotation.x, this->m_Rotation.y, 0.0f);
+		m_CamTarget = Vector4::Normalize(Vector4(0.0f, 0.0f, 1.0f, 0.0f) * rotation);
+		m_CamTarget = m_CamTarget + m_Position;
+		m_ViewMatrix = Matrix4::LookAt(m_Position, m_CamTarget, Vector4(0.0f, 1.0f, 0.0f, 0.0f));
 
-		Matrix4 temp = Matrix4::Rotation(this->rotation.x, this->rotation.y, this->rotation.z);
+		Matrix4 temp = Matrix4::Rotation(this->m_Rotation.x, this->m_Rotation.y, this->m_Rotation.z);
 
 		forwardVec = Vector4(0.0f, 0.0f, 1.0f, 0.0f) * temp;
 		rightVec = Vector4(1.0f, 0.0f, 0.0f, 0.0f) * temp;

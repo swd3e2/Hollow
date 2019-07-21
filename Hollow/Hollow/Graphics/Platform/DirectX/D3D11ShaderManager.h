@@ -18,7 +18,7 @@ namespace Hollow {
 	class D3D11ShaderManager : public ShaderManager
 	{
 	private:
-		ID3D11Device* device;
+		ID3D11Device* m_Device;
 	public:
 		D3D11ShaderManager();
 

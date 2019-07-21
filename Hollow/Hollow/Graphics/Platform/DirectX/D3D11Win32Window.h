@@ -22,10 +22,6 @@ namespace Hollow{
 	{
 	public:
 		D3D11Win32Window(HINSTANCE hInst, int width, int height, WindowType type);
-		virtual bool ProcessMessage() override;
-		static LRESULT WINAPI _HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		static LRESULT WINAPI _HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		LRESULT WINAPI HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	};
 }
 

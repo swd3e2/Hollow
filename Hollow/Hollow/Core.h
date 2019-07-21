@@ -12,7 +12,6 @@
 
 #include "Common/Console.h"
 #include <thread>
-#include "Layers/LayerStack.h"
 #include "Core/TaskManager.h"
 #include "RenderApiManager.h"
 #include "Common/Log.h" 
@@ -33,17 +32,13 @@ namespace Hollow {
 	public:
 		HWND*			 m_HWND;
 		Timer			 m_Timer;
-		LayerStack		 m_LayerStack;
-		WindowManager	 windowManager;
-		RenderApiManager renderApiManager;
-		RendererType	 type;
 		double			 dt;
 	public:
-		Core(RendererType type);
+		Core();
 		~Core();
 
-		void PreUpdate();
-		void Update();
-		void PostUpdate();
+		void preUpdate();
+		void update();
+		void postUpdate();
 	};
 }

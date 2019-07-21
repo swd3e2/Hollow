@@ -12,9 +12,9 @@ namespace Hollow {
 	class OGLTextureManager : public TextureManager
 	{
 	public:
-		virtual Texture* Create2dTexture(TEXTURE_DESC* desc) override;
-		virtual Texture* Create3dTexture(TEXTURE_DESC** desc) override;
-		virtual Texture* Create3dTexture(TEXTURE_DESC* desc) override;
+		virtual Texture* create2dTexture(TEXTURE_DESC* desc) override;
+		virtual Texture* create3dTexture(TEXTURE_DESC** desc) override;
+		virtual Texture* create3dTexture(TEXTURE_DESC* desc) override;
 	};
 }
 

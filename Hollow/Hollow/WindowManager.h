@@ -13,13 +13,8 @@
 namespace Hollow {
 	class WindowManager
 	{
-	private:
-		Window* window;
-		RendererType rendererType;
 	public:
-		WindowManager(RendererType type) : rendererType(type), window(nullptr) {}
-
-		Window* Initialize(int width, int height, WindowType type)
+		static Window* create(RendererType rendererType, int width, int height, WindowType type)
 		{
 			switch (rendererType)
 			{

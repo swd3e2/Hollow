@@ -3,43 +3,43 @@
 namespace Hollow {
 	Timer::Timer()
 	{
-		start = std::chrono::high_resolution_clock::now();
-		stop = std::chrono::high_resolution_clock::now();
+		m_Start = std::chrono::high_resolution_clock::now();
+		m_Stop = std::chrono::high_resolution_clock::now();
 	}
 
-	double Timer::GetMilisecondsElapsed()
+	double Timer::getMilisecondsElapsed()
 	{
 		if (isrunning)
 		{
-			auto elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start);
+			auto elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - m_Start);
 			return elapsed.count();
 		}
 		else
 		{
-			auto elapsed = std::chrono::duration<double, std::milli>(stop - start);
+			auto elapsed = std::chrono::duration<double, std::milli>(m_Stop - m_Start);
 			return elapsed.count();
 		}
 	}
 
-	void Timer::Restart()
+	void Timer::restart()
 	{
 		isrunning = true;
-		start = std::chrono::high_resolution_clock::now();
+		m_Start = std::chrono::high_resolution_clock::now();
 	}
 
-	bool Timer::Stop()
+	bool Timer::stop()
 	{
 		if (!isrunning)
 			return false;
 		else
 		{
-			stop = std::chrono::high_resolution_clock::now();
+			m_Stop = std::chrono::high_resolution_clock::now();
 			isrunning = false;
 			return true;
 		}
 	}
 
-	bool Timer::Start()
+	bool Timer::start()
 	{
 		if (isrunning)
 		{
@@ -47,7 +47,7 @@ namespace Hollow {
 		}
 		else
 		{
-			start = std::chrono::high_resolution_clock::now();
+			m_Start = std::chrono::high_resolution_clock::now();
 			isrunning = true;
 			return true;
 		}

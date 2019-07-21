@@ -14,7 +14,7 @@ namespace Hollow {
 		D3D11BlendState();
 		~D3D11BlendState();
 
-		ID3D11BlendState* GetBlendState() { return m_BlendState; }
+		inline ID3D11BlendState* getBlendState() { return m_BlendState; }
 	};
 }
 

@@ -82,12 +82,12 @@ public:
 				}
 			}
 
-			projectFolder = Hollow::Helper::trim_to_last_line_entry(filename.c_str(), '\\');
+			projectFolder = Hollow::Helper::trimToLastLineEntry(filename.c_str(), '\\');
 
 			isProjectLoaded = true;
 		};
 
-		Hollow::DelayedTaskManager::instance()->Add(func);
+		Hollow::DelayedTaskManager::instance()->add(func);
 	}
 
 	/**
@@ -109,9 +109,9 @@ public:
 			projectName = name;
 			projectFileName = projectFolder + "/" + name + ".json";
 
-			Hollow::FileSystem::CreateFolder(projectFolder);
-			Hollow::FileSystem::CreateFolder(projectFolder + "/Meshes");
-			Hollow::FileSystem::CreateFolder(projectFolder + "/Textures");
+			Hollow::FileSystem::createFolder(projectFolder);
+			Hollow::FileSystem::createFolder(projectFolder + "/Meshes");
+			Hollow::FileSystem::createFolder(projectFolder + "/Textures");
 
 			json projectData;
 
@@ -123,7 +123,7 @@ public:
 			isProjectLoaded = true;
 		};
 
-		Hollow::DelayedTaskManager::instance()->Add(func);
+		Hollow::DelayedTaskManager::instance()->add(func);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public:
 			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());
 		};
 
-		Hollow::DelayedTaskManager::instance()->Add(func);
+		Hollow::DelayedTaskManager::instance()->add(func);
 	}
 
 	Hollow::RendererType getRendererType() const { return rendererType; }

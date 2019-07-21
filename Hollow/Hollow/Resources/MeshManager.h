@@ -20,6 +20,10 @@ namespace Hollow {
 		{
 			Import::Model* model = nullptr;
 
+			if (!FileSystem::exists(filename)) {
+				return nullptr;
+			}
+
 			if (strcmp(filename + strlen(filename) - 5, ".gltf") == 0) {
 				model = gltfImporter.import(filename);
 			} else if (strcmp(filename + strlen(filename) - 5, ".json") == 0) {

@@ -13,16 +13,10 @@ namespace Hollow {
 		friend class D3D11ShaderManager;
 	public:
 		D3D11GeometryShader(SHADER_TYPE type) : Shader(type) {}
+		~D3D11GeometryShader() { release(); }
 
-		~D3D11GeometryShader()
-		{
-			release();
-		}
-		virtual void release() override
-		{
-			SAFE_RELEASE(m_Shader);
-		}
-		inline ID3D11GeometryShader* GetShader() { return m_Shader; }
+		virtual void release() override { SAFE_RELEASE(m_Shader); }
+		inline ID3D11GeometryShader* getShader() const { return m_Shader; }
 	private:
 		ID3D11GeometryShader* m_Shader;
 	};

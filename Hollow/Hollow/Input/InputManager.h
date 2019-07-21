@@ -59,7 +59,7 @@ namespace Hollow {
 			SetKeyboardKeyActive(event->button, false);
 		}
 
-		void Clear() { mx = 0; my = 0; }
+		void clear() { mx = 0; my = 0; }
 
 		static bool GetKeyboardKeyIsPressed(eKeyCodes keyCode) { return KeyboardKeys[keyCode]; }
 		static void SetKeyboardKeyActive(eKeyCodes keyCode, bool active) { KeyboardKeys[keyCode] = active; }

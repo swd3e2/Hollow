@@ -101,11 +101,11 @@ public:
 		style->Colors[ImGuiCol_SeparatorActive]			= ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
 
 		if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-			ImGui_ImplWin32_Init(*static_cast<D3D11Win32Window*>(window)->getHWND());
+			ImGui_ImplWin32_Init(static_cast<D3D11Win32Window*>(window)->getHWND());
 			D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
 			ImGui_ImplDX11_Init(context.getDevice(), context.getDeviceContext());
 		} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-			result = ImGui_ImplWin32_Init(*static_cast<OGLWin32Window*>(window)->getHWND());
+			result = ImGui_ImplWin32_Init(static_cast<OGLWin32Window*>(window)->getHWND());
 			const char* glsl_version = "#version 460";
 			result = ImGui_ImplOpenGL3_Init(glsl_version);
 		}
@@ -165,7 +165,7 @@ public:
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Load")) {
-					filename = Hollow::FileSystem::OpenFile("");
+					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
 						ProjectSettings::instance()->load(filename);
 					}
@@ -189,7 +189,7 @@ public:
 			ImGui::InputText("##project_name", projectName, 100);
 			ImGui::InputText("##project_path", projectFolder, 100);
 			if (ImGui::Button("Select folder")) {
-				std::string tempString = Hollow::FileSystem::OpenFolder().c_str();
+				std::string tempString = Hollow::FileSystem::openFolder().c_str();
 				strcpy_s(projectFolder, tempString.size() + 1, tempString.c_str());
 			}
 			if (ImGui::Button("Create")) {

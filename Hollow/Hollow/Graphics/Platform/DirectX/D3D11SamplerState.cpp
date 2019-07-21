@@ -20,11 +20,7 @@ namespace Hollow {
 		samplerDesc.MinLOD = 0;
 		samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 		
-		hr = device->CreateSamplerState(&samplerDesc, &m_SamplerState);
-
-		if (hr != S_OK) {
-			//HW_ERROR("RenderSystem: Cant create sampler state!");
-		}
+		device->CreateSamplerState(&samplerDesc, &m_SamplerState);
 	}
 
 	D3D11SamplerState::~D3D11SamplerState()

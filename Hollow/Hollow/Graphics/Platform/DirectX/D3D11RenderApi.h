@@ -18,7 +18,7 @@ namespace Hollow {
 		D3D11SamplerState* m_SamplerStateWrap;
 		D3D11SamplerState* m_SamplerStateClamp;
 
-		ID3D11RenderTargetView* renderTarget;
+		ID3D11RenderTargetView* m_RenderTarget;
 		ID3D11Texture2D* m_BackBuffer;
 
 		ID3D11DepthStencilView* m_DepthStencilView;
@@ -40,9 +40,9 @@ namespace Hollow {
 		ID3D11UnorderedAccessView* pUAV[1] = { NULL };
 		ID3D11RenderTargetView* nullRTV[3] = { NULL };
 
-		D3D11RasterizerState* m_cullNone;
-		D3D11RasterizerState* m_cullFront;
-		D3D11RasterizerState* m_cullBack;
+		D3D11RasterizerState* m_CullNone;
+		D3D11RasterizerState* m_CullFront;
+		D3D11RasterizerState* m_CullBack;
 
 		D3D11BlendState* blendState;
 		const UINT uavs = 0;

@@ -136,7 +136,7 @@ public:
 				{ Hollow::INPUT_DATA_TYPE::Int4, "BONE" },
 				{ Hollow::INPUT_DATA_TYPE::Float4, "WEIGHT" }
 			};
-
+			
 			layout = Hollow::InputLayout::create(layoutDesc);
 
 			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
@@ -218,7 +218,7 @@ public:
 
 		shadow.renderTarget = RenderTargetManager::instance()->create(desc2);
 		shadow.shadowCamera = new Camera(false);
-		shadow.shadowCamera->SetOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
+		shadow.shadowCamera->setOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
 		shadow.texelSize = Hollow::Vector2(1.0f / this->width, 1.0f / this->height);
 
 		picker = RenderTarget::create(desc2);
@@ -229,7 +229,7 @@ public:
 		vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));				
 		vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
 
-		quadVB = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Hollow::Vertex) });
+		quadVB = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
 
 		unsigned int indices[] = {
 			0, 1, 2,
@@ -253,7 +253,7 @@ public:
 	virtual void Update(double dt)
 	{
 		renderer->setInputLayout(layout);
-		shadow.shadowCamera->Update(dt);
+		shadow.shadowCamera->update(dt);
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
@@ -306,7 +306,7 @@ public:
 			}
 			// Shadow pass
 			{
-				shadowStruct.ShadowWVP = shadow.shadowCamera->GetProjectionMatrix() * shadow.shadowCamera->GetViewMatrix();
+				shadowStruct.ShadowWVP = shadow.shadowCamera->getProjectionMatrix() * shadow.shadowCamera->getViewMatrix();
 				shadowStruct.texelSize = shadow.texelSize;
 				shadowStruct.bias = shadow.bias;
 				shadowConstantBuffer->update(&shadowStruct);
@@ -414,18 +414,18 @@ public:
 	// Update world view projection matrix
 	void updateWVP(Camera* camera)
 	{
-		m_wvp.WVP = camera->GetProjectionMatrix() * camera->GetViewMatrix();
+		m_wvp.WVP = camera->getProjectionMatrix() * camera->getViewMatrix();
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->setGpuBuffer(m_WVPConstantBuffer);
 	}
 
 	void DrawSkyMap()
 	{
-		Matrix4 viewMatrx = m_Camera->GetViewMatrix();
+		Matrix4 viewMatrx = m_Camera->getViewMatrix();
 		viewMatrx.md[0][3] = 0.0f;
 		viewMatrx.md[1][3] = 0.0f;
 		viewMatrx.md[2][3] = 0.0f;
-		m_wvp.WVP = m_Camera->GetProjectionMatrix() * viewMatrx;
+		m_wvp.WVP = m_Camera->getProjectionMatrix() * viewMatrx;
 
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->setGpuBuffer(m_WVPConstantBuffer);

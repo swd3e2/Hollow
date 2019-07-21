@@ -1,7 +1,7 @@
 #include "TextureManager.h"
 
 namespace Hollow {
-	Texture* TextureManager::CreateTextureFromFile(const std::string& filename, bool fromDefaultFolder)
+	Texture* TextureManager::createTextureFromFile(const std::string& filename, bool fromDefaultFolder)
 	{
 		std::string pathToFile = filename;
 
@@ -19,13 +19,13 @@ namespace Hollow {
 			return nullptr;
 		}
 
-		Texture* tex = Create2dTexture(textureDesc);
+		Texture* tex = create2dTexture(textureDesc);
 		tex->name = filename;
 
 		return tex;
 	}
 
-	void TextureManager::Remove(Texture* texture)
+	void TextureManager::remove(Texture* texture)
 	{
 		for (auto& it : textureList) {
 			if (it.second == texture) {
@@ -36,7 +36,7 @@ namespace Hollow {
 		}
 	}
 
-	void TextureManager::RemoveAll()
+	void TextureManager::removeAll()
 	{
 		for (auto& it : textureList) {
 			delete it.second;

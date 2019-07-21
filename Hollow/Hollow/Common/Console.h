@@ -13,6 +13,5 @@
 #define MAX_CONSOLE_LINES 1000;
 
 namespace Hollow { namespace Console {
-	using namespace std;
-	 void RedirectIOToConsole();
+	void RedirectIOToConsole();
 }}

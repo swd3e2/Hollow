@@ -3,8 +3,8 @@
 #ifndef HW_TRANSFORM_COMPONENT_H
 #define HW_TRANSFORM_COMPONENT_H
 
-#include "Hollow/ECS/Component.h"
-#include "Hollow/Math/Vector3.h"
+#include <Hollow/ECS/Component.h>
+#include <Hollow/Math/Vector3.h>
 
 class TransformComponent : public Hollow::Component<TransformComponent>
 {

@@ -10,8 +10,8 @@ namespace Hollow {
 	public:
 		virtual RenderTarget* create(RENDER_TARGET_DESC desc) override;
 	private:
-		DXGI_FORMAT GetDepthResourceFormat(DXGI_FORMAT depthformat);
-		DXGI_FORMAT GetDepthSRVFormat(DXGI_FORMAT depthformat);
-		DXGI_FORMAT GetTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format);
+		DXGI_FORMAT getDepthResourceFormat(DXGI_FORMAT depthformat);
+		DXGI_FORMAT getDepthSRVFormat(DXGI_FORMAT depthformat);
+		DXGI_FORMAT getTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format);
 	};
 }

@@ -10,7 +10,7 @@ namespace Hollow {
 	class Helper
 	{
 	public:
-		inline static wchar_t* to_wide_char(const char* string)
+		inline static wchar_t* toWideChar(const char* string)
 		{
 			size_t cSize = strlen(string) + 1;
 			wchar_t* wc = new wchar_t[cSize];
@@ -19,7 +19,7 @@ namespace Hollow {
 			return wc;
 		}
 
-		inline static std::wstring to_wide_string(const char* string)
+		inline static std::wstring toWideString(const char* string)
 		{
 			size_t cSize = strlen(string) + 1;
 			wchar_t* wc = new wchar_t[cSize];
@@ -28,7 +28,7 @@ namespace Hollow {
 			return wc;
 		}
 
-		inline static char* trim_to_last_line_entry(const char* string, char entry)
+		inline static char* trimToLastLineEntry(const char* string, char entry)
 		{
 			int lastEntry = -1;
 			int prevEntry = -1;
@@ -47,7 +47,7 @@ namespace Hollow {
 			return new_string;
 		}
 
-		inline static char* trim_from_last_line_entry(const char* string, char entry)
+		inline static char* trimFromLastLineEntry(const char* string, char entry)
 		{
 			int lastEntry = -1;
 			int prevEntry = -1;
@@ -67,7 +67,7 @@ namespace Hollow {
 			return new_string;
 		}
 
-		inline static char* trim_to_symbol(const char* string, char entry)
+		inline static char* trimToSymbol(const char* string, char entry)
 		{
 			int lastEntry = -1;
 			for (int i = 0; i < strlen(string); i++) {

@@ -34,10 +34,10 @@ namespace GUI {
 				}
 
 				if (ImGui::Button("Change##diffuse_texture")) {
-					filename = Hollow::FileSystem::OpenFile("");
+					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
-						TextureManager::instance()->Remove(selectedMaterial->diffuseTexture);
-						selectedMaterial->diffuseTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+						TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
+						selectedMaterial->diffuseTexture = TextureManager::instance()->createTextureFromFile(filename, false);
 					}
 				}
 
@@ -53,10 +53,10 @@ namespace GUI {
 				}
 
 				if (ImGui::Button("Change##normal_texture")) {
-					filename = Hollow::FileSystem::OpenFile("");
+					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
-						TextureManager::instance()->Remove(selectedMaterial->normalTexture);
-						selectedMaterial->normalTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+						TextureManager::instance()->remove(selectedMaterial->normalTexture);
+						selectedMaterial->normalTexture = TextureManager::instance()->createTextureFromFile(filename, false);
 					}
 				}
 
@@ -71,10 +71,10 @@ namespace GUI {
 				}
 
 				if (ImGui::Button("Change##specular_texture")) {
-					filename = Hollow::FileSystem::OpenFile("");
+					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
-						TextureManager::instance()->Remove(selectedMaterial->specularTexture);
-						selectedMaterial->specularTexture = TextureManager::instance()->CreateTextureFromFile(filename, false);
+						TextureManager::instance()->remove(selectedMaterial->specularTexture);
+						selectedMaterial->specularTexture = TextureManager::instance()->createTextureFromFile(filename, false);
 					}
 				}
 			}

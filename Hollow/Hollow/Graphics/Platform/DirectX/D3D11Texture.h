@@ -15,7 +15,7 @@ namespace Hollow {
 		{
 			SAFE_RELEASE(m_TextureShaderResource);
 			SAFE_RELEASE(m_UnorderedAccessView);
-			SAFE_RELEASE(m_texture);
+			SAFE_RELEASE(m_Texture);
 		}
 
 		void SetShaderResource(ID3D11ShaderResourceView* textureShaderResource)
@@ -26,7 +26,7 @@ namespace Hollow {
 	public:
 		ID3D11UnorderedAccessView* m_UnorderedAccessView;
 		ID3D11ShaderResourceView* m_TextureShaderResource;
-		ID3D11Texture2D* m_texture;
+		ID3D11Texture2D* m_Texture;
 		bool active = false;
 	};
 }

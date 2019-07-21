@@ -14,21 +14,12 @@ namespace Hollow{
 		friend class D3D11ShaderManager;
 	public:
 		D3D11VertexShader(SHADER_TYPE type) : Shader(type) {}
+		~D3D11VertexShader() { release(); }
 
-		~D3D11VertexShader()
-		{
-			release();
-		}
-		virtual void release() override
-		{
-			SAFE_RELEASE(m_Shader);
-			SAFE_RELEASE(m_InputLayout);
-		}
-		inline ID3D11VertexShader* GetShader() { return m_Shader; }
-		inline ID3D11InputLayout* GetInputLayout() { return m_InputLayout; }
+		virtual void release() override { SAFE_RELEASE(m_Shader); }
+		inline ID3D11VertexShader* getShader() const { return m_Shader; }
 	private:
 		ID3D11VertexShader* m_Shader;
-		ID3D11InputLayout* m_InputLayout;
 	};
 }
 

@@ -10,24 +10,24 @@ namespace Hollow {
 	class D3D11Context
 	{
 	private:
-		ID3D11Device* device;
-		ID3D11DeviceContext* deviceContext;
-		IDXGISwapChain* swapChain;
+		ID3D11Device* m_Device;
+		ID3D11DeviceContext* m_DeviceContext;
+		IDXGISwapChain* m_SwapChain;
 	public:
 		D3D11Context(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain) :
-			device(device), deviceContext(deviceContext), swapChain(swapChain)
+			m_Device(device), m_DeviceContext(deviceContext), m_SwapChain(swapChain)
 		{}
 
 		~D3D11Context()
 		{
-			SAFE_RELEASE(device);
-			SAFE_RELEASE(deviceContext);
-			SAFE_RELEASE(swapChain);
+			SAFE_RELEASE(m_Device);
+			SAFE_RELEASE(m_DeviceContext);
+			SAFE_RELEASE(m_SwapChain);
 		}
 
-		ID3D11Device* getDevice() const { return device; }
-		ID3D11DeviceContext* getDeviceContext() const { return deviceContext; }
-		IDXGISwapChain* getSwapChain() const { return swapChain; }
+		inline ID3D11Device* getDevice() const { return m_Device; }
+		inline ID3D11DeviceContext* getDeviceContext() const { return m_DeviceContext; }
+		inline IDXGISwapChain* getSwapChain() const { return m_SwapChain; }
 	};
 }
 

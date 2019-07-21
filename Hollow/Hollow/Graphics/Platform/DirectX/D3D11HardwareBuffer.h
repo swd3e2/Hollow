@@ -8,25 +8,23 @@ namespace Hollow
 	class D3D11HardwareBuffer : public HardwareBuffer
 	{
 	public:
-		ID3D11Buffer* mBuffer;
+		ID3D11Buffer* m_Buffer;
 	public:
 		D3D11HardwareBuffer(size_t size, size_t stride) : 
-			HardwareBuffer(size, stride), mBuffer(nullptr) 
+			HardwareBuffer(size, stride), m_Buffer(nullptr)
 		{}
 
-		virtual ~D3D11HardwareBuffer() { SAFE_RELEASE(mBuffer); }
+		virtual ~D3D11HardwareBuffer() { SAFE_RELEASE(m_Buffer); }
 
-		ID3D11Buffer* Get() { return mBuffer; }
-		ID3D11Buffer** GetAddressOf() { return &mBuffer; }
+		ID3D11Buffer* get() const { return m_Buffer; }
+		ID3D11Buffer* const * getAddressOf() const { return &m_Buffer; }
 	};
 
 	class D3D11IndexBuffer : public IndexBuffer
 	{
-
 	};
 
 	class D3D11VertexBuffer : public VertexBuffer
 	{
-
 	};
 }

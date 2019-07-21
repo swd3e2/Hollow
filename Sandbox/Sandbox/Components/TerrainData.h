@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Hollow/ECS/Component.h"
-#include "Hollow/Graphics/Vertex.h"
+#include <Hollow/ECS/Component.h>
+#include <Hollow/Graphics/Vertex.h>
 #include <vector>
-#include "Hollow/Graphics/HardwareBufferManager.h"
+#include <Hollow/Graphics/HardwareBufferManager.h>
 
 class TerrainData : public Hollow::Component<TerrainData>
 {

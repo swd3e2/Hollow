@@ -1,8 +1,7 @@
 #include "Core.h"
 
 namespace Hollow {
-	Core::Core(RendererType type) :
-		windowManager(type), renderApiManager(type)
+	Core::Core()
 	{
 		Console::RedirectIOToConsole();
 		Log::Init();
@@ -18,7 +17,7 @@ namespace Hollow {
 		EntityManager::startUp();
 		SystemManager::startUp();
 
-		m_Timer.Start();
+		m_Timer.start();
 	}
 
 	Core::~Core()
@@ -30,34 +29,35 @@ namespace Hollow {
 		EventSystem::shutdown();
 		DelayedTaskManager::shutdown();
 		MeshManager::shutdown();
+		/* @todo: check fix error */
 		//TaskManager::shutdown();
 		FreeImgImporter::shutdown();
 		Logger::shutdown();
 	}
 
-	void Core::PreUpdate()
+	void Core::preUpdate()
 	{
-		dt = m_Timer.GetMilisecondsElapsed();
-		m_Timer.Restart();
+		dt = m_Timer.getMilisecondsElapsed();
+		m_Timer.restart();
 
-		SystemManager::instance()->PreUpdateSystems(dt);
+		SystemManager::instance()->preUpdateSystems(dt);
 	}
 
-	void Core::Update()
+	void Core::update()
 	{
-		SystemManager::instance()->UpdateSystems(dt);
+		SystemManager::instance()->updateSystems(dt);
 	}
 
-	void Core::PostUpdate()
+	void Core::postUpdate()
 	{
-		SystemManager::instance()->PostUpdateSystems(dt);
+		SystemManager::instance()->postUpdateSystems(dt);
 			
 		EventSystem::instance()->dispatch();
-		InputManager::instance()->Clear();
+		InputManager::instance()->clear();
 
-		m_Timer.Stop();
+		m_Timer.stop();
 
-		DelayedTaskManager::instance()->Update();
+		DelayedTaskManager::instance()->update();
 	}
 }
 

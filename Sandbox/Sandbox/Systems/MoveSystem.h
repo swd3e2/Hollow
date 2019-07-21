@@ -63,13 +63,13 @@ public:
 		}
 
 		// Normalized device coordinates
-		float pcx = (((2 * InputManager::mcx) / 1600.0f) - 1.0f) / camera->GetProjectionMatrix().md[0][0];
-		float pcy = -(((2 * InputManager::mcy) / 900.0f) - 1.0f) / camera->GetProjectionMatrix().md[1][1];
+		float pcx = (((2 * InputManager::mcx) / 1600.0f) - 1.0f) / camera->getProjectionMatrix().md[0][0];
+		float pcy = -(((2 * InputManager::mcy) / 900.0f) - 1.0f) / camera->getProjectionMatrix().md[1][1];
 
 		pickRayInViewSpaceDir = XMVectorSet(pcx, pcy, 1.0f, 0.0f);
 		pickRayInViewSpaceDir = XMVector3Normalize(pickRayInViewSpaceDir);
 
-		Matrix4 tempView = camera->GetViewMatrix();
+		Matrix4 tempView = camera->getViewMatrix();
 		XMMATRIX viewMatrix(
 			tempView.md[0][0], tempView.md[1][0], tempView.md[2][0], tempView.md[3][0],
 			tempView.md[0][1], tempView.md[1][1], tempView.md[2][1], tempView.md[3][1],
@@ -92,9 +92,9 @@ public:
 		float z = 1.0f;
 
 		Hollow::Vector3 ray_nds(x, y, z);
-		Vector4 ray_eye = ray_nds * Matrix4::Inverse(camera->GetProjectionMatrix());
+		Vector4 ray_eye = ray_nds * Matrix4::Inverse(camera->getProjectionMatrix());
 		ray_eye.z = -1.0f;
-		Vector4 ray_world = ray_eye * Matrix4::Inverse(camera->GetViewMatrix());
+		Vector4 ray_world = ray_eye * Matrix4::Inverse(camera->getViewMatrix());
 		ray_world = Vector4::Normalize(ray_world);
 
 		HW_DEBUG("{} {} {}", ray_world.x, ray_world.y, ray_world.z);

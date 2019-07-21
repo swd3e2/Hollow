@@ -22,16 +22,15 @@
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
+	Hollow::Core core;
+
+	Hollow::Window* window = WindowManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
+	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	Hollow::Core core(Hollow::RendererType::DirectX);
-
-	Hollow::Window* window = core.windowManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
-	Hollow::RenderApi* renderer = core.renderApiManager.Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::DirectX);
+	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
-	camera->SetProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
+	camera->setProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
 
 	RenderSystem renderPass(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	renderPass.skyMap = new SkyMap();
@@ -39,8 +38,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	MoveSystem moveSystem(camera);
 
-	SystemManager::instance()->AddSystem(&renderPass);
-	SystemManager::instance()->AddSystem(&moveSystem);
+	SystemManager::instance()->addSystem(&renderPass);
+	SystemManager::instance()->addSystem(&moveSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;
@@ -51,15 +50,15 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 
 	while (!window->isClosed()) {
-		core.PreUpdate();
+		core.preUpdate();
 
-		window->ProcessMessage();
-		camera->Update(core.dt);
-		core.Update();
+		window->processMessage();
+		camera->update(core.dt);
+		core.update();
 
 		gui->update(core.dt);
 
-		core.PostUpdate();
+		core.postUpdate();
 	}
 	
 	return 0;

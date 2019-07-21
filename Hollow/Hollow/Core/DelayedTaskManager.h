@@ -13,12 +13,12 @@ namespace Hollow {
 	private:
 		std::queue<std::function<void()>> taskList;
 	public:
-		void Add(std::function<void()> task) 
+		void add(std::function<void()> task) 
 		{
 			taskList.push(task);
 		}
 
-		void Update()
+		void update()
 		{
 			while (taskList.size() > 0) {
 				taskList.front()();

@@ -12,8 +12,8 @@ namespace Hollow {
 	class Log
 	{
 	private:
-		static std::shared_ptr<spdlog::logger> s_CoreLogger;
-		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+		static std::shared_ptr<spdlog::logger> m_CoreLogger;
+		static std::shared_ptr<spdlog::logger> m_ClientLogger;
 	public:
 		Log() {}
 		~Log() {}
@@ -21,14 +21,14 @@ namespace Hollow {
 		static void Init()
 		{
 			spdlog::set_pattern("%^[%T] %n: %v%$");
-			s_CoreLogger = spdlog::stdout_color_mt("HOLLOW");
-			s_CoreLogger->set_level(spdlog::level::trace);
-			s_ClientLogger = spdlog::stdout_color_mt("APP");
-			s_ClientLogger->set_level(spdlog::level::trace);
+			m_CoreLogger = spdlog::stdout_color_mt("HOLLOW");
+			m_CoreLogger->set_level(spdlog::level::trace);
+			m_ClientLogger = spdlog::stdout_color_mt("APP");
+			m_ClientLogger->set_level(spdlog::level::trace);
 		}
 
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return m_CoreLogger; }
+		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return m_ClientLogger; }
 	};
 }
 

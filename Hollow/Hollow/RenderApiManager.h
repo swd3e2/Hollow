@@ -13,29 +13,22 @@
 namespace Hollow {
 	class RenderApiManager
 	{
-	private:
-		RendererType rendererType;
-		RenderApi* renderer;
 	public:
-		RenderApiManager(RendererType type) : rendererType(type) {}
-
-		RenderApi* Initialize(int width, int height)
+		static RenderApi* create(RendererType type, int width, int height)
 		{
-			switch (rendererType)
+			switch (type)
 			{
-				case RendererType::None: return nullptr;
 				case RendererType::OpenGL: {
 					RenderApi::startUp<OGLRenderApi>(width, height);
 				} break;
 				case RendererType::DirectX: {
 					RenderApi::startUp<D3D11RenderApi>(width, height);
 				} break;
+				case RendererType::None: return nullptr;
 			}
 
 			return RenderApi::instance();
 		}
-
-		inline RendererType getRendererType() const { return rendererType; }
 	};
 }
 

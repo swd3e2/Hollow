@@ -1,11 +1,11 @@
 #include "Console.h"
 
- void Hollow::Console::RedirectIOToConsole()
+void Hollow::Console::RedirectIOToConsole()
 {
 	int hConHandle;
 	long lStdHandle;
 	CONSOLE_SCREEN_BUFFER_INFO coninfo;
-	FILE *fp;
+	FILE* fp;
 
 	// allocate a console for this app
 	AllocConsole();
@@ -46,5 +46,5 @@
 
 	// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 	// point to console as well
-	ios::sync_with_stdio();
+	std::ios::sync_with_stdio();
 }

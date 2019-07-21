@@ -16,7 +16,7 @@ namespace Hollow {
 		D3D11SamplerState(D3D11_TEXTURE_ADDRESS_MODE mode);
 		~D3D11SamplerState();
 
-		inline ID3D11SamplerState* const* GetSamplerState() { return &m_SamplerState; }
+		inline ID3D11SamplerState* const * getSamplerState() const { return &m_SamplerState; }
 	};
 }
 

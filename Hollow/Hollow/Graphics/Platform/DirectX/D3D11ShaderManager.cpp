@@ -6,7 +6,7 @@ namespace Hollow {
 	D3D11ShaderManager::D3D11ShaderManager()
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
-		device = r->getContext().getDevice();
+		m_Device = r->getContext().getDevice();
 	}
 
 	Shader* D3D11ShaderManager::create(const SHADER_DESC& desc)
@@ -18,7 +18,7 @@ namespace Hollow {
 				ID3DBlob* shaderBlob = nullptr;
 
 				if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
-					device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &shader->m_Shader);
+					m_Device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &shader->m_Shader);
 					shaderBlob->Release();
 				}
 				return shader;
@@ -28,7 +28,7 @@ namespace Hollow {
 				ID3DBlob* shaderBlob = nullptr;
 
 				if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
-					device->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &shader->m_Shader);
+					m_Device->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &shader->m_Shader);
 					shaderBlob->Release();
 				}
 				return shader;

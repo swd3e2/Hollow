@@ -45,6 +45,7 @@
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11InputLayoutManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PipelineState.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PipelineStateManager.h" />
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTexture.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLHardwareBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLHelper.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayout.h" />
@@ -62,7 +63,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11GPUBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11HullShader.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTargetManager.h" />
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTexture.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLGpuBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLGPUBufferManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLHardwareBufferManager.h" />
@@ -70,7 +70,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLRenderTargetManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShader.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderManager.h" />
-    <ClInclude Include="Hollow\Graphics\RenderStateManager.h" />
     <ClInclude Include="Hollow\Graphics\RenderTargetManager.h" />
     <ClInclude Include="Hollow\Graphics\Water.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLTextureManager.h" />
@@ -81,7 +80,6 @@
     <ClInclude Include="Hollow\Importer\Mesh.h" />
     <ClInclude Include="Hollow\Importer\MeshData.h" />
     <ClInclude Include="Hollow\Importer\AssimpImporter.h" />
-    <ClInclude Include="Hollow\Layers\EditorLayer.h" />
     <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
     <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
     <ClInclude Include="Hollow\Events\Event.h" />
@@ -93,7 +91,6 @@
     <ClInclude Include="Hollow\Events\IEventListener.h" />
     <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
     <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
-    <ClInclude Include="Hollow\Layers\ApplicationLayer.h" />
     <ClInclude Include="Hollow\RenderApiManager.h" />
     <ClInclude Include="Hollow\Graphics\Base\RenderTarget.h" />
     <ClInclude Include="Hollow\Graphics\Base\Shader.h" />
@@ -133,8 +130,6 @@
     <ClInclude Include="Hollow\Graphics\Renderer\Base\Material.h" />
     <ClInclude Include="Hollow\Graphics\Base\RenderApi.h" />
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
-    <ClInclude Include="Hollow\Layers\Layer.h" />
-    <ClInclude Include="Hollow\Layers\LayerStack.h" />
     <ClInclude Include="Hollow\Resources\Material.h" />
     <ClInclude Include="Hollow\Resources\MeshManager.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h" />
@@ -144,15 +139,12 @@
     <ClInclude Include="Hollow\Containers\vector.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11RenderApi.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTarget.h" />
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderResourceMapping.h" />
     <ClInclude Include="Hollow\Input\InputManager.h" />
     <ClInclude Include="Hollow\Input\KeyCodes.h" />
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ConstBufferMapping.h" />
     <ClInclude Include="Hollow\Platform.h" />
     <ClInclude Include="Hollow\Common\Console.h" />
     <ClInclude Include="Hollow\ECS\ISystem.h" />
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ConstantBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PixelShader.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11VertexShader.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
@@ -166,11 +158,14 @@
     <ClInclude Include="Hollow\Test.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Hollow\Common\Console.cpp" />
+    <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Core.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\HardwareBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\InputLayout.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\PipelineState.cpp" />
+    <ClCompile Include="Hollow\Graphics\Base\Platform\Win32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\RenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\Shader.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
@@ -183,7 +178,6 @@
     <ClCompile Include="Hollow\Graphics\Base\Platform\Win32Window.h" />
     <ClCompile Include="Hollow\Graphics\Base\SamplerState.h" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11BlendState.cpp" />
-    <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11ConstantBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11GPUBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11GPUBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11HardwareBufferManager.cpp" />
@@ -216,9 +210,7 @@
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11TextureManager.cpp" />
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
-    <ClCompile Include="Hollow\Common\Console.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11Win32Window.cpp" />
-    <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
     <ClCompile Include="Hollow\Test.cpp" />

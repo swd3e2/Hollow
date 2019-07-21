@@ -8,7 +8,7 @@ namespace Hollow {
 		D3D11RenderTarget* renderTarget = new D3D11RenderTarget(desc.width, desc.height, desc.count);
 		
 		renderTarget->m_BackBuffer = new ID3D11Texture2D*[desc.count];
-		renderTarget->renderTarget = new ID3D11RenderTargetView*[desc.count];
+		renderTarget->m_RenderTarget = new ID3D11RenderTargetView*[desc.count];
 		renderTarget->m_ShaderResourceView = new ID3D11ShaderResourceView*[desc.count];
 
 		HRESULT hr = S_OK;
@@ -16,7 +16,7 @@ namespace Hollow {
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
 
-		DXGI_FORMAT textureFormat = GetTextureFormat(desc.textureFormat);
+		DXGI_FORMAT textureFormat = getTextureFormat(desc.textureFormat);
 
 		// Render target
 		D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -51,12 +51,12 @@ namespace Hollow {
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 		for (int i = 0; i < desc.count; i++) {
-			hr = device->CreateRenderTargetView(renderTarget->m_BackBuffer[i], &renderTargetViewDesc, &renderTarget->renderTarget[i]);
+			hr = device->CreateRenderTargetView(renderTarget->m_BackBuffer[i], &renderTargetViewDesc, &renderTarget->m_RenderTarget[i]);
 		}
 
 		// Depth buffer
-		DXGI_FORMAT resformat = GetDepthResourceFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
-		DXGI_FORMAT srvformat = GetDepthSRVFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
+		DXGI_FORMAT resformat = getDepthResourceFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
+		DXGI_FORMAT srvformat = getDepthSRVFormat(DXGI_FORMAT_D24_UNORM_S8_UINT);
 
 		D3D11_TEXTURE2D_DESC depthTextureDesc = {};
 		depthTextureDesc.ArraySize = 1;
@@ -91,7 +91,7 @@ namespace Hollow {
 		return renderTarget;
 	}
 
-	DXGI_FORMAT D3D11RenderTargetManager::GetDepthResourceFormat(DXGI_FORMAT depthformat)
+	DXGI_FORMAT D3D11RenderTargetManager::getDepthResourceFormat(DXGI_FORMAT depthformat)
 	{
 		switch (depthformat)
 		{
@@ -112,7 +112,7 @@ namespace Hollow {
 		}
 	}
 
-	DXGI_FORMAT D3D11RenderTargetManager::GetDepthSRVFormat(DXGI_FORMAT depthformat)
+	DXGI_FORMAT D3D11RenderTargetManager::getDepthSRVFormat(DXGI_FORMAT depthformat)
 	{
 		switch (depthformat)
 		{
@@ -133,7 +133,7 @@ namespace Hollow {
 		}
 	}
 
-	DXGI_FORMAT D3D11RenderTargetManager::GetTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format)
+	DXGI_FORMAT D3D11RenderTargetManager::getTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format)
 	{
 		switch (format)
 		{
