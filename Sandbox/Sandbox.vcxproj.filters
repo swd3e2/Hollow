@@ -20,8 +20,6 @@
     <ClInclude Include="Sandbox\GUI\LogTab.h" />
     <ClInclude Include="Sandbox\GUI\HierarchyTab.h" />
     <ClInclude Include="Sandbox\GUI\GUISystem.h" />
-    <ClInclude Include="Sandbox\GUI\InspectorTab.h" />
-    <ClInclude Include="Sandbox\GUI\MaterialTab.h" />
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\Entities\Terrain.h" />
     <ClInclude Include="Sandbox\Components\TerrainData.h" />

@@ -9,8 +9,6 @@
 #include "Sandbox/ProjectSettings.h"
 #include "LogTab.h"
 #include "HierarchyTab.h"
-#include "InspectorTab.h"
-#include "MaterialTab.h"
 #include "RendererTab.h"
 #include "Hollow/Common/Logger.h"
 #include "Hollow/Core/DelayedTaskManager.h"
@@ -36,8 +34,6 @@ public:
 
 	GUI::LogTab logTab;
 	GUI::HierarchyTab hierarchyTab;
-	GUI::InspectorTab inspectorTab;
-	GUI::MaterialTab materialTab;
 	GUI::RendererTab rendererTab;
 
 	GUISystem(Window* window, RenderApi* renderer)
@@ -178,6 +174,9 @@ public:
 				}
 				ImGui::EndMenu();
 			}
+			if (ImGui::MenuItem("Exit")) {
+				Window::instance()->setIsClosed(true);
+			}
 			ImGui::EndMenuBar();
 		}
 		if (openProjectCreationPopup) {
@@ -208,9 +207,6 @@ public:
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			rendererTab.Draw(dt);
 			hierarchyTab.Draw();
-			inspectorTab.Draw(hierarchyTab.selectedGameObject);
-			materialTab.Draw(inspectorTab.selectedMaterial);
-			//logTab.Draw();
 		}
 		
 		end();

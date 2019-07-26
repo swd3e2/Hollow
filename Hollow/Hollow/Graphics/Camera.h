@@ -40,7 +40,7 @@ namespace Hollow {
 		Vector4 rightVec;
 
 		float bias = 0.000001f;
-		float cameraMoveSpeed = 0.04f;
+		float cameraMoveSpeed = 10.04f;
 	public:
 		void updateViewMatrix();
 	};

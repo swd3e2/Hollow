@@ -11,19 +11,20 @@ namespace Hollow {
 
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
+		ID3D11DeviceContext* deviceContext = r->getContext().getDeviceContext();
 
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Height = desc->height;
 		textureDesc.Width = desc->width;
-		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Format = getFormat(desc->format);
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
-		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 		textureDesc.CPUAccessFlags = 0;
-		textureDesc.MiscFlags = 0;
+		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+		textureDesc.MipLevels = 5;
 
 		// If texture is created for compute shader
 		if (desc->unorderedAccess) {
@@ -36,11 +37,21 @@ namespace Hollow {
 			initData.SysMemPitch = desc->pitch;
 			initData.SysMemSlicePitch = 0;
 
-			if (FAILED(device->CreateTexture2D(&textureDesc, &initData, &texture->m_Texture))) {
+			if (FAILED(device->CreateTexture2D(&textureDesc, nullptr, &texture->m_Texture))) {
 				HW_ERROR("D3DTexture: Can't create 2D texture");
 				delete texture;
 				return nullptr;
 			}
+
+			D3D11_BOX box;
+			box.left = 0;
+			box.right = desc->width;
+			box.bottom = desc->height;
+			box.top = 0;
+			box.front = 0;
+			box.back = 1;
+
+			deviceContext->UpdateSubresource(texture->m_Texture, 0, &box, desc->mInitialData, desc->pitch, 1);
 		}
 		else {
 			if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &texture->m_Texture))) {
@@ -68,13 +79,15 @@ namespace Hollow {
 		srvDesc.Format = textureDesc.Format;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = 1;
-
+		srvDesc.Texture2D.MipLevels = 5;
+		
 		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
 			delete texture;
 			return nullptr;
 		}
+
+		deviceContext->GenerateMips(texture->m_TextureShaderResource);
 
 		textureList[desc->filename] = texture;
 

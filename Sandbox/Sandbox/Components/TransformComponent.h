@@ -16,6 +16,7 @@ public:
 	TransformComponent(const Hollow::Vector3& position, const Hollow::Vector3& scale, const Hollow::Vector3& rotation) :
 		position(position), scale(scale), rotation(rotation)
 	{}
+
 	TransformComponent(float * position, float * scale, float * rotation)
 	{
 		this->setTransform(position, scale, rotation);

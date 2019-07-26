@@ -16,21 +16,21 @@
 #include "Sandbox/Components/TerrainData.h"
 #include "Hollow/Graphics/Base/InputLayout.h"
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 2560
+#define SCREEN_HEIGHT 1440
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 {
 	Hollow::Core core;
 
-	Hollow::Window* window = WindowManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
-	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Hollow::Window* window = WindowManager::create(Hollow::RendererType::DirectX, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Borderless);
+	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::DirectX, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
+	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::DirectX);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
-	camera->setProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 10000.0f);
+	camera->setProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100000.0f);
 
 	RenderSystem renderPass(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	renderPass.skyMap = new SkyMap();
@@ -43,9 +43,6 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;
-
-	Terrain* terrain = Hollow::EntityManager::instance()->create<Terrain>();
-	terrain->addComponent<TerrainData>();
 
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 

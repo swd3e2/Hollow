@@ -14,6 +14,8 @@
 #include "Sandbox/Components/RenderableComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Hollow/Core/DelayedTaskManager.h"
+#include "Sandbox//Entities/Terrain.h"
+#include "Sandbox/Components/TerrainData.h"
 
 /**
  * Project settings class
@@ -55,8 +57,11 @@ public:
 			TexturesFolder = projectData["TexturesFolder"].get<std::string>();
 			projectFileName = filename;
 
-			for (auto& it : projectData["Entities"]) {
+			for (auto& it : projectData["GameObjects"]) {
 				GameObject* gameObject = Hollow::EntityManager::instance()->create<GameObject>();
+				if (it.find("name") != it.end()) {
+					gameObject->name = it["name"].get<std::string>();
+				}
 
 				if (it.find("TransformComponent") != it.end()) {
 					TransformComponent* transform = gameObject->addComponent<TransformComponent>(
@@ -79,6 +84,33 @@ public:
 
 				if (it.find("RenderableComponent") != it.end()) {
 					gameObject->addComponent<RenderableComponent>(it["RenderableComponent"]["filename"].get<std::string>());
+				}
+			}
+
+			for (auto& it : projectData["Terrain"]) {
+				Terrain* terrain = Hollow::EntityManager::instance()->create<Terrain>();
+
+				if (it.find("TransformComponent") != it.end()) {
+					TransformComponent* transform = terrain->addComponent<TransformComponent>(
+						Hollow::Vector3(
+							it["TransformComponent"]["translation"][0].get<float>(),
+							it["TransformComponent"]["translation"][1].get<float>(),
+							it["TransformComponent"]["translation"][2].get<float>()
+						),
+						Hollow::Vector3(
+							it["TransformComponent"]["scale"][0].get<float>(),
+							it["TransformComponent"]["scale"][1].get<float>(),
+							it["TransformComponent"]["scale"][2].get<float>()
+						),
+						Hollow::Vector3(
+							it["TransformComponent"]["rotation"][0].get<float>(),
+							it["TransformComponent"]["rotation"][1].get<float>(),
+							it["TransformComponent"]["rotation"][2].get<float>()
+						));
+				}
+
+				if (it.find("TerrainData") != it.end()) {
+					terrain->addComponent<TerrainData>(it["TerrainData"]["filename"].get<std::string>());
 				}
 			}
 
@@ -144,11 +176,13 @@ public:
 
 			int counter = 0;
 			for (auto& it : Hollow::EntityManager::instance()->container<GameObject>()) {
-				projectData["Entities"][counter]["id"] = it.getId();
+				projectData["GameObjects"][counter]["id"] = it.getId();
+				projectData["GameObjects"][counter]["name"] = it.name.c_str();
+
 				if (it.hasComponent<TransformComponent>()) {
 					TransformComponent* transform = it.getComponent<TransformComponent>();
 
-					projectData["Entities"][counter]["TransformComponent"] = {
+					projectData["GameObjects"][counter]["TransformComponent"] = {
 						{"rotation", { transform->rotation.x, transform->rotation.y, transform->rotation.z }},
 						{"translation", { transform->position.x, transform->position.y, transform->position.z }},
 						{"scale", { transform->scale.x, transform->scale.y, transform->scale.z }}
@@ -156,13 +190,30 @@ public:
 				}
 
 				if (it.hasComponent<RenderableComponent>()) {
-					RenderableComponent* renderable = it.getComponent<RenderableComponent>();
-
-					projectData["Entities"][counter]["RenderableComponent"] = {
-						{"filename", renderable->filename}
+					projectData["GameObjects"][counter]["RenderableComponent"] = {
+						{"filename", it.getComponent<RenderableComponent>()->filename}
 					};
 				}
 				counter++;
+			}
+
+			counter = 0;
+			for (auto& it : Hollow::EntityManager::instance()->container<Terrain>()) {
+				if (it.hasComponent<TransformComponent>()) {
+					TransformComponent* transform = it.getComponent<TransformComponent>();
+
+					projectData["Terrain"][counter]["TransformComponent"] = {
+						{"rotation", { transform->rotation.x, transform->rotation.y, transform->rotation.z }},
+						{"translation", { transform->position.x, transform->position.y, transform->position.z }},
+						{"scale", { transform->scale.x, transform->scale.y, transform->scale.z }}
+					};
+				}
+
+				if (it.hasComponent<TerrainData>()) {
+					projectData["Terrain"][counter]["TerrainData"] = {
+						{"filename", it.getComponent<TerrainData>()->filename}
+					};
+				}
 			}
 
 			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());

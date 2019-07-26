@@ -45,7 +45,7 @@ namespace Hollow {
 		virtual void setInputLayout(InputLayout* layout) override;
 		virtual void setPipelineState(PipelineState* pipeline) override;
 
-		virtual void draw(UINT count)override {}
+		virtual void draw(UINT count)override;
 		virtual void drawIndexed(UINT count) override;
 		virtual void present() override;
 	};

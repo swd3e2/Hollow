@@ -12,7 +12,7 @@ SamplerState SampleTypeWrap : register(s1);
 
 float4 main(SKYMAP_VS_OUTPUT input) : SV_Target
 {
-	float depth1 = depth.Sample(SampleTypeClamp, float2(input.pos.x / 1920.0f, input.pos.y / 1080.0f)).r;
+	float depth1 = depth.Sample(SampleTypeClamp, float2(input.pos.x / 2560.0f, input.pos.y / 1440.0f)).r;
 
 	if (depth1 == 1.0f) {
 		return SkyMap.Sample(SampleTypeWrap, input.texCoord);

@@ -48,11 +48,11 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 	normal = normal * 2.0f - 1.0f;
 	float4 diffuse = diffuseBuffer.Sample(SampleTypeClamp, input.texCoord);
 	
-	float lightFactor = saturate(dot(normal, float3(1.0f, 1.0f, 0.0f)));
-	//diffuse = diffuse + lightFactor * float4(0.3f, 0.3f, 0.3f, 1.0f);// -calculateShadowAmount(position) * -1.0f;
+	float lightFactor = saturate(dot(normal, float3(1.0f, 0.0f, 0.0f)));
+	diffuse = diffuse + lightFactor * float4(0.3f, 0.3f, 0.3f, 1.0f);
 	float shadowFactor = calculateShadowAmount(position);
 
-	diffuse.xyz -= shadowFactor * 0.53f;
+	//diffuse.xyz -= shadowFactor * 0.53f;
 
 	return diffuse;
 }

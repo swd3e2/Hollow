@@ -54,8 +54,8 @@ public:
 		int border_thickness;
 
 		if (true) {
-			float centerScreenX = (float)GetSystemMetrics(SM_CXSCREEN) / 2.0f - 1600.0f / 2.0f;
-			float centerScreenY = (float)GetSystemMetrics(SM_CYSCREEN) / 2.0f - 900.0f / 2.0f;
+			float centerScreenX = (float)GetSystemMetrics(SM_CXSCREEN) / 2.0f - 1920.0f / 2.0f;
+			float centerScreenY = (float)GetSystemMetrics(SM_CYSCREEN) / 2.0f - 1080.0f / 2.0f;
 			border_thickness = GetSystemMetrics(SM_CYCAPTION);
 
 			xOffset = centerScreenX;

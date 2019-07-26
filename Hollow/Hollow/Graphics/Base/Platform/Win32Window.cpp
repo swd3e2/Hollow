@@ -33,7 +33,7 @@ namespace Hollow {
 		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
 		if (type == WindowType::Borderless) {
-			styles |= WS_POPUPWINDOW;
+			styles = WS_POPUP;
 		}
 
 		hWnd = CreateWindow("HollowAppClass", "Hollow", styles,
@@ -169,7 +169,7 @@ namespace Hollow {
 
 	void Win32Window::showWindow()
 	{
-		ShowWindow(hWnd, SW_SHOW); // SW_SHOWMAXIMIZED
+		ShowWindow(hWnd, SW_SHOWMAXIMIZED); // SW_SHOWMAXIMIZED
 		UpdateWindow(hWnd);
 	}
 }

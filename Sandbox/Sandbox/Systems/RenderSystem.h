@@ -291,16 +291,23 @@ public:
 					}
 				}
 				for (auto& entity : EntityManager::instance()->container<Terrain>()) {
-					if (entity.hasComponent<TerrainData>()) {
+					if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
 						TerrainData* data = entity.getComponent<TerrainData>();
+						TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-						perModelData.transform = Matrix4::Identity();
-						perModel->update(&perModelData);
-						renderer->setGpuBuffer(perModel);
+						if (data->vBuffer != nullptr) {
+							perModelData.transform = Matrix4::Transpose(
+								Matrix4::Scaling(transform->scale)
+								* Matrix4::Rotation(transform->rotation)
+								* Matrix4::Translation(transform->position)
+							);
 
-						renderer->setVertexBuffer(data->vBuffer);
-						renderer->setIndexBuffer(data->iBuffer);
-						renderer->drawIndexed(data->iBuffer->mHardwareBuffer->getSize());
+							perModel->update(&perModelData);
+							renderer->setGpuBuffer(perModel);
+							renderer->setTexture(0, data->tex);
+							renderer->setVertexBuffer(data->vBuffer);
+							renderer->draw(data->vBuffer->mHardwareBuffer->getSize());
+						}
 					}
 				}
 			}

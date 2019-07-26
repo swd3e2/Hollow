@@ -27,7 +27,7 @@ namespace Hollow {
 		static bool KeyboardKeys[256];
 		static bool MouseButton[5];
 	public:
-		// Mouse moving delta from last position
+		// Mouse moving delta
 		static long mx;
 		static long my;
 		// Actual position of cursor on screen

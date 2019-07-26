@@ -40,4 +40,32 @@ namespace Hollow {
 
 		return *this;
 	}
+
+	Vector3 Vector3::operator-(const Vector3& other) const
+	{
+		return Vector3(x - other.x, y - other.y, z - other.z);
+	}
+
+	Vector3 Vector3::cross(const Vector3& left, const Vector3& right)
+	{
+		float x = left.y * right.z - left.z * right.y;
+		float y = left.z * right.x - left.x * right.z;
+		float z = left.x * right.y - left.y * right.x;
+
+		return Vector3(x, y, z);
+	}
+
+	Vector3 Vector3::Normalize(const Vector3& vector)
+	{
+		float length = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+		return Vector3(vector.x / length, vector.y / length, vector.z / length);
+	}
+
+	Vector3& Vector3::invert()
+	{
+		x = -x;
+		y = -y;
+		z = -z;
+		return *this;
+	}
 }

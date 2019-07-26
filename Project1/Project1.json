@@ -1,5 +1,5 @@
 {
-  "Entities": [
+  "GameObjects": [
     {
       "RenderableComponent": {
         "filename": "C:/dev/Hollow Engine/Project1/Meshes/_scene.json"
@@ -21,7 +21,8 @@
           0.0
         ]
       },
-      "id": 1
+      "id": 0,
+      "name": "Kek entity"
     },
     {
       "RenderableComponent": {
@@ -44,7 +45,8 @@
           3.700000047683716
         ]
       },
-      "id": 2
+      "id": 1,
+      "name": ""
     },
     {
       "RenderableComponent": {
@@ -67,9 +69,34 @@
           0.0
         ]
       },
-      "id": 3
+      "id": 2,
+      "name": ""
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
+  "Terrain": [
+    {
+      "TerrainData": {
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/Heightmap.png"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "translation": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  ],
   "TexturesFolder": "C:/dev/Hollow Engine/Project1/Textures"
 }

@@ -179,6 +179,11 @@ namespace Hollow {
 		glBindProgramPipeline(oglPipeline->pipelineId);
 	}
 
+	void OGLRenderApi::draw(UINT count)
+	{
+		glDrawArrays(GL_TRIANGLES, 0, count);
+	}
+
 	void OGLRenderApi::drawIndexed(UINT count)
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
