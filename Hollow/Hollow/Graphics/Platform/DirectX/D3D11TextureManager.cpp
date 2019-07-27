@@ -2,7 +2,7 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	Texture* D3D11TextureManager::create2dTexture(TEXTURE_DESC* desc)
+	Texture* D3D11TextureManager::create2dTexture(TextureData* desc)
 	{
 		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		D3D11Texture* texture = new D3D11Texture();
@@ -31,9 +31,9 @@ namespace Hollow {
 			textureDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
 		}
 
-		if (desc->mInitialData != nullptr) {
+		if (desc->data != nullptr) {
 			D3D11_SUBRESOURCE_DATA initData;
-			initData.pSysMem = desc->mInitialData;
+			initData.pSysMem = *desc->data;
 			initData.SysMemPitch = desc->pitch;
 			initData.SysMemSlicePitch = 0;
 
@@ -51,7 +51,7 @@ namespace Hollow {
 			box.front = 0;
 			box.back = 1;
 
-			deviceContext->UpdateSubresource(texture->m_Texture, 0, &box, desc->mInitialData, desc->pitch, 1);
+			deviceContext->UpdateSubresource(texture->m_Texture, 0, &box, *desc->data, desc->pitch, 1);
 		}
 		else {
 			if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &texture->m_Texture))) {
@@ -96,7 +96,7 @@ namespace Hollow {
 		return texture;
 	}
 
-	Texture* D3D11TextureManager::create3dTexture(TEXTURE_DESC** desc)
+	Texture* D3D11TextureManager::create3dTexture(TextureData** desc)
 	{
 		HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 		D3D11Texture* texture = new D3D11Texture();
@@ -122,7 +122,7 @@ namespace Hollow {
 		D3D11_SUBRESOURCE_DATA pData[6];
 
 		for (int i = 0; i < 6; i++) {
-			pData[i].pSysMem = desc[i]->mInitialData;
+			pData[i].pSysMem = *desc[i]->data;
 			pData[i].SysMemPitch = desc[i]->pitch;
 			pData[i].SysMemSlicePitch = 0;
 		}
@@ -156,7 +156,7 @@ namespace Hollow {
 		return texture;
 	}
 
-	Texture* D3D11TextureManager::create3dTexture(TEXTURE_DESC* desc)
+	Texture* D3D11TextureManager::create3dTexture(TextureData* desc)
 	{
 		D3D11Texture* texture = new D3D11Texture();
 
@@ -167,7 +167,7 @@ namespace Hollow {
 			data[i] = new unsigned char[xOffset * yOffset * 4];
 		}
 
-		unsigned char* textureData = (unsigned char*)desc->mInitialData;
+		unsigned char* textureData = (unsigned char*)*desc->data;
 
 
 		// planes

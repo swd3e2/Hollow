@@ -37,7 +37,7 @@ namespace Hollow {
 	void OGLRenderApi::setVertexBuffer(VertexBuffer* buffer)
 	{
 		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
-		glBindVertexBuffer(0, oglBuffer->mVbo, 0, static_cast<OGLInputLayout*>(mCurrentLayout)->size);
+		glBindVertexBuffer(0, oglBuffer->mVbo, 0, buffer->mHardwareBuffer->getStride());
 	}
 
 	void OGLRenderApi::setTexture(UINT location, Texture* texture)

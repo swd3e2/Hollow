@@ -93,6 +93,7 @@ private:
 	PipelineState* lightPipeline;
 	PipelineState* skyMapPipeline;
 	PipelineState* defaultPipeline;
+	PipelineState* terrainPipeline;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -168,6 +169,13 @@ public:
 
 					skyMapPipeline = Hollow::PipelineState::create(pipelineDesc);
 				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/terrain.hlsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/terrain.hlsl"), "main" });
+
+					terrainPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
 			} else {
 				{
 					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
@@ -211,8 +219,8 @@ public:
 
 		Hollow::RENDER_TARGET_DESC desc2;
 		desc2.count = 1;
-		desc2.width = this->width;
-		desc2.height = this->height;
+		desc2.width = 4096;
+		desc2.height = 4096;
 		desc2.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 		main = RenderTarget::create(desc2);
 
@@ -220,8 +228,6 @@ public:
 		shadow.shadowCamera = new Camera(false);
 		shadow.shadowCamera->setOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
 		shadow.texelSize = Hollow::Vector2(1.0f / this->width, 1.0f / this->height);
-
-		picker = RenderTarget::create(desc2);
 
 		std::vector<Hollow::Vertex> vertices;			
 		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));				
@@ -313,6 +319,8 @@ public:
 			}
 			// Shadow pass
 			{
+				renderer->setViewport(0, 0, 4096, 4096);
+
 				shadowStruct.ShadowWVP = shadow.shadowCamera->getProjectionMatrix() * shadow.shadowCamera->getViewMatrix();
 				shadowStruct.texelSize = shadow.texelSize;
 				shadowStruct.bias = shadow.bias;
@@ -340,6 +348,26 @@ public:
 							renderer->setVertexBuffer(object.vBuffer);
 							renderer->setIndexBuffer(object.iBuffer);
 							renderer->drawIndexed(object.iBuffer->mHardwareBuffer->getSize());
+						}
+					}
+				}
+				for (auto& entity : EntityManager::instance()->container<Terrain>()) {
+					if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
+						TerrainData* data = entity.getComponent<TerrainData>();
+						TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+						if (data->vBuffer != nullptr) {
+							perModelData.transform = Matrix4::Transpose(
+								Matrix4::Scaling(transform->scale)
+								* Matrix4::Rotation(transform->rotation)
+								* Matrix4::Translation(transform->position)
+							);
+
+							perModel->update(&perModelData);
+							renderer->setGpuBuffer(perModel);
+							renderer->setTexture(0, data->tex);
+							renderer->setVertexBuffer(data->vBuffer);
+							renderer->draw(data->vBuffer->mHardwareBuffer->getSize());
 						}
 					}
 				}

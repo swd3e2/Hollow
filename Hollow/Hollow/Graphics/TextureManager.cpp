@@ -13,7 +13,7 @@ namespace Hollow {
 			return textureList[pathToFile];
 		}
 
-		TEXTURE_DESC* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
+		TextureData* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
 
 		if (textureDesc == nullptr) {
 			return nullptr;

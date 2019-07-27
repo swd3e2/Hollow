@@ -21,9 +21,9 @@ namespace Hollow {
 		Texture* createTextureFromFile(const std::string& filename, bool fromDefaultFolder = true);
 		void remove(Texture* texture);
 		void removeAll();
-		virtual Texture* create2dTexture(TEXTURE_DESC* desc) = 0;
-		virtual Texture* create3dTexture(TEXTURE_DESC** desc) = 0;
-		virtual Texture* create3dTexture(TEXTURE_DESC* desc) = 0;
+		virtual Texture* create2dTexture(TextureData* desc) = 0;
+		virtual Texture* create3dTexture(TextureData** desc) = 0;
+		virtual Texture* create3dTexture(TextureData* desc) = 0;
 	};
 }
 

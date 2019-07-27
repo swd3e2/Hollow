@@ -77,7 +77,7 @@
   "Terrain": [
     {
       "TerrainData": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/Heightmap.png"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/5275-heightmap-test.png"
       },
       "TransformComponent": {
         "rotation": [

@@ -1,9 +1,9 @@
 #include "FreeImgImporter.h"
 
 namespace Hollow {
-	TEXTURE_DESC* FreeImgImporter::import(const char* filename)
+	TextureData* FreeImgImporter::import(const char* filename, bool converTo32Bits)
 	{
-		TEXTURE_DESC* textureData = new TEXTURE_DESC();
+		TextureData* textureData = new TextureData();
 		textureData->filename = filename;
 
 		//image format
@@ -33,14 +33,16 @@ namespace Hollow {
 			return nullptr;
 		}
 
-		int BPP = FreeImage_GetBPP(dib);
+		if (converTo32Bits) {
+			int BPP = FreeImage_GetBPP(dib);
 
-		if (BPP != 32) {
-			FIBITMAP* tmp = FreeImage_ConvertTo32Bits(dib);
-			FreeImage_Unload(dib);
-			dib = tmp;
+			if (BPP != 32) {
+				FIBITMAP* tmp = FreeImage_ConvertTo32Bits(dib);
+				FreeImage_Unload(dib);
+				dib = tmp;
+			}
 		}
-
+		
 		FreeImage_FlipVertical(dib);
 
 		//retrieve the image data
@@ -49,11 +51,12 @@ namespace Hollow {
 		textureData->width = FreeImage_GetWidth(dib);
 		textureData->height = FreeImage_GetHeight(dib);
 		textureData->pitch = FreeImage_GetPitch(dib);
+		textureData->pixelSize = FreeImage_GetBPP(dib) / 8;
+		
+		textureData->size = textureData->height * textureData->pitch;
 
-		textureData->size = textureData->width * textureData->height * 4;
-
-		textureData->mInitialData = malloc(textureData->size);
-		memcpy(textureData->mInitialData, bits, textureData->size);
+		textureData->data = std::make_shared<void*>(malloc(textureData->size));
+		memcpy(*textureData->data, bits, textureData->size);
 
 		FreeImage_Unload(dib);
 

@@ -20,28 +20,23 @@ namespace Hollow {
 		TEXTURE_CUBE
 	};
 
-	class TEXTURE_DESC
+	class TextureData
 	{
 	public:
 		int width;
 		int height;
 		int pitch;
-		void* mInitialData;
+		int pixelSize;
+		std::shared_ptr<void*> data;
 		bool unorderedAccess;
 		TextureFormat format;
 		TextureType type;
 		std::string filename;
 		int size;
 	public:
-		TEXTURE_DESC() :
+		TextureData() :
 			format(FORMAT_B8G8R8A8_UNORM), unorderedAccess(false)
 		{}
-		~TEXTURE_DESC()
-		{
-			if (mInitialData != nullptr) {
-				free(mInitialData);
-			}
-		}
 	};
 
 	class Texture

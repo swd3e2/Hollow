@@ -132,46 +132,10 @@ namespace Hollow {
 
 		// Rasterizers
 		m_CullNone = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_NONE, D3D11_FILL_MODE::D3D11_FILL_SOLID);
-		m_CullFront = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_FRONT, D3D11_FILL_MODE::D3D11_FILL_SOLID);
-		m_CullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
 
 		setRasterizerState(m_CullNone);
 
 		blendState = new D3D11BlendState();
-
-		D3D11_DEPTH_STENCIL_DESC dssDesc;
-		ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-		dssDesc.DepthEnable = true;
-		dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_NEVER;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNever);
-		}
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLess);
-		}
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateEqual);
-		}
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLequal);
-		}
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_GREATER;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateGreater);
-		}
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_NOT_EQUAL;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNotEqual);
-		}
-		{
-			dssDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-			hr = device->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateAlways);
-		}
 
 		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();
 		TextureManager::startUp<D3D11TextureManager>();
@@ -244,32 +208,81 @@ namespace Hollow {
 	void D3D11RenderApi::setDepthTestFunction(DEPTH_TEST_FUNCTION func)
 	{
 		switch (func) {
-			case DEPTH_TEST_FUNCTION::NEVER:
-			{
+			case DEPTH_TEST_FUNCTION::NEVER: {
+				if (m_DepthStencilStateNever == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_NEVER;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNever);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateNever, 0);
 			} break;
-			case DEPTH_TEST_FUNCTION::LESS:
-			{
+			case DEPTH_TEST_FUNCTION::LESS: {
+				if (m_DepthStencilStateLess == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLess);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateLess, 0);
 			} break;
-			case DEPTH_TEST_FUNCTION::EQUAL:
-			{
+			case DEPTH_TEST_FUNCTION::EQUAL: {
+				if (m_DepthStencilStateEqual == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateEqual);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateEqual, 0);
 			} break;
-			case DEPTH_TEST_FUNCTION::LEQUAL:
-			{
+			case DEPTH_TEST_FUNCTION::LEQUAL: {
+				if (m_DepthStencilStateLequal == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLequal);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateLequal, 0);
 			} break;
-			case DEPTH_TEST_FUNCTION::GREATER:
-			{
+			case DEPTH_TEST_FUNCTION::GREATER: {
+				if (m_DepthStencilStateGreater == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_GREATER;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateGreater);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateGreater, 0);
 			} break;
-			case DEPTH_TEST_FUNCTION::NOT_EQUAL:
-			{
+			case DEPTH_TEST_FUNCTION::NOT_EQUAL: {
+				if (m_DepthStencilStateNotEqual == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateNotEqual);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateNotEqual, 0);
 			} break;
-			case DEPTH_TEST_FUNCTION::ALWAYS:
-			{
+			case DEPTH_TEST_FUNCTION::ALWAYS: {
+				if (m_DepthStencilStateAlways == nullptr) {
+					D3D11_DEPTH_STENCIL_DESC dssDesc = { 0 };
+					dssDesc.DepthEnable = true;
+					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+					dssDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+
+					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateAlways);
+				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateAlways, 0);
 			} break;
 		}
@@ -279,15 +292,21 @@ namespace Hollow {
 	{
 		switch (mode)
 		{
-		case Hollow::CULL_NONE:
-			setRasterizerState(m_CullNone);
-			break;
-		case Hollow::CULL_FRONT:
-			setRasterizerState(m_CullFront);
-			break;
-		case Hollow::CULL_BACK:
-			setRasterizerState(m_CullBack);
-			break;
+			case Hollow::CULL_NONE:
+				setRasterizerState(m_CullNone);
+				break;
+			case Hollow::CULL_FRONT: {
+				if (m_CullFront == nullptr) {
+					m_CullFront = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_FRONT, D3D11_FILL_MODE::D3D11_FILL_SOLID);
+				}
+				setRasterizerState(m_CullFront);
+			} break;
+			case Hollow::CULL_BACK: {
+				if (m_CullBack == nullptr) {
+					m_CullBack = new D3D11RasterizerState(D3D11_CULL_MODE::D3D11_CULL_BACK, D3D11_FILL_MODE::D3D11_FILL_SOLID);
+				}
+				setRasterizerState(m_CullBack);
+			} break;
 		}
 	}
 

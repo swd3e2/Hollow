@@ -12,9 +12,9 @@ namespace Hollow {
 	class D3D11TextureManager : public TextureManager
 	{
 	public:
-		virtual Texture* create2dTexture(TEXTURE_DESC* desc) override;
-		virtual Texture* create3dTexture(TEXTURE_DESC** desc) override;
-		virtual Texture* create3dTexture(TEXTURE_DESC* desc) override;
+		virtual Texture* create2dTexture(TextureData* desc) override;
+		virtual Texture* create3dTexture(TextureData** desc) override;
+		virtual Texture* create3dTexture(TextureData* desc) override;
 	private:
 		DXGI_FORMAT getFormat(TextureFormat format);
 	};

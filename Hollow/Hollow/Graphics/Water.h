@@ -35,7 +35,7 @@ public:
 
 		mesh->models[0]->material = new Material();
 		mesh->models[0]->material->shader = ShaderManager::instance()->getShader("Water");
-		TEXTURE_DESC* desc = FreeImgImporter::instance()->import("Sandbox/Resources/Textures/heightmaps/1.png");
+		TextureData* desc = FreeImgImporter::instance()->import("Sandbox/Resources/Textures/heightmaps/1.png");
 		mesh->models[0]->material->diffuseTexture = TextureManager::instance()->Create2dTexture(desc);
 		mesh->models[0]->material->shader->setHullShader(ShaderManager::instance()->compileShader(ShaderType::HULL,
 			"C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/hull/shader.hlsl"));
@@ -45,7 +45,7 @@ public:
 		computeShader = ShaderManager::instance()->compileShader(ShaderType::COMPUTE,
 			"C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/compute/ComputeShader.hlsl");
 
-		TEXTURE_DESC desc2;
+		TextureData desc2;
 		desc2.height = 256;
 		desc2.width  = 256;
 		desc2.unorderedAccess = true;

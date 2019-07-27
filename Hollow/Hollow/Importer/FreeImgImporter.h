@@ -13,7 +13,7 @@ namespace Hollow {
 	{
 	public:
 		virtual void onStartUp() override { FreeImage_Initialise(); }
-		TEXTURE_DESC* import(const char* filename);
+		TextureData* import(const char* filename, bool converTo32Bits = true);
 	};	
 }
 

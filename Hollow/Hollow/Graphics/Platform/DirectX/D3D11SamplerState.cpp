@@ -5,13 +5,12 @@
 namespace Hollow {
 	D3D11SamplerState::D3D11SamplerState(D3D11_TEXTURE_ADDRESS_MODE mode)
 	{
-		HRESULT hr = S_OK;
-
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
 
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+
 		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 		samplerDesc.AddressU = mode;
 		samplerDesc.AddressV = mode;
