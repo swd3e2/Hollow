@@ -1,0 +1,226 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v0.9.18",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "tree pack 006.001",
+            "rotation" : [
+                0.7071068286895752,
+                0,
+                0,
+                0.7071067094802856
+            ],
+            "scale" : [
+                0.01812499761581421,
+                0.01812499761581421,
+                0.01812499761581421
+            ],
+            "translation" : [
+                -2.080669403076172,
+                97.67634582519531,
+                -2.4750709533691406
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "AM113_062_Tilia_Bark",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 1
+            }
+        },
+        {
+            "doubleSided" : true,
+            "name" : "AM113_062_Tilia",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 1,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 1
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "tree pack 006.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                },
+                {
+                    "attributes" : {
+                        "POSITION" : 4,
+                        "NORMAL" : 5,
+                        "TEXCOORD_0" : 6
+                    },
+                    "indices" : 7,
+                    "material" : 1
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "source" : 0
+        },
+        {
+            "source" : 1
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "AM113_062_Tilia_Bark",
+            "uri" : "AM113_062_Tilia_Bark.jpg"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "AM113_062_Tilia",
+            "uri" : "AM113_062_Tilia.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 1089,
+            "max" : [
+                2485.806640625,
+                2730.240966796875,
+                5389.14697265625
+            ],
+            "min" : [
+                -2314.16357421875,
+                -2455.728759765625,
+                -1750.50830078125
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 1089,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 1089,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 2364,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 4399,
+            "max" : [
+                3686.5068359375,
+                4405.74072265625,
+                3493.121826171875
+            ],
+            "min" : [
+                -4302.673828125,
+                -4153.34912109375,
+                -4019.7783203125
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5126,
+            "count" : 4399,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 4399,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5123,
+            "count" : 11562,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 13068,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 13068,
+            "byteOffset" : 13068
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 8712,
+            "byteOffset" : 26136
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 4728,
+            "byteOffset" : 34848
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 52788,
+            "byteOffset" : 39576
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 52788,
+            "byteOffset" : 92364
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 35192,
+            "byteOffset" : 145152
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 23124,
+            "byteOffset" : 180344
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 203468,
+            "uri" : "tree.bin"
+        }
+    ]
+}

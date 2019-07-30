@@ -16,13 +16,13 @@
           0.10000000149011612
         ],
         "translation": [
-          100.0,
+          100.0999984741211,
           -4.099999904632568,
           0.0
         ]
       },
       "id": 0,
-      "name": "Kek entity"
+      "name": "B2"
     },
     {
       "RenderableComponent": {
@@ -40,13 +40,13 @@
           200.0
         ],
         "translation": [
-          82.69999694824219,
+          85.19999694824219,
           -51.599998474121094,
           3.700000047683716
         ]
       },
       "id": 1,
-      "name": ""
+      "name": "Plane"
     },
     {
       "RenderableComponent": {
@@ -70,14 +70,11 @@
         ]
       },
       "id": 2,
-      "name": ""
-    }
-  ],
-  "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
-  "Terrain": [
+      "name": "Ball"
+    },
     {
-      "TerrainData": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/5275-heightmap-test.png"
+      "RenderableComponent": {
+        "filename": "C:/dev/Hollow Engine/Project1/Meshes/tree.obj"
       },
       "TransformComponent": {
         "rotation": [
@@ -86,9 +83,36 @@
           0.0
         ],
         "scale": [
-          100.0,
-          100.0,
-          100.0
+          0.10000000149011612,
+          0.10000000149011612,
+          0.10000000149011612
+        ],
+        "translation": [
+          102.0999984741211,
+          57.099998474121094,
+          60.29999923706055
+        ]
+      },
+      "id": 3,
+      "name": ""
+    }
+  ],
+  "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
+  "Terrain": [
+    {
+      "TerrainData": {
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\5275-heightmap-test.png"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
         ],
         "translation": [
           0.0,

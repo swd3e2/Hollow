@@ -6,6 +6,19 @@
 #include <Hollow/Graphics/HardwareBufferManager.h>
 #include <Hollow/Importer/FreeImgImporter.h>
 
+struct TerrainVertex
+{
+	Hollow::Vector3 pos;
+	Hollow::Vector2 texCoord;
+	Hollow::Vector3 normal;
+
+	TerrainVertex(float px, float py, float pz, float tu, float tv) :
+		pos(px, py, pz), texCoord(tu, tv)
+	{
+
+	}
+};
+
 class TerrainData : public Hollow::Component<TerrainData>
 {
 public:
@@ -32,7 +45,7 @@ public:
 		desc = Hollow::FreeImgImporter::instance()->import(filename.c_str(), false);
 		data = (unsigned short*)*desc->data;
 
-		std::vector<Hollow::Vertex> vertices;
+		std::vector<TerrainVertex> vertices;
 		std::vector<unsigned int> indices;
 
 		
@@ -45,10 +58,10 @@ public:
 				Hollow::Vector3 normal2 = calculateNormal(i + 1, j);
 				Hollow::Vector3 normal3 = calculateNormal(i + 1, j + 1);
 
-				float h  = getHeight(i    , j    ) / 400.0f;
-				float h1 = getHeight(i    , j + 1) / 400.0f;
-				float h2 = getHeight(i + 1, j    ) / 400.0f;
-				float h3 = getHeight(i + 1, j + 1) / 400.0f;
+				float h  = getHeight(i    , j    ) / 600.0f;
+				float h1 = getHeight(i    , j + 1) / 600.0f;
+				float h2 = getHeight(i + 1, j    ) / 600.0f;
+				float h3 = getHeight(i + 1, j + 1) / 600.0f;
 
 
 				vertices.push_back({ (float)i,		h,	(float)j,		0.0f, 0.0f });
@@ -87,9 +100,9 @@ public:
 		//}
 
 		for (int i = 0; i < vertices.size() / 3; i++) {
-			Hollow::Vertex& first = vertices[i*3];
-			Hollow::Vertex& second = vertices[i * 3 + 1];
-			Hollow::Vertex& third = vertices[i * 3 + 2];
+			TerrainVertex& first = vertices[i*3];
+			TerrainVertex& second = vertices[i * 3 + 1];
+			TerrainVertex& third = vertices[i * 3 + 2];
 
 			Hollow::Vector3 v1 = first.pos - second.pos;
 			Hollow::Vector3 v2 = third.pos - second.pos;
@@ -107,7 +120,7 @@ public:
 		tex = Hollow::TextureManager::instance()->createTextureFromFile("g.jpg", true);
 		//tex = Hollow::TextureManager::instance()->createTextureFromFile("test.gif", true);
 
-		vBuffer = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Hollow::Vertex) });
+		vBuffer = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(TerrainVertex) });
 	}
 
 	Hollow::Vector3 calculateNormal(int x, int z)

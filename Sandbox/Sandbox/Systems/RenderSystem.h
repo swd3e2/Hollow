@@ -72,7 +72,8 @@ private:
 private:
 	WVP						m_wvp;
 	
-	Hollow::InputLayout* layout;
+	Hollow::InputLayout* defaultLayout;
+	Hollow::InputLayout* terrainLayout;
 
 	ShadowStruct shadowStruct;
 
@@ -138,7 +139,14 @@ public:
 				{ Hollow::INPUT_DATA_TYPE::Float4, "WEIGHT" }
 			};
 			
-			layout = Hollow::InputLayout::create(layoutDesc);
+			defaultLayout = Hollow::InputLayout::create(layoutDesc);
+
+			Hollow::INPUT_LAYOUT_DESC terrainLayoutDesc = {
+				{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" }, // pos
+				{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" }, // texcoord
+				{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
+			};
+			terrainLayout = Hollow::InputLayout::create(terrainLayoutDesc);
 
 			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 				{
@@ -205,6 +213,13 @@ public:
 
 					skyMapPipeline = Hollow::PipelineState::create(pipelineDesc);
 				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/terrain.glsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/terrain.glsl"), "main" });
+
+					terrainPipeline = Hollow::PipelineState::create(pipelineDesc);
+				}
 			}
 			
 		}
@@ -258,7 +273,7 @@ public:
 
 	virtual void Update(double dt)
 	{
-		renderer->setInputLayout(layout);
+		renderer->setInputLayout(defaultLayout);
 		shadow.shadowCamera->update(dt);
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
@@ -268,7 +283,7 @@ public:
 			{
 				renderer->setRenderTarget(gBuffer);
 				renderer->setPipelineState(gBufferPipeline);
-				renderer->setCullMode(Hollow::CULL_MODE::CULL_BACK);
+				renderer->setCullMode(Hollow::CULL_MODE::CULL_NONE);
 
 				for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 					if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
@@ -296,6 +311,8 @@ public:
 						}
 					}
 				}
+				renderer->setInputLayout(terrainLayout);
+				renderer->setPipelineState(terrainPipeline);
 				for (auto& entity : EntityManager::instance()->container<Terrain>()) {
 					if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
 						TerrainData* data = entity.getComponent<TerrainData>();
@@ -316,6 +333,7 @@ public:
 						}
 					}
 				}
+				renderer->setInputLayout(defaultLayout);
 			}
 			// Shadow pass
 			{

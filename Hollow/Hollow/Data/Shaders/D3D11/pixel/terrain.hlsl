@@ -12,6 +12,7 @@ struct PixelOutDeffered
 	float4 normal	: SV_TARGET1;
 	float4 position : SV_TARGET2;
 };
+
 cbuffer ConstantBuffer : register(b2)
 {
 	matrix transform;
