@@ -71,33 +71,8 @@ public:
 				vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
 				vertices.push_back({ (float)i + 1,	h3, (float)j + 1,	1.0f, 1.0f });
 				vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
-				/*vertices.push_back({ (float)i,		h, (float)j,		0.0f, 0.0f, normal.x,  normal.y,  normal.z });
-				vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f, normal1.x, normal1.y, normal1.z });
-				vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f, normal2.x, normal2.y, normal2.z });
-
-				vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f, normal1.x, normal1.y, normal1.z });
-				vertices.push_back({ (float)i + 1,	h3, (float)j + 1,	1.0f, 1.0f, normal3.x, normal3.y, normal3.z });
-				vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f, normal2.x, normal2.y, normal2.z });*/
 			}
 		}
-
-		//for (int i = 1; i < width - 2; i++) {
-		//	for (int j = 1; j < height - 2; j++) {
-		//		float h = getHeight(i, j, desc->width, desc->height, data) / 5.0f;
-		//		float h1 = getHeight(i, j + 1, desc->width, desc->height, data) / 5.0f;
-		//		float h2 = getHeight(i + 1, j, desc->width, desc->height, data) / 5.0f;
-		//		float h3 = getHeight(i + 1, j + 1, desc->width, desc->height, data) / 5.0f;
-
-
-		//		vertices.push_back({ (float)i,		h,	(float)j,		0.0f, 0.0f });
-		//		vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
-		//		vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
-
-		//		vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
-		//		vertices.push_back({ (float)i + 1,	h3, (float)j + 1,	1.0f, 1.0f });
-		//		vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
-		//	}
-		//}
 
 		for (int i = 0; i < vertices.size() / 3; i++) {
 			TerrainVertex& first = vertices[i*3];
