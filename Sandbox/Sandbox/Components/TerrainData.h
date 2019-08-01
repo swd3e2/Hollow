@@ -15,7 +15,14 @@ struct TerrainVertex
 	TerrainVertex(float px, float py, float pz, float tu, float tv) :
 		pos(px, py, pz), texCoord(tu, tv)
 	{
-
+	}
+	TerrainVertex(float px, float py, float pz, float nx, float ny, float nz, float tu, float tv) :
+		pos(px, py, pz), normal(nx, ny, nz), texCoord(tu, tv)
+	{
+	}
+	TerrainVertex(const Hollow::Vector3& pos, const Hollow::Vector3& normal, const Hollow::Vector2& texCoord) :
+		TerrainVertex(pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, texCoord.x, texCoord.y)
+	{
 	}
 };
 
@@ -47,50 +54,122 @@ public:
 
 		std::vector<TerrainVertex> vertices;
 		std::vector<unsigned int> indices;
-
+		std::vector<Hollow::Vector3> positions;
+		std::vector<Hollow::Vector3> tempNormals;
+		std::vector<Hollow::Vector3> normals;
 		
 		int width = desc->width / denominator, height = desc->height / denominator;
 
-		for (int i = 1; i < width - 1; i++) {
-			for (int j = 1; j < height - 1; j++) {
-				Hollow::Vector3 normal = calculateNormal(i, j);
-				Hollow::Vector3 normal1 = calculateNormal(i, j + 1);
-				Hollow::Vector3 normal2 = calculateNormal(i + 1, j);
-				Hollow::Vector3 normal3 = calculateNormal(i + 1, j + 1);
-
-				float h  = getHeight(i    , j    ) / 600.0f;
-				float h1 = getHeight(i    , j + 1) / 600.0f;
-				float h2 = getHeight(i + 1, j    ) / 600.0f;
-				float h3 = getHeight(i + 1, j + 1) / 600.0f;
-
-
-				vertices.push_back({ (float)i,		h,	(float)j,		0.0f, 0.0f });
-				vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
-				vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
-
-				vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
-				vertices.push_back({ (float)i + 1,	h3, (float)j + 1,	1.0f, 1.0f });
-				vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				positions.push_back({(float)i, getHeight(i, j) / 500.0f, (float)j});
 			}
 		}
 
-		for (int i = 0; i < vertices.size() / 3; i++) {
-			TerrainVertex& first = vertices[i*3];
-			TerrainVertex& second = vertices[i * 3 + 1];
-			TerrainVertex& third = vertices[i * 3 + 2];
+		for (int i = 0; i < width - 1; i++) {
+			for (int j = 0; j < height - 1; j++) {
+				const Hollow::Vector3& first = positions[width * i + j];
+				const Hollow::Vector3& second = positions[width * i + (j + 1)];
+				const Hollow::Vector3& third = positions[width * (i + 1) + j];
+				const Hollow::Vector3& fourth = positions[width * (i + 1) + (j + 1)];
 
-			Hollow::Vector3 v1 = first.pos - second.pos;
-			Hollow::Vector3 v2 = third.pos - second.pos;
-
-			Hollow::Vector3 cross = Hollow::Vector3::Normalize(Hollow::Vector3::cross(v1, v2));
-			//cross.x = -cross.x;
-			cross.y = -cross.y;
-			//cross.z = -cross.z;
-
-			first.normal = cross;
-			second.normal = cross;
-			third.normal = cross;
+				Hollow::Vector3 crossA = Hollow::Vector3::cross(first - second, first - third);
+				Hollow::Vector3 crossB = Hollow::Vector3::cross(fourth - second, fourth - third);
+				tempNormals.push_back(Hollow::Vector3::Normalize(crossA));
+				tempNormals.push_back(Hollow::Vector3::Normalize(crossB));
+			}
 		}
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				const bool isFirstRow = i == 0;
+				const bool isFirstColumn = j == 0;
+				const bool isLastRow = i == height - 1;
+				const bool isLastColumn = j == width - 1;
+
+				Hollow::Vector3 normal;
+
+				// Look for triangles to the upper-righ
+				if (!isFirstRow && !isFirstColumn) {
+					normal += tempNormals[((i - 1) * (height-1) + (j - 1)) * 2];
+				}
+				// Look for triangles to the upper-righ
+				if (!isFirstRow && !isLastColumn) {
+					normal += tempNormals[((i - 1) * (height - 1) + j) * 2];
+					normal += tempNormals[((i - 1) * (height - 1) + j) * 2 + 1];
+				}
+				// Look for triangle to the bottom-righ
+				if (!isLastRow && !isLastColumn) {
+					normal += tempNormals[(i * (height - 1) + j) * 2];
+				}
+				// Look for triangles to the bottom-righ
+				if (!isLastRow && !isFirstColumn) {
+					normal += tempNormals[(i * (height - 1) + (j - 1)) * 2];
+					normal += tempNormals[(i * (height - 1) + (j - 1)) * 2 + 1];
+				}
+
+				normals.push_back(Hollow::Vector3::Normalize(normal));
+			}
+		}
+
+		for (int i = 0; i < width - 1; i++) {
+			for (int j = 0; j < height - 1; j++) {
+				const Hollow::Vector3& first = positions[width * i + j];
+				const Hollow::Vector3& second = positions[width * i + (j + 1)];
+				const Hollow::Vector3& third = positions[width * (i + 1) + j];
+				const Hollow::Vector3& fourth = positions[width * (i + 1) + (j + 1)];
+
+				vertices.push_back(TerrainVertex(positions[width * i + j], normals[i * width + j], {0.0f, 0.0f}));
+				vertices.push_back(TerrainVertex(positions[width * i + (j + 1)], normals[i * width + (j + 1)], {1.0f, 0.0f}));
+				vertices.push_back(TerrainVertex(positions[width * (i + 1) + j], normals[(i + 1) * width + j], {0.0f, 1.0f}));
+
+				vertices.push_back(TerrainVertex(positions[width * i + (j + 1)], normals[i * width + (j + 1)], {1.0f, 0.0f}));
+				vertices.push_back(TerrainVertex(positions[width * (i + 1) + (j + 1)], normals[(i + 1) * width + (j + 1)], {1.0f, 1.0f}));
+				vertices.push_back(TerrainVertex(positions[width * (i + 1) + j], normals[(i + 1) * width + j], {0.0f, 1.0f}));
+			}
+		}
+
+		delete desc;
+		//for (int i = 1; i < width - 1; i++) {
+		//	for (int j = 1; j < height - 1; j++) {
+		//		Hollow::Vector3 normal = calculateNormal(i, j);
+		//		Hollow::Vector3 normal1 = calculateNormal(i, j + 1);
+		//		Hollow::Vector3 normal2 = calculateNormal(i + 1, j);
+		//		Hollow::Vector3 normal3 = calculateNormal(i + 1, j + 1);
+
+		//		float h  = getHeight(i    , j    ) / 600.0f;
+		//		float h1 = getHeight(i    , j + 1) / 600.0f;
+		//		float h2 = getHeight(i + 1, j    ) / 600.0f;
+		//		float h3 = getHeight(i + 1, j + 1) / 600.0f;
+
+
+		//		vertices.push_back({ (float)i,		h,	(float)j,		0.0f, 0.0f });
+		//		vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
+		//		vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
+
+		//		vertices.push_back({ (float)i,		h1, (float)j + 1,	1.0f, 0.0f });
+		//		vertices.push_back({ (float)i + 1,	h3, (float)j + 1,	1.0f, 1.0f });
+		//		vertices.push_back({ (float)i + 1,	h2, (float)j,		0.0f, 1.0f });
+		//	}
+		//}
+
+		//for (int i = 0; i < vertices.size() / 3; i++) {
+		//	TerrainVertex& first = vertices[i*3];
+		//	TerrainVertex& second = vertices[i * 3 + 1];
+		//	TerrainVertex& third = vertices[i * 3 + 2];
+
+		//	Hollow::Vector3 v1 = first.pos - second.pos;
+		//	Hollow::Vector3 v2 = third.pos - second.pos;
+
+		//	Hollow::Vector3 cross = Hollow::Vector3::Normalize(Hollow::Vector3::cross(v1, v2));
+		//	//cross.x = -cross.x;
+		//	cross.y = -cross.y;
+		//	//cross.z = -cross.z;
+
+		//	first.normal = cross;
+		//	second.normal = cross;
+		//	third.normal = cross;
+		//}
 
 		tex = Hollow::TextureManager::instance()->createTextureFromFile("g.jpg", true);
 		//tex = Hollow::TextureManager::instance()->createTextureFromFile("test.gif", true);

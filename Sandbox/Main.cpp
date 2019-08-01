@@ -16,8 +16,8 @@
 #include "Sandbox/Components/TerrainData.h"
 #include "Hollow/Graphics/Base/InputLayout.h"
 
-#define SCREEN_WIDTH 2560
-#define SCREEN_HEIGHT 1440
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 // App entrypoint
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)

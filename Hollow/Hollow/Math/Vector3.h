@@ -25,6 +25,9 @@ namespace Hollow {
 		Vector3& invert();
 		static Vector3 cross(const Vector3& left, const Vector3& right);
 		static Vector3 Normalize(const Vector3& vector);
+
+		Vector3& operator+=(const Vector3& other);
+		Vector3 operator+(const Vector3& other) const;
 	};
 }
 
