@@ -198,6 +198,7 @@ namespace GUI {
 					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
 						TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
+						selectedMaterial->materialData.hasDiffuseTexture = true;
 						selectedMaterial->diffuseTexture = TextureManager::instance()->createTextureFromFile(filename, false);
 					}
 				}

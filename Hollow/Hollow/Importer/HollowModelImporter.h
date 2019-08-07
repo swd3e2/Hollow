@@ -34,10 +34,11 @@ namespace Hollow {
 				mesh->material = j["Meshes"][i]["material"].get<int>();
 
 				file.seekg(j["Meshes"][i]["vertices_offset"].get<size_t>(), std::fstream::beg);
-				Hollow::Vertex* vertices = new Hollow::Vertex[j["Meshes"][i]["vertices_size"].get<size_t>()];
-				file.read((char*)vertices, sizeof(Hollow::Vertex) * j["Meshes"][i]["vertices_size"].get<size_t>());
+				size_t verticesCount = j["Meshes"][i]["vertices_size"].get<size_t>();
+				Hollow::Vertex* vertices = new Hollow::Vertex[verticesCount];
+				file.read((char*)vertices, sizeof(Hollow::Vertex) * verticesCount);
 
-				mesh->vertices = std::vector<Vertex>(vertices, vertices + j["Meshes"][i]["vertices_size"].get<size_t>());
+				mesh->vertices = std::vector<Vertex>(vertices, vertices + verticesCount);
 
 				file.seekg(j["Meshes"][i]["indices_offset"].get<size_t>(), std::fstream::beg);
 				unsigned int* indices = new unsigned int[j["Meshes"][i]["indices_size"].get<size_t>()];
@@ -45,6 +46,15 @@ namespace Hollow {
 
 				mesh->indices = std::vector<unsigned int>(indices, indices + j["Meshes"][i]["indices_size"].get<int>());
 				model->meshes.push_back(mesh);
+
+				for (int i = 0; i < verticesCount; i++) {
+					if (vertices[i].pos.x < model->A.x && vertices[i].pos.y < model->A.y && vertices[i].pos.z < model->A.z) {
+						model->A = vertices[i].pos;
+					}
+					if (vertices[i].pos.x > model->B.x && vertices[i].pos.y > model->B.y && vertices[i].pos.z > model->B.z) {
+						model->B = vertices[i].pos;
+					}
+				}
 
 				delete[] vertices;
 				delete[] indices;

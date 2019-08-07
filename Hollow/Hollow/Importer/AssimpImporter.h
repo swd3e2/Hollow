@@ -47,6 +47,14 @@ namespace Hollow {
 						vertex.pos.y = position.y;
 						vertex.pos.z = position.z;
 
+						// Find lowest and highest vertices for AABB culling
+						if (vertex.pos.x < data->A.x && vertex.pos.y < data->A.y && vertex.pos.z < data->A.z) {
+							data->A = vertex.pos;
+						}
+						if (vertex.pos.x > data->B.x && vertex.pos.y > data->B.y && vertex.pos.z > data->B.z) {
+							data->B = vertex.pos;
+						}
+
 						if (scene->mMeshes[i]->HasNormals()) {
 							aiVector3D& normal = aMesh->mNormals[j];
 

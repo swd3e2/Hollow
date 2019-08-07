@@ -85,7 +85,9 @@ namespace Hollow {
 	};
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat);
+	Vector4 operator*(const Matrix4& mat, const Vector4& vec);
 	Vector3 operator*(const Vector3& vec, const Matrix4& mat);
+	Vector3 operator*(const Matrix4& mat, const Vector3& vec);
 }
 
 #endif

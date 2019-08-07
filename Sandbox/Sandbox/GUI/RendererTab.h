@@ -21,6 +21,7 @@ namespace GUI {
 			ImGui::Begin("Renderer", NULL);
 			ImGui::Text("Main camera speed");
 			ImGui::Text(std::to_string(dt).c_str());
+			ImGui::Text(std::to_string(renderSystem->culled).c_str());
 			ImGui::DragFloat("##Maincameraspeed", &renderSystem->m_Camera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
 
 			if (ImGui::CollapsingHeader("Shadow orthographic projection settings")) {

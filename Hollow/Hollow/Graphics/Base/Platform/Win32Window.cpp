@@ -169,7 +169,7 @@ namespace Hollow {
 
 	void Win32Window::showWindow()
 	{
-		ShowWindow(hWnd, SW_SHOWMAXIMIZED); // SW_SHOWMAXIMIZED
+		ShowWindow(hWnd, SW_SHOW); // SW_SHOWMAXIMIZED
 		UpdateWindow(hWnd);
 	}
 }

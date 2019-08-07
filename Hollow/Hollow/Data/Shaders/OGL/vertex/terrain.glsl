@@ -3,6 +3,7 @@
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec3 normal;
+layout(location = 3) in vec3 inColor;
 
 out gl_PerVertex
 {
@@ -16,6 +17,7 @@ out VS_OUT
 	vec4 position;
 	vec3 normal;
 	vec2 texCoord;
+	vec3 outColor;
 } vs_out;
 
 layout(std140, binding = 0) uniform Matrices
@@ -36,5 +38,6 @@ void main()
 	vs_out.normal = normalize(normal * mat3(transform));
 	vs_out.texCoord = texCoord;
 	vs_out.position = vec4(pos.x, pos.y, pos.z, 1.0f) * transform;
+	vs_out.outColor = inColor;
 	gl_Position = vs_out.position * WVP;
 }

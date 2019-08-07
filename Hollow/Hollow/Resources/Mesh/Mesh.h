@@ -8,6 +8,7 @@
 #include "Hollow/Resources/Material.h"
 #include "Hollow/Graphics/HardwareBufferManager.h"
 #include "Hollow/Graphics/TextureManager.h"
+#include "Hollow/Graphics/Vertex.h"
 
 namespace Hollow {
 	class Model
@@ -32,6 +33,7 @@ namespace Hollow {
 	public:
 		std::vector<Model*> models;
 		std::string filename;
+		Vertex A, B; // A - left near down, B - right far up
 	public:
 		Mesh() {}
 

@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "Hollow/Math/Vector4.h"
 #include "Hollow/Graphics/Vertex.h"
+#include <limits>
 
 namespace Hollow {
 	namespace Import {
@@ -37,7 +38,14 @@ namespace Hollow {
 		struct Model
 		{
 			std::vector<Mesh*> meshes;
+			Vector3 A, B; // A - left near down, B - right far up
 			std::unordered_map<unsigned int, Material> materials;
+
+			Model()
+			{
+				A = Vector3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+				B = Vector3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+			}
 
 			~Model()
 			{

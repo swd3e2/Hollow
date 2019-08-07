@@ -376,6 +376,14 @@ namespace Hollow {
 				Vertex vertex;
 
 				vertex.pos = model->positions[i];
+				// Find lowest and highest vertices for AABB culling
+				if (vertex.pos.x < gltfModel->A.x && vertex.pos.y < gltfModel->A.y && vertex.pos.z < gltfModel->A.z) {
+					gltfModel->A = vertex.pos;
+				}
+				if (vertex.pos.x > gltfModel->B.x && vertex.pos.y > gltfModel->B.y && vertex.pos.z > gltfModel->B.z) {
+					gltfModel->B = vertex.pos;
+				}
+
 				if (model->normals.size() > i) {
 					vertex.normal = model->normals[i];
 				}
@@ -407,8 +415,8 @@ namespace Hollow {
 		if (node->mesh != -1) {
 			for (auto& it : model->meshes[node->mesh]->vertices) {
 				it.pos = it.pos * transform;
-				//it.normal = it.normal * transform;
-				//it.normal.Normalize();
+				it.normal = it.normal * transform;
+				Vector3::Normalize(it.normal);
 			}
 		}
 

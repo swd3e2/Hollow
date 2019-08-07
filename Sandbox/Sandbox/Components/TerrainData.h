@@ -11,19 +11,17 @@ struct TerrainVertex
 	Hollow::Vector3 pos;
 	Hollow::Vector2 texCoord;
 	Hollow::Vector3 normal;
+	Hollow::Vector3 color;
 
 	TerrainVertex(float px, float py, float pz, float tu, float tv) :
 		pos(px, py, pz), texCoord(tu, tv)
-	{
-	}
-	TerrainVertex(float px, float py, float pz, float nx, float ny, float nz, float tu, float tv) :
-		pos(px, py, pz), normal(nx, ny, nz), texCoord(tu, tv)
-	{
-	}
-	TerrainVertex(const Hollow::Vector3& pos, const Hollow::Vector3& normal, const Hollow::Vector2& texCoord) :
-		TerrainVertex(pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, texCoord.x, texCoord.y)
-	{
-	}
+	{}
+	TerrainVertex(float px, float py, float pz, float nx, float ny, float nz, float tu, float tv, float r, float g, float b) :
+		pos(px, py, pz), normal(nx, ny, nz), texCoord(tu, tv), color(b, g, r)
+	{}
+	TerrainVertex(const Hollow::Vector3& pos, const Hollow::Vector3& normal, const Hollow::Vector2& texCoord, const Hollow::Vector3& color) :
+		TerrainVertex(pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, texCoord.x, texCoord.y, color.x, color.y, color.z)
+	{}
 };
 
 class TerrainData : public Hollow::Component<TerrainData>
@@ -37,6 +35,7 @@ public:
 	int denominator = 1;
 	Hollow::TextureData* desc;
 	unsigned short* data;
+	unsigned char* colorData;
 public:
 	TerrainData() = default;
 
@@ -49,8 +48,21 @@ public:
 	{
 		this->filename = filename;
 
-		desc = Hollow::FreeImgImporter::instance()->import(filename.c_str(), false);
-		data = (unsigned short*)*desc->data;
+		if (0) {
+			desc = Hollow::FreeImgImporter::instance()->import(filename.c_str(), false);
+			data = (unsigned short*)* desc->data;
+		} else {
+			desc = new Hollow::TextureData();
+			desc->width = 1025;
+			desc->height = 1025;
+			desc->pitch = 4;
+			FILE* file = fopen("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\heightmap.r16", "rb");
+			data = new unsigned short[desc->width * desc->height];
+			fread(data, sizeof(unsigned short), desc->width * desc->height, file);
+		}
+		
+		Hollow::TextureData* texData = Hollow::FreeImgImporter::instance()->import("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp", false);
+		colorData = (unsigned char*)*texData->data;
 
 		std::vector<TerrainVertex> vertices;
 		std::vector<unsigned int> indices;
@@ -62,7 +74,7 @@ public:
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				positions.push_back({(float)i, getHeight(i, j) / 500.0f, (float)j});
+				positions.push_back({(float)i, getHeight(i, j) / 200.0f, (float)j});
 			}
 		}
 
@@ -91,7 +103,7 @@ public:
 
 				// Look for triangles to the upper-righ
 				if (!isFirstRow && !isFirstColumn) {
-					normal += tempNormals[((i - 1) * (height-1) + (j - 1)) * 2];
+					normal += tempNormals[((i - 1) * (height - 1) + (j - 1)) * 2];
 				}
 				// Look for triangles to the upper-righ
 				if (!isFirstRow && !isLastColumn) {
@@ -111,25 +123,58 @@ public:
 				normals.push_back(Hollow::Vector3::Normalize(normal));
 			}
 		}
-
-		for (int i = 0; i < width - 1; i++) {
-			for (int j = 0; j < height - 1; j++) {
+		
+		for (int i = 1; i < width - 1; i++) {
+			for (int j = 1; j < height - 1; j++) {
 				const Hollow::Vector3& first = positions[width * i + j];
 				const Hollow::Vector3& second = positions[width * i + (j + 1)];
 				const Hollow::Vector3& third = positions[width * (i + 1) + j];
 				const Hollow::Vector3& fourth = positions[width * (i + 1) + (j + 1)];
 
-				vertices.push_back(TerrainVertex(positions[width * i + j], normals[i * width + j], {0.0f, 0.0f}));
-				vertices.push_back(TerrainVertex(positions[width * i + (j + 1)], normals[i * width + (j + 1)], {1.0f, 0.0f}));
-				vertices.push_back(TerrainVertex(positions[width * (i + 1) + j], normals[(i + 1) * width + j], {0.0f, 1.0f}));
+				vertices.push_back(TerrainVertex(
+					positions[width * i + j],
+					normals[i * width + j], 
+					{ 0.0f, 0.0f }, 
+					getColor(i, j))
+				);
+				vertices.push_back(
+					TerrainVertex(positions[width * i + (j + 1)],
+						normals[i * width + (j + 1)],
+						{ 1.0f, 0.0f },
+						getColor(i, j + 1))
+				);
+				vertices.push_back(TerrainVertex(
+					positions[width * (i + 1) + j],
+					normals[(i + 1) * width + j], 
+					{ 0.0f, 1.0f },
+					getColor(i + 1, j))
+				);
 
-				vertices.push_back(TerrainVertex(positions[width * i + (j + 1)], normals[i * width + (j + 1)], {1.0f, 0.0f}));
-				vertices.push_back(TerrainVertex(positions[width * (i + 1) + (j + 1)], normals[(i + 1) * width + (j + 1)], {1.0f, 1.0f}));
-				vertices.push_back(TerrainVertex(positions[width * (i + 1) + j], normals[(i + 1) * width + j], {0.0f, 1.0f}));
+				vertices.push_back(TerrainVertex(
+					positions[width * i + (j + 1)],
+					normals[i * width + (j + 1)], 
+					{ 1.0f, 0.0f },
+					getColor(i, j + 1))
+				);
+
+				vertices.push_back(TerrainVertex(
+					positions[width * (i + 1) + (j + 1)],	
+					normals[(i + 1) * width + (j + 1)], 
+					{ 1.0f, 1.0f }, 
+					getColor(i + 1, j + 1))
+				);
+				vertices.push_back(TerrainVertex(
+					positions[width * (i + 1) + j],		
+					normals[(i + 1) * width + j], 
+					{ 0.0f, 1.0f }, 
+					getColor(i + 1, j))
+				);
 			}
 		}
 
 		delete desc;
+		delete texData;
+
 		//for (int i = 1; i < width - 1; i++) {
 		//	for (int j = 1; j < height - 1; j++) {
 		//		Hollow::Vector3 normal = calculateNormal(i, j);
@@ -177,6 +222,15 @@ public:
 		vBuffer = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(TerrainVertex) });
 	}
 
+	Hollow::Vector3 getColor(int x, int y)
+	{
+		return Hollow::Vector3(
+			colorData[x * 3076 + y * 3] / 255.0f, 
+			colorData[x * 3076 + y * 3 + 1] / 255.0f,
+			colorData[x * 3076 + y * 3 + 2] / 255.0f
+		);
+	}
+
 	Hollow::Vector3 calculateNormal(int x, int z)
 	{
 		float heightL = getHeight(x - 1, z);
@@ -194,9 +248,9 @@ public:
 		}
 
 		if (x * denominator >= desc->height || y * denominator >= desc->width) {
-			return data[(desc->pitch / 2) * (desc->height - 1) - 1];
+			return data[(desc->width - 1) * (desc->height - 1) - 1];
 		}
 
-		return (float)data[(desc->pitch / 2) * x * denominator + y * denominator];
+		return (float)data[desc->width * x * denominator + y * denominator];
 	}
 };

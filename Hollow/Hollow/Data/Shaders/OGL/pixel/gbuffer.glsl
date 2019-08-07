@@ -18,11 +18,29 @@ layout(std140, binding = 2) uniform PerObject
 	bool hasAnimation;
 };
 
+layout(std140, binding = 4) uniform MaterialData
+{
+	vec4 base_color;
+	float metallicFactor;
+	float roughnessFactor;
+	float emmisiveFactor;
+	float pad;
+	bool hasDiffuseTexture;
+	bool hasNormalMap;
+	bool hasSpecularMap;
+};
+
 uniform sampler2D tex0;
 
 void main()
 {
-	vec4 color = texture(tex0, fs_in.texCoord);
+	vec4 color;
+	if (hasDiffuseTexture) {
+		color = texture(tex0, fs_in.texCoord);
+	} else {
+		color = base_color;
+	}
+
 	if (color.a < 0.55) {
 		discard;
 	}

@@ -46,6 +46,11 @@ namespace Hollow {
 		return Vector3(x - other.x, y - other.y, z - other.z);
 	}
 
+	Vector3 Vector3::operator/(const float divisor) const
+	{
+		return Vector3(x / divisor, y / divisor, z / divisor);
+	}
+
 	Vector3 Vector3::cross(const Vector3& left, const Vector3& right)
 	{
 		float x = left.y * right.z - left.z * right.y;
@@ -59,6 +64,11 @@ namespace Hollow {
 	{
 		float length = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 		return Vector3(vector.x / length, vector.y / length, vector.z / length);
+	}
+
+	float Vector3::dot(const Vector3& left, const Vector3& right)
+	{
+		return left.x * right.x + left.y * right.y + left.z * right.z;
 	}
 
 	Vector3& Vector3::invert()
@@ -81,5 +91,10 @@ namespace Hollow {
 		z += vec.z;
 
 		return *this;
+	}
+
+	float Vector3::Length(const Vector3& vec)
+	{
+		return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 	}
 }

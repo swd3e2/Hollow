@@ -20,6 +20,10 @@
 #include "Sandbox/Graphics/Shadow.h"
 #include "Sandbox/Entities/Terrain.h"
 #include "Sandbox/Components/TerrainData.h"
+#include "Sandbox/Components/AmbientLightComponent.h"
+#include "Sandbox/Components/DiffuseLightComponent.h"
+#include "Sandbox/Components/SpotLightComponent.h"
+#include "Sandbox/Components/PointLightComponent.h"
 
 using namespace Hollow;
 
@@ -52,6 +56,10 @@ struct ShadowStruct
 
 struct LightInfo
 {
+	AmbientLightData ambient[100];
+	DiffuseLightData diffuse[100];
+	SpotLightData spot[100];
+	PointLightData point[100];
 	int pointLightsNum = 1;
 };
 
@@ -67,6 +75,7 @@ public:
 	RenderTarget* picker;
 
 	int pickedID;
+	int culled = 0;
 private:
 	RenderApi* renderer;
 private:
@@ -111,6 +120,8 @@ private:
 
 	Hollow::VertexBuffer* quadVB;
 	Hollow::IndexBuffer* quadIB;
+
+	Hollow::Vector4 AABBplane[6];
 public:
 	RenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -124,7 +135,7 @@ public:
 			perMesh					= GPUBufferManager::instance()->create(3, sizeof(PerMesh));
 
 			materialConstantBuffer	= GPUBufferManager::instance()->create(4, sizeof(MaterialData));
-			lightInfoBuffer			= GPUBufferManager::instance()->create(6, sizeof(LightInfo));
+			lightInfoBuffer			= GPUBufferManager::instance()->create(5, sizeof(LightInfo));
 			boneInfo				= GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
 		}
 		// Shaders
@@ -135,7 +146,7 @@ public:
 				{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
 				{ Hollow::INPUT_DATA_TYPE::Float3, "TANGENT" }, // tangent
 				{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, // bitangent 
-				{ Hollow::INPUT_DATA_TYPE::Int4, "BONE" },
+				{ Hollow::INPUT_DATA_TYPE::Int4,   "BONE" },
 				{ Hollow::INPUT_DATA_TYPE::Float4, "WEIGHT" }
 			};
 			
@@ -145,7 +156,9 @@ public:
 				{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" }, // pos
 				{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" }, // texcoord
 				{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
+				{ Hollow::INPUT_DATA_TYPE::Float3, "COLOR" }, // color
 			};
+
 			terrainLayout = Hollow::InputLayout::create(terrainLayoutDesc);
 
 			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
@@ -242,7 +255,8 @@ public:
 		shadow.renderTarget = RenderTargetManager::instance()->create(desc2);
 		shadow.shadowCamera = new Camera(false);
 		shadow.shadowCamera->setOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
-		shadow.texelSize = Hollow::Vector2(1.0f / this->width, 1.0f / this->height);
+		shadow.texelSize = Hollow::Vector2(1.0f / desc2.width, 1.0f / desc2.height);
+		shadow.bias = 0.002f;
 
 		std::vector<Hollow::Vertex> vertices;			
 		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));				
@@ -273,8 +287,10 @@ public:
 
 	virtual void Update(double dt)
 	{
+		culled = 0;
 		renderer->setInputLayout(defaultLayout);
 		shadow.shadowCamera->update(dt);
+		calculateAABBPlane();
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
@@ -290,24 +306,34 @@ public:
 						RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 						TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-						perModelData.transform = Matrix4::Transpose(
-							Matrix4::Scaling(transform->scale)
+						Hollow::Matrix4 trs = Matrix4::Scaling(transform->scale)
 							* Matrix4::Rotation(transform->rotation)
-							* Matrix4::Translation(transform->position)
-						);
-						perModel->update(&perModelData);
-						renderer->setGpuBuffer(perModel);
+							* Matrix4::Translation(transform->position);
 
-						for (auto& object : renderable->renderables) {
-							Hollow::Material& material = renderable->materials[object.material];
-							if (material.diffuseTexture != nullptr) {
-								renderer->setTexture(0, material.diffuseTexture);
-							} else {
-								renderer->unsetTexture(0);
+						Hollow::Vector3 A = trs * renderable->A;
+						Hollow::Vector3 B = trs * renderable->B;
+
+						if (!cull(transform->position, A, B)) {
+							perModelData.transform = Matrix4::Transpose(trs);
+							perModel->update(&perModelData);
+							renderer->setGpuBuffer(perModel);
+
+							for (auto& object : renderable->renderables) {
+								Hollow::Material& material = renderable->materials[object.material];
+								if (material.diffuseTexture != nullptr) {
+									renderer->setTexture(0, material.diffuseTexture);
+								} else {
+									renderer->unsetTexture(0);
+								}
+								materialConstantBuffer->update(&renderable->materials[object.material].materialData);
+								renderer->setGpuBuffer(materialConstantBuffer);
+
+								renderer->setVertexBuffer(object.vBuffer);
+								renderer->setIndexBuffer(object.iBuffer);
+								renderer->drawIndexed(object.iBuffer->mHardwareBuffer->getSize());
 							}
-							renderer->setVertexBuffer(object.vBuffer);
-							renderer->setIndexBuffer(object.iBuffer);
-							renderer->drawIndexed(object.iBuffer->mHardwareBuffer->getSize());
+						} else {
+							culled++;
 						}
 					}
 				}
@@ -338,6 +364,7 @@ public:
 			// Shadow pass
 			{
 				renderer->setViewport(0, 0, 4096, 4096);
+				renderer->setCullMode(Hollow::CULL_MODE::CULL_FRONT);
 
 				shadowStruct.ShadowWVP = shadow.shadowCamera->getProjectionMatrix() * shadow.shadowCamera->getViewMatrix();
 				shadowStruct.texelSize = shadow.texelSize;
@@ -419,11 +446,11 @@ public:
 				renderer->unsetTexture(5);
 			}
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+			/*if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
 				Vector4 selectedColor = picker->readPixel(InputManager::mcx, InputManager::mcy);
 				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
-			}
+			}*/
 		}
 	}
 
@@ -490,5 +517,73 @@ public:
 		renderer->setVertexBuffer(skyMap->mesh->models[0]->vBuffer);
 		renderer->setIndexBuffer(skyMap->mesh->models[0]->iBuffer);
 		renderer->drawIndexed(skyMap->mesh->models[0]->iBuffer->mHardwareBuffer->getSize());
+	}
+
+	void calculateAABBPlane()
+	{
+		Hollow::Matrix4 projection = Hollow::Matrix4::Transpose(m_Camera->getProjectionMatrix() * m_Camera->getViewMatrix());
+
+		// Left Frustum Plane
+		// Add first column of the matrix to the fourth column
+		AABBplane[0].x = projection.md[0][3] + projection.md[0][0];
+		AABBplane[0].y = projection.md[1][3] + projection.md[1][0];
+		AABBplane[0].z = projection.md[2][3] + projection.md[2][0];
+		AABBplane[0].w = projection.md[3][3] + projection.md[3][0];
+
+		// Right Frustum Plane
+		// Subtract first column of matrix from the fourth column
+		AABBplane[1].x = projection.md[0][3] - projection.md[0][0];
+		AABBplane[1].y = projection.md[1][3] - projection.md[1][0];
+		AABBplane[1].z = projection.md[2][3] - projection.md[2][0];
+		AABBplane[1].w = projection.md[3][3] - projection.md[3][0];
+
+		// Top Frustum Plane
+		// Subtract second column of matrix from the fourth column
+		AABBplane[2].x = projection.md[0][3] - projection.md[0][1];
+		AABBplane[2].y = projection.md[1][3] - projection.md[1][1];
+		AABBplane[2].z = projection.md[2][3] - projection.md[2][1];
+		AABBplane[2].w = projection.md[3][3] - projection.md[3][1];
+
+		// Bottom Frustum Plane
+		// Add second column of the matrix to the fourth column
+		AABBplane[3].x = projection.md[0][3] + projection.md[0][1];
+		AABBplane[3].y = projection.md[1][3] + projection.md[1][1];
+		AABBplane[3].z = projection.md[2][3] + projection.md[2][1];
+		AABBplane[3].w = projection.md[3][3] + projection.md[3][1];
+
+		// Near Frustum Plane
+		// We could add the third column to the fourth column to get the near plane,
+		// but we don't have to do this because the third column IS the near plane
+		AABBplane[4].x = projection.md[0][2];
+		AABBplane[4].y = projection.md[1][2];
+		AABBplane[4].z = projection.md[2][2];
+		AABBplane[4].w = projection.md[3][2];
+
+		// Far Frustum Plane
+		// Subtract third column of matrix from the fourth column
+		AABBplane[5].x = projection.md[0][3] - projection.md[0][2];
+		AABBplane[5].y = projection.md[1][3] - projection.md[1][2];
+		AABBplane[5].z = projection.md[2][3] - projection.md[2][2];
+		AABBplane[5].w = projection.md[3][3] - projection.md[3][2];
+
+		for (int i = 0; i < 6; i++) {
+			float length = sqrt((AABBplane[i].x * AABBplane[i].x) + (AABBplane[i].y * AABBplane[i].y) + (AABBplane[i].z * AABBplane[i].z));
+			AABBplane[i].x /= length;
+			AABBplane[i].y /= length;
+			AABBplane[i].z /= length;
+			AABBplane[i].w /= length;
+		}
+	}
+
+	bool cull(const Hollow::Vector3& position, const Hollow::Vector3& A, const Hollow::Vector3& B)
+	{
+		// Loop through each frustum plane
+		for (int i = 0; i < 6; ++i) {
+
+			if (Hollow::Vector3::dot(Hollow::Vector3(AABBplane[i].x, AABBplane[i].y, AABBplane[i].z), position + ((B - A))) + AABBplane[i].w < 0.0f) {
+				return true;
+			}
+		}
+		return false;
 	}
 };

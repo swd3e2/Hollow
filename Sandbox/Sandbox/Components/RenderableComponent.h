@@ -10,7 +10,6 @@
 #include <Hollow/Common/Helper.h>
 #include <Hollow/Resources/Material.h>
 #include <Hollow/Resources/MeshManager.h>
-
 #include <unordered_map>
 
 struct RenderableObject {
@@ -25,6 +24,7 @@ class RenderableComponent : public Hollow::Component<RenderableComponent>
 public:
 	std::vector<RenderableObject> renderables;
 	std::unordered_map<unsigned int,Hollow::Material> materials;
+	Hollow::Vector3 A, B; // A - left near down, B - right far up
 	std::string filename;
 public:
 	RenderableComponent() {}
@@ -40,6 +40,8 @@ public:
 		this->filename = filename;
 		using namespace Hollow;
 		Import::Model* model = MeshManager::instance()->import(filename.c_str());
+		A = model->A;
+		B = model->B;
 
 		if (model == nullptr) { return; }
 		for (int i = 0; i < model->meshes.size(); i++) {
@@ -64,6 +66,7 @@ public:
 
 			std::string diffuseTexture = it.second.diffuseTexture;
 			if (diffuseTexture.size()) {
+				material.materialData.hasDiffuseTexture = true;
 				material.diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
 			}
 			materials[it.first] = material;
