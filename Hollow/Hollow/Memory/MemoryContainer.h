@@ -117,7 +117,8 @@ namespace Hollow {
 
 		void deallocate(void* memory) {
 			for (auto& it : chunks) {
-				if (it->start > (uintptr_t)memory && (uintptr_t)memory < it->end) {
+				if (it->start <= (uintptr_t)memory && (uintptr_t)memory < it->end) {
+					((T*)memory)->~T();
 					it->objects.remove((T*)memory);
 					it->allocator->deallocate(memory);
 				}

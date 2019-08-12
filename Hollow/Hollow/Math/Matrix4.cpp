@@ -21,7 +21,7 @@ namespace Hollow {
 
 	Matrix4::Matrix4(const float* other, int size)
 	{
-		Matrix4 identity = Matrix4::Identity();
+		Matrix4 identity = Matrix4::identity();
 
 		switch (size)
 		{
@@ -49,7 +49,7 @@ namespace Hollow {
 
 	Matrix4::Matrix4(const double* other, int size)
 	{
-		Matrix4 identity = Matrix4::Identity();
+		Matrix4 identity = Matrix4::identity();
 
 		switch (size)
 		{
@@ -89,7 +89,7 @@ namespace Hollow {
 		return *this;
 	}
 
-	Matrix4 Matrix4::Identity()
+	Matrix4 Matrix4::identity()
 	{
 		Matrix4 matrix;
 
@@ -101,9 +101,9 @@ namespace Hollow {
 		return matrix;
 	}
 
-	Matrix4 Matrix4::Translation(float x, float y, float z)
+	Matrix4 Matrix4::translation(float x, float y, float z)
 	{
-		Matrix4 matrix = Identity();
+		Matrix4 matrix = identity();
 
 		matrix.md[3][0] = x;
 		matrix.md[3][1] = y;
@@ -112,18 +112,12 @@ namespace Hollow {
 		return matrix;
 	}
 
-	Matrix4 Matrix4::Translation(const Vector4& vec)
+	Matrix4 Matrix4::translation(const Vector4& vec)
 	{
-		Matrix4 matrix = Identity();
-
-		matrix.md[3][0] = vec.x;
-		matrix.md[3][1] = vec.y;
-		matrix.md[3][2] = vec.z;
-
-		return matrix;
+		return translation(vec.x, vec.y, vec.z);
 	}
 
-	Matrix4 Matrix4::Scaling(float x, float y, float z)
+	Matrix4 Matrix4::scaling(float x, float y, float z)
 	{
 		Matrix4 matrix;
 
@@ -135,39 +129,28 @@ namespace Hollow {
 		return matrix;
 	}
 
-	Matrix4 Matrix4::Scaling(const Vector4& vec)
+	Matrix4 Matrix4::scaling(const Vector4& vec)
 	{
-		Matrix4 matrix;
-
-		matrix.md[0][0] = vec.x;
-		matrix.md[1][1] = vec.y;
-		matrix.md[2][2] = vec.z;
-		matrix.md[3][3] = 1.0f;
-
-		return matrix;
+		return scaling(vec.x, vec.y, vec.z);
 	}
 
-	Matrix4 Matrix4::Rotation(const Vector4& vec)
+	Matrix4 Matrix4::rotation(const Vector4& vec)
 	{
-		Matrix4 M = RotationX(vec.x);
-		Matrix4 M1 = RotationY(vec.y);
-		Matrix4 M2 = RotationZ(vec.z);
-
-		return M * M1 * M2;
+		return rotation(vec.x, vec.y, vec.z);
 	}
 
-	Matrix4 Matrix4::Rotation(float x, float y, float z)
+	Matrix4 Matrix4::rotation(float x, float y, float z)
 	{
-		Matrix4 M = RotationX(x);
-		Matrix4 M1 = RotationY(y);
-		Matrix4 M2 = RotationZ(z);
+		Matrix4 M = rotationX(x);
+		Matrix4 M1 = rotationY(y);
+		Matrix4 M2 = rotationZ(z);
 
 		return M * M2 * M1;
 	}
 
-	Matrix4 Matrix4::RotationX(float x)
+	Matrix4 Matrix4::rotationX(float x)
 	{
-		Matrix4 matrix = Identity();
+		Matrix4 matrix = identity();
 
 		matrix.md[1][1] = cosf(x);
 		matrix.md[1][2] = -sinf(x);
@@ -177,9 +160,9 @@ namespace Hollow {
 		return matrix;
 	}
 
-	Matrix4 Matrix4::RotationY(float y)
+	Matrix4 Matrix4::rotationY(float y)
 	{
-		Matrix4 matrix = Identity();
+		Matrix4 matrix = identity();
 
 		matrix.md[0][0] = cosf(y);
 		matrix.md[0][2] = sinf(y);
@@ -189,19 +172,19 @@ namespace Hollow {
 		return matrix;
 	}
 
-	Matrix4 Matrix4::RotationZ(float z)
+	Matrix4 Matrix4::rotationZ(float z)
 	{
-		Matrix4 matrix = Identity();
+		Matrix4 matrix = identity();
 
 		matrix.md[0][0] = cosf(z);
 		matrix.md[0][1] = -sinf(z);
 		matrix.md[1][0] = sinf(z);
 		matrix.md[1][1] = cosf(z);
 
-		return std::move(matrix);
+		return matrix;
 	}
 
-	Matrix4& Matrix4::Transpose()
+	Matrix4& Matrix4::transpose()
 	{
 		float temp;
 
@@ -232,7 +215,7 @@ namespace Hollow {
 		return *this;
 	}
 
-	Matrix4 Matrix4::Transpose(const Matrix4& matrix)
+	Matrix4 Matrix4::transpose(const Matrix4& matrix)
 	{
 		Matrix4 result;
 
@@ -272,7 +255,7 @@ namespace Hollow {
 		return matrix;
 	}
 
-	Matrix4 Matrix4::Projection(float fov, float aspect, float n, float f)
+	Matrix4 Matrix4::projection(float fov, float aspect, float n, float f)
 	{
 		Matrix4 projection;
 
@@ -288,7 +271,7 @@ namespace Hollow {
 		return projection;
 	}
 
-	Matrix4 Matrix4::Orthographic(float right, float left, float top, float bottom, float near, float far)
+	Matrix4 Matrix4::orthographic(float right, float left, float top, float bottom, float near, float far)
 	{
 		Matrix4 ortho;
 
@@ -304,30 +287,30 @@ namespace Hollow {
 		return ortho;
 	}
 
-	Matrix4 Matrix4::LookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector)
+	Matrix4 Matrix4::lookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector)
 	{
-		Vector4 forward = Vector4::Normalize(eyeDirection - eyePosition);
-		Vector4 right = Vector4::Normalize(Vector4::Cross(upVector, forward));
-		Vector4 up = Vector4::Normalize(Vector4::Cross(forward, right));
+		Vector4 forward = Vector4::normalize(eyeDirection - eyePosition);
+		Vector4 right = Vector4::normalize(Vector4::cross(upVector, forward));
+		Vector4 up = Vector4::normalize(Vector4::cross(forward, right));
 
 		Matrix4 camToWorld;
 
-		Vector4 negativePosition = Vector4::Negate(eyePosition);
+		Vector4 negativePosition = Vector4::negate(eyePosition);
 
 		camToWorld.md[0][0] = right.x;
 		camToWorld.md[0][1] = right.y;
 		camToWorld.md[0][2] = right.z;
-		camToWorld.md[0][3] = Vector4::Dot(right, negativePosition);
+		camToWorld.md[0][3] = Vector4::dot(right, negativePosition);
 
 		camToWorld.md[1][0] = up.x;
 		camToWorld.md[1][1] = up.y;
 		camToWorld.md[1][2] = up.z;
-		camToWorld.md[1][3] = Vector4::Dot(up, negativePosition);
+		camToWorld.md[1][3] = Vector4::dot(up, negativePosition);
 
 		camToWorld.md[2][0] = forward.x;
 		camToWorld.md[2][1] = forward.y;
 		camToWorld.md[2][2] = forward.z;
-		camToWorld.md[2][3] = Vector4::Dot(forward, negativePosition);
+		camToWorld.md[2][3] = Vector4::dot(forward, negativePosition);
 
 		camToWorld.md[3][0] = 0.0f;
 		camToWorld.md[3][1] = 0.0f;
@@ -338,19 +321,19 @@ namespace Hollow {
 	}
 
 
-	void Matrix4::SetTranslation(const Vector4& vecPos)
+	void Matrix4::setTranslation(const Vector4& vecPos)
 	{
 		md[3][0] = vecPos.x;
 		md[3][1] = vecPos.y;
 		md[3][2] = vecPos.z;
 	}
 
-	Vector4 Matrix4::GetTranslation() const
+	Vector4 Matrix4::getTranslation() const
 	{
 		return Vector4(md[3][0], md[3][1], md[3][2], 0.0f);
 	}
 
-	Matrix4 Matrix4::Inverse(const Matrix4& mat)
+	Matrix4 Matrix4::inverse(const Matrix4& mat)
 	{
 		float temp[16];
 
@@ -480,11 +463,12 @@ namespace Hollow {
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat)
 	{
-		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0] + mat.md[3][0];
-		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1] + mat.md[3][1];
-		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2] + mat.md[3][2];
+		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0] + vec.w * mat.md[3][0];
+		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1] + vec.w * mat.md[3][1];
+		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2] + vec.w * mat.md[3][2];
+		float w = vec.x * mat.md[0][3] + vec.y * mat.md[1][3] + vec.z * mat.md[2][3] + vec.w * mat.md[3][3];
 
-		return Vector4(x, y, z, vec.w);
+		return Vector4(x, y, z, w);
 	}
 
 	Vector4 operator*(const Matrix4& mat, const Vector4& vec)

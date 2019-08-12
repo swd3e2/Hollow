@@ -22,9 +22,11 @@ namespace Hollow
 
 	class D3D11IndexBuffer : public IndexBuffer
 	{
+
 	};
 
 	class D3D11VertexBuffer : public VertexBuffer
 	{
+
 	};
 }

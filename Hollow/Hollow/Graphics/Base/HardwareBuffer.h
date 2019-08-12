@@ -54,6 +54,7 @@ namespace Hollow {
 		HardwareBuffer* mHardwareBuffer;
 	public:
 		static IndexBuffer* create(const INDEX_BUFFER_DESC& desc);
+		virtual ~IndexBuffer() { delete mHardwareBuffer; }
 	};
 
 	class VertexBuffer
@@ -62,5 +63,6 @@ namespace Hollow {
 		HardwareBuffer* mHardwareBuffer;
 	public:
 		static VertexBuffer* create(const VERTEX_BUFFER_DESC& desc);
+		virtual ~VertexBuffer() { delete mHardwareBuffer; }
 	};
 }

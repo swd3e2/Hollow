@@ -87,8 +87,8 @@ public:
 
 				Hollow::Vector3 crossA = Hollow::Vector3::cross(first - second, first - third);
 				Hollow::Vector3 crossB = Hollow::Vector3::cross(fourth - second, fourth - third);
-				tempNormals.push_back(Hollow::Vector3::Normalize(crossA));
-				tempNormals.push_back(Hollow::Vector3::Normalize(crossB));
+				tempNormals.push_back(Hollow::Vector3::normalize(crossA));
+				tempNormals.push_back(Hollow::Vector3::normalize(crossB));
 			}
 		}
 
@@ -120,7 +120,7 @@ public:
 					normal += tempNormals[(i * (height - 1) + (j - 1)) * 2 + 1];
 				}
 
-				normals.push_back(Hollow::Vector3::Normalize(normal));
+				normals.push_back(Hollow::Vector3::normalize(normal));
 			}
 		}
 		
@@ -238,7 +238,7 @@ public:
 		float heightD = getHeight(x, z - 1);
 		float heightU = getHeight(x, z + 1);
 
-		return Hollow::Vector3::Normalize(Hollow::Vector3(heightL - heightR, 2.0f, heightD - heightU));
+		return Hollow::Vector3::normalize(Hollow::Vector3(heightL - heightR, 2.0f, heightD - heightU));
 	}
 
 	float getHeight(int x, int y)

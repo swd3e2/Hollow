@@ -11,6 +11,9 @@ namespace Hollow {
 		friend ComponentManager;
 	protected:
 		size_t componentId;
+	public:
+		virtual ~IComponent() {}
+		virtual size_t getTypeId() = 0;
 	};
 }
 

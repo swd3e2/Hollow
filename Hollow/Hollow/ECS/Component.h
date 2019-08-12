@@ -12,7 +12,7 @@ namespace Hollow {
 	private:
 		static size_t componentTypeId;
 	public:
-		size_t getTypeId() { return componentTypeId; }
+		virtual size_t getTypeId() override { return componentTypeId; }
 		static size_t staticGetTypeId() { return componentTypeId; }
 	};
 

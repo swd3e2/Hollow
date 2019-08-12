@@ -20,6 +20,23 @@ namespace GUI {
 		{
 			ImGui::Begin("Renderer", NULL);
 			ImGui::Text("Main camera speed");
+
+			ImGui::Text("GBuffer pass");
+			ImGui::SameLine();
+			ImGui::Text(std::to_string(renderSystem->gbufferTime).c_str());
+
+			ImGui::Text("Picker pass");
+			ImGui::SameLine();
+			ImGui::Text(std::to_string(renderSystem->pickerTime).c_str());
+
+			ImGui::Text("Shadow pass");
+			ImGui::SameLine();
+			ImGui::Text(std::to_string(renderSystem->shadowTime).c_str());
+
+			ImGui::Text("Light pass");
+			ImGui::SameLine();
+			ImGui::Text(std::to_string(renderSystem->lightTime).c_str());
+
 			ImGui::Text(std::to_string(dt).c_str());
 			ImGui::Text(std::to_string(renderSystem->culled).c_str());
 			ImGui::DragFloat("##Maincameraspeed", &renderSystem->m_Camera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
@@ -62,32 +79,30 @@ namespace GUI {
 			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 				if (ImGui::CollapsingHeader("G buffer")) {
 					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getDepthStencilResource(), ImVec2(200, 200));
-					ImGui::SameLine();
 					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getShaderResourceView()[0], ImVec2(200, 200));
-					ImGui::SameLine();
 					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getShaderResourceView()[1], ImVec2(200, 200));
-					ImGui::SameLine();
 					ImGui::Image(static_cast<D3D11RenderTarget*>(renderSystem->gBuffer)->getShaderResourceView()[2], ImVec2(200, 200));
 				}
 				if (ImGui::CollapsingHeader("Shadow map")) {
 					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->getShaderResourceView()[0], ImVec2(200, 200));
-					ImGui::SameLine();
 					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->shadow.renderTarget)->getDepthStencilResource(), ImVec2(200, 200));
+				}
+				if (ImGui::CollapsingHeader("Picker map")) {
+					ImGui::Image((void*)static_cast<D3D11RenderTarget*>(renderSystem->picker)->getShaderResourceView()[0], ImVec2(200, 200));
 				}
 			} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 				if (ImGui::CollapsingHeader("G buffer")) {
 					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->gBuffer)->depth, ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-					ImGui::SameLine();
 					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->gBuffer)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-					ImGui::SameLine();
 					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->gBuffer)->texture[1], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-					ImGui::SameLine();
 					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->gBuffer)->texture[2], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 				}
 				if (ImGui::CollapsingHeader("Shadow map")) {
 					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->shadow.renderTarget)->texture[0], ImVec2(200, 200));
-					ImGui::SameLine();
 					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->shadow.renderTarget)->depth, ImVec2(200, 200));
+				}
+				if (ImGui::CollapsingHeader("Picker map")) {
+					ImGui::Image((void*)static_cast<OGLRenderTarget*>(renderSystem->picker)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 				}
 			}
 			ImGui::End();

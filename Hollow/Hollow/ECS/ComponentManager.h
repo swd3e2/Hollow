@@ -18,6 +18,8 @@ namespace Hollow {
 		class IComponentContainer {
 		public:
 			virtual ~IComponentContainer() {}
+
+			virtual void destroy(void* mem) = 0;
 		};
 
 		template<class T>
@@ -28,6 +30,11 @@ namespace Hollow {
 		public:
 			ComponentContainer() {}
 			virtual ~ComponentContainer() {}
+
+			virtual void destroy(void* mem) override
+			{
+				container.deallocate(mem);
+			}
 		};
 
 		std::unordered_map<size_t, IComponentContainer*> componentContainers;
@@ -101,6 +108,18 @@ namespace Hollow {
 
 				ComponentContainer<T>* container = getContainer<T>();
 				container->container.deallocate((T*)componentMap[entityId][componentTypeId]);
+			}
+		}
+
+		void destroyAll(size_t entityId)
+		{
+			if (componentMap.find(entityId) != componentMap.end())
+			{
+				for (auto& it : componentMap[entityId]) {
+					size_t componentTypeId = it.second->getTypeId();
+					componentContainers[componentTypeId]->destroy(it.second);
+				}
+				componentMap.erase(entityId);
 			}
 		}
 

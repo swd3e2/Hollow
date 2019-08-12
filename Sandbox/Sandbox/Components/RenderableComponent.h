@@ -17,13 +17,23 @@ struct RenderableObject {
 	Hollow::IndexBuffer* iBuffer;
 	int material;
 	int id;
+
+	~RenderableObject()
+	{
+		if (vBuffer != nullptr) {
+			delete vBuffer;
+		}
+		if (iBuffer != nullptr) {
+			delete iBuffer;
+		}
+	}
 };
 
 class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
-	std::vector<RenderableObject> renderables;
-	std::unordered_map<unsigned int,Hollow::Material> materials;
+	std::vector<RenderableObject*> renderables;
+	std::unordered_map<unsigned int, Hollow::Material*> materials;
 	Hollow::Vector3 A, B; // A - left near down, B - right far up
 	std::string filename;
 public:
@@ -33,6 +43,17 @@ public:
 		filename(filename)
 	{
 		load(filename);
+	}
+
+	virtual ~RenderableComponent()
+	{
+		for (auto& it : renderables) {
+			delete it;
+		}
+		for (auto& it : materials) {
+			delete it.second;
+		}
+		materials.clear();
 	}
 
 	void load(const std::string& filename)
@@ -45,29 +66,29 @@ public:
 
 		if (model == nullptr) { return; }
 		for (int i = 0; i < model->meshes.size(); i++) {
-			RenderableObject renderable;
-			renderable.id = i;
-			renderable.material = model->meshes[i]->material;
+			RenderableObject* renderable = new RenderableObject();
+			renderable->id = i;
+			renderable->material = model->meshes[i]->material;
 
-			renderable.vBuffer = VertexBuffer::create({ model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size(), sizeof(Hollow::Vertex) });
-			renderable.iBuffer = IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), INDEX_FORMAT::UINT });
+			renderable->vBuffer = VertexBuffer::create({ model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size(), sizeof(Hollow::Vertex) });
+			renderable->iBuffer = IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), INDEX_FORMAT::UINT });
 
 			renderables.push_back(renderable);
 		}
 
 		for (auto& it : model->materials) {
-			Hollow::Material material;
-			material.name = it.second.name;
-			material.materialData.color = it.second.baseColorFactor;
+			Hollow::Material* material = new Hollow::Material;
+			material->name = it.second.name;
+			material->materialData.color = it.second.baseColorFactor;
 
-			material.materialData.metallicFactor = it.second.metallicFactor;
-			material.materialData.roughnessFactor = it.second.roughnessFactor;
-			material.materialData.emissiveFactor = it.second.emissiveFactor;
+			material->materialData.metallicFactor = it.second.metallicFactor;
+			material->materialData.roughnessFactor = it.second.roughnessFactor;
+			material->materialData.emissiveFactor = it.second.emissiveFactor;
 
 			std::string diffuseTexture = it.second.diffuseTexture;
 			if (diffuseTexture.size()) {
-				material.materialData.hasDiffuseTexture = true;
-				material.diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
+				material->materialData.hasDiffuseTexture = true;
+				material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
 			}
 			materials[it.first] = material;
 		}

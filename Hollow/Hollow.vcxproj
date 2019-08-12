@@ -212,6 +212,7 @@
     <ClCompile Include="Hollow\Input\InputManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11Win32Window.cpp" />
     <ClCompile Include="Hollow\Common\Timer.cpp" />
+    <ClCompile Include="Hollow\Resources\Material.cpp" />
     <ClCompile Include="Hollow\Resources\Sound.cpp" />
     <ClCompile Include="Hollow\Test.cpp" />
   </ItemGroup>

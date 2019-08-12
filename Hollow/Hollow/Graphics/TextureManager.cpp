@@ -10,6 +10,7 @@ namespace Hollow {
 		}
 
 		if (textureList.find(pathToFile) != textureList.end()) {
+			textureRefCnt[textureList[pathToFile]]++;
 			return textureList[pathToFile];
 		}
 
@@ -20,6 +21,8 @@ namespace Hollow {
 		}
 
 		Texture* tex = create2dTexture(textureDesc);
+		textureRefCnt[textureList[pathToFile]] = 1;
+
 		tex->name = filename;
 
 		return tex;
@@ -29,8 +32,10 @@ namespace Hollow {
 	{
 		for (auto& it : textureList) {
 			if (it.second == texture) {
-				textureList.erase(it.first);
-				delete texture;
+				if (textureRefCnt[it.second] <= 1) {
+					textureList.erase(it.first);
+					delete texture;
+				}
 				break;
 			}
 		}

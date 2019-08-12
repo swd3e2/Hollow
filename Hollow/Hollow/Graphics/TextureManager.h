@@ -16,6 +16,7 @@ namespace Hollow {
 	{
 	public:
 		std::unordered_map<std::string, Texture*> textureList;
+		std::unordered_map<Texture*, size_t> textureRefCnt;
 		const std::string baseTexturePapth = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/";
 	public:
 		Texture* createTextureFromFile(const std::string& filename, bool fromDefaultFolder = true);

@@ -69,6 +69,7 @@ namespace Hollow {
 		depthTextureDesc.SampleDesc.Count = 1;
 		depthTextureDesc.SampleDesc.Quality = 0;
 		depthTextureDesc.Usage = D3D11_USAGE::D3D11_USAGE_DEFAULT;
+		depthTextureDesc.CPUAccessFlags = 0;
 
 		device->CreateTexture2D(&depthTextureDesc, NULL, &renderTarget->m_DepthStencilBuffer);
 		

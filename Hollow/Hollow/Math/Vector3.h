@@ -25,9 +25,9 @@ namespace Hollow {
 		Vector3 operator/(const float divisor) const;
 		Vector3& invert();
 		static Vector3 cross(const Vector3& left, const Vector3& right);
-		static Vector3 Normalize(const Vector3& vector);
+		static Vector3 normalize(const Vector3& vector);
 
-		static float Length(const Vector3& vec);
+		static float length(const Vector3& vec);
 
 		static float dot(const Vector3& left, const Vector3& right);
 

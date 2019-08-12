@@ -54,34 +54,34 @@ namespace Hollow {
 		Matrix4& operator=(const Matrix4& other);
 		Matrix4& operator=(Matrix4&& other);
 
-		static Matrix4 Identity();
+		static Matrix4 identity();
 
-		Matrix4& Transpose();
-		static Matrix4 Transpose(const Matrix4& matrix);
+		Matrix4& transpose();
+		static Matrix4 transpose(const Matrix4& matrix);
 
-		static Matrix4 Translation(float x, float y, float z);
-		static Matrix4 Translation(const Vector4& vec);
+		static Matrix4 translation(float x, float y, float z);
+		static Matrix4 translation(const Vector4& vec);
 
-		static Matrix4 Scaling(float x, float y, float z);
-		static Matrix4 Scaling(const Vector4& vec);
+		static Matrix4 scaling(float x, float y, float z);
+		static Matrix4 scaling(const Vector4& vec);
 
-		static Matrix4 Rotation(const Vector4& vec);
-		static Matrix4 Rotation(float x, float y, float z);
+		static Matrix4 rotation(const Vector4& vec);
+		static Matrix4 rotation(float x, float y, float z);
 
-		static Matrix4 RotationX(float x);
-		static Matrix4 RotationY(float y);
-		static Matrix4 RotationZ(float z);
+		static Matrix4 rotationX(float x);
+		static Matrix4 rotationY(float y);
+		static Matrix4 rotationZ(float z);
 
 		Matrix4 operator*(const Matrix4& other) const;
 
-		static Matrix4 Projection(float fov, float aspect, float n, float f);
-		static Matrix4 Orthographic(float right, float left, float top, float bottom, float near, float far);
-		static Matrix4 LookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector);
+		static Matrix4 projection(float fov, float aspect, float n, float f);
+		static Matrix4 orthographic(float right, float left, float top, float bottom, float near, float far);
+		static Matrix4 lookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector);
 
-		void SetTranslation(const Vector4& vecPos);
-		Vector4 GetTranslation() const;
+		void setTranslation(const Vector4& vecPos);
+		Vector4 getTranslation() const;
 
-		static Matrix4 Inverse(const Matrix4& mat);
+		static Matrix4 inverse(const Matrix4& mat);
 	};
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat);

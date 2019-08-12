@@ -49,7 +49,7 @@ namespace Hollow {
 		};
 
 		HRESULT hr = D3DCompile(desc.content.data(), desc.content.size(), NULL, defines, NULL, 
-			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS,// | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0, &shaderBlob, &errorBlob);
 
 		if (FAILED(hr)) {

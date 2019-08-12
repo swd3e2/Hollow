@@ -92,10 +92,10 @@ public:
 		float z = 1.0f;
 
 		Hollow::Vector3 ray_nds(x, y, z);
-		Vector4 ray_eye = ray_nds * Matrix4::Inverse(camera->getProjectionMatrix());
+		Vector4 ray_eye = ray_nds * Matrix4::inverse(camera->getProjectionMatrix());
 		ray_eye.z = -1.0f;
-		Vector4 ray_world = ray_eye * Matrix4::Inverse(camera->getViewMatrix());
-		ray_world = Vector4::Normalize(ray_world);
+		Vector4 ray_world = ray_eye * Matrix4::inverse(camera->getViewMatrix());
+		ray_world = Vector4::normalize(ray_world);
 
 		HW_DEBUG("{} {} {}", ray_world.x, ray_world.y, ray_world.z);
 	}

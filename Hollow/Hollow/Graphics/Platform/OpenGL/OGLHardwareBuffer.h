@@ -15,6 +15,11 @@ namespace Hollow {
 		GLuint format;
 	public:
 		OGLHardwareBuffer(size_t size, size_t stride) : HardwareBuffer(size, stride) {}
+		virtual ~OGLHardwareBuffer()
+		{
+			glDeleteBuffers(1, &mVbo);
+			glDeleteVertexArrays(1, &mVao);
+		}
 	};
 
 	class OGLIndexBuffer : public IndexBuffer

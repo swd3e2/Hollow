@@ -13,10 +13,9 @@ namespace Hollow {
 	protected:
 		size_t entityId;
 	public:
-		size_t getId()
-		{
-			return entityId;
-		}
+		size_t getId() { return entityId; }
+
+		virtual size_t getTypeId() = 0;
 
 		template<class T, class ...ARGS>
 		T* addComponent(ARGS&& ... args)

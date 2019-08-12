@@ -17,7 +17,7 @@ namespace Hollow {
 	public:
 		Entity() {}
 		static size_t staticGetTypeId() { return entityTypeId; }
-		size_t getTypeId() { return entityTypeId; }
+		virtual size_t getTypeId() override { return entityTypeId; }
 	};
 
 	template<class T> size_t Entity<T>::entityTypeId = typeid(Entity<T>).hash_code();

@@ -20,6 +20,11 @@ namespace Hollow {
 		int hasDiffuseTexture = 0;
 		int hasNormalMap = 0;
 		int hasSpecularMap = 0;
+
+		MaterialData()
+		{
+			color = Vector4(1.0f, 1.0f, 1.0, 1.0f);
+		}
 	};
 
 	class Material
@@ -36,13 +41,14 @@ namespace Hollow {
 		Texture* emisiveTexture;
 		Texture* occlusionTexture;
 
-		Material()
+		Material() :
+			diffuseTexture(nullptr), normalTexture(nullptr), specularTexture(nullptr),
+			roughnesTexture(nullptr), emisiveTexture(nullptr), occlusionTexture(nullptr)
 		{
 			//shader = ShaderManager::instance()->getShader("default");
 		}
 
-		~Material()
-		{}
+		~Material();
 	};
 }
 

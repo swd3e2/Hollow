@@ -2,7 +2,7 @@
 #include <Hollow/Math/Vector3.h>
 #include <Hollow/ECS/Component.h>
 
-enum LightType {
+enum class LightType {
 	AMBIENT,
 	DIFFUSE,
 	POINT,
@@ -22,7 +22,7 @@ struct LightData
 	int type; // 40
 };
 
-class LightComponent : Hollow::Component<LightComponent>
+class LightComponent : public Hollow::Component<LightComponent>
 {
 public:
 	LightData lightData;

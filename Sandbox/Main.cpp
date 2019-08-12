@@ -15,6 +15,8 @@
 #include "Sandbox/Entities/Terrain.h"
 #include "Sandbox/Components/TerrainData.h"
 #include "Hollow/Graphics/Base/InputLayout.h"
+#include "Sandbox/Entities/Light.h"
+#include "Sandbox/Components/LightComponent.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -45,6 +47,10 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	gui->rendererTab.renderSystem = &renderPass;
 
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
+
+	/*Light* light = Hollow::EntityManager::instance()->create<Light>();
+	light->addComponent<TransformComponent>();
+	light->addComponent<LightComponent>();*/
 
 	while (!window->isClosed()) {
 		core.preUpdate();

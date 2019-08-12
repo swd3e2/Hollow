@@ -49,53 +49,6 @@ public:
 
 		ImFont* pFont = io.Fonts->AddFontFromFileTTF("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Roboto-Medium.ttf", 16.0f);
 
-		ImGuiStyle* style = &ImGui::GetStyle();
-
-		style->Colors[ImGuiCol_Text]					= ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
-		style->Colors[ImGuiCol_TextDisabled]			= ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-		style->Colors[ImGuiCol_WindowBg]				= ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
-		style->Colors[ImGuiCol_ChildWindowBg]			= ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
-		style->Colors[ImGuiCol_PopupBg]					= ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
-		style->Colors[ImGuiCol_Border]					= ImVec4(0.30f, 0.30f, 0.30f, 0.88f);
-		style->Colors[ImGuiCol_BorderShadow]			= ImVec4(0.92f, 0.91f, 0.88f, 0.00f);
-		style->Colors[ImGuiCol_FrameBg]					= ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
-		style->Colors[ImGuiCol_FrameBgHovered]			= ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-		style->Colors[ImGuiCol_FrameBgActive]			= ImVec4(0.58f, 0.58f, 0.58f, 1.00f);
-		style->Colors[ImGuiCol_TitleBg]					= ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_TitleBgCollapsed]		= ImVec4(1.00f, 0.98f, 0.95f, 1.00f);
-		style->Colors[ImGuiCol_TitleBgActive]			= ImVec4(0.09f, 0.09f, 0.09f, 1.00f);
-		style->Colors[ImGuiCol_MenuBarBg]				= ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_ScrollbarBg]				= ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_ScrollbarGrab]			= ImVec4(0.83f, 0.83f, 0.83f, 0.31f);
-		style->Colors[ImGuiCol_ScrollbarGrabHovered]	= ImVec4(0.58f, 0.58f, 0.58f, 1.00f);
-		style->Colors[ImGuiCol_ScrollbarGrabActive]		= ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-		style->Colors[ImGuiCol_CheckMark]				= ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-		style->Colors[ImGuiCol_SliderGrab]				= ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-		style->Colors[ImGuiCol_SliderGrabActive]		= ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-		style->Colors[ImGuiCol_Button]					= ImVec4(0.78f, 0.48f, 0.18f, 1.00f);
-		style->Colors[ImGuiCol_ButtonHovered]			= ImVec4(0.72f, 0.38f, 0.16f, 1.00f);
-		style->Colors[ImGuiCol_ButtonActive]			= ImVec4(0.72f, 0.38f, 0.16f, 1.00f);
-		style->Colors[ImGuiCol_Header]					= ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_HeaderHovered]			= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-		style->Colors[ImGuiCol_HeaderActive]			= ImVec4(0.06f, 0.05f, 0.00f, 1.00f);
-		style->Colors[ImGuiCol_ResizeGrip]				= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-		style->Colors[ImGuiCol_ResizeGripHovered]		= ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-		style->Colors[ImGuiCol_ResizeGripActive]		= ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-		style->Colors[ImGuiCol_PlotLines]				= ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
-		style->Colors[ImGuiCol_PlotLinesHovered]		= ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-		style->Colors[ImGuiCol_PlotHistogram]			= ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
-		style->Colors[ImGuiCol_PlotHistogramHovered]	= ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-		style->Colors[ImGuiCol_TextSelectedBg]			= ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
-		style->Colors[ImGuiCol_ModalWindowDarkening]	= ImVec4(1.00f, 0.98f, 0.95f, 0.73f);
-		style->Colors[ImGuiCol_Tab]						= ImVec4(0.98f, 0.58f, 0.22f, 0.73f);
-		style->Colors[ImGuiCol_TabActive]				= ImVec4(0.98f, 0.58f, 0.22f, 0.73f);
-		style->Colors[ImGuiCol_TabUnfocused]			= ImVec4(0.98f, 0.58f, 0.22f, 0.73f);
-		style->Colors[ImGuiCol_TabUnfocusedActive]		= ImVec4(0.98f, 0.58f, 0.22f, 0.73f);
-		style->Colors[ImGuiCol_TabHovered]				= ImVec4(0.98f, 0.58f, 0.22f, 0.73f);
-		style->Colors[ImGuiCol_Separator]				= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-		style->Colors[ImGuiCol_SeparatorHovered]		= ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-		style->Colors[ImGuiCol_SeparatorActive]			= ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-
 		if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplWin32_Init(static_cast<D3D11Win32Window*>(window)->getHWND());
 			D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
@@ -105,7 +58,7 @@ public:
 			const char* glsl_version = "#version 460";
 			result = ImGui_ImplOpenGL3_Init(glsl_version);
 		}
-		
+
 		strcpy_s(projectFolder, 4, "C:/");
 		strcpy_s(projectName, 8, "Project");
 	}
@@ -152,7 +105,8 @@ public:
 		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0.0f);
 	}
 
 	void update(double dt)
@@ -214,7 +168,7 @@ public:
 
 	void end()
 	{
-		ImGui::PopStyleVar();
+		ImGui::PopStyleVar(2);
 		ImGui::End();
 
 		ImGui::Render();
@@ -234,8 +188,8 @@ public:
 
 	void onChangePickedMesh(Hollow::IEvent* event)
 	{
-		/*ChangeSelectedEntity* changeEvent = reinterpret_cast<ChangeSelectedEntity*>(event);
-		if (selectedGameObject != nullptr && selectedGameObject->hasComponent<RenderableComponent>()) {
+		ChangeSelectedEntity* changeEvent = reinterpret_cast<ChangeSelectedEntity*>(event);
+		/*if (selectedGameObject != nullptr && selectedGameObject->hasComponent<RenderableComponent>()) {
 			RenderableComponent* renderable = selectedGameObject->getComponent<RenderableComponent>();
 			std::vector<RenderableObject>& renderables = renderable->renderables;
 			if (changeEvent->pickedId < renderables.size()) {

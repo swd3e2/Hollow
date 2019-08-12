@@ -118,24 +118,24 @@ namespace Hollow {
 	void GLTFImporter::load(GLTF::Node* node, const tinygltf::Node& modelNode, tinygltf::Model& tModel, GLTF::LoadedModel& model, std::ifstream& file)
 	{
 		if (modelNode.matrix.data()) {
-			node->transformation = Matrix4(modelNode.matrix.data(), 16).Transpose();
+			node->transformation = Matrix4(modelNode.matrix.data(), 16).transpose();
 		}
 		else {
-			Matrix4 rotation = Matrix4::Identity();
-			Matrix4 scale = Matrix4::Identity();
-			Matrix4 translation = Matrix4::Identity();
+			Matrix4 rotation = Matrix4::identity();
+			Matrix4 scale = Matrix4::identity();
+			Matrix4 translation = Matrix4::identity();
 
 			if (modelNode.translation.size() > 0) {
-				translation = Matrix4::Translation(Vector3(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]));
+				translation = Matrix4::translation(Vector3(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]));
 			}
 			if (modelNode.rotation.size() > 0) {
 				rotation = Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]).toMatrix4();
 			}
 			if (modelNode.scale.size() > 0) {
-				scale = Matrix4::Scaling(Vector3(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]));
+				scale = Matrix4::scaling(Vector3(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]));
 			}
 
-			node->transformation = (scale * rotation * translation).Transpose();
+			node->transformation = (scale * rotation * translation).transpose();
 		}
 
 		if (modelNode.mesh >= 0) {
@@ -401,7 +401,7 @@ namespace Hollow {
 			gltfModel->meshes.push_back(mesh);
 		}
 
-		prepareModel(lModel->rootNode, Matrix4::Identity(), gltfModel);
+		prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
 
 		delete lModel;
 
@@ -416,12 +416,12 @@ namespace Hollow {
 			for (auto& it : model->meshes[node->mesh]->vertices) {
 				it.pos = it.pos * transform;
 				it.normal = it.normal * transform;
-				Vector3::Normalize(it.normal);
+				Vector3::normalize(it.normal);
 			}
 		}
 
 		for (auto& it : node->childrens) {
-			prepareModel(it, Matrix4::Transpose(node->transformation) * parentTransform, model);
+			prepareModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
 		}
 	}
 

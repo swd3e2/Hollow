@@ -60,7 +60,7 @@ namespace Hollow {
 		return Vector3(x, y, z);
 	}
 
-	Vector3 Vector3::Normalize(const Vector3& vector)
+	Vector3 Vector3::normalize(const Vector3& vector)
 	{
 		float length = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 		return Vector3(vector.x / length, vector.y / length, vector.z / length);
@@ -93,7 +93,7 @@ namespace Hollow {
 		return *this;
 	}
 
-	float Vector3::Length(const Vector3& vec)
+	float Vector3::length(const Vector3& vec)
 	{
 		return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 	}

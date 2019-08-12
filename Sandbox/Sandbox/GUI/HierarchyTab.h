@@ -8,6 +8,8 @@
 #include "Sandbox/Components/SelectComponent.h"
 #include "Sandbox/Components/MoveComponent.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11Texture.h"
+#include "Sandbox/Entities/Light.h"
+#include "Sandbox/Components/LightComponent.h"
 
 using namespace Hollow;
 
@@ -17,9 +19,11 @@ namespace GUI {
 	public:
 		GameObject* selectedGameObject;
 		Terrain* selectedTerrain;
+		Light* selectedLight;
 		RenderableObject* selectedRenderable;
 		Material* selectedMaterial;
 		std::string filename;
+		bool openEntityCreationPopup = false;
 		char buffer[100];
 	public:
 		HierarchyTab() = default;
@@ -27,89 +31,143 @@ namespace GUI {
 		void Draw()
 		{
 			ImGui::Begin("Hierarchy");
-			int counter = 0;
-
-			if (ImGui::BeginTabBar("MyTabBar"))
-			{
-				if (ImGui::BeginTabItem("Gameobjects"))
-				{
-					ImGui::BeginChild("GameObjectsList", ImVec2(ImGui::GetWindowContentRegionWidth(), 330), false, ImGuiWindowFlags_HorizontalScrollbar);
-					for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-						if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(counter++)).c_str())) {
-							selectedGameObject = &entity;
-							selectedTerrain = nullptr;
-						}
-						if (ImGui::BeginPopupContextItem())
-						{
-							ImGui::Text("Add component:");
-							if (ImGui::Button("Renderable")) {
-								entity.addComponent<RenderableComponent>();
-								ImGui::CloseCurrentPopup();
-							}
-							if (ImGui::Button("Transform")) {
-								entity.addComponent<TransformComponent>();
-								ImGui::CloseCurrentPopup();
-							}
-							if (ImGui::Button("Move")) {
-								entity.addComponent<MoveComponent>();
-								ImGui::CloseCurrentPopup();
-							}
-							if (ImGui::Button("Selected")) {
-								entity.addComponent<SelectComponent>(true);
-								ImGui::CloseCurrentPopup();
-							}
-							ImGui::EndPopup();
-						}
-					}
-					ImGui::EndChild();
-
-					if (ImGui::Button("Add gameobject", ImVec2(ImGui::GetWindowWidth() - 20, 30))) {
-						EntityManager::instance()->create<GameObject>();
-					}
-
-					ImGui::EndTabItem();
-				}
-				if (ImGui::BeginTabItem("Terrains"))
-				{
-					counter = 0;
-					for (auto& terrain : EntityManager::instance()->container<Terrain>()) {
-						if (ImGui::Selectable(("Terrain " + std::to_string(counter++)).c_str())) {
-							selectedGameObject = nullptr;
-							selectedTerrain = &terrain;
-						}
-						if (ImGui::BeginPopupContextItem())
-						{
-							ImGui::Text("Add component:");
-							if (ImGui::Button("Transform")) {
-								terrain.addComponent<TransformComponent>();
-								ImGui::CloseCurrentPopup();
-							}
-							if (ImGui::Button("TerrainData")) {
-								terrain.addComponent<TerrainData>();
-								ImGui::CloseCurrentPopup();
-							}
-							ImGui::EndPopup();
-						}
-					}
-
-					if (ImGui::Button("Add terrain", ImVec2(ImGui::GetWindowWidth() - 20, 30))) {
-						EntityManager::instance()->create<Terrain>();
-					}
-					ImGui::EndTabItem();
-				}
-				if (ImGui::BeginTabItem("Cucumber"))
-				{
-					ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
-					ImGui::EndTabItem();
-				}
-				ImGui::EndTabBar();
+			if (ImGui::Button("+")) {
+				openEntityCreationPopup = true;
 			}
 
+			if (openEntityCreationPopup) {
+				ImGui::OpenPopup("Entity creation");
+			}
+
+			if (ImGui::BeginPopupModal("Entity creation")) {
+				if (ImGui::Button("GameObject")) {
+					EntityManager::instance()->create<GameObject>();
+					ImGui::CloseCurrentPopup();
+					openEntityCreationPopup = false;
+				}
+				if (ImGui::Button("Terrain")) {
+					EntityManager::instance()->create<Terrain>();
+					ImGui::CloseCurrentPopup();
+					openEntityCreationPopup = false;
+				}
+				if (ImGui::Button("Light")) {
+					EntityManager::instance()->create<Light>();
+					ImGui::CloseCurrentPopup();
+					openEntityCreationPopup = false;
+				}
+				if (ImGui::Button("Close")) {
+					ImGui::CloseCurrentPopup();
+					openEntityCreationPopup = false;
+				}
+				ImGui::EndPopup();
+			}
+
+			int counter = 0;
+
+			ImGui::BulletText("GameObjects");
+			ImGui::Indent();
+			for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+				if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(counter++)).c_str())) {
+					selectedGameObject = &entity;
+					selectedTerrain = nullptr;
+					selectedLight = nullptr;
+				}
+				if (ImGui::BeginPopupContextItem())
+				{
+					ImGui::Text("Add component:");
+					if (ImGui::Button("Renderable")) {
+						entity.addComponent<RenderableComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("Transform")) {
+						entity.addComponent<TransformComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("Move")) {
+						entity.addComponent<MoveComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("Selected")) {
+						entity.addComponent<SelectComponent>(true);
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("Delete")) {
+						Hollow::DelayedTaskManager::instance()->add([&entity]() { Hollow::EntityManager::instance()->destroy(entity.getId()); });
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
+			}
+			ImGui::Unindent();
+			counter = 0;
+			ImGui::BulletText("Terrains");
+			ImGui::Indent();
+			for (auto& terrain : EntityManager::instance()->container<Terrain>()) {
+				if (ImGui::Selectable(("Terrain " + std::to_string(counter++)).c_str())) {
+					selectedGameObject = nullptr;
+					selectedTerrain = &terrain;
+					selectedLight = nullptr;
+				}
+				if (ImGui::BeginPopupContextItem())
+				{
+					ImGui::Text("Add component:");
+					if (ImGui::Button("Transform")) {
+						terrain.addComponent<TransformComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("TerrainData")) {
+						terrain.addComponent<TerrainData>();
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
+			}
+			ImGui::Unindent();
+			counter = 0;
+			ImGui::BulletText("Lights");
+			ImGui::Indent();
+			for (auto& light : EntityManager::instance()->container<Light>()) {
+				if (ImGui::Selectable(("Light " + std::to_string(counter++)).c_str())) {
+					selectedGameObject = nullptr;
+					selectedTerrain = nullptr;
+					selectedLight = &light;
+				}
+				if (ImGui::BeginPopupContextItem())
+				{
+					ImGui::Text("Add component:");
+					if (ImGui::Button("Transform")) {
+						light.addComponent<TransformComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("LightComponent")) {
+						light.addComponent<LightComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
+			}
+			ImGui::Unindent();
 			ImGui::End();
 
-
-
 			ImGui::Begin("Inspector");
+			// Light
+			if (selectedLight != nullptr) {
+				if (selectedLight->hasComponent<TransformComponent>()) {
+					if (ImGui::CollapsingHeader("Transform component")) {
+						TransformComponent* component = selectedLight->getComponent<TransformComponent>();
+						ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
+					}
+				}
+
+				if (selectedLight->hasComponent<LightComponent>()) {
+					if (ImGui::CollapsingHeader("Light component")) {
+						LightComponent* lightComponent = selectedLight->getComponent<LightComponent>();
+					}
+				}
+			}
+
 			// Terrain
 			if (selectedTerrain != nullptr) {
 				if (selectedTerrain->hasComponent<TransformComponent>()) {
@@ -120,9 +178,6 @@ namespace GUI {
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}
-			}
-
-			if (selectedTerrain != nullptr) {
 				if (selectedTerrain->hasComponent<TerrainData>()) {
 					if (ImGui::CollapsingHeader("TerrainData component")) {
 						TerrainData* terrainDataComponent = selectedTerrain->getComponent<TerrainData>();
@@ -146,11 +201,11 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<RenderableComponent>()) {
 					if (ImGui::CollapsingHeader("Renderable component")) {
 						RenderableComponent* renderableComponent = selectedGameObject->getComponent<RenderableComponent>();
-						std::vector<RenderableObject>& renderables = renderableComponent->renderables;
+						std::vector<RenderableObject*>& renderables = renderableComponent->renderables;
 						for (auto& it : renderables) {
-							if (ImGui::Selectable(std::string("Mesh " + std::to_string(it.id)).c_str())) {
-								selectedRenderable = &it;
-								selectedMaterial = &renderableComponent->materials[it.material];
+							if (ImGui::Selectable(std::string("Mesh " + std::to_string(it->id)).c_str())) {
+								selectedRenderable = it;
+								selectedMaterial = renderableComponent->materials[it->material];
 							}
 						}
 						if (ImGui::Button("Load from file")) {
@@ -161,9 +216,7 @@ namespace GUI {
 						}
 					}
 				}
-			}
 
-			if (selectedGameObject != nullptr) {
 				if (selectedGameObject->hasComponent<TransformComponent>()) {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();

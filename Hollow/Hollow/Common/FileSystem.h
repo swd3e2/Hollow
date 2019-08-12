@@ -90,7 +90,7 @@ namespace Hollow {
 
 			fileStream.close();
 
-			return content.c_str();
+			return content;
 		}
 
 		static void writeToFile(const std::string& filename, const char* content)

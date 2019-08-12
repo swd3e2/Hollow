@@ -48,7 +48,7 @@ namespace Hollow {
 		return x * other.x + y * other.y + z * other.z + w * other.w;
 	}
 
-	Vector4 Vector4::Cross(const Vector4& other)
+	Vector4 Vector4::cross(const Vector4& other)
 	{
 		float x = y * other.z - z * other.y;
 		float y = z * other.x - x * other.z;
@@ -57,7 +57,7 @@ namespace Hollow {
 		return Vector4(x, y, z, 0.0f);
 	}
 
-	Vector4 Vector4::Cross(const Vector4& left, const Vector4& right)
+	Vector4 Vector4::cross(const Vector4& left, const Vector4& right)
 	{
 		float x = left.y * right.z - left.z * right.y;
 		float y = left.z * right.x - left.x * right.z;
@@ -66,7 +66,7 @@ namespace Hollow {
 		return Vector4(x, y, z, 1.0f);
 	}
 
-	float Vector4::Dot(const Vector4& left, const Vector4& right)
+	float Vector4::dot(const Vector4& left, const Vector4& right)
 	{
 		return left.x * right.x + left.y * right.y + left.z * right.z;
 	}
@@ -95,13 +95,13 @@ namespace Hollow {
 		z = z - other.z;
 	}
 
-	Vector4 Vector4::Normalize(const Vector4& vector)
+	Vector4 Vector4::normalize(const Vector4& vector)
 	{
 		float length = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 		return Vector4(vector.x / length, vector.y / length, vector.z / length, vector.w);
 	}
 
-	Vector4 Vector4::Negate(const Vector4& vector)
+	Vector4 Vector4::negate(const Vector4& vector)
 	{
 		return Vector4(-vector.x, -vector.y, -vector.z, -vector.w);
 	}

@@ -96,7 +96,7 @@ namespace Hollow {
 		HGLRC hrc = wglCreateContextAttribsARB(hdc, 0, attribs);
 
 		wglMakeCurrent(hdc, hrc);
-
+		wglSwapIntervalEXT(0);
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(MessageCallback, 0);
 
