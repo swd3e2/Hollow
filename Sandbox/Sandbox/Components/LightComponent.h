@@ -11,15 +11,16 @@ enum class LightType {
 
 struct LightData
 {
-	float position; // 4
-	float constant; // 8
-	float linear; // 12
-	float quadratic; // 16
-	float cutoff; // 20
-	float direction; // 24
-	Hollow::Vector3 color; // 36
-
-	int type; // 40
+	Hollow::Vector3 position;	// 12
+	float constant;				// 16
+	Hollow::Vector3 direction;	// 28
+	float linear;				// 32
+	Hollow::Vector3 color;		// 44
+	float quadratic;			// 48
+	float cutoff;				// 52
+	float distance;				// 56
+	int type;					// 60
+	int pad;					// 64
 };
 
 class LightComponent : public Hollow::Component<LightComponent>

@@ -23,6 +23,7 @@
 #include "Sandbox/Entities/Light.h"
 #include <Hollow/Test.h>
 #include <Hollow/Common/Timer.h>
+#include "Sandbox/Components/LightComponent.h"
 
 using namespace Hollow;
 
@@ -30,6 +31,7 @@ struct WVP
 {
 	Matrix4 WVP;
 	Vector3 cameraPosition;
+	Vector3 cameraViewDirection;
 };
 
 struct PerModel
@@ -55,7 +57,8 @@ struct ShadowStruct
 
 struct LightInfo
 {
-	int pointLightsNum = 1;
+	LightData lightData[100];
+	int numLights;
 };
 
 class RenderSystem : public Hollow::System<RenderSystem>
@@ -125,6 +128,7 @@ private:
 	Hollow::Vector4 AABBplane[6];
 	Hollow::Mesh* lightCube;
 	Hollow::Material lightMaterial;
+	LightInfo lightInfo;
 public:
 	RenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -139,7 +143,7 @@ public:
 
 			materialConstantBuffer = GPUBufferManager::instance()->create(4, sizeof(MaterialData));
 			lightInfoBuffer = GPUBufferManager::instance()->create(5, sizeof(LightInfo));
-			boneInfo = GPUBufferManager::instance()->create(7, sizeof(Matrix4) * 100);
+			boneInfo = GPUBufferManager::instance()->create(6, sizeof(Matrix4));
 		}
 		// Shaders
 		{
@@ -351,6 +355,7 @@ public:
 				renderer->setTextureDepthBuffer(5, gBuffer);
 
 				renderer->setPipelineState(lightPipeline);
+				updateLight();
 
 				renderer->setVertexBuffer(quadVB);
 				renderer->setIndexBuffer(quadIB);
@@ -386,6 +391,8 @@ public:
 	void updateWVP(Camera* camera)
 	{
 		m_wvp.WVP = camera->getProjectionMatrix() * camera->getViewMatrix();
+		m_wvp.cameraPosition = camera->getPositionVec3();
+		m_wvp.cameraViewDirection = camera->getRotationVec3();
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->setGpuBuffer(m_WVPConstantBuffer);
 	}
@@ -516,22 +523,16 @@ public:
 		}
 
 		for (auto& entity : EntityManager::instance()->container<Light>()) {
-			if (entity.hasComponent<TransformComponent>()) {
-				TransformComponent* transform = entity.getComponent<TransformComponent>();
+			if (entity.hasComponent<LightComponent>()) {
+				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 
-				if (!cull(transform->position, Hollow::Vector3(), Hollow::Vector3())) {
-					Hollow::Matrix4 trs = Matrix4::transpose(Matrix4::scaling(transform->scale)
-						* Matrix4::rotation(transform->rotation)
-						* Matrix4::translation(transform->position));
+				perModelData.transform = Matrix4::transpose(Matrix4::translation(lightComponent->lightData.position));
+				perModel->update(&perModelData);
+				renderer->setGpuBuffer(perModel);
 
-					perModelData.transform = trs;
-					perModel->update(&perModelData);
-					renderer->setGpuBuffer(perModel);
-
-					renderer->setVertexBuffer(lightCube->models[0]->vBuffer);
-					renderer->setIndexBuffer(lightCube->models[0]->iBuffer);
-					renderer->drawIndexed(lightCube->models[0]->iBuffer->mHardwareBuffer->getSize());
-				}
+				renderer->setVertexBuffer(lightCube->models[0]->vBuffer);
+				renderer->setIndexBuffer(lightCube->models[0]->iBuffer);
+				renderer->drawIndexed(lightCube->models[0]->iBuffer->mHardwareBuffer->getSize());
 			}
 		}
 
@@ -664,5 +665,20 @@ public:
 		}
 
 		return !cull;
+	}
+
+	void updateLight()
+	{
+		int counter = 0;
+		memset(&lightInfo, 0, sizeof(LightInfo));
+		for (auto& entity : EntityManager::instance()->container<Light>()) {
+			if (entity.hasComponent<LightComponent>()) {
+				LightComponent* lightComponent = entity.getComponent<LightComponent>();
+				lightInfo.lightData[counter++] = lightComponent->lightData;
+			}
+		}
+		lightInfo.numLights = counter;
+		lightInfoBuffer->update(&lightInfo);
+		renderer->setGpuBuffer(lightInfoBuffer);
 	}
 };

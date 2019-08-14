@@ -13,11 +13,12 @@ namespace Hollow {
 	public:
 		virtual GPUBuffer* create(unsigned int location, unsigned int size) override
 		{
-			OGLGpuBuffer* ubo = new OGLGpuBuffer(location, size);
+			unsigned int usize = static_cast<UINT>(size + (16 - size % 16)); // Align with 16 bytes
+			OGLGpuBuffer* ubo = new OGLGpuBuffer(location, usize);
 
 			glGenBuffers(1, &ubo->UBO);
 			glBindBuffer(GL_UNIFORM_BUFFER, ubo->UBO);
-			glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, usize, NULL, GL_STATIC_DRAW);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			return ubo;

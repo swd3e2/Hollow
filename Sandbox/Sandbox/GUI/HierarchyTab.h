@@ -25,6 +25,8 @@ namespace GUI {
 		std::string filename;
 		bool openEntityCreationPopup = false;
 		char buffer[100];
+		const char* lightTypeComboItems[4] = { "Ambient", "Diffuse", "Point", "Spot" };
+		const char* currentLightType = nullptr;
 	public:
 		HierarchyTab() = default;
 
@@ -164,6 +166,26 @@ namespace GUI {
 				if (selectedLight->hasComponent<LightComponent>()) {
 					if (ImGui::CollapsingHeader("Light component")) {
 						LightComponent* lightComponent = selectedLight->getComponent<LightComponent>();
+						ImGui::DragFloat3("Position", (float*)&lightComponent->lightData.position, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Direction", (float*)&lightComponent->lightData.direction, 0.1f, -10000.0f, 10000.0f);
+						ImGui::ColorEdit3("Color", (float*)&lightComponent->lightData.color);
+						ImGui::DragFloat("Constant", &lightComponent->lightData.constant, 0.01f);
+						ImGui::DragFloat("Linear", &lightComponent->lightData.linear, 0.01f);
+						ImGui::DragFloat("Quadratic", &lightComponent->lightData.quadratic, 0.01f);
+						ImGui::DragFloat("Cutoff", &lightComponent->lightData.cutoff, 0.01f);
+						ImGui::DragFloat("Distance", &lightComponent->lightData.distance, 0.01f);
+
+	
+						if (ImGui::BeginCombo("Light type", lightTypeComboItems[lightComponent->lightData.type])) {
+							for (int n = 0; n < 4; n++) {
+								bool is_selected = (lightTypeComboItems[lightComponent->lightData.type] == lightTypeComboItems[n]);
+								if (ImGui::Selectable(lightTypeComboItems[n], is_selected))
+									lightComponent->lightData.type = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+							}
+							ImGui::EndCombo();
+						}
 					}
 				}
 			}

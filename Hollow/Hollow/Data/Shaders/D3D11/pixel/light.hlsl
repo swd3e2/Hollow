@@ -4,11 +4,31 @@ struct PixelShaderOutput
 	float2 texCoord : TEXCOORD0;
 };
 
+struct Light
+{
+	float3 position;		// 12
+	float constant;		// 16
+	float3 direction;		// 28
+	float linearAttenuation;		// 32
+	float3 color;			// 44
+	float quadratic;	// 48
+	float cutoff;		// 52
+	float distance;		// 56
+	int type;			// 60
+	int pad;			// 64
+};
+
 cbuffer ConstantBuffer : register(b1)
 {
 	matrix ShadowWVP;
 	float2 texelSize;
 	float bias;
+}
+
+cbuffer ConstantBuffer : register(b5)
+{
+	Light lights[100];
+	int numLights;
 }
 
 Texture2D diffuseBuffer : TEXTUTRE: register(t0);
@@ -48,11 +68,9 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 	normal = normal * 2.0f - 1.0f;
 	float4 diffuse = diffuseBuffer.Sample(SampleTypeClamp, input.texCoord);
 	
-	float lightFactor = saturate(dot(normal, float3(1.0f, 0.0f, 0.0f)));
-	diffuse = diffuse + lightFactor * float4(0.3f, 0.3f, 0.3f, 1.0f);
-	float shadowFactor = calculateShadowAmount(position);
-
-	//diffuse.xyz -= shadowFactor * 0.53f;
+	for (int i = 0; i < numLights; i++) {
+		diffuse += float4(lights[i].color, 1.0f); // CalcPointLight(lights[i], normal, position);
+	}
 
 	return diffuse;
 }

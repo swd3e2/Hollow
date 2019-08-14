@@ -48,9 +48,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 
-	/*Light* light = Hollow::EntityManager::instance()->create<Light>();
-	light->addComponent<TransformComponent>();
-	light->addComponent<LightComponent>();*/
+	Light* light = Hollow::EntityManager::instance()->create<Light>();
+	light->addComponent<LightComponent>();
 
 	while (!window->isClosed()) {
 		core.preUpdate();
