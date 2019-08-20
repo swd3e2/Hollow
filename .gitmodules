@@ -4,3 +4,6 @@
 [submodule "Hollow/vendor/tinygltf"]
 	path = Hollow/vendor/tinygltf
 	url = https://github.com/syoyo/tinygltf.git
+[submodule "Hollow/vendor/bullet"]
+	path = Hollow/vendor/bullet
+	url = https://github.com/bulletphysics/bullet3.git
