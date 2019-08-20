@@ -17,6 +17,7 @@
 #include "Hollow/Graphics/Base/InputLayout.h"
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
+#include "Sandbox/Systems/PhysicsSystem.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -47,9 +48,23 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
 	gui->rendererTab.renderSystem = &renderPass;
 
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
+	DelayedTaskManager::instance()->update();
 
 	Light* light = Hollow::EntityManager::instance()->create<Light>();
 	light->addComponent<LightComponent>();
+
+	PhysicsSystem::startUp();
+	SystemManager::instance()->addSystem(PhysicsSystem::instance());
+
+	for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
+		TransformComponent* transform = entity.getComponent<TransformComponent>();
+		entity.addComponent<PhysicsComponent>(transform->position, 0.0f);
+	}
+
+	GameObject* rigid = EntityManager::instance()->create<GameObject>();
+	rigid->addComponent<RenderableComponent>("C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj");
+	rigid->addComponent<TransformComponent>(Vector3(0.0f, 10.0f, 0.0f), Vector3(1000.0f, 1.0f, 1000.0f), Vector3(0.0f, 0.0f, 0.0f));
+	rigid->addComponent<PhysicsComponent>(Vector3(0.0f, 10.0f, 0.0f), 0.02f);
 
 	while (!window->isClosed()) {
 		core.preUpdate();

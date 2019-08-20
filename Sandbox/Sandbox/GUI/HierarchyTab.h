@@ -10,6 +10,7 @@
 #include "Hollow/Graphics/Platform/DirectX/D3D11Texture.h"
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
+#include "Sandbox/Components/PhysicsComponent.h"
 
 using namespace Hollow;
 
@@ -154,28 +155,19 @@ namespace GUI {
 			ImGui::Begin("Inspector");
 			// Light
 			if (selectedLight != nullptr) {
-				if (selectedLight->hasComponent<TransformComponent>()) {
-					if (ImGui::CollapsingHeader("Transform component")) {
-						TransformComponent* component = selectedLight->getComponent<TransformComponent>();
-						ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
-					}
-				}
-
 				if (selectedLight->hasComponent<LightComponent>()) {
 					if (ImGui::CollapsingHeader("Light component")) {
 						LightComponent* lightComponent = selectedLight->getComponent<LightComponent>();
-						ImGui::DragFloat3("Position", (float*)&lightComponent->lightData.position, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat3("Direction", (float*)&lightComponent->lightData.direction, 0.1f, -10000.0f, 10000.0f);
-						ImGui::ColorEdit3("Color", (float*)&lightComponent->lightData.color);
+						ImGui::DragFloat3("Position", (float*)& lightComponent->lightData.position, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Direction", (float*)& lightComponent->lightData.direction, 0.1f, -10000.0f, 10000.0f);
+						ImGui::ColorEdit3("Color", (float*)& lightComponent->lightData.color);
 						ImGui::DragFloat("Constant", &lightComponent->lightData.constant, 0.01f);
 						ImGui::DragFloat("Linear", &lightComponent->lightData.linear, 0.01f);
 						ImGui::DragFloat("Quadratic", &lightComponent->lightData.quadratic, 0.01f);
 						ImGui::DragFloat("Cutoff", &lightComponent->lightData.cutoff, 0.01f);
 						ImGui::DragFloat("Distance", &lightComponent->lightData.distance, 0.01f);
 
-	
+
 						if (ImGui::BeginCombo("Light type", lightTypeComboItems[lightComponent->lightData.type])) {
 							for (int n = 0; n < 4; n++) {
 								bool is_selected = (lightTypeComboItems[lightComponent->lightData.type] == lightTypeComboItems[n]);
@@ -215,6 +207,7 @@ namespace GUI {
 					}
 				}
 			}
+
 			// Game object
 			if (selectedGameObject != nullptr) {
 				if (ImGui::InputText("Name", buffer, 100)) {
@@ -242,7 +235,19 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<TransformComponent>()) {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();
-						ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f);
+						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f)) {
+							PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+							
+							btTransform origin;
+							physics->body->getMotionState()->getWorldTransform(origin);
+							btVector3& originVec = origin.getOrigin();
+							physics->body->activate(true);
+							physics->body->translate(btVector3(
+								component->position.x - originVec.getX(), 
+								component->position.y - originVec.getY(), 
+								component->position.z - originVec.getZ()
+							));
+						}
 						ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}

@@ -267,9 +267,6 @@
     <ClInclude Include="Hollow\Resources\ShaderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Resources\D3D11ShaderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Graphics\Base\Buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>

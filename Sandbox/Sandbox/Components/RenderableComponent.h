@@ -11,6 +11,7 @@
 #include <Hollow/Resources/Material.h>
 #include <Hollow/Resources/MeshManager.h>
 #include <unordered_map>
+#include "Hollow/Graphics/TextureManager.h"
 
 struct RenderableObject {
 	Hollow::VertexBuffer* vBuffer;
