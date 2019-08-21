@@ -129,6 +129,7 @@ private:
 	Hollow::Mesh* lightCube;
 	Hollow::Material lightMaterial;
 	LightInfo lightInfo;
+	Hollow::Matrix4 viewProjection;
 public:
 	RenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -322,6 +323,8 @@ public:
 
 	virtual void Update(double dt)
 	{
+		viewProjection = m_Camera->getProjectionMatrix() * m_Camera->getViewMatrix();
+
 		culled = 0;
 		renderer->setInputLayout(defaultLayout);
 		shadow.shadowCamera->update(dt);
@@ -419,51 +422,38 @@ public:
 
 	void calculateAABBPlane()
 	{
-		Hollow::Matrix4 projection = Hollow::Matrix4::transpose(m_Camera->getProjectionMatrix() 
-			* m_Camera->getViewMatrix());
+		Hollow::Matrix4 projection = m_Camera->getProjectionMatrix() * m_Camera->getViewMatrix();
 
-		// Left Frustum Plane
-		// Add first column of the matrix to the fourth column
-		AABBplane[0].x = projection.md[0][3] + projection.md[0][0];
-		AABBplane[0].y = projection.md[1][3] + projection.md[1][0];
-		AABBplane[0].z = projection.md[2][3] + projection.md[2][0];
-		AABBplane[0].w = projection.md[3][3] + projection.md[3][0];
+		AABBplane[0].x = projection.md[3][0] + projection.md[0][0];
+		AABBplane[0].y = projection.md[3][1] + projection.md[0][1];
+		AABBplane[0].z = projection.md[3][2] + projection.md[0][2];
+		AABBplane[0].w = projection.md[3][3] + projection.md[0][3];
+		// Right clipping plane
+		AABBplane[1].x = projection.md[3][0] - projection.md[0][0];
+		AABBplane[1].y = projection.md[3][1] - projection.md[0][1];
+		AABBplane[1].z = projection.md[3][2] - projection.md[0][2];
+		AABBplane[1].w = projection.md[3][3] - projection.md[0][3];
+		// Top clipping plane
+		AABBplane[2].x = projection.md[3][0] - projection.md[1][0];
+		AABBplane[2].y = projection.md[3][1] - projection.md[1][1];
+		AABBplane[2].z = projection.md[3][2] - projection.md[1][2];
+		AABBplane[2].w = projection.md[3][3] - projection.md[1][3];
+		// Bottom clipping plane
+		AABBplane[3].x = projection.md[3][0] + projection.md[1][0];
+		AABBplane[3].y = projection.md[3][1] + projection.md[1][1];
+		AABBplane[3].z = projection.md[3][2] + projection.md[1][2];
+		AABBplane[3].w = projection.md[3][3] + projection.md[1][3];
+		// Near clipping plane
+		AABBplane[4].x = projection.md[3][0] + projection.md[2][0];
+		AABBplane[4].y = projection.md[3][1] + projection.md[2][1];
+		AABBplane[4].z = projection.md[3][2] + projection.md[2][2];
+		AABBplane[4].w = projection.md[3][3] + projection.md[2][3];
+		// Far clipping plane
+		AABBplane[5].x = projection.md[3][0] - projection.md[2][0];
+		AABBplane[5].y = projection.md[3][1] - projection.md[2][1];
+		AABBplane[5].z = projection.md[3][2] - projection.md[2][2];
+		AABBplane[5].w = projection.md[3][3] - projection.md[2][3];
 
-		// Right Frustum Plane
-		// Subtract first column of matrix from the fourth column
-		AABBplane[1].x = projection.md[0][3] - projection.md[0][0];
-		AABBplane[1].y = projection.md[1][3] - projection.md[1][0];
-		AABBplane[1].z = projection.md[2][3] - projection.md[2][0];
-		AABBplane[1].w = projection.md[3][3] - projection.md[3][0];
-
-		// Top Frustum Plane
-		// Subtract second column of matrix from the fourth column
-		AABBplane[2].x = projection.md[0][3] - projection.md[0][1];
-		AABBplane[2].y = projection.md[1][3] - projection.md[1][1];
-		AABBplane[2].z = projection.md[2][3] - projection.md[2][1];
-		AABBplane[2].w = projection.md[3][3] - projection.md[3][1];
-
-		// Bottom Frustum Plane
-		// Add second column of the matrix to the fourth column
-		AABBplane[3].x = projection.md[0][3] + projection.md[0][1];
-		AABBplane[3].y = projection.md[1][3] + projection.md[1][1];
-		AABBplane[3].z = projection.md[2][3] + projection.md[2][1];
-		AABBplane[3].w = projection.md[3][3] + projection.md[3][1];
-
-		// Near Frustum Plane
-		// We could add the third column to the fourth column to get the near plane,
-		// but we don't have to do this because the third column IS the near plane
-		AABBplane[4].x = projection.md[0][2];
-		AABBplane[4].y = projection.md[1][2];
-		AABBplane[4].z = projection.md[2][2];
-		AABBplane[4].w = projection.md[3][2];
-
-		// Far Frustum Plane
-		// Subtract third column of matrix from the fourth column
-		AABBplane[5].x = projection.md[0][3] - projection.md[0][2];
-		AABBplane[5].y = projection.md[1][3] - projection.md[1][2];
-		AABBplane[5].z = projection.md[2][3] - projection.md[2][2];
-		AABBplane[5].w = projection.md[3][3] - projection.md[3][2];
 
 		for (int i = 0; i < 6; i++) {
 			float length = sqrt((AABBplane[i].x * AABBplane[i].x) + (AABBplane[i].y * AABBplane[i].y) + (AABBplane[i].z * AABBplane[i].z));
@@ -496,7 +486,7 @@ public:
 				Hollow::Vector4 B = Hollow::Vector4(renderable->B.x, renderable->B.y, renderable->B.z, 1.0f) 
 					* Matrix4::transpose(trs);
 
-				if (!cull(transform->position, A, B)) {
+				if (!aabbCull(transform->position, A, B)) {
 					perModelData.transform = trs;
 					perModel->update(&perModelData);
 					renderer->setGpuBuffer(perModel);
@@ -653,18 +643,123 @@ public:
 		}
 	}
 
-	__forceinline bool cull(const Hollow::Vector3& position, const Hollow::Vector4& min, const Hollow::Vector4& max)
+	__forceinline bool aabbCull(const Hollow::Vector3& position, const Hollow::Vector4& min, const Hollow::Vector4& max)
 	{
+
 		bool cull = true;
 		// Loop through each frustum plane
 		for (int i = 0; i < 6; i++) {
-			cull &= std::max(min.x * AABBplane[i].x, max.x * AABBplane[i].x)
+			if (AABBplane[i].x * min.x + AABBplane[i].y * min.y + AABBplane[i].z * min.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * min.x + AABBplane[i].y * min.y + AABBplane[i].z * max.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * min.x + AABBplane[i].y * max.y + AABBplane[i].z * min.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * min.x + AABBplane[i].y * max.y + AABBplane[i].z * max.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * max.x + AABBplane[i].y * min.y + AABBplane[i].z * min.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * max.x + AABBplane[i].y * min.y + AABBplane[i].z * max.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * max.x + AABBplane[i].y * max.y + AABBplane[i].z * min.z + AABBplane[i].w > 0) continue;
+			if (AABBplane[i].x * max.x + AABBplane[i].y * max.y + AABBplane[i].z * max.z + AABBplane[i].w > 0) continue;
+
+			return true;
+			/*cull &= std::max(min.x * AABBplane[i].x, max.x * AABBplane[i].x)
 				+ std::max(min.y * AABBplane[i].y, max.y * AABBplane[i].y)
 				+ std::max(min.z * AABBplane[i].z, max.z * AABBplane[i].z)
-				+ AABBplane[i].w > 0.0f;
+				+ AABBplane[i].w > 0.0f;*/
 		}
 
-		return !cull;
+		return false;
+	}
+
+	__forceinline bool OBBInFrustum(const Vector3& Min, const Vector3& Max, Matrix4& obj_transform_mat)
+	{
+		//трансформируем 8 вершин бокса сразу в clip-space
+		//В clip-space пространстве фрустум представляет собой ортонормированный единичный куб [-1..1].
+		  //Можно очень легко понять, находятся ли все 8 вершин за какой либо плоскостью.
+		  //Пометка: в DirectX по оси z clip-box имеет размеры 0..1 (вместо -1..1 как в OpenGL), это стоит учесть в коде
+
+		//матрица трансформаций точек в clip-space
+		Matrix4 to_clip_space_mat = viewProjection * obj_transform_mat;
+
+		//трансформируем 8 локальных точек бокса в clip-space
+		Vector4 obb_points[8];
+		obb_points[0] = to_clip_space_mat * Vector4(Min.x, Max.y, Min.z, 1.f);
+		obb_points[1] = to_clip_space_mat * Vector4(Min.x, Max.y, Max.z, 1.f);
+		obb_points[2] = to_clip_space_mat * Vector4(Max.x, Max.y, Max.z, 1.f);
+		obb_points[3] = to_clip_space_mat * Vector4(Max.x, Max.y, Min.z, 1.f);
+		obb_points[4] = to_clip_space_mat * Vector4(Max.x, Min.y, Min.z, 1.f);
+		obb_points[5] = to_clip_space_mat * Vector4(Max.x, Min.y, Max.z, 1.f);
+		obb_points[6] = to_clip_space_mat * Vector4(Min.x, Min.y, Max.z, 1.f);
+		obb_points[7] = to_clip_space_mat * Vector4(Min.x, Min.y, Min.z, 1.f);
+
+		bool outside = false, outside_positive_plane, outside_negative_plane;
+		//имеем 6 плоскостей отсечения, 3 потому что тестируем 2 плоскости за раз (+1 и -1)
+		//находятся ли все 8 точек за плоскостью?
+		//в общем то в приведенном коде можно было выполнить нормализацию координаты, делением на w (xyz / w),
+		//после чего сравнить с -1 и 1. Если координаты < -1 или > 1, то объект вне фрустума
+		outside_positive_plane =
+			obb_points[0].x > obb_points[0].w &&
+			obb_points[1].x > obb_points[1].w &&
+			obb_points[2].x > obb_points[2].w &&
+			obb_points[3].x > obb_points[3].w &&
+			obb_points[4].x > obb_points[4].w &&
+			obb_points[5].x > obb_points[5].w &&
+			obb_points[6].x > obb_points[6].w &&
+			obb_points[7].x > obb_points[7].w;
+
+		//для DirectX для z координаты (i=3) следует сравнивать с 0
+		outside_negative_plane =
+			obb_points[0].x < -obb_points[0].w &&
+			obb_points[1].x < -obb_points[1].w &&
+			obb_points[2].x < -obb_points[2].w &&
+			obb_points[3].x < -obb_points[3].w &&
+			obb_points[4].x < -obb_points[4].w &&
+			obb_points[5].x < -obb_points[5].w &&
+			obb_points[6].x < -obb_points[6].w &&
+			obb_points[7].x < -obb_points[7].w;
+
+		outside_positive_plane =
+			obb_points[0].y > obb_points[0].w &&
+			obb_points[1].y > obb_points[1].w &&
+			obb_points[2].y > obb_points[2].w &&
+			obb_points[3].y > obb_points[3].w &&
+			obb_points[4].y > obb_points[4].w &&
+			obb_points[5].y > obb_points[5].w &&
+			obb_points[6].y > obb_points[6].w &&
+			obb_points[7].y > obb_points[7].w;
+
+		//для DirectX для z координаты (i=3) следует сравнивать с 0
+		outside_negative_plane =
+			obb_points[0].y < -obb_points[0].w &&
+			obb_points[1].y < -obb_points[1].w &&
+			obb_points[2].y < -obb_points[2].w &&
+			obb_points[3].y < -obb_points[3].w &&
+			obb_points[4].y < -obb_points[4].w &&
+			obb_points[5].y < -obb_points[5].w &&
+			obb_points[6].y < -obb_points[6].w &&
+			obb_points[7].y < -obb_points[7].w;
+
+		outside_positive_plane =
+			obb_points[0].z > obb_points[0].w &&
+			obb_points[1].z > obb_points[1].w &&
+			obb_points[2].z > obb_points[2].w &&
+			obb_points[3].z > obb_points[3].w &&
+			obb_points[4].z > obb_points[4].w &&
+			obb_points[5].z > obb_points[5].w &&
+			obb_points[6].z > obb_points[6].w &&
+			obb_points[7].z > obb_points[7].w;
+
+		//для DirectX для z координаты (i=3) следует сравнивать с 0
+		outside_negative_plane =
+			obb_points[0].z < -obb_points[0].w &&
+			obb_points[1].z < -obb_points[1].w &&
+			obb_points[2].z < -obb_points[2].w &&
+			obb_points[3].z < -obb_points[3].w &&
+			obb_points[4].z < -obb_points[4].w &&
+			obb_points[5].z < -obb_points[5].w &&
+			obb_points[6].z < -obb_points[6].w &&
+			obb_points[7].z < -obb_points[7].w;
+
+		outside = outside || outside_positive_plane || outside_negative_plane;
+
+		return outside;
 	}
 
 	void updateLight()

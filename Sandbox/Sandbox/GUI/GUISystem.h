@@ -189,12 +189,8 @@ public:
 	void onChangePickedMesh(Hollow::IEvent* event)
 	{
 		ChangeSelectedEntity* changeEvent = reinterpret_cast<ChangeSelectedEntity*>(event);
-		/*if (selectedGameObject != nullptr && selectedGameObject->hasComponent<RenderableComponent>()) {
-			RenderableComponent* renderable = selectedGameObject->getComponent<RenderableComponent>();
-			std::vector<RenderableObject>& renderables = renderable->renderables;
-			if (changeEvent->pickedId < renderables.size()) {
-				selectedMaterial = &renderable->materials[renderables[changeEvent->pickedId].id];
-			}
-		}*/
+		hierarchyTab.selectedGameObject = (GameObject*)Hollow::EntityManager::instance()->get(changeEvent->pickedId);
+		hierarchyTab.selectedLight = nullptr;
+		hierarchyTab.selectedTerrain = nullptr;
 	}
 };

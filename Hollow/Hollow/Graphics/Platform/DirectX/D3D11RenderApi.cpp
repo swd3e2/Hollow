@@ -225,7 +225,7 @@ namespace Hollow {
 					dssDesc.DepthEnable = true;
 					dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 					dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
+					
 					context->getDevice()->CreateDepthStencilState(&dssDesc, &m_DepthStencilStateLess);
 				}
 				context->getDeviceContext()->OMSetDepthStencilState(this->m_DepthStencilStateLess, 0);

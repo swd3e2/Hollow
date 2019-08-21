@@ -2,6 +2,7 @@
 
 #include "Hollow/Core/CModule.h"
 #include "Base/PipelineState.h"
+#include "Base/SamplerState.h"
 
 namespace Hollow {
 	class PipelineStateManager : public CModule<PipelineStateManager>

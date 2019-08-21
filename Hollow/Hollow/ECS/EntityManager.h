@@ -77,6 +77,11 @@ namespace Hollow {
 			ComponentManager::instance()->destroyAll(entityId);
 		}
 
+		IEntity* get(size_t entityId)
+		{
+			return entities[entityId];
+		}
+
 		template<class E>
 		typename MemoryContainer<E>& container()
 		{

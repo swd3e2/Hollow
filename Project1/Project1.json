@@ -263,6 +263,81 @@
       },
       "id": 10,
       "name": "Plane5"
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1000.0,
+          1.0,
+          1000.0
+        ],
+        "translation": [
+          7.669779006391764e-05,
+          -31.0,
+          0.0001564349076943472
+        ]
+      },
+      "id": 11,
+      "name": ""
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1000.0,
+          1.0,
+          1000.0
+        ],
+        "translation": [
+          0.0008837860659696162,
+          -29.0,
+          0.00036796764470636845
+        ]
+      },
+      "id": 14,
+      "name": ""
+    }
+  ],
+  "Light": [
+    {
+      "LightComponent": {
+        "color": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "constant": 0.9399999976158142,
+        "cutoff": 0.0,
+        "direction": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "distance": 100.0,
+        "linear": 0.019999999552965164,
+        "position": [
+          0.0,
+          -189.8000030517578,
+          0.0
+        ],
+        "quadratic": 0.010999999940395355,
+        "type": 2
+      }
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",

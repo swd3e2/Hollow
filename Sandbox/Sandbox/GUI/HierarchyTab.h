@@ -267,8 +267,7 @@ namespace GUI {
 				if (selectedMaterial->diffuseTexture != nullptr) {
 					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 						ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
-					}
-					else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 						ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();
@@ -279,7 +278,8 @@ namespace GUI {
 					if (filename.size()) {
 						TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
 						selectedMaterial->materialData.hasDiffuseTexture = true;
-						selectedMaterial->diffuseTexture = TextureManager::instance()->createTextureFromFile(filename, false);
+						//selectedMaterial->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile("2.png");
+						selectedMaterial->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(filename, false);
 					}
 				}
 

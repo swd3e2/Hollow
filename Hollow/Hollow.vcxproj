@@ -24,6 +24,9 @@
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />
+    <ClInclude Include="Hollow\Graphics\Base\BlendState.h" />
+    <ClInclude Include="Hollow\Graphics\Base\CommonTypes.h" />
+    <ClInclude Include="Hollow\Graphics\Base\DepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\Base\HardwareBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Base\Texture.h" />
     <ClInclude Include="Hollow\Graphics\InputLayoutManager.h" />

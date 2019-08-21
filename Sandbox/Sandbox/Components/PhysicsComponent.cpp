@@ -5,7 +5,6 @@ PhysicsComponent::PhysicsComponent(const Hollow::Vector3& position, float mass_i
 {
 	colShape = new btSphereShape(btScalar(1.));
 	boxShape = new btBoxShape(btVector3(10, 1, 10));
-	new btTriangleMeshShape();
 	/// Create Dynamic Objects
 	btTransform startTransform;
 	startTransform.setIdentity();

@@ -4,9 +4,9 @@
 namespace Hollow {
 	enum eMouseKeyCodes
 	{
-		MOUSE_LEFT = 1,
-		MOUSE_MIDDLE = 16,
-		MOUSE_RIGHT = 2,
+		MOUSE_LEFT = 0x01,
+		MOUSE_MIDDLE = 0x04,
+		MOUSE_RIGHT = 0x02,
 		MOUSE_MAX
 	};
 
