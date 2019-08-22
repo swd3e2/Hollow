@@ -14,9 +14,11 @@
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
 #include "Hollow/Events/WindowCreateEvent.h"
+#include "Hollow/Events/MouseMoveEvent.h"
 #include "Hollow/Core/CModule.h"
 #include <vector>
 #define FIELD_SIZE 10000
+#include "Hollow/Common/Log.h"
 
 using namespace DirectX;
 
@@ -33,6 +35,8 @@ namespace Hollow {
 		// Actual position of cursor on screen
 		static float mcx;
 		static float mcy;
+		static long lastX;
+		static long lastY;
 	public:
 		virtual void onStartUp() override
 		{
@@ -45,6 +49,17 @@ namespace Hollow {
 
 			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonReleased, ButtonReleasedEvent::getStaticEventId()));
 			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonPressed, ButtonPressedEvent::getStaticEventId()));
+			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onMouseMove, MouseMoveEvent::getStaticEventId()));
+		}
+
+		void onMouseMove(IEvent* ev)
+		{
+			MouseMoveEvent* event = (MouseMoveEvent*)ev;
+			lastX = mcx - event->x;
+			lastY = mcy - event->y;
+
+			mcx = event->x;
+			mcy = event->y;
 		}
 
 		void onButtonPressed(IEvent* ev)
@@ -59,7 +74,7 @@ namespace Hollow {
 			SetKeyboardKeyActive(event->button, false);
 		}
 
-		void clear() { mx = 0; my = 0; }
+		void clear() { mx = 0; my = 0; lastX = 0; lastY = 0; }
 
 		static bool GetKeyboardKeyIsPressed(eKeyCodes keyCode) { return KeyboardKeys[keyCode]; }
 		static void SetKeyboardKeyActive(eKeyCodes keyCode, bool active) { KeyboardKeys[keyCode] = active; }

@@ -1,15 +1,15 @@
 #pragma once
 
 namespace Hollow {
-	enum CompareFunction 
+	enum ComparisonFunction 
 	{
-		NNEVER,
-		NLESS,
-		NEQUAL,
-		NLEQUAL,
-		NGREATER,
-		NNOT_EQUAL,
-		NALWAYS
+		NEVER,
+		LESS,
+		EQUAL,
+		LEQUAL,
+		GREATER,
+		NOT_EQUAL,
+		ALWAYS
 	};
 
 	enum AddressingMode

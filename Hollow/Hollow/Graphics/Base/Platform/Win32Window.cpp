@@ -145,8 +145,7 @@ namespace Hollow {
 			} break;
 			case WM_MOUSEMOVE:
 			{
-				InputManager::mcx = GET_X_LPARAM(lParam);
-				InputManager::mcy = GET_Y_LPARAM(lParam);
+				EventSystem::instance()->addEvent(new MouseMoveEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 			} break;
 			default:
 				result = DefWindowProc(hWnd, msg, wParam, lParam);

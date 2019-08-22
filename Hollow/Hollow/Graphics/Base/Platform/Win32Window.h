@@ -12,6 +12,7 @@
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
+#include "Hollow/Events/MouseMoveEvent.h"
 #include "Hollow/Input/InputManager.h"
 #include <memory>
 

@@ -50,17 +50,17 @@ namespace Hollow {
 				m_Rotation.y -= InputManager::mx * 0.00045 * dt;
 				updateViewMatrix();
 			}
-			HW_DEBUG("Is middle mouse pressed {}", InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_MIDDLE));
+			
 			if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_MIDDLE)) {
-				if (InputManager::my > 0) {
-					m_Position -= Vector4(0.0f, 1.0f, 0.0, 1.0f);
-				} else {
-					m_Position -= Vector4(0.0f, 1.0f, 0.0, 1.0f);
+				if (InputManager::lastY < 0) {
+					m_Position -= upVec * dt * cameraMouseMoveSpeed;
+				} else if (InputManager::lastY > 0) {
+					m_Position += upVec * dt * cameraMouseMoveSpeed;
 				}
-				if (InputManager::mx > 0) {
-					m_Position -= rightVec;
-				} else {
-					m_Position += rightVec;
+				if (InputManager::lastX > 0) {
+					m_Position -= rightVec * dt * cameraMouseMoveSpeed;
+				} else if (InputManager::lastX < 0) {
+					m_Position += rightVec * dt * cameraMouseMoveSpeed;
 				}
 				updateViewMatrix();
 			}
@@ -78,5 +78,6 @@ namespace Hollow {
 
 		forwardVec = Vector4(0.0f, 0.0f, 1.0f, 0.0f) * temp;
 		rightVec = Vector4(1.0f, 0.0f, 0.0f, 0.0f) * temp;
+		upVec = Vector4(0.0f, 1.0f, 0.0f, 0.0f) * temp;
 	}
 }

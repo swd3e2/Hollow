@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Shader.h"
+#include "SamplerState.h"
+#include "DepthStencil.h"
 
 namespace Hollow {
 	struct PIPELINE_STATE_DESC

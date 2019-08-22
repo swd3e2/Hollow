@@ -16,6 +16,7 @@ namespace Hollow {
 
 	class DepthStencil
 	{
-		
+	public:
+		static DepthStencil* create(const DEPTH_STENCIL_STATE& desc);
 	};
 }

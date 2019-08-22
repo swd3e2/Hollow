@@ -41,6 +41,7 @@ namespace Hollow {
 		m_Timer.restart();
 
 		SystemManager::instance()->preUpdateSystems(dt);
+		EventSystem::instance()->dispatch();
 	}
 
 	void Core::update()
@@ -51,12 +52,9 @@ namespace Hollow {
 	void Core::postUpdate()
 	{
 		SystemManager::instance()->postUpdateSystems(dt);
-			
-		EventSystem::instance()->dispatch();
 		InputManager::instance()->clear();
 
 		m_Timer.stop();
-
 		DelayedTaskManager::instance()->update();
 	}
 }

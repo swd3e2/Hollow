@@ -28,6 +28,7 @@
     <ClInclude Include="Hollow\Graphics\Base\CommonTypes.h" />
     <ClInclude Include="Hollow\Graphics\Base\DepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\Base\HardwareBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\Base\RasterizerState.h" />
     <ClInclude Include="Hollow\Graphics\Base\Texture.h" />
     <ClInclude Include="Hollow\Graphics\InputLayoutManager.h" />
     <ClInclude Include="Hollow\Graphics\Base\PipelineState.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_textedit.h" />
     <ClInclude Include="Hollow\Graphics\GUI\ImGui\imstb_truetype.h" />
     <ClInclude Include="Hollow\Graphics\PipelineStateManager.h" />
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11DepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11HardwareBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11Helper.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11InputLayout.h" />
@@ -55,6 +57,7 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayoutManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineState.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineStateManager.h" />
+    <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLSamplerState.h" />
     <ClInclude Include="Hollow\Graphics\RendererType.h" />
     <ClInclude Include="Hollow\Graphics\Base\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\Base\InputLayout.h" />
@@ -164,11 +167,13 @@
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Core.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />
+    <ClCompile Include="Hollow\Graphics\Base\DepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\HardwareBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\InputLayout.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\PipelineState.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\Platform\Win32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\RenderTarget.cpp" />
+    <ClCompile Include="Hollow\Graphics\Base\SamplerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Base\Shader.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_demo.cpp" />
