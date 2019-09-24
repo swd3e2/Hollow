@@ -6,6 +6,8 @@
 #include "Hollow/Graphics/Base/RenderApi.h"
 #include "D3D11Prerequisites.h"
 #include "Hollow/Common/Log.h"
+#include "D3D11RenderStateManager.h"
+
 namespace Hollow {
 	class D3D11RenderApi : public RenderApi
 	{
@@ -66,12 +68,19 @@ namespace Hollow {
 		virtual void setViewport(int w0, int y0, int w, int y) override;
 		virtual void setRenderTarget(RenderTarget* renderTarget) override;
 		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) override;
-		virtual void setDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
-		virtual void setCullMode(CULL_MODE mode) override;
 		virtual void setPipelineState(PipelineState* pipeline) override;
 		virtual void setInputLayout(InputLayout* layout) override;
 
-		void setSampler(int slot, D3D11SamplerState* sampler);
+		virtual void setSampler(const int slot, SamplerState* sampler) override;
+		virtual void setTextureSampler(const int textureUnit, SamplerState* sampler) override;
+		virtual void setDepthStencilState(DepthStencil* depthStencil) override;
+		virtual void setRasterizerState(RasterizerState* rasterizerState) override;
+		virtual void setBlendState(BlendState* blendState) override;
+		virtual void setShaderPipeline(ShaderPipeline* shaderPipeline) override;
+
+		virtual void drawInstanced() override;
+		virtual void drawIndexedInstanced() override;
+
 		void setRasterizerState(D3D11RasterizerState* rasterizer);
 		void setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
 

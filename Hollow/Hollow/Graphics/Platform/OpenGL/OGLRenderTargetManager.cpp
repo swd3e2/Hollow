@@ -58,10 +58,10 @@ namespace Hollow {
 	{
 		switch (format)
 		{
-			case R8G8B8A8: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8: {
 				return GL_RGBA;
 			} break;
-			case R32G32B32A32: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32: {
 				return GL_RGBA32F;
 			} break;
 			default:
@@ -72,10 +72,10 @@ namespace Hollow {
 	{
 		switch (format)
 		{
-			case R8G8B8A8: {
+		case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8: {
 				return GL_UNSIGNED_BYTE;
 			} break;
-			case R32G32B32A32: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32: {
 				return GL_FLOAT;
 			} break;
 			default:

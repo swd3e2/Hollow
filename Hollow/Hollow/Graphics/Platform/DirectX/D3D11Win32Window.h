@@ -10,7 +10,7 @@
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
-#include "Hollow/Graphics/Base/Platform/Win32Window.h"
+#include "Hollow/Graphics/Base/Win32Window.h"
 #include <memory>
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_win32.h"

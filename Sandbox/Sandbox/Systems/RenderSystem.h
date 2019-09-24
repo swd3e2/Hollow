@@ -130,6 +130,14 @@ private:
 	Hollow::Material lightMaterial;
 	LightInfo lightInfo;
 	Hollow::Matrix4 viewProjection;
+
+	DepthStencil* less;
+	DepthStencil* lequal;
+	DepthStencil* greater;
+
+	RasterizerState* cullBack;
+	RasterizerState* cullFront;
+	RasterizerState* cullNone;
 public:
 	RenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -149,11 +157,11 @@ public:
 		// Shaders
 		{
 			Hollow::INPUT_LAYOUT_DESC layoutDesc = {
-				{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" }, // pos
-				{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" }, // texcoord
-				{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" }, // normal
-				{ Hollow::INPUT_DATA_TYPE::Float3, "TANGENT" }, // tangent
-				{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, // bitangent 
+				{ Hollow::INPUT_DATA_TYPE::Float3, "POSITION" },
+				{ Hollow::INPUT_DATA_TYPE::Float2, "TEXCOORD" },
+				{ Hollow::INPUT_DATA_TYPE::Float3, "NORMAL" },
+				{ Hollow::INPUT_DATA_TYPE::Float3, "TANGENT" },
+				{ Hollow::INPUT_DATA_TYPE::Float3, "BITANGENT" }, 
 				{ Hollow::INPUT_DATA_TYPE::Int4,   "BONE" },
 				{ Hollow::INPUT_DATA_TYPE::Float4, "WEIGHT" }
 			};
@@ -170,7 +178,8 @@ public:
 			terrainLayout = Hollow::InputLayout::create(terrainLayoutDesc);
 
 
-			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) 
+			{
 				{
 					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
 					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/gbuffer.hlsl"), "main" });
@@ -213,7 +222,9 @@ public:
 
 					pickerPipeline = Hollow::PipelineState::create(pipelineDesc);
 				}
-			} else {
+			} 
+			else 
+			{
 				{
 					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
 					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/gbuffer.glsl"), "main" });
@@ -308,7 +319,37 @@ public:
 		lightCube = getCube();
 
 		renderer->setViewport(0, 0, this->width, this->height);
-		renderer->setDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
+
+		{
+			DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthFunc = ComparisonFunction::CMP_LESS;
+			less = DepthStencil::create(depthDesc);
+		}
+		{
+			DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthFunc = ComparisonFunction::CMP_LEQUAL;
+			lequal = DepthStencil::create(depthDesc);
+		}
+		{
+			DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthFunc = ComparisonFunction::CMP_GREATER;
+			greater = DepthStencil::create(depthDesc);
+		}
+		{
+			RASTERIZER_STATE_DESC desc;
+			desc.cullMode = CullMode::CLM_BACK;
+			cullBack = RasterizerState::create(desc);
+		}
+		{
+			RASTERIZER_STATE_DESC desc;
+			desc.cullMode = CullMode::CLM_FRONT;
+			cullFront = RasterizerState::create(desc);
+		}
+		{
+			RASTERIZER_STATE_DESC desc;
+			desc.cullMode = CullMode::CLM_NONE;
+			cullNone = RasterizerState::create(desc);
+		}
 
 		timer.start();
 	}
@@ -349,7 +390,7 @@ public:
 
 			// Light pass
 			{
-				renderer->setCullMode(Hollow::CULL_MODE::CULL_BACK);
+				renderer->setRasterizerState(cullBack);
 				renderer->setRenderTarget(0);
 				renderer->setTextureColorBuffer(0, gBuffer, 0);
 				renderer->setTextureColorBuffer(1, gBuffer, 1);
@@ -364,10 +405,10 @@ public:
 				renderer->setIndexBuffer(quadIB);
 				renderer->drawIndexed(6);
 
-				renderer->setDepthTestFunction(DEPTH_TEST_FUNCTION::GREATER);
-				renderer->setCullMode(Hollow::CULL_MODE::CULL_FRONT);
+				renderer->setDepthStencilState(greater);
+				renderer->setRasterizerState(cullNone);
 				DrawSkyMap();
-				renderer->setDepthTestFunction(DEPTH_TEST_FUNCTION::LESS);
+				renderer->setDepthStencilState(less);
 
 				renderer->unsetTexture(0);
 				renderer->unsetTexture(1);
@@ -377,7 +418,9 @@ public:
 			}
 			lightTime = timer.getMilisecondsElapsed();;
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) && InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)) {
+			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) 
+				&& InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)
+			) {
 				Vector4 selectedColor = picker->readPixel(InputManager::mcx, InputManager::mcy);
 				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
@@ -455,7 +498,8 @@ public:
 		AABBplane[5].w = projection.md[3][3] - projection.md[2][3];
 
 
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 6; i++) 
+		{
 			float length = sqrt((AABBplane[i].x * AABBplane[i].x) + (AABBplane[i].y * AABBplane[i].y) + (AABBplane[i].z * AABBplane[i].z));
 			AABBplane[i].x /= length;
 			AABBplane[i].y /= length;
@@ -468,10 +512,12 @@ public:
 	{
 		renderer->setRenderTarget(gBuffer);
 		renderer->setPipelineState(gBufferPipeline);
-		renderer->setCullMode(Hollow::CULL_MODE::CULL_NONE);
+		renderer->setRasterizerState(cullNone);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
+		{
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>())
+			{
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -486,16 +532,21 @@ public:
 				Hollow::Vector4 B = Hollow::Vector4(renderable->B.x, renderable->B.y, renderable->B.z, 1.0f) 
 					* Matrix4::transpose(trs);
 
-				if (!aabbCull(transform->position, A, B)) {
+				if (!aabbCull(transform->position, A, B)) 
+				{
 					perModelData.transform = trs;
 					perModel->update(&perModelData);
 					renderer->setGpuBuffer(perModel);
 
-					for (auto& object : renderable->renderables) {
+					for (auto& object : renderable->renderables) 
+					{
 						Hollow::Material* material = renderable->materials[object->material];
-						if (material->diffuseTexture != nullptr) {
+						if (material->diffuseTexture != nullptr) 
+						{
 							renderer->setTexture(0, material->diffuseTexture);
-						} else {
+						} 
+						else 
+						{
 							renderer->unsetTexture(0);
 						}
 						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
@@ -506,14 +557,17 @@ public:
 						renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 					}
 				}
-				else {
+				else 
+				{
 					culled++;
 				}
 			}
 		}
 
-		for (auto& entity : EntityManager::instance()->container<Light>()) {
-			if (entity.hasComponent<LightComponent>()) {
+		for (auto& entity : EntityManager::instance()->container<Light>()) 
+		{
+			if (entity.hasComponent<LightComponent>()) 
+			{
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 
 				perModelData.transform = Matrix4::transpose(Matrix4::translation(lightComponent->lightData.position));
@@ -528,12 +582,15 @@ public:
 
 		renderer->setInputLayout(terrainLayout);
 		renderer->setPipelineState(terrainPipeline);
-		for (auto& entity : EntityManager::instance()->container<Terrain>()) {
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
+		for (auto& entity : EntityManager::instance()->container<Terrain>())
+		{
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) 
+			{
 				TerrainData* data = entity.getComponent<TerrainData>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				if (data->vBuffer != nullptr) {
+				if (data->vBuffer != nullptr) 
+				{
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
 						* Matrix4::rotation(transform->rotation)
@@ -554,7 +611,7 @@ public:
 	void shadowPass()
 	{
 		renderer->setViewport(0, 0, 4096, 4096);
-		renderer->setCullMode(Hollow::CULL_MODE::CULL_FRONT);
+		renderer->setRasterizerState(cullFront);
 
 		shadowStruct.ShadowWVP = shadow.shadowCamera->getProjectionMatrix() * shadow.shadowCamera->getViewMatrix();
 		shadowStruct.texelSize = shadow.texelSize;
@@ -565,8 +622,10 @@ public:
 		renderer->setRenderTarget(shadow.renderTarget);
 		renderer->setPipelineState(depthPipeline);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
+		{
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) 
+			{
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -578,15 +637,18 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables) {
+				for (auto& object : renderable->renderables) 
+				{
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
 					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 				}
 			}
 		}
-		for (auto& entity : EntityManager::instance()->container<Terrain>()) {
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
+		for (auto& entity : EntityManager::instance()->container<Terrain>()) 
+		{
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) 
+			{
 				TerrainData* data = entity.getComponent<TerrainData>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -612,10 +674,12 @@ public:
 	{
 		renderer->setRenderTarget(picker);
 		renderer->setPipelineState(pickerPipeline);
-		renderer->setCullMode(Hollow::CULL_MODE::CULL_BACK);
+		renderer->setRasterizerState(cullBack);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
+		{
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) 
+			{
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -634,7 +698,8 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables) {
+				for (auto& object : renderable->renderables)
+				{
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
 					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
@@ -645,7 +710,6 @@ public:
 
 	__forceinline bool aabbCull(const Hollow::Vector3& position, const Hollow::Vector4& min, const Hollow::Vector4& max)
 	{
-
 		bool cull = true;
 		// Loop through each frustum plane
 		for (int i = 0; i < 6; i++) {
@@ -672,8 +736,8 @@ public:
 	{
 		//трансформируем 8 вершин бокса сразу в clip-space
 		//В clip-space пространстве фрустум представляет собой ортонормированный единичный куб [-1..1].
-		  //Можно очень легко понять, находятся ли все 8 вершин за какой либо плоскостью.
-		  //Пометка: в DirectX по оси z clip-box имеет размеры 0..1 (вместо -1..1 как в OpenGL), это стоит учесть в коде
+		//Можно очень легко понять, находятся ли все 8 вершин за какой либо плоскостью.
+		//Пометка: в DirectX по оси z clip-box имеет размеры 0..1 (вместо -1..1 как в OpenGL), это стоит учесть в коде
 
 		//матрица трансформаций точек в clip-space
 		Matrix4 to_clip_space_mat = viewProjection * obj_transform_mat;
@@ -766,8 +830,10 @@ public:
 	{
 		int counter = 0;
 		memset(&lightInfo, 0, sizeof(LightInfo));
-		for (auto& entity : EntityManager::instance()->container<Light>()) {
-			if (entity.hasComponent<LightComponent>()) {
+		for (auto& entity : EntityManager::instance()->container<Light>()) 
+		{
+			if (entity.hasComponent<LightComponent>()) 
+			{
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 				lightInfo.lightData[counter++] = lightComponent->lightData;
 			}

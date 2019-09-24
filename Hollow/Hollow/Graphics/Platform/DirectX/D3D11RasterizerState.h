@@ -4,15 +4,19 @@
 #define HW_D3D11_RASTERIZER_STATE_H
 
 #include "D3D11Prerequisites.h"
+#include "Hollow/Graphics/Base/RasterizerState.h"
 
 namespace Hollow {
-	class D3D11RasterizerState
+	class D3D11RasterizerState : public RasterizerState
 	{
 	private:
+		friend class D3D11RenderStateManager;
 		ID3D11RasterizerState* m_RasterizerState;
 	public:
-		D3D11RasterizerState(D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode);
-		~D3D11RasterizerState();
+		~D3D11RasterizerState()
+		{
+			SAFE_RELEASE(m_RasterizerState);
+		}
 
 		ID3D11RasterizerState* getRasterizerState() const { return m_RasterizerState; }
 	};

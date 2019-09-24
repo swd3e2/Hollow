@@ -12,7 +12,6 @@ namespace Hollow {
 		pipeline->geometryShader = desc.geometryShader;
 		pipeline->domainShader = desc.domainShader;
 		pipeline->hullShader = desc.hullShader;
-		pipeline->computeShader = desc.computeShader;
 
 		return pipeline;
 	}
@@ -33,7 +32,7 @@ namespace Hollow {
 		samplerDesc.MinLOD = desc.minLOD;
 		samplerDesc.MaxLOD = desc.maxLOD;
 		samplerDesc.MipLODBias = desc.mipLODBias;
-		samplerDesc.Filter = D3D11Helper::getFilteringMode(desc.minFilterModel, desc.magFilterMode, desc.mipFilterMode, desc.comparisonFunction != ComparisonFunction::NEVER);
+		samplerDesc.Filter = D3D11Helper::getFilteringMode(desc.minFilterModel, desc.magFilterMode, desc.mipFilterMode, desc.comparisonFunction != ComparisonFunction::CMP_NEVER);
 
 		device->CreateSamplerState(&samplerDesc, &samplerState->m_SamplerState);
 

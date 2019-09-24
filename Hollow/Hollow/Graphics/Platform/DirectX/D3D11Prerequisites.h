@@ -28,4 +28,5 @@ namespace Hollow {
 	class D3D11BufferManager;
 	class D3D11RenderTargetManager;
 	class D3D11InputLayout;
+	class D3D11RenderStateManager;
 }

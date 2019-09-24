@@ -12,13 +12,14 @@ namespace Hollow {
 	{
 	private:
 		friend class D3D11PipelineStateManager;
+		friend class D3D11RenderStateManager;
 		ID3D11SamplerState* m_SamplerState;
 	public:
 		D3D11SamplerState() = default;
 		D3D11SamplerState(D3D11_TEXTURE_ADDRESS_MODE mode);
 		~D3D11SamplerState();
 
-		inline ID3D11SamplerState* const * getSamplerState() const { return &m_SamplerState; }
+		inline ID3D11SamplerState** getSamplerState() { return &m_SamplerState; }
 	};
 }
 

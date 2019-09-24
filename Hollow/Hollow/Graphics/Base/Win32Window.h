@@ -3,7 +3,7 @@
 #ifndef HW_WIN32_WINDOW_H
 #define HW_WIN32_WINDOW_H
 
-#include "../Window.h"
+#include "Window.h"
 #include "windows.h"
 #include <Windowsx.h>
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
@@ -22,7 +22,7 @@ namespace Hollow {
 	class Win32Window : public Window
 	{
 	protected:
-		HINSTANCE hInst = nullptr;
+		HINSTANCE hInst;
 		HWND hWnd;
 	public:
 		Win32Window(HINSTANCE hInst, int width, int height, WindowType type);

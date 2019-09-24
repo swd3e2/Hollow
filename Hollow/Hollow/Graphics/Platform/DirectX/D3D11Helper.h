@@ -3,6 +3,7 @@
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/Base/InputLayout.h"
 #include "Hollow/Graphics/Base/HardwareBuffer.h"
+#include "Hollow/Graphics/Base/CommonTypes.h"
 #include <string>
 
 namespace Hollow {
@@ -78,8 +79,8 @@ namespace Hollow {
 				result = "int4";
 				break;
 			case Hollow::Bool:
-					result = "bool";
-					break;
+				result = "bool";
+				break;
 			}
 
 			return result;
@@ -106,20 +107,20 @@ namespace Hollow {
 
 			switch (mode)
 			{
-			case WRAP:		
+			case AddressingMode::AM_WRAP:
 				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 				break;
-			case CLAMP:		
+			case AddressingMode::AM_CLAMP:
 				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
 				break;
-			case MIRROR:	
+			case AddressingMode::AM_MIRROR:
 				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_MIRROR;
 				break;
-			case BORDER:	
+			case AddressingMode::AM_BORDER:
 				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_BORDER;
 				break;
 			default:
-					res = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+				res = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 			}
 
 			return res;
@@ -131,96 +132,227 @@ namespace Hollow {
 
 			switch (func)
 			{
-			case NEVER:			
+			case ComparisonFunction::CMP_NEVER:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
 				break;
-			case LESS:			
+			case ComparisonFunction::CMP_LESS:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
 				break;
-			case EQUAL:			
+			case ComparisonFunction::CMP_EQUAL:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_EQUAL;
 				break;
-			case LEQUAL:		
+			case ComparisonFunction::CMP_LEQUAL:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
 				break;
-			case GREATER:		
+			case ComparisonFunction::CMP_GREATER:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER;
 				break;
-			case NOT_EQUAL:		
+			case ComparisonFunction::CMP_NOT_EQUAL:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
 				break;
 			default:
-					res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
+				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
 			}
 
 			return res;
 		}
 
-		static D3D11_FILTER getFilteringMode(const FilterMode& min, const FilterMode& mag, const FilterMode& mip, const bool comparison)
+		static D3D11_FILTER getFilteringMode(const FilterMode& _min, const FilterMode& mag, const FilterMode& mip, const bool comparison)
 		{
 			D3D11_FILTER res;
 
 #define MERGE_FILTERS(_comparison, _min, _mag, _mip) ((_comparison << 16) | (_min << 8) | (_mag << 4) | (_mip))
-			switch ((MERGE_FILTERS(comparison, min, mag, mip))) 
+			switch ((MERGE_FILTERS((int)comparison, (int)_min, (int)mag, (int)mip)))
 			{
-			case MERGE_FILTERS(true, POINT, POINT, POINT):
+			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_POINT):
 				res = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 				break;
-			case MERGE_FILTERS(true, POINT, POINT, LINEAR):
+			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(true, POINT, LINEAR, POINT):
+			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
 				res = D3D11_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
 				break;
-			case MERGE_FILTERS(true, POINT, LINEAR, LINEAR):
+			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(true, LINEAR, POINT, POINT):
+			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_POINT):
 				res = D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
 				break;
-			case MERGE_FILTERS(true, LINEAR, POINT, LINEAR):
+			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(true, LINEAR, LINEAR, POINT):
+			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
 				res = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
 				break;
-			case MERGE_FILTERS(true, LINEAR, LINEAR, LINEAR):
+			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(true, ANISOTROPIC, ANISOTROPIC, ANISOTROPIC):
+			case MERGE_FILTERS(true, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC):
 				res = D3D11_FILTER_COMPARISON_ANISOTROPIC;
 				break;
-			case MERGE_FILTERS(false, POINT, POINT, POINT):
+			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_POINT):
 				res = D3D11_FILTER_MIN_MAG_MIP_POINT;
 				break;
-			case MERGE_FILTERS(false, POINT, POINT, LINEAR):
+			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(false, POINT, LINEAR, POINT):
+			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
 				res = D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
 				break;
-			case MERGE_FILTERS(false, POINT, LINEAR, LINEAR):
+			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(false, LINEAR, POINT, POINT):
+			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_POINT):
 				res = D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
 				break;
-			case MERGE_FILTERS(false, LINEAR, POINT, LINEAR):
+			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(false, LINEAR, LINEAR, POINT):
+			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
 				res = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 				break;
-			case MERGE_FILTERS(false, LINEAR, LINEAR, LINEAR):
+			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
 				res = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 				break;
-			case MERGE_FILTERS(false, ANISOTROPIC, ANISOTROPIC, ANISOTROPIC):
+			case MERGE_FILTERS(false, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC):
 				res = D3D11_FILTER_ANISOTROPIC;
 				break;
 			default:
 				res = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			}
 #undef MERGE_FILTERS
+
+			return res;
+		}
+
+		static D3D11_DEPTH_WRITE_MASK getDepthWriteMask(const DepthWriteMask& writeMask)
+		{
+			D3D11_DEPTH_WRITE_MASK mask = D3D11_DEPTH_WRITE_MASK_ALL;
+			switch (writeMask)
+			{
+			case DepthWriteMask::DWM_ALL:
+				mask = D3D11_DEPTH_WRITE_MASK_ALL;
+			case DepthWriteMask::DWM_ZERO:
+				mask = D3D11_DEPTH_WRITE_MASK_ZERO;
+			}
+
+			return mask;
+		}
+
+		static D3D11_STENCIL_OP getDepthStencilOperation(const StencilOperation& stecnilOp)
+		{
+			D3D11_STENCIL_OP res = D3D11_STENCIL_OP_KEEP;
+
+			switch (stecnilOp)
+			{
+			case StencilOperation::SOP_KEEP:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+			case StencilOperation::SOP_ZERO:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_ZERO;
+			case StencilOperation::SOP_INCR:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
+			case StencilOperation::SOP_INCR_WRAP:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR_SAT;
+			case StencilOperation::SOP_DECR:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
+			case StencilOperation::SOP_DECR_WRAP:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR_SAT;
+			case StencilOperation::SOP_REPLACE:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_REPLACE;
+			case StencilOperation::SOP_INVERT:
+				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INVERT;
+			default:
+				break;
+			}
+
+			return res;
+		}
+
+		static D3D11_CULL_MODE getCullMode(const CullMode& cullMode)
+		{
+			D3D11_CULL_MODE res = D3D11_CULL_MODE::D3D11_CULL_NONE;
+
+			switch (cullMode)
+			{
+			case CullMode::CLM_BACK:
+				res = D3D11_CULL_MODE::D3D11_CULL_BACK;
+			case CullMode::CLM_FRONT:
+				res = D3D11_CULL_MODE::D3D11_CULL_FRONT;
+			case CullMode::CLM_NONE:
+				res = D3D11_CULL_MODE::D3D11_CULL_NONE;
+			}
+
+			return res;
+		}
+
+		static D3D11_FILL_MODE getFillMode(const FillMode& mode)
+		{
+			D3D11_FILL_MODE res = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+
+			switch (mode)
+			{
+			case FillMode::FM_SOLID:
+				res = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+			case FillMode::FM_WIREFRAME:
+				res = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+			}
+
+			return res;
+		}
+
+		static D3D11_BLEND getBlend(const BlendFunction& blendFunc)
+		{
+			D3D11_BLEND res = D3D11_BLEND::D3D11_BLEND_ONE;
+
+			switch (blendFunc)
+			{
+			case BlendFunction::BF_ZERO:
+				res = D3D11_BLEND::D3D11_BLEND_ZERO;
+			case BlendFunction::BF_ONE:
+				res = D3D11_BLEND::D3D11_BLEND_ONE;
+			case BlendFunction::BF_SRC_COLOR:
+				res = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
+			case BlendFunction::BF_INV_SRC_COLOR:
+				res = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
+			case BlendFunction::BF_SRC_APLHA:
+				res = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+			case BlendFunction::BF_INV_SRC_APLHA:
+				res = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
+			case BlendFunction::BF_DEST_APLHA:
+				res = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
+			case BlendFunction::BF_INV_DEST_APLHA:
+				res = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
+			case BlendFunction::BF_DEST_COLOR:
+				res = D3D11_BLEND::D3D11_BLEND_DEST_COLOR;
+			case BlendFunction::BF_INV_DEST_COLOR:
+				res = D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
+			case BlendFunction::BF_BLEND_FACTOR:
+				res = D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
+			case BlendFunction::BF_INV_BLEND_FACTOR:
+				res = D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
+			}
+
+			return res;
+		}
+
+		static D3D11_BLEND_OP getBlendOperation(const BlendOperation& blendOp)
+		{
+			D3D11_BLEND_OP res = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+
+			switch (blendOp)
+			{
+			case BlendOperation::BOP_ADD:
+				res = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+			case BlendOperation::BOP_SUBTRACT:
+				res = D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
+			case BlendOperation::BOP_REV_SUBTRACT:
+				res = D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
+			case BlendOperation::BOP_MIN:
+				res = D3D11_BLEND_OP::D3D11_BLEND_OP_MIN;
+			case BlendOperation::BOP_MAX:
+				res = D3D11_BLEND_OP::D3D11_BLEND_OP_MAX;
+			}
 
 			return res;
 		}

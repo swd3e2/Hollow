@@ -5,16 +5,16 @@
 namespace Hollow {
 	RenderTarget* D3D11RenderTargetManager::create(RENDER_TARGET_DESC desc)
 	{
+		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+		ID3D11Device* device = r->getContext().getDevice();
+
+		HRESULT hr = S_OK;
 		D3D11RenderTarget* renderTarget = new D3D11RenderTarget(desc.width, desc.height, desc.count);
 		
 		renderTarget->m_BackBuffer = new ID3D11Texture2D*[desc.count];
 		renderTarget->m_RenderTarget = new ID3D11RenderTargetView*[desc.count];
 		renderTarget->m_ShaderResourceView = new ID3D11ShaderResourceView*[desc.count];
 
-		HRESULT hr = S_OK;
-
-		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
-		ID3D11Device* device = r->getContext().getDevice();
 
 		DXGI_FORMAT textureFormat = getTextureFormat(desc.textureFormat);
 
@@ -138,10 +138,10 @@ namespace Hollow {
 	{
 		switch (format)
 		{
-			case R8G8B8A8: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8: {
 				return DXGI_FORMAT_R8G8B8A8_UNORM;
 			} break;
-			case R32G32B32A32: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32: {
 				return DXGI_FORMAT_R32G32B32A32_FLOAT;
 			} break;
 			default:

@@ -31,6 +31,11 @@ namespace Hollow {
 		static Shader* create(const SHADER_DESC& desc);
 		virtual void release() = 0;
 	};
+
+	struct ShaderPipeline
+	{
+
+	};
 }
 
 

@@ -16,8 +16,8 @@ MessageCallback(GLenum source,
 }
 
 namespace Hollow {
-	OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height, WindowType type)
-		:Win32Window(hInst, width, height, type)
+	OGLWin32Window::OGLWin32Window(HINSTANCE hInst, int width, int height, WindowType type) :
+		Win32Window(hInst, width, height, type)
 	{
 		PIXELFORMATDESCRIPTOR pfd =
 		{

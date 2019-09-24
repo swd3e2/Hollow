@@ -51,13 +51,5 @@ namespace Hollow {
 			}
 			return nullptr;
 		}
-		
-		D3D11ComputeShader* getComputeShader() 
-		{ 
-			if (this->computeShader != nullptr) {
-				return dynamic_cast<D3D11ComputeShader*>(this->computeShader);
-			}
-			return nullptr;
-		}
 	};
 }

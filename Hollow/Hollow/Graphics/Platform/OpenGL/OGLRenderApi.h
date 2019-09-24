@@ -19,6 +19,10 @@
 #include "OGLHelper.h"
 #include "OGLPipelineStateManager.h"
 #include "OGLInputLayoutManager.h"
+#include "OGLBlendState.h"
+#include "OGLDepthStencilState.h"
+#include "OGLRasterizerState.h"
+#include "OGLRenderStateManager.h"
 
 namespace Hollow {
 	class OGLRenderApi : public RenderApi
@@ -40,14 +44,21 @@ namespace Hollow {
 		virtual void setViewport(int w0, int y0, int w, int y) override;
 		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) override;
 		virtual void setRenderTarget(RenderTarget* renderTarget) override;
-		virtual void setDepthTestFunction(DEPTH_TEST_FUNCTION func) override;
-		virtual void setCullMode(CULL_MODE mode) override;
 		virtual void setInputLayout(InputLayout* layout) override;
 		virtual void setPipelineState(PipelineState* pipeline) override;
-
-		virtual void draw(UINT count)override;
+		virtual void draw(UINT count) override;
 		virtual void drawIndexed(UINT count) override;
 		virtual void present() override;
+		
+		virtual void setSampler(const int samplerUnit, SamplerState* sampler) override;
+		virtual void setTextureSampler(const int textureUnit, SamplerState* sampler) override;
+		virtual void setDepthStencilState(DepthStencil* depthStencil) override;
+		virtual void setRasterizerState(RasterizerState* rasterizerState) override;
+		virtual void setBlendState(BlendState* blendState) override;
+		virtual void setShaderPipeline(ShaderPipeline* shaderPipeline) override;
+
+		virtual void drawInstanced() override;
+		virtual void drawIndexedInstanced() override;
 	};
 }
 

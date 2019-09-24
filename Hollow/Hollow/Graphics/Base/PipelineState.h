@@ -12,7 +12,6 @@ namespace Hollow {
 		Shader* geometryShader;
 		Shader* hullShader;
 		Shader* domainShader;
-		Shader* computeShader;
 	};
 
 
@@ -24,7 +23,8 @@ namespace Hollow {
 		Shader* geometryShader;
 		Shader* hullShader;
 		Shader* domainShader;
-		Shader* computeShader;
+
+		DepthStencil* depthStencil;
 	public:
 		static PipelineState* create(const PIPELINE_STATE_DESC& desc);
 	};

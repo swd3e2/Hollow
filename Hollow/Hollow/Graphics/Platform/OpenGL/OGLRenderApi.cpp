@@ -10,6 +10,7 @@ namespace Hollow {
 		RenderTargetManager::startUp<OGLRenderTargetManager>();
 		PipelineStateManager::startUp<OGLPipelineStateManager>();
 		InputLayoutManager::startUp<OGLInputLayoutManager>();
+		RenderStateManager::startUp<OGLRenderStateManager>();
 
 		hwnd = static_cast<OGLWin32Window*>(Window::instance())->getHWND();
 		glEnable(GL_DEPTH_TEST);
@@ -107,65 +108,6 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::setDepthTestFunction(DEPTH_TEST_FUNCTION func)
-	{
-		switch (func) {
-		case DEPTH_TEST_FUNCTION::NEVER:
-		{
-			glDepthFunc(GL_NEVER);
-		} break;
-		case DEPTH_TEST_FUNCTION::LESS:
-		{
-			glDepthFunc(GL_LESS);
-		} break;
-		case DEPTH_TEST_FUNCTION::EQUAL:
-		{
-			glDepthFunc(GL_EQUAL);
-		} break;
-		case DEPTH_TEST_FUNCTION::LEQUAL:
-		{
-			glDepthFunc(GL_LEQUAL);
-		} break;
-		case DEPTH_TEST_FUNCTION::GREATER:
-		{
-			glDepthFunc(GL_GREATER);
-		} break;
-		case DEPTH_TEST_FUNCTION::NOT_EQUAL:
-		{
-			glDepthFunc(GL_NOTEQUAL);
-		} break;
-		case DEPTH_TEST_FUNCTION::ALWAYS:
-		{
-			glDepthFunc(GL_ALWAYS);
-		} break;
-		}
-	}
-
-	void OGLRenderApi::setCullMode(CULL_MODE mode)
-	{
-		switch (mode)
-		{
-		case Hollow::CULL_NONE:
-			glDisable(GL_CULL_FACE);
-			cullEnabled = false;
-			break;
-		case Hollow::CULL_FRONT:
-			if (!cullEnabled) {
-				glEnable(GL_CULL_FACE);
-				cullEnabled = true;
-			}
-			glCullFace(GL_FRONT);
-			break;
-		case Hollow::CULL_BACK:
-			if (!cullEnabled) {
-				glEnable(GL_CULL_FACE);
-				cullEnabled = true;
-			}
-			glCullFace(GL_BACK);
-			break;
-		}
-	}
-
 	void OGLRenderApi::setInputLayout(InputLayout* layout)
 	{
 		mCurrentLayout = layout;
@@ -177,6 +119,117 @@ namespace Hollow {
 	{
 		OGLPipelineState* oglPipeline = static_cast<OGLPipelineState*>(pipeline);
 		glBindProgramPipeline(oglPipeline->pipelineId);
+	}
+
+	void OGLRenderApi::setDepthStencilState(DepthStencil* depthStencil)
+	{
+		const DEPTH_STENCIL_STATE_DESC& desc = static_cast<OGLDepthStencilState*>(depthStencil)->desc;
+
+		if (desc.depthEnable) {
+			glEnable(GL_DEPTH);
+			glDepthFunc(OGLHelper::getComparisonFunction(desc.depthFunc));
+		} else {
+			glDisable(GL_DEPTH);
+		}
+
+		if (desc.stencilEnable) {
+			glEnable(GL_STENCIL_TEST);
+			glStencilMask(desc.stencilReadMask);
+			glStencilFuncSeparate(
+				GL_FRONT, 
+				OGLHelper::getComparisonFunction(desc.front.stencilFunc), 
+				desc.stencilReadMask, 
+				desc.stencilWriteMask
+			);
+			glStencilOpSeparate(
+				GL_FRONT, 
+				OGLHelper::getDepthStencilOperation(desc.front.failOp), 
+				OGLHelper::getDepthStencilOperation(desc.front.depthFailOp), 
+				OGLHelper::getDepthStencilOperation(desc.front.passOp)
+			);
+			glStencilFuncSeparate(
+				GL_BACK,
+				OGLHelper::getComparisonFunction(desc.back.stencilFunc),
+				desc.stencilReadMask,
+				desc.stencilWriteMask
+			);
+			glStencilOpSeparate(
+				GL_BACK,
+				OGLHelper::getDepthStencilOperation(desc.back.failOp),
+				OGLHelper::getDepthStencilOperation(desc.back.depthFailOp),
+				OGLHelper::getDepthStencilOperation(desc.back.passOp)
+			);
+		} else {
+			glDisable(GL_STENCIL_TEST);
+		}
+	}
+
+	void OGLRenderApi::setSampler(const int samplerUnit, SamplerState* sampler)
+	{
+
+	}
+
+	void OGLRenderApi::setTextureSampler(const int textureUnit, SamplerState* sampler)
+	{
+		glBindSampler(textureUnit, static_cast<OGLSamplerState*>(sampler)->samplerObjectId);
+	}
+
+	void OGLRenderApi::setRasterizerState(RasterizerState* rasterizerState)
+	{
+		const RASTERIZER_STATE_DESC& desc = static_cast<OGLRasterizerState*>(rasterizerState)->desc;
+
+		if (desc.frontCounterClockwise) {
+			glFrontFace(GL_CCW);
+		} else {
+			glFrontFace(GL_CW);
+		}
+
+		switch (desc.cullMode)
+		{
+		case CullMode::CLM_BACK:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			break;
+		case CullMode::CLM_FRONT:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+			break;
+		case CullMode::CLM_NONE:
+			glDisable(GL_CULL_FACE);
+			break;
+		}
+
+		if (desc.cullMode != CullMode::CLM_NONE)
+		{
+			switch (desc.fillMode)
+			{
+			case FillMode::FM_SOLID:
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glPolygonMode(GL_BACK, GL_FILL);
+				break;
+			case FillMode::FM_WIREFRAME:
+				glPolygonMode(GL_FRONT, GL_LINE);
+				glPolygonMode(GL_BACK, GL_LINE);
+				break;
+			}
+		}
+	}
+
+	void OGLRenderApi::setBlendState(BlendState* blendState)
+	{
+		const BLEND_STATE_DESC& desc = static_cast<OGLBlendState*>(blendState)->desc;
+	}
+
+	void OGLRenderApi::setShaderPipeline(ShaderPipeline* shaderPipeline)
+	{
+	}
+
+	void OGLRenderApi::drawInstanced()
+	{
+	}
+
+	void OGLRenderApi::drawIndexedInstanced()
+	{
 	}
 
 	void OGLRenderApi::draw(UINT count)

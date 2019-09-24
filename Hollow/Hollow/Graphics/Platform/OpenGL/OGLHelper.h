@@ -3,12 +3,13 @@
 #include "OGLPrerequisites.h"
 #include "Hollow/Graphics/Base/InputLayout.h"
 #include "Hollow/Graphics/Base/HardwareBuffer.h"
+#include "Hollow/Graphics/Base/CommonTypes.h"
 
 namespace Hollow {
 	class OGLHelper
 	{
 	public:
-		static GLuint getInputLayoutFormat(INPUT_DATA_TYPE type)
+		static GLuint getInputLayoutFormat(const INPUT_DATA_TYPE type)
 		{
 			GLuint result;
 
@@ -46,7 +47,7 @@ namespace Hollow {
 			return result;
 		}
 
-		static std::string getInputLayoutShaderFormat(INPUT_DATA_TYPE type)
+		static std::string getInputLayoutShaderFormat(const INPUT_DATA_TYPE type)
 		{
 			std::string result;
 
@@ -84,7 +85,7 @@ namespace Hollow {
 			return result;
 		}
 
-		static unsigned int getSize(INDEX_FORMAT format)
+		static unsigned int getSize(const INDEX_FORMAT format)
 		{
 			unsigned int result;
 
@@ -99,7 +100,7 @@ namespace Hollow {
 			return result;
 		}
 
-		static GLuint getFormat(INDEX_FORMAT format)
+		static GLuint getFormat(const INDEX_FORMAT format)
 		{
 			GLuint result;
 
@@ -111,36 +112,38 @@ namespace Hollow {
 			case Hollow::INDEX_FORMAT::INT:
 				result = GL_INT;
 				break;
+			default:
+				result = GL_UNSIGNED_INT;
 			}
 
 			return result;
 		}
 
-		static GLint getComparisonFunction(const ComparisonFunction& func)
+		static GLint getComparisonFunction(const ComparisonFunction comparisonFunc)
 		{
 			GLint result;
 
-			switch (func)
+			switch (comparisonFunc)
 			{
-			case NEVER:
+			case ComparisonFunction::CMP_NEVER:
 				result = GL_NEVER;
 				break;
-			case LESS:
+			case ComparisonFunction::CMP_LESS:
 				result = GL_LESS;
 				break;
-			case EQUAL:
+			case ComparisonFunction::CMP_EQUAL:
 				result = GL_EQUAL;
 				break;
-			case LEQUAL:
+			case ComparisonFunction::CMP_LEQUAL:
 				result = GL_LEQUAL;
 				break;
-			case GREATER:
+			case ComparisonFunction::CMP_GREATER:
 				result = GL_GREATER;
 				break;
-			case NOT_EQUAL:
+			case ComparisonFunction::CMP_NOT_EQUAL:
 				result = GL_NOTEQUAL;
 				break;
-			case ALWAYS:
+			case ComparisonFunction::CMP_ALWAYS:
 				result = GL_ALWAYS;
 				break;
 			default:
@@ -150,22 +153,22 @@ namespace Hollow {
 			return result;
 		}
 
-		static GLuint getAddressingMode(const AddressingMode& mode)
+		static GLuint getAddressingMode(const AddressingMode addressingMode)
 		{
 			GLuint result;
 
-			switch (mode)
+			switch (addressingMode)
 			{
-			case WRAP:
+			case AddressingMode::AM_WRAP:
 				result = GL_REPEAT;
 				break;
-			case CLAMP:
+			case AddressingMode::AM_CLAMP:
 				result = GL_CLAMP;
 				break;
-			case MIRROR:
+			case AddressingMode::AM_MIRROR:
 				result = GL_MIRRORED_REPEAT;
 				break;
-			case BORDER:
+			case AddressingMode::AM_BORDER:
 				result = GL_CLAMP_TO_BORDER;
 				break;
 			default:
@@ -175,22 +178,22 @@ namespace Hollow {
 			return result;
 		}
 
-		static GLuint getFilteringMode(const FilterMode& mode)
+		static GLuint getFilteringMode(const FilterMode filteringMode)
 		{
 			GLuint result;
 
-			switch (mode)
+			switch (filteringMode)
 			{
-			case NONE:
+			case FilterMode::FM_NONE:
 				result = GL_REPEAT;
 				break;
-			case POINT:
+			case FilterMode::FM_POINT:
 				result = GL_CLAMP;
 				break;
-			case LINEAR:
+			case FilterMode::FM_LINEAR:
 				result = GL_MIRRORED_REPEAT;
 				break;
-			case ANISOTROPIC:
+			case FilterMode::FM_ANISOTROPIC:
 				result = GL_CLAMP_TO_BORDER;
 				break;
 			default:
@@ -200,38 +203,44 @@ namespace Hollow {
 			return result;
 		}
 
-		static GLuint getMinMipFilteringMode(const FilterMode& min, const FilterMode& mip)
+		static GLuint getMinMipFilteringMode(const FilterMode _min, const FilterMode _mip)
 		{
 			GLuint result;
 
-			switch (min)
+			switch (_min)
 			{
-			case NONE:
-			case POINT:
-				switch (mip)
+			case FilterMode::FM_NONE:
+			case FilterMode::FM_POINT:
+				switch (_mip)
 				{
-				case LINEAR:
-				case ANISOTROPIC:
+				case FilterMode::FM_LINEAR:
+				case FilterMode::FM_ANISOTROPIC:
 					result = GL_NEAREST_MIPMAP_LINEAR;
-				case POINT:
+					break;
+				case FilterMode::FM_POINT:
 					result = GL_NEAREST_MIPMAP_NEAREST;
-				case NONE:
+					break;
+				case FilterMode::FM_NONE:
 					result = GL_NEAREST;
+					break;
 				default:
 					break;
 				}
 				break;
-			case LINEAR:
-			case ANISOTROPIC:
-				switch (mip)
+			case FilterMode::FM_LINEAR:
+			case FilterMode::FM_ANISOTROPIC:
+				switch (_mip)
 				{
-				case LINEAR:
-				case ANISOTROPIC:
+				case FilterMode::FM_LINEAR:
+				case FilterMode::FM_ANISOTROPIC:
 					result = GL_LINEAR_MIPMAP_LINEAR;
-				case POINT:
+					break;
+				case FilterMode::FM_POINT:
 					result = GL_LINEAR_MIPMAP_NEAREST;
-				case NONE:
+					break;
+				case FilterMode::FM_NONE:
 					result = GL_LINEAR;
+					break;
 				default:
 					break;
 				}
@@ -239,6 +248,43 @@ namespace Hollow {
 			}
 
 			return result;
+		}
+
+		static GLuint getDepthStencilOperation(const StencilOperation stecnilOp)
+		{
+			GLuint res = GL_KEEP;
+
+			switch (stecnilOp)
+			{
+			case StencilOperation::SOP_KEEP:
+				res = GL_KEEP;
+				break;
+			case StencilOperation::SOP_ZERO:
+				res = GL_ZERO;
+				break;
+			case StencilOperation::SOP_INCR:
+				res = GL_INCR;
+				break;
+			case StencilOperation::SOP_INCR_WRAP:
+				res = GL_INCR_WRAP;
+				break;
+			case StencilOperation::SOP_DECR:
+				res = GL_DECR;
+				break;
+			case StencilOperation::SOP_DECR_WRAP:
+				res = GL_DECR_WRAP;
+				break;
+			case StencilOperation::SOP_REPLACE:
+				res = GL_REPLACE;
+				break;
+			case StencilOperation::SOP_INVERT:
+				res = GL_INVERT;
+				break;
+			default:
+				break;
+			}
+
+			return res;
 		}
 	};
 }

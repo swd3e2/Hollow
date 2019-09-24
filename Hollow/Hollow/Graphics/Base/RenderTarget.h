@@ -4,14 +4,9 @@
 #define HW_RENDER_TARGET_H
 
 #include "Hollow/Math/Vector4.h"
+#include "CommonTypes.h"
 
 namespace Hollow {
-	enum RENDER_TARGET_TEXTURE_FORMAT
-	{
-		R8G8B8A8,
-		R32G32B32A32
-	};
-
 	struct RENDER_TARGET_DESC
 	{
 		int width;

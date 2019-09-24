@@ -32,7 +32,8 @@ namespace Hollow {
 
 		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
-		if (type == WindowType::Borderless) {
+		if (type == WindowType::Borderless) 
+		{
 			styles = WS_POPUP;
 		}
 

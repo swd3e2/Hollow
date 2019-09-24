@@ -23,7 +23,7 @@
 #define SCREEN_HEIGHT 1080
 
 // App entrypoint
-int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR pArgs, INT)
+int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 {
 	Hollow::Core core;
 
