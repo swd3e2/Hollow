@@ -201,7 +201,6 @@
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11RenderStateManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTargetManager.cpp" />
-    <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11SamplerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLHardwareBufferManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayoutManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLPipelineStateManager.cpp" />

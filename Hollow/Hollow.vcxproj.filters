@@ -578,9 +578,6 @@
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11RenderTargetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11SamplerState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

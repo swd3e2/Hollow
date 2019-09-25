@@ -138,6 +138,8 @@ private:
 	RasterizerState* cullBack;
 	RasterizerState* cullFront;
 	RasterizerState* cullNone;
+
+	SamplerState* sampler;
 public:
 	RenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -335,6 +337,7 @@ public:
 			depthDesc.depthFunc = ComparisonFunction::CMP_GREATER;
 			greater = DepthStencil::create(depthDesc);
 		}
+
 		{
 			RASTERIZER_STATE_DESC desc;
 			desc.cullMode = CullMode::CLM_BACK;
@@ -350,6 +353,10 @@ public:
 			desc.cullMode = CullMode::CLM_NONE;
 			cullNone = RasterizerState::create(desc);
 		}
+
+		SAMPLER_STATE_DESC desc;
+		
+		sampler = SamplerState::create(desc);
 
 		timer.start();
 	}

@@ -30,6 +30,10 @@ namespace Hollow {
 	private:
 		HWND hwnd;
 		bool cullEnabled = false;
+		bool depthEnabled = false;
+		bool stencilEnabled = false;
+		FillMode fillMode;
+		CullMode cullMode;
 		OGLIndexBuffer* mCurrentIndexBuffer;
 	public:
 		OGLRenderApi(int width, int height);

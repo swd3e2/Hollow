@@ -251,10 +251,13 @@ namespace Hollow {
 
 	void D3D11RenderApi::setTextureSampler(const int textureUnit, SamplerState* sampler)
 	{
+		
 	}
 
 	void D3D11RenderApi::setDepthStencilState(DepthStencil* depthStencil)
 	{
+		ID3D11DepthStencilState* state = static_cast<D3D11DepthStencil*>(depthStencil)->depthStencilState;
+		context->getDeviceContext()->OMSetDepthStencilState(state, 0);
 	}
 
 	void D3D11RenderApi::setRasterizerState(RasterizerState* rasterizerState)

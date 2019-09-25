@@ -29,7 +29,7 @@ namespace Hollow {
 	class SamplerState
 	{
 	public:
-		SamplerState* create(const SAMPLER_STATE_DESC& desc);
+		static SamplerState* create(const SAMPLER_STATE_DESC& desc);
 	};
 }
 

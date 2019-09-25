@@ -27,10 +27,10 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 {
 	Hollow::Core core;
 
-	Hollow::Window* window = WindowManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
-	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Hollow::Window* window = WindowManager::create(Hollow::RendererType::DirectX, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
+	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::DirectX, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
+	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::DirectX);
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->setProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100000.0f);

@@ -126,14 +126,23 @@ namespace Hollow {
 		const DEPTH_STENCIL_STATE_DESC& desc = static_cast<OGLDepthStencilState*>(depthStencil)->desc;
 
 		if (desc.depthEnable) {
-			glEnable(GL_DEPTH);
+			if (!depthEnabled) 
+			{
+				depthEnabled = true;
+				glEnable(GL_DEPTH_TEST);
+			}
 			glDepthFunc(OGLHelper::getComparisonFunction(desc.depthFunc));
 		} else {
-			glDisable(GL_DEPTH);
+			depthEnabled = false;
+			glDisable(GL_DEPTH_TEST);
 		}
 
 		if (desc.stencilEnable) {
-			glEnable(GL_STENCIL_TEST);
+			if (!stencilEnabled)
+			{
+				stencilEnabled = true;
+				glEnable(GL_STENCIL_TEST);
+			}
 			glStencilMask(desc.stencilReadMask);
 			glStencilFuncSeparate(
 				GL_FRONT, 
@@ -161,6 +170,7 @@ namespace Hollow {
 			);
 		} else {
 			glDisable(GL_STENCIL_TEST);
+			stencilEnabled = false;
 		}
 	}
 
@@ -187,15 +197,33 @@ namespace Hollow {
 		switch (desc.cullMode)
 		{
 		case CullMode::CLM_BACK:
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
+			if (!cullEnabled)
+			{
+				cullEnabled = true;
+				glEnable(GL_CULL_FACE);
+			}
+			if (cullMode != CullMode::CLM_BACK)
+			{
+				glCullFace(GL_BACK);
+			}
 			break;
 		case CullMode::CLM_FRONT:
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_FRONT);
+			if (!cullEnabled)
+			{
+				cullEnabled = true;
+				glEnable(GL_CULL_FACE);
+			}
+			if (cullMode != CullMode::CLM_FRONT)
+			{
+				glCullFace(GL_FRONT);
+			}
 			break;
 		case CullMode::CLM_NONE:
-			glDisable(GL_CULL_FACE);
+			if (cullEnabled)
+			{
+				cullEnabled = false;
+				glDisable(GL_CULL_FACE);
+			}
 			break;
 		}
 
@@ -204,12 +232,20 @@ namespace Hollow {
 			switch (desc.fillMode)
 			{
 			case FillMode::FM_SOLID:
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glPolygonMode(GL_BACK, GL_FILL);
+				if (fillMode != FillMode::FM_SOLID) {
+					fillMode = FillMode::FM_SOLID;
+
+					glPolygonMode(GL_FRONT, GL_FILL);
+					glPolygonMode(GL_BACK, GL_FILL);
+				}
 				break;
 			case FillMode::FM_WIREFRAME:
-				glPolygonMode(GL_FRONT, GL_LINE);
-				glPolygonMode(GL_BACK, GL_LINE);
+				if (fillMode != FillMode::FM_WIREFRAME) {
+					fillMode = FillMode::FM_WIREFRAME;
+
+					glPolygonMode(GL_FRONT, GL_LINE);
+					glPolygonMode(GL_BACK, GL_LINE);
+				}
 				break;
 			}
 		}
