@@ -108,6 +108,7 @@ private:
 	PipelineState* defaultPipeline;
 	PipelineState* terrainPipeline;
 	PipelineState* pickerPipeline;
+	PipelineState* flatColor;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -124,6 +125,8 @@ private:
 
 	Hollow::VertexBuffer* quadVB;
 	Hollow::IndexBuffer* quadIB;
+	Hollow::VertexBuffer* quadVB2;
+	Hollow::IndexBuffer* quadIB2;
 
 	Hollow::Vector4 AABBplane[6];
 	Hollow::Mesh* lightCube;
@@ -132,8 +135,9 @@ private:
 	Hollow::Matrix4 viewProjection;
 
 	DepthStencil* less;
-	DepthStencil* lequal;
 	DepthStencil* greater;
+	DepthStencil* greaterStencil;
+	DepthStencil* lessStencil;
 
 	RasterizerState* cullBack;
 	RasterizerState* cullFront;
@@ -224,6 +228,13 @@ public:
 
 					pickerPipeline = Hollow::PipelineState::create(pipelineDesc);
 				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/flatColor.hlsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/flatColor.hlsl"), "main" });
+
+					flatColor = Hollow::PipelineState::create(pipelineDesc);
+				}
 			} 
 			else 
 			{
@@ -269,6 +280,13 @@ public:
 
 					pickerPipeline = Hollow::PipelineState::create(pipelineDesc);
 				}
+				{
+					Hollow::PIPELINE_STATE_DESC pipelineDesc = { 0 };
+					pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::VERTEX, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/flatColor.glsl"), "main" });
+					pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::SHADER_TYPE::PIXEL, Hollow::FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/flatColor.glsl"), "main" });
+
+					flatColor = Hollow::PipelineState::create(pipelineDesc);
+				}
 			}
 		}
 
@@ -303,20 +321,38 @@ public:
 			shadow.bias = 0.002f;
 		}
 
-		std::vector<Hollow::Vertex> vertices;
-		vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
-		vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));
-		vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));
-		vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
+		{
+			std::vector<Hollow::Vertex> vertices;
+			vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
+			vertices.push_back(Vertex(1.0f, -1.0f, 0.0f, 1.0f, 1.0f));
+			vertices.push_back(Vertex(-1.0f, 1.0f, 0.0f, 0.0f, 0.0f));
+			vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0.0f, 1.0f));
 
-		quadVB = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
+			quadVB = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
 
-		unsigned int indices[] = {
-			0, 1, 2,
-			2, 1, 3
-		};
+			unsigned int indices[] = {
+				0, 1, 2,
+				2, 1, 3
+			};
 
-		quadIB = Hollow::IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
+			quadIB = Hollow::IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
+		}
+		{
+			std::vector<Hollow::Vertex> vertices;
+			vertices.push_back(Vertex(1.0f,  1.0f, 1.0f, 1.0f, 0.0f));
+			vertices.push_back(Vertex(1.0f, -1.0f, 1.0f, 1.0f, 1.0f));
+			vertices.push_back(Vertex(0.0f,  1.0f, 1.0f, 0.0f, 0.0f));
+			vertices.push_back(Vertex(0.0f, -1.0f, 1.0f, 0.0f, 1.0f));
+
+			quadVB2 = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
+
+			unsigned int indices[] = {
+				0, 1, 2,
+				2, 1, 3
+			};
+
+			quadIB2 = Hollow::IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
+		}
 
 		lightCube = getCube();
 
@@ -329,13 +365,47 @@ public:
 		}
 		{
 			DEPTH_STENCIL_STATE_DESC depthDesc;
-			depthDesc.depthFunc = ComparisonFunction::CMP_LEQUAL;
-			lequal = DepthStencil::create(depthDesc);
+			depthDesc.depthEnable = true;
+			depthDesc.depthFunc = ComparisonFunction::CMP_LESS;
+
+			depthDesc.stencilEnable = true;
+			depthDesc.stencilWriteMask = 0x00;
+			depthDesc.stencilReadMask = 0xFF;
+
+			depthDesc.front.depthFailOp	= StencilOperation::SOP_KEEP;
+			depthDesc.front.failOp		= StencilOperation::SOP_KEEP;
+			depthDesc.front.passOp		= StencilOperation::SOP_KEEP;
+			depthDesc.front.stencilFunc	= ComparisonFunction::CMP_EQUAL;
+
+			greaterStencil = DepthStencil::create(depthDesc);
 		}
 		{
 			DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthEnable = false;
+
+			depthDesc.stencilEnable = true;
+			depthDesc.stencilWriteMask = 0xFF;
+			depthDesc.stencilReadMask = 0xFF;
+
+			depthDesc.front.depthFailOp = StencilOperation::SOP_KEEP;
+			depthDesc.front.failOp		= StencilOperation::SOP_KEEP;
+			depthDesc.front.passOp		= StencilOperation::SOP_REPLACE;
+			depthDesc.front.stencilFunc = ComparisonFunction::CMP_ALWAYS;
+
+			lessStencil = DepthStencil::create(depthDesc);
+		}
+		{
+			DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthEnable = true;
 			depthDesc.depthFunc = ComparisonFunction::CMP_GREATER;
 			greater = DepthStencil::create(depthDesc);
+		}
+		{
+			DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthEnable = true;
+			depthDesc.depthFunc = ComparisonFunction::CMP_LESS;
+
+			less = DepthStencil::create(depthDesc);
 		}
 
 		{
@@ -355,8 +425,14 @@ public:
 		}
 
 		SAMPLER_STATE_DESC desc;
-		
-		sampler = SamplerState::create(desc);
+		desc.magFilterMode = FilterMode::FM_LINEAR;
+		desc.minFilterModel = FilterMode::FM_LINEAR;
+		desc.mipFilterMode = FilterMode::FM_LINEAR;
+		desc.comparisonFunction = ComparisonFunction::CMP_NEVER;
+		sampler = RenderStateManager::instance()->createSamplerState(desc);
+
+		renderer->setSampler(0, sampler);
+		renderer->setSampler(1, sampler);
 
 		timer.start();
 	}
@@ -376,24 +452,26 @@ public:
 		culled = 0;
 		renderer->setInputLayout(defaultLayout);
 		shadow.shadowCamera->update(dt);
-		calculateAABBPlane();
+		//calculateAABBPlane();
 
 		if (ProjectSettings::instance()->isProjectLoaded) {
 			updateWVP(this->m_Camera);
 			// GBuffer pass
 			timer.restart();
+			
 			gBufferPass();
 			gbufferTime = timer.getMilisecondsElapsed();
 
 			// Picker pass
 			timer.restart();
+			renderer->setDepthStencilState(less);
 			pickerPass();
 			pickerTime = timer.getMilisecondsElapsed();
 
 			// Shadow pass
 			timer.restart();
 			shadowPass();
-			shadowTime = timer.getMilisecondsElapsed();;
+			shadowTime = timer.getMilisecondsElapsed();
 
 			// Light pass
 			{
@@ -413,9 +491,8 @@ public:
 				renderer->drawIndexed(6);
 
 				renderer->setDepthStencilState(greater);
-				renderer->setRasterizerState(cullNone);
+				renderer->setRasterizerState(cullFront);
 				DrawSkyMap();
-				renderer->setDepthStencilState(less);
 
 				renderer->unsetTexture(0);
 				renderer->unsetTexture(1);
@@ -423,6 +500,7 @@ public:
 				renderer->unsetTexture(3);
 				renderer->unsetTexture(5);
 			}
+
 			lightTime = timer.getMilisecondsElapsed();;
 
 			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) 
@@ -462,7 +540,6 @@ public:
 		renderer->setGpuBuffer(m_WVPConstantBuffer);
 
 		renderer->setTexture(4, skyMap->mesh->models[0]->material->diffuseTexture);
-
 		renderer->setPipelineState(skyMapPipeline);
 
 		renderer->setVertexBuffer(skyMap->mesh->models[0]->vBuffer);
@@ -517,9 +594,17 @@ public:
 
 	void gBufferPass()
 	{
+		renderer->setRasterizerState(cullBack);
 		renderer->setRenderTarget(gBuffer);
+		renderer->setDepthStencilState(lessStencil);
+
+		renderer->setPipelineState(flatColor);
+		renderer->setVertexBuffer(quadVB2);
+		renderer->setIndexBuffer(quadIB2);
+		renderer->drawIndexed(6);
+
+		renderer->setDepthStencilState(greaterStencil);
 		renderer->setPipelineState(gBufferPipeline);
-		renderer->setRasterizerState(cullNone);
 
 		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
 		{
@@ -539,34 +624,27 @@ public:
 				Hollow::Vector4 B = Hollow::Vector4(renderable->B.x, renderable->B.y, renderable->B.z, 1.0f) 
 					* Matrix4::transpose(trs);
 
-				if (!aabbCull(transform->position, A, B)) 
-				{
-					perModelData.transform = trs;
-					perModel->update(&perModelData);
-					renderer->setGpuBuffer(perModel);
+				perModelData.transform = trs;
+				perModel->update(&perModelData);
+				renderer->setGpuBuffer(perModel);
 
-					for (auto& object : renderable->renderables) 
+				for (auto& object : renderable->renderables) 
+				{
+					Hollow::Material* material = renderable->materials[object->material];
+					if (material->diffuseTexture != nullptr) 
 					{
-						Hollow::Material* material = renderable->materials[object->material];
-						if (material->diffuseTexture != nullptr) 
-						{
-							renderer->setTexture(0, material->diffuseTexture);
-						} 
-						else 
-						{
-							renderer->unsetTexture(0);
-						}
-						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
-						renderer->setGpuBuffer(materialConstantBuffer);
-
-						renderer->setVertexBuffer(object->vBuffer);
-						renderer->setIndexBuffer(object->iBuffer);
-						renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
+						renderer->setTexture(0, material->diffuseTexture);
+					} 
+					else 
+					{
+						renderer->unsetTexture(0);
 					}
-				}
-				else 
-				{
-					culled++;
+					materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
+					renderer->setGpuBuffer(materialConstantBuffer);
+
+					renderer->setVertexBuffer(object->vBuffer);
+					renderer->setIndexBuffer(object->iBuffer);
+					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 				}
 			}
 		}

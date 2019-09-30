@@ -32,6 +32,7 @@ namespace Hollow {
 		bool cullEnabled = false;
 		bool depthEnabled = false;
 		bool stencilEnabled = false;
+		bool frontCounterClockwise = false;
 		FillMode fillMode;
 		CullMode cullMode;
 		OGLIndexBuffer* mCurrentIndexBuffer;

@@ -20,12 +20,12 @@ namespace Hollow {
 
 		if (desc.comparisonFunction != ComparisonFunction::CMP_NEVER)
 		{
-			glTexParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-			glTexParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_FUNC, OGLHelper::getComparisonFunction(desc.comparisonFunction));
+			glSamplerParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glSamplerParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_FUNC, OGLHelper::getComparisonFunction(desc.comparisonFunction));
 		}
 		else
 		{
-			glTexParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+			glSamplerParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 		}
 
 		return sampler;

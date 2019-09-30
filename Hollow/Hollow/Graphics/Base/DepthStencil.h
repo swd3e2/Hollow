@@ -14,7 +14,7 @@ namespace Hollow {
 
 		DEPTH_STENCIL_STATEOP_DESC() :
 			failOp(StencilOperation::SOP_KEEP), depthFailOp(StencilOperation::SOP_KEEP), passOp(StencilOperation::SOP_KEEP), 
-			stencilFunc(ComparisonFunction::CMP_EQUAL)
+			stencilFunc(ComparisonFunction::CMP_NEVER)
 		{}
 	};
 
@@ -30,7 +30,7 @@ namespace Hollow {
 		DEPTH_STENCIL_STATEOP_DESC	back;
 
 		DEPTH_STENCIL_STATE_DESC() :
-			depthEnable(true), depthFunc(ComparisonFunction::CMP_LEQUAL), depthWriteMask(DepthWriteMask::DWM_ALL), 
+			depthEnable(true), depthFunc(ComparisonFunction::CMP_LESS), depthWriteMask(DepthWriteMask::DWM_ALL), 
 			stencilEnable(false), stencilWriteMask(0xFF), stencilReadMask(0xFF)
 		{}
 	};

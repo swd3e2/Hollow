@@ -7,6 +7,11 @@
 #include "Hollow/Core/CModule.h"
 
 namespace Hollow {
+	class SamplerState;
+	class RasterizerState;
+	class BlendState;
+	class DepthStencil;
+
 	class RenderStateManager : public CModule<RenderStateManager>
 	{
 	public:

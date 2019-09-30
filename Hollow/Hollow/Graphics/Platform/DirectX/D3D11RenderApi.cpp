@@ -122,14 +122,6 @@ namespace Hollow {
 
 		deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		// Texture samplers
-		m_SamplerStateClamp = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_CLAMP);
-		m_SamplerStateWrap = new D3D11SamplerState(D3D11_TEXTURE_ADDRESS_WRAP);
-		deviceContext->PSSetSamplers(0, 1, m_SamplerStateClamp->getSamplerState());
-		deviceContext->DSSetSamplers(1, 1, m_SamplerStateClamp->getSamplerState());
-		deviceContext->DSSetSamplers(0, 1, m_SamplerStateWrap->getSamplerState());
-		deviceContext->PSSetSamplers(1, 1, m_SamplerStateWrap->getSamplerState());
-
 		blendState = new D3D11BlendState();
 
 		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();
@@ -257,7 +249,7 @@ namespace Hollow {
 	void D3D11RenderApi::setDepthStencilState(DepthStencil* depthStencil)
 	{
 		ID3D11DepthStencilState* state = static_cast<D3D11DepthStencil*>(depthStencil)->depthStencilState;
-		context->getDeviceContext()->OMSetDepthStencilState(state, 0);
+		context->getDeviceContext()->OMSetDepthStencilState(state, 0xFF);
 	}
 
 	void D3D11RenderApi::setRasterizerState(RasterizerState* rasterizerState)
@@ -280,11 +272,6 @@ namespace Hollow {
 
 	void D3D11RenderApi::drawIndexedInstanced()
 	{
-	}
-
-	void D3D11RenderApi::setRasterizerState(D3D11RasterizerState* rasterizer)
-	{
-		context->getDeviceContext()->RSSetState(rasterizer->getRasterizerState());
 	}
 
 	void D3D11RenderApi::setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask)

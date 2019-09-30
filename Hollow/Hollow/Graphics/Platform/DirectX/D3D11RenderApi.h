@@ -42,10 +42,6 @@ namespace Hollow {
 		ID3D11UnorderedAccessView* pUAV[1] = { NULL };
 		ID3D11RenderTargetView* nullRTV[3] = { NULL };
 
-		D3D11RasterizerState* m_CullNone;
-		D3D11RasterizerState* m_CullFront;
-		D3D11RasterizerState* m_CullBack;
-
 		D3D11BlendState* blendState;
 		const UINT uavs = 0;
 		const UINT offset = 0;
@@ -81,7 +77,6 @@ namespace Hollow {
 		virtual void drawInstanced() override;
 		virtual void drawIndexedInstanced() override;
 
-		void setRasterizerState(D3D11RasterizerState* rasterizer);
 		void setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
 
 		D3D11Context& getContext() { return *context; }

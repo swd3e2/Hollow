@@ -90,11 +90,11 @@ namespace Hollow {
 		if (oglRenderTarget != nullptr) {
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
 			glClearColor(color[0], color[1], color[2], color[3]);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		} else {
 			glClearColor(color[0], color[1], color[2], color[3]);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}
 	}
 
@@ -132,7 +132,7 @@ namespace Hollow {
 				glEnable(GL_DEPTH_TEST);
 			}
 			glDepthFunc(OGLHelper::getComparisonFunction(desc.depthFunc));
-		} else {
+		} else if (depthEnabled) {
 			depthEnabled = false;
 			glDisable(GL_DEPTH_TEST);
 		}
@@ -143,32 +143,18 @@ namespace Hollow {
 				stencilEnabled = true;
 				glEnable(GL_STENCIL_TEST);
 			}
-			glStencilMask(desc.stencilReadMask);
-			glStencilFuncSeparate(
-				GL_FRONT, 
-				OGLHelper::getComparisonFunction(desc.front.stencilFunc), 
-				desc.stencilReadMask, 
-				desc.stencilWriteMask
-			);
-			glStencilOpSeparate(
-				GL_FRONT, 
-				OGLHelper::getDepthStencilOperation(desc.front.failOp), 
-				OGLHelper::getDepthStencilOperation(desc.front.depthFailOp), 
-				OGLHelper::getDepthStencilOperation(desc.front.passOp)
-			);
-			glStencilFuncSeparate(
-				GL_BACK,
-				OGLHelper::getComparisonFunction(desc.back.stencilFunc),
-				desc.stencilReadMask,
-				desc.stencilWriteMask
-			);
-			glStencilOpSeparate(
-				GL_BACK,
-				OGLHelper::getDepthStencilOperation(desc.back.failOp),
-				OGLHelper::getDepthStencilOperation(desc.back.depthFailOp),
-				OGLHelper::getDepthStencilOperation(desc.back.passOp)
-			);
-		} else {
+
+			glStencilMask(desc.stencilWriteMask);
+
+			glStencilFunc(OGLHelper::getComparisonFunction(desc.front.stencilFunc), 1, desc.stencilReadMask);
+			glStencilOp(OGLHelper::getDepthStencilOperation(desc.front.failOp), OGLHelper::getDepthStencilOperation(desc.front.depthFailOp), OGLHelper::getDepthStencilOperation(desc.front.passOp));
+
+			/*glStencilFuncSeparate(GL_FRONT, OGLHelper::getComparisonFunction(desc.front.stencilFunc), 0xFF, desc.stencilReadMask);
+			glStencilOpSeparate(GL_FRONT, OGLHelper::getDepthStencilOperation(desc.front.failOp), OGLHelper::getDepthStencilOperation(desc.front.depthFailOp), OGLHelper::getDepthStencilOperation(desc.front.passOp));
+
+			glStencilFuncSeparate(GL_BACK, OGLHelper::getComparisonFunction(desc.back.stencilFunc), 0xFF, desc.stencilReadMask);
+			glStencilOpSeparate(GL_BACK, OGLHelper::getDepthStencilOperation(desc.back.failOp), OGLHelper::getDepthStencilOperation(desc.back.depthFailOp), OGLHelper::getDepthStencilOperation(desc.back.passOp));*/
+		} else if (stencilEnabled) {
 			glDisable(GL_STENCIL_TEST);
 			stencilEnabled = false;
 		}
@@ -188,11 +174,19 @@ namespace Hollow {
 	{
 		const RASTERIZER_STATE_DESC& desc = static_cast<OGLRasterizerState*>(rasterizerState)->desc;
 
-		if (desc.frontCounterClockwise) {
-			glFrontFace(GL_CCW);
-		} else {
-			glFrontFace(GL_CW);
+		if (desc.frontCounterClockwise != frontCounterClockwise) 
+		{
+			frontCounterClockwise = desc.frontCounterClockwise;
+			if (desc.frontCounterClockwise) 
+			{
+				glFrontFace(GL_CCW);
+			}
+			else 
+			{
+				glFrontFace(GL_CW);
+			}
 		}
+		
 
 		switch (desc.cullMode)
 		{

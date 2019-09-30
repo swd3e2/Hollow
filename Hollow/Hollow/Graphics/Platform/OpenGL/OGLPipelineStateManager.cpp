@@ -18,15 +18,15 @@ namespace Hollow {
 			
 			glActiveShaderProgram(pipeline->pipelineId, pixelShader);
 
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture0"), 0);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture1"), 1);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture2"), 2);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture3"), 3);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture4"), 4);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture5"), 5);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture6"), 6);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture7"), 7);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "texture8"), 8);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex0"), 0);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex1"), 1);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex2"), 2);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex3"), 3);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex4"), 4);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex5"), 5);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex6"), 6);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex7"), 7);
+			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex8"), 8);
 
 			glActiveShaderProgram(pipeline->pipelineId, 0);
 		}

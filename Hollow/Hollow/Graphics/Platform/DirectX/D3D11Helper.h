@@ -150,6 +150,9 @@ namespace Hollow {
 			case ComparisonFunction::CMP_NOT_EQUAL:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
 				break;
+			case ComparisonFunction::CMP_ALWAYS:
+				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
+				break;
 			default:
 				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
 			}
@@ -233,8 +236,10 @@ namespace Hollow {
 			{
 			case DepthWriteMask::DWM_ALL:
 				mask = D3D11_DEPTH_WRITE_MASK_ALL;
+				break;
 			case DepthWriteMask::DWM_ZERO:
 				mask = D3D11_DEPTH_WRITE_MASK_ZERO;
+				break;
 			}
 
 			return mask;
@@ -248,20 +253,28 @@ namespace Hollow {
 			{
 			case StencilOperation::SOP_KEEP:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+				break;
 			case StencilOperation::SOP_ZERO:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_ZERO;
+				break;
 			case StencilOperation::SOP_INCR:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
+				break;
 			case StencilOperation::SOP_INCR_WRAP:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR_SAT;
+				break;
 			case StencilOperation::SOP_DECR:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
+				break;
 			case StencilOperation::SOP_DECR_WRAP:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR_SAT;
+				break;
 			case StencilOperation::SOP_REPLACE:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_REPLACE;
+				break;
 			case StencilOperation::SOP_INVERT:
 				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INVERT;
+				break;
 			default:
 				break;
 			}
@@ -277,10 +290,13 @@ namespace Hollow {
 			{
 			case CullMode::CLM_BACK:
 				res = D3D11_CULL_MODE::D3D11_CULL_BACK;
+				break;
 			case CullMode::CLM_FRONT:
 				res = D3D11_CULL_MODE::D3D11_CULL_FRONT;
+				break;
 			case CullMode::CLM_NONE:
 				res = D3D11_CULL_MODE::D3D11_CULL_NONE;
+				break;
 			}
 
 			return res;
@@ -294,8 +310,10 @@ namespace Hollow {
 			{
 			case FillMode::FM_SOLID:
 				res = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+				break;
 			case FillMode::FM_WIREFRAME:
 				res = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+				break;
 			}
 
 			return res;
@@ -309,28 +327,40 @@ namespace Hollow {
 			{
 			case BlendFunction::BF_ZERO:
 				res = D3D11_BLEND::D3D11_BLEND_ZERO;
+				break;
 			case BlendFunction::BF_ONE:
 				res = D3D11_BLEND::D3D11_BLEND_ONE;
+				break;
 			case BlendFunction::BF_SRC_COLOR:
 				res = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
+				break;
 			case BlendFunction::BF_INV_SRC_COLOR:
 				res = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
+				break;
 			case BlendFunction::BF_SRC_APLHA:
 				res = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+				break;
 			case BlendFunction::BF_INV_SRC_APLHA:
 				res = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
+				break;
 			case BlendFunction::BF_DEST_APLHA:
 				res = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
+				break;
 			case BlendFunction::BF_INV_DEST_APLHA:
 				res = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
+				break;
 			case BlendFunction::BF_DEST_COLOR:
 				res = D3D11_BLEND::D3D11_BLEND_DEST_COLOR;
+				break;
 			case BlendFunction::BF_INV_DEST_COLOR:
 				res = D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
+				break;
 			case BlendFunction::BF_BLEND_FACTOR:
 				res = D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
+				break;
 			case BlendFunction::BF_INV_BLEND_FACTOR:
 				res = D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
+				break;
 			}
 
 			return res;
@@ -344,14 +374,19 @@ namespace Hollow {
 			{
 			case BlendOperation::BOP_ADD:
 				res = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+				break;
 			case BlendOperation::BOP_SUBTRACT:
 				res = D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
+				break;
 			case BlendOperation::BOP_REV_SUBTRACT:
 				res = D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
+				break;
 			case BlendOperation::BOP_MIN:
 				res = D3D11_BLEND_OP::D3D11_BLEND_OP_MIN;
+				break;
 			case BlendOperation::BOP_MAX:
 				res = D3D11_BLEND_OP::D3D11_BLEND_OP_MAX;
+				break;
 			}
 
 			return res;

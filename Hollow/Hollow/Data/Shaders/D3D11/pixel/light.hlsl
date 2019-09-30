@@ -69,7 +69,7 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 	float4 diffuse = diffuseBuffer.Sample(SampleTypeClamp, input.texCoord);
 	
 	for (int i = 0; i < numLights; i++) {
-		diffuse += float4(lights[i].color, 1.0f); // CalcPointLight(lights[i], normal, position);
+		//diffuse += float4(lights[i].color, 1.0f); // CalcPointLight(lights[i], normal, position);
 	}
 
 	return diffuse;

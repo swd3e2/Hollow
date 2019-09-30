@@ -7,4 +7,3 @@ namespace Hollow {
 		return RenderStateManager::instance()->createSamplerState(desc);
 	}
 }
-

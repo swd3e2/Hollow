@@ -11,7 +11,7 @@ namespace Hollow {
 	public:
 		static GLuint getInputLayoutFormat(const INPUT_DATA_TYPE type)
 		{
-			GLuint result;
+			GLuint result = GL_FLOAT;
 
 			switch (type)
 			{
@@ -87,7 +87,7 @@ namespace Hollow {
 
 		static unsigned int getSize(const INDEX_FORMAT format)
 		{
-			unsigned int result;
+			unsigned int result = 4;
 
 			switch (format)
 			{
@@ -148,6 +148,7 @@ namespace Hollow {
 				break;
 			default:
 				result = GL_NEVER;
+				break;
 			}
 
 			return result;
@@ -184,20 +185,14 @@ namespace Hollow {
 
 			switch (filteringMode)
 			{
-			case FilterMode::FM_NONE:
-				result = GL_REPEAT;
-				break;
 			case FilterMode::FM_POINT:
-				result = GL_CLAMP;
+				result = GL_NEAREST;
 				break;
 			case FilterMode::FM_LINEAR:
-				result = GL_MIRRORED_REPEAT;
-				break;
-			case FilterMode::FM_ANISOTROPIC:
-				result = GL_CLAMP_TO_BORDER;
+				result = GL_LINEAR;
 				break;
 			default:
-				result = GL_REPEAT;
+				result = GL_LINEAR;
 			}
 
 			return result;
@@ -205,7 +200,7 @@ namespace Hollow {
 
 		static GLuint getMinMipFilteringMode(const FilterMode _min, const FilterMode _mip)
 		{
-			GLuint result;
+			GLuint result = GL_NEAREST_MIPMAP_LINEAR;
 
 			switch (_min)
 			{
@@ -223,8 +218,6 @@ namespace Hollow {
 				case FilterMode::FM_NONE:
 					result = GL_NEAREST;
 					break;
-				default:
-					break;
 				}
 				break;
 			case FilterMode::FM_LINEAR:
@@ -240,8 +233,6 @@ namespace Hollow {
 					break;
 				case FilterMode::FM_NONE:
 					result = GL_LINEAR;
-					break;
-				default:
 					break;
 				}
 				break;
@@ -279,8 +270,6 @@ namespace Hollow {
 				break;
 			case StencilOperation::SOP_INVERT:
 				res = GL_INVERT;
-				break;
-			default:
 				break;
 			}
 

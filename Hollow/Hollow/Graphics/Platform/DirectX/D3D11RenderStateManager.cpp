@@ -92,7 +92,7 @@ namespace Hollow {
 		if (desc.stencilEnable) {
 			dssDesc.StencilEnable = desc.stencilEnable;
 			dssDesc.StencilReadMask = desc.stencilReadMask;
-			dssDesc.StencilWriteMask = desc.depthWriteMask;
+			dssDesc.StencilWriteMask = desc.stencilWriteMask;
 
 			dssDesc.FrontFace.StencilDepthFailOp = D3D11Helper::getDepthStencilOperation(desc.front.depthFailOp);
 			dssDesc.FrontFace.StencilFailOp = D3D11Helper::getDepthStencilOperation(desc.front.failOp);
