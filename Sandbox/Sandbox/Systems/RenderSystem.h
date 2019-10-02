@@ -385,7 +385,7 @@ public:
 
 			depthDesc.stencilEnable = true;
 			depthDesc.stencilWriteMask = 0xFF;
-			depthDesc.stencilReadMask = 0xFF;
+			depthDesc.stencilReadMask = 0x00;
 
 			depthDesc.front.depthFailOp = StencilOperation::SOP_KEEP;
 			depthDesc.front.failOp		= StencilOperation::SOP_KEEP;

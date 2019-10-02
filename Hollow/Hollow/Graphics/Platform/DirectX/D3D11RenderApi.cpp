@@ -260,7 +260,9 @@ namespace Hollow {
 
 	void D3D11RenderApi::setBlendState(BlendState* blendState)
 	{
-	}
+		ID3D11BlendState* blend = static_cast<D3D11BlendState*>(blendState)->getBlendState();
+		context->getDeviceContext()->OMSetBlendState(blend, nullptr, 0xFFFFFFFF);
+	}	
 
 	void D3D11RenderApi::setShaderPipeline(ShaderPipeline* shaderPipeline)
 	{

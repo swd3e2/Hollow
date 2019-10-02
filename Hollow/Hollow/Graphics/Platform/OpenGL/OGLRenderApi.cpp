@@ -45,9 +45,12 @@ namespace Hollow {
 	{
 		OGLTexture* oglTexture = static_cast<OGLTexture*>(texture);
 		glActiveTexture(location + GL_TEXTURE0);
-		if (texture->type == TextureType::TEXTURE2D) {
+		if (texture->type == TextureType::TEXTURE2D) 
+		{
 			glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
-		} else {
+		} 
+		else 
+		{
 			glBindTexture(GL_TEXTURE_CUBE_MAP, oglTexture->textureId);
 		}
 	}
@@ -87,12 +90,15 @@ namespace Hollow {
 	{
 		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 
-		if (oglRenderTarget != nullptr) {
+		if (oglRenderTarget != nullptr) 
+		{
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
 			glClearColor(color[0], color[1], color[2], color[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		} else {
+		} 
+		else 
+		{
 			glClearColor(color[0], color[1], color[2], color[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}
@@ -100,10 +106,13 @@ namespace Hollow {
 
 	void OGLRenderApi::setRenderTarget(RenderTarget* renderTarget)
 	{
-		if (renderTarget != nullptr) {
+		if (renderTarget != nullptr) 
+		{
 			OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
-		} else {
+		} 
+		else 
+		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
@@ -125,14 +134,17 @@ namespace Hollow {
 	{
 		const DEPTH_STENCIL_STATE_DESC& desc = static_cast<OGLDepthStencilState*>(depthStencil)->desc;
 
-		if (desc.depthEnable) {
+		if (desc.depthEnable) 
+		{
 			if (!depthEnabled) 
 			{
 				depthEnabled = true;
 				glEnable(GL_DEPTH_TEST);
 			}
 			glDepthFunc(OGLHelper::getComparisonFunction(desc.depthFunc));
-		} else if (depthEnabled) {
+		} 
+		else if (depthEnabled) 
+		{
 			depthEnabled = false;
 			glDisable(GL_DEPTH_TEST);
 		}
@@ -146,15 +158,14 @@ namespace Hollow {
 
 			glStencilMask(desc.stencilWriteMask);
 
-			glStencilFunc(OGLHelper::getComparisonFunction(desc.front.stencilFunc), 1, desc.stencilReadMask);
-			glStencilOp(OGLHelper::getDepthStencilOperation(desc.front.failOp), OGLHelper::getDepthStencilOperation(desc.front.depthFailOp), OGLHelper::getDepthStencilOperation(desc.front.passOp));
-
-			/*glStencilFuncSeparate(GL_FRONT, OGLHelper::getComparisonFunction(desc.front.stencilFunc), 0xFF, desc.stencilReadMask);
+			glStencilFuncSeparate(GL_FRONT, OGLHelper::getComparisonFunction(desc.front.stencilFunc), 0xFF, desc.stencilReadMask);
 			glStencilOpSeparate(GL_FRONT, OGLHelper::getDepthStencilOperation(desc.front.failOp), OGLHelper::getDepthStencilOperation(desc.front.depthFailOp), OGLHelper::getDepthStencilOperation(desc.front.passOp));
 
 			glStencilFuncSeparate(GL_BACK, OGLHelper::getComparisonFunction(desc.back.stencilFunc), 0xFF, desc.stencilReadMask);
-			glStencilOpSeparate(GL_BACK, OGLHelper::getDepthStencilOperation(desc.back.failOp), OGLHelper::getDepthStencilOperation(desc.back.depthFailOp), OGLHelper::getDepthStencilOperation(desc.back.passOp));*/
-		} else if (stencilEnabled) {
+			glStencilOpSeparate(GL_BACK, OGLHelper::getDepthStencilOperation(desc.back.failOp), OGLHelper::getDepthStencilOperation(desc.back.depthFailOp), OGLHelper::getDepthStencilOperation(desc.back.passOp));
+		} 
+		else if (stencilEnabled) 
+		{
 			glDisable(GL_STENCIL_TEST);
 			stencilEnabled = false;
 		}
@@ -248,18 +259,45 @@ namespace Hollow {
 	void OGLRenderApi::setBlendState(BlendState* blendState)
 	{
 		const BLEND_STATE_DESC& desc = static_cast<OGLBlendState*>(blendState)->desc;
+
+		for (int i = 0; i < 8; i++) {
+			if (desc.blend[i].blendEnabled) 
+			{
+				glEnablei(GL_BLEND, i);
+
+				glBlendFuncSeparatei(
+					i, 
+					OGLHelper::getBlend(desc.blend[i].srcBlend), 
+					OGLHelper::getBlend(desc.blend[i].dstBlend), 
+					OGLHelper::getBlend(desc.blend[i].srcBlendAlpha),
+					OGLHelper::getBlend(desc.blend[i].dstBlendAlpha)
+				);
+				glBlendEquationSeparatei(
+					i, 
+					OGLHelper::getBlendOperation(desc.blend[i].blendOp), 
+					OGLHelper::getBlendOperation(desc.blend[i].blendOpAlpha)
+				);
+			}
+			else
+			{
+				glDisablei(GL_BLEND, i);
+			}
+		}
 	}
 
 	void OGLRenderApi::setShaderPipeline(ShaderPipeline* shaderPipeline)
 	{
+
 	}
 
 	void OGLRenderApi::drawInstanced()
 	{
+
 	}
 
 	void OGLRenderApi::drawIndexedInstanced()
 	{
+
 	}
 
 	void OGLRenderApi::draw(UINT count)
