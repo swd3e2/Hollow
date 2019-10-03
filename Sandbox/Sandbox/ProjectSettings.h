@@ -18,6 +18,7 @@
 #include "Sandbox/Components/TerrainData.h"
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
+#include "Sandbox/Components/PhysicsComponent.h"
 
 /**
  * Project settings class
@@ -52,8 +53,8 @@ public:
 
 			auto projectData = json::parse(Hollow::FileSystem::getFileContent(filename));
 
-			/*Hollow::EntityManager::instance()->clear();
-			Hollow::ComponentManager::instance()->clear();*/
+			Hollow::EntityManager::instance()->clear();
+			Hollow::ComponentManager::instance()->clear();
 
 			MeshesFolder = projectData["MeshesFolder"].get<std::string>();
 			TexturesFolder = projectData["TexturesFolder"].get<std::string>();
@@ -86,7 +87,15 @@ public:
 				}
 
 				if (it.find("RenderableComponent") != it.end()) {
-					gameObject->addComponent<RenderableComponent>(it["RenderableComponent"]["filename"].get<std::string>());
+					RenderableComponent* objRenderable = gameObject->addComponent<RenderableComponent>();
+					PhysicsComponent* objPhysics = gameObject->addComponent<PhysicsComponent>();
+
+					Hollow::Import::Model* model = Hollow::MeshManager::instance()->import(it["RenderableComponent"]["filename"].get<std::string>().c_str());
+					if (model != nullptr) {
+						objRenderable->load(model);
+						objPhysics->load(model);
+						delete model;
+					}
 				}
 			}
 
