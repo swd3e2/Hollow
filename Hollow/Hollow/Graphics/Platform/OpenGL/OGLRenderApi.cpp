@@ -41,9 +41,10 @@ namespace Hollow {
 		glBindVertexBuffer(0, oglBuffer->mVbo, 0, buffer->mHardwareBuffer->getStride());
 	}
 
-	void OGLRenderApi::setTexture(UINT location, Texture* texture)
+	void OGLRenderApi::setTexture(UINT location, s_ptr<Texture> texture)
 	{
-		OGLTexture* oglTexture = static_cast<OGLTexture*>(texture);
+		OGLTexture* oglTexture = std::static_pointer_cast<OGLTexture>(texture).get();
+
 		glActiveTexture(location + GL_TEXTURE0);
 		if (texture->type == TextureType::TEXTURE2D) 
 		{

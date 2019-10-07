@@ -89,12 +89,14 @@ public:
 				if (it.find("RenderableComponent") != it.end()) {
 					RenderableComponent* objRenderable = gameObject->addComponent<RenderableComponent>();
 					PhysicsComponent* objPhysics = gameObject->addComponent<PhysicsComponent>();
+					TransformComponent* transform = gameObject->getComponent<TransformComponent>();
 
-					Hollow::Import::Model* model = Hollow::MeshManager::instance()->import(it["RenderableComponent"]["filename"].get<std::string>().c_str());
+					Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import(it["RenderableComponent"]["filename"].get<std::string>().c_str());
 					if (model != nullptr) {
+						Hollow::Vector3 position = transform != nullptr ? transform->position : Hollow::Vector3();
+
 						objRenderable->load(model);
-						objPhysics->load(model);
-						delete model;
+						objPhysics->load(model, position);
 					}
 				}
 			}

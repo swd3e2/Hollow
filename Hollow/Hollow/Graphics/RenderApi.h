@@ -44,7 +44,7 @@ namespace Hollow {
 		 * @param[in]	textureUnit			Texture unit
 		 * @param[in]	texture				Texture object
 		 */
-		virtual void setTexture(UINT textureUnit, Texture* texture) = 0;
+		virtual void setTexture(UINT textureUnit, s_ptr<Texture> texture) = 0;
 		
 		/**
 		 * Unbinds texture

@@ -1,7 +1,7 @@
 #include "TextureManager.h"
 
 namespace Hollow {
-	Texture* TextureManager::createTextureFromFile(const std::string& filename, bool fromDefaultFolder)
+	s_ptr<Texture> TextureManager::createTextureFromFile(const std::string& filename, bool fromDefaultFolder)
 	{
 		std::string pathToFile = filename;
 
@@ -10,42 +10,31 @@ namespace Hollow {
 		}
 
 		if (textureList.find(pathToFile) != textureList.end()) {
-			textureRefCnt[textureList[pathToFile]]++;
+			textureRefCnt[textureList[pathToFile].get()]++;
 			return textureList[pathToFile];
 		}
 
-		TextureData* textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
+		s_ptr<TextureData> textureDesc = FreeImgImporter::instance()->import(pathToFile.c_str());
 
 		if (textureDesc == nullptr) {
 			return nullptr;
 		}
 
-		Texture* tex = create2dTexture(textureDesc);
-		textureRefCnt[textureList[pathToFile]] = 1;
+		s_ptr<Texture> tex = create2dTexture(textureDesc);
+		textureRefCnt[textureList[pathToFile].get()] = 1;
 
 		tex->name = filename;
 
 		return tex;
 	}
 
-	void TextureManager::remove(Texture* texture)
+	void TextureManager::remove(const s_ptr<Texture>& texture)
 	{
-		for (auto& it : textureList) {
-			if (it.second == texture) {
-				if (textureRefCnt[it.second] <= 1) {
-					textureList.erase(it.first);
-					delete texture;
-				}
-				break;
-			}
-		}
+		
 	}
 
 	void TextureManager::removeAll()
 	{
-		for (auto& it : textureList) {
-			delete it.second;
-			it.second = nullptr;
-		}
+		
 	}
 }

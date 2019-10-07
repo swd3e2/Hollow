@@ -7,6 +7,7 @@
 #include "Hollow/Graphics/Base/Texture.h"
 #include "Hollow/Graphics/ShaderManager.h"
 #include "Hollow/Math/Vector4.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	struct MaterialData
@@ -34,21 +35,12 @@ namespace Hollow {
 
 		MaterialData materialData;
 
-		Texture* diffuseTexture;
-		Texture* normalTexture;
-		Texture* specularTexture;
-		Texture* roughnesTexture;
-		Texture* emisiveTexture;
-		Texture* occlusionTexture;
-
-		Material() :
-			diffuseTexture(nullptr), normalTexture(nullptr), specularTexture(nullptr),
-			roughnesTexture(nullptr), emisiveTexture(nullptr), occlusionTexture(nullptr)
-		{
-			//shader = ShaderManager::instance()->getShader("default");
-		}
-
-		~Material();
+		s_ptr<Texture> diffuseTexture;
+		s_ptr<Texture> normalTexture;
+		s_ptr<Texture> specularTexture;
+		s_ptr<Texture> roughnesTexture;
+		s_ptr<Texture> emisiveTexture;
+		s_ptr<Texture> occlusionTexture;
 	};
 }
 

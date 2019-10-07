@@ -7,14 +7,15 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/TextureManager.h"
 #include "D3D11Context.h"
+#include "Hollow/Graphics/Platform/DirectX/D3D11Helper.h"
 
 namespace Hollow {
 	class D3D11TextureManager : public TextureManager
 	{
 	public:
-		virtual Texture* create2dTexture(TextureData* desc) override;
-		virtual Texture* create3dTexture(TextureData** desc) override;
-		virtual Texture* create3dTexture(TextureData* desc) override;
+		virtual s_ptr<Texture> create2dTexture(const s_ptr<TextureData>& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<TextureData>>& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const s_ptr<TextureData>& desc) override;
 	private:
 		DXGI_FORMAT getFormat(TextureFormat format);
 	};

@@ -12,6 +12,7 @@
 #include <Hollow/Resources/MeshManager.h>
 #include <unordered_map>
 #include "Hollow/Graphics/TextureManager.h"
+#include "Hollow/Platform.h"
 
 struct RenderableObject {
 	Hollow::VertexBuffer* vBuffer;
@@ -57,7 +58,7 @@ public:
 		materials.clear();
 	}
 
-	void load(const Hollow::Import::Model* model)
+	void load(const Hollow::s_ptr<Hollow::Import::Model>& model)
 	{
 		A = model->A;
 		B = model->B;
@@ -96,7 +97,7 @@ public:
 	{
 		this->filename = filename;
 		using namespace Hollow;
-		Import::Model* model = MeshManager::instance()->import(filename.c_str());
+		s_ptr<Hollow::Import::Model> model = MeshManager::instance()->import(filename.c_str());
 		A = model->A;
 		B = model->B;
 
@@ -128,7 +129,5 @@ public:
 			}
 			materials[it.first] = material;
 		}
-
-		delete model;
 	}
 };

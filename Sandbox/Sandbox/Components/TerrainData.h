@@ -5,6 +5,7 @@
 #include <vector>
 #include <Hollow/Graphics/HardwareBufferManager.h>
 #include <Hollow/Importer/FreeImgImporter.h>
+#include "Hollow/Platform.h"
 
 struct TerrainVertex
 {
@@ -29,11 +30,11 @@ class TerrainData : public Hollow::Component<TerrainData>
 public:
 	Hollow::VertexBuffer* vBuffer;
 	Hollow::IndexBuffer* iBuffer;
-	Hollow::Texture* tex;
+	Hollow::s_ptr<Hollow::Texture> tex;
 
 	std::string filename;
 	int denominator = 1;
-	Hollow::TextureData* desc;
+	Hollow::s_ptr<Hollow::TextureData> desc;
 	unsigned short* data;
 	unsigned char* colorData;
 public:
@@ -50,9 +51,9 @@ public:
 
 		if (0) {
 			desc = Hollow::FreeImgImporter::instance()->import(filename.c_str(), false);
-			data = (unsigned short*)* desc->data;
+			data = (unsigned short*)desc->data.get();
 		} else {
-			desc = new Hollow::TextureData();
+			desc = std::make_shared<Hollow::TextureData>();
 			desc->width = 1025;
 			desc->height = 1025;
 			desc->pitch = 4;
@@ -61,8 +62,8 @@ public:
 			fread(data, sizeof(unsigned short), desc->width * desc->height, file);
 		}
 		
-		Hollow::TextureData* texData = Hollow::FreeImgImporter::instance()->import("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp", false);
-		colorData = (unsigned char*)*texData->data;
+		Hollow::s_ptr<Hollow::TextureData> texData = Hollow::FreeImgImporter::instance()->import("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp", false);
+		colorData = (unsigned char*)texData->data.get();
 
 		std::vector<TerrainVertex> vertices;
 		std::vector<unsigned int> indices;
@@ -171,9 +172,6 @@ public:
 				);
 			}
 		}
-
-		delete desc;
-		delete texData;
 
 		//for (int i = 1; i < width - 1; i++) {
 		//	for (int j = 1; j < height - 1; j++) {

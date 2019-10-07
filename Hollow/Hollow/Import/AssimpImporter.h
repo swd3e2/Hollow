@@ -17,9 +17,9 @@ namespace Hollow {
 		AssimpImporter() {  }
 		~AssimpImporter() {  }
 
-		Import::Model* import(const char* filename, bool async = true)
+		s_ptr<Import::Model> import(const char* filename, bool async = true)
 		{
-			Import::Model* data = new Import::Model();
+			s_ptr<Import::Model> data(new Import::Model());
 
 			Assimp::Importer importer;
 

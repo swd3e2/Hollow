@@ -28,7 +28,7 @@ PhysicsComponent::PhysicsComponent(const Hollow::Vector3& position, float mass_i
 	PhysicsSystem::instance()->dynamicsWorld->addRigidBody(body);
 }
 
-void PhysicsComponent::load(Hollow::Import::Model* model)
+void PhysicsComponent::load(const Hollow::s_ptr<Hollow::Import::Model>& model, const Hollow::Vector3& position)
 {
 	btTriangleMesh* tetraMesh = new btTriangleMesh();
 	for (int i = 0; i < model->meshes.size(); i++) {
@@ -50,7 +50,7 @@ void PhysicsComponent::load(Hollow::Import::Model* model)
 	btVector3 localInertia(0, 0, 0);
 	btTransform trans;
 	trans.setIdentity();
-	trans.setOrigin(btVector3(0, 7, 0));
+	trans.setOrigin(btVector3(position.x, position.y, position.z));
 	btDefaultMotionState* motionState = new btDefaultMotionState(trans);
 	btRigidBody* body = new btRigidBody(1, motionState, tetraShape, localInertia);
 	body->setContactProcessingThreshold(BT_LARGE_FLOAT);

@@ -594,8 +594,8 @@ public:
 					if (material->diffuseTexture != nullptr) 
 					{
 						renderer->setTexture(0, material->diffuseTexture);
-					} 
-					else 
+					}
+					else
 					{
 						renderer->unsetTexture(0);
 					}

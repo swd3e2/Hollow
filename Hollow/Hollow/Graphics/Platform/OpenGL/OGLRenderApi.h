@@ -41,7 +41,7 @@ namespace Hollow {
 		~OGLRenderApi();
 		virtual void setIndexBuffer(IndexBuffer*) override;
 		virtual void setVertexBuffer(VertexBuffer*) override;
-		virtual void setTexture(UINT, Texture*) override;
+		virtual void setTexture(UINT, s_ptr<Texture>) override;
 		virtual void unsetTexture(UINT) override;
 		virtual void setTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) override;
 		virtual void setTextureDepthBuffer(UINT, RenderTarget*) override;

@@ -89,4 +89,28 @@ namespace Hollow {
 		BOP_MIN,
 		BOP_MAX
 	};
+
+	enum TextureFormat
+	{
+		TF_B8G8R8A8_UNORM,
+		TF_R32G32B32A32
+	};
+
+	enum TextureType
+	{
+		TT_TEXTURE1D,
+		TT_TEXTURE2D,
+		TT_TEXTURE3D,
+		TT_TEXTURE_CUBE
+	};
+
+	enum ShaderType
+	{
+		ST_VERTEX, 
+		ST_PIXEL, 
+		ST_GEOMERTY, 
+		ST_COMPUTE, 
+		ST_HULL, 
+		ST_DOMAIN
+	};
 }

@@ -266,9 +266,9 @@ namespace GUI {
 				ImGui::Text("Diffuse texture");
 				if (selectedMaterial->diffuseTexture != nullptr) {
 					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-						ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
+						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-						ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
+						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();
 				}
@@ -286,10 +286,10 @@ namespace GUI {
 				ImGui::Text("Normal texture");
 				if (selectedMaterial->normalTexture != nullptr) {
 					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-						ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
+						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					}
 					else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-						ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
+						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
 					}
 
 					ImGui::SameLine();
@@ -306,10 +306,10 @@ namespace GUI {
 				ImGui::Text("Specular texture");
 				if (selectedMaterial->specularTexture != nullptr) {
 					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-						ImGui::Image(static_cast<D3D11Texture*>(selectedMaterial->specularTexture)->m_TextureShaderResource, ImVec2(100, 100));
+						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->specularTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					}
 					else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-						ImGui::Image((void*)static_cast<OGLTexture*>(selectedMaterial->specularTexture)->textureId, ImVec2(100, 100));
+						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->specularTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();
 				}
