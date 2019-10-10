@@ -11,9 +11,9 @@ namespace Hollow {
 	class OGLRenderStateManager : public RenderStateManager
 	{
 	public:
-		virtual SamplerState*		createSamplerState(const SAMPLER_STATE_DESC& desc) override;
-		virtual RasterizerState*	createRasterizerState(const RASTERIZER_STATE_DESC& desc) override;
-		virtual BlendState*			createBlendState(const BLEND_STATE_DESC& desc) override;
-		virtual DepthStencil*		createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) override;
+		virtual s_ptr<SamplerState>		createSamplerState(const SAMPLER_STATE_DESC& desc) override;
+		virtual s_ptr<RasterizerState>	createRasterizerState(const RASTERIZER_STATE_DESC& desc) override;
+		virtual s_ptr<BlendState>		createBlendState(const BLEND_STATE_DESC& desc) override;
+		virtual s_ptr<DepthStencil>		createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) override;
 	};
 }

@@ -3,7 +3,7 @@
 #include "D3D11Context.h"
 
 namespace Hollow {
-	GPUBuffer* D3D11GPUBufferManager::create(unsigned int location, unsigned int size)
+	s_ptr<GPUBuffer> D3D11GPUBufferManager::create(unsigned int location, unsigned int size)
 	{
 		HRESULT result = S_OK;
 		unsigned int usize = static_cast<UINT>(size + (16 - size % 16)); // Align with 16 bytes
@@ -23,6 +23,6 @@ namespace Hollow {
 
 		context.getDevice()->CreateBuffer(&constantBufferDesc, NULL, &gpuBuffer->m_Buffer);
 
-		return gpuBuffer;
+		return s_ptr<GPUBuffer>(gpuBuffer);
 	}
 }

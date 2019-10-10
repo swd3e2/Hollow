@@ -53,7 +53,7 @@ namespace Hollow {
 	public:
 		HardwareBuffer* mHardwareBuffer;
 	public:
-		static IndexBuffer* create(const INDEX_BUFFER_DESC& desc);
+		static s_ptr<IndexBuffer> create(const INDEX_BUFFER_DESC& desc);
 		virtual ~IndexBuffer() { delete mHardwareBuffer; }
 	};
 
@@ -62,7 +62,7 @@ namespace Hollow {
 	public:
 		HardwareBuffer* mHardwareBuffer;
 	public:
-		static VertexBuffer* create(const VERTEX_BUFFER_DESC& desc);
+		static s_ptr<VertexBuffer> create(const VERTEX_BUFFER_DESC& desc);
 		virtual ~VertexBuffer() { delete mHardwareBuffer; }
 	};
 }

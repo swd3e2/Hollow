@@ -1,7 +1,7 @@
 #include "OGLHardwareBufferManager.h"
 
 namespace Hollow {
-	VertexBuffer* OGLHardwareBufferManager::create(const VERTEX_BUFFER_DESC& desc)
+	s_ptr<VertexBuffer> OGLHardwareBufferManager::create(const VERTEX_BUFFER_DESC& desc)
 	{
 		OGLVertexBuffer* buffer = new OGLVertexBuffer();
 		buffer->mHardwareBuffer = new OGLHardwareBuffer(desc.size, desc.stride);
@@ -17,10 +17,10 @@ namespace Hollow {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
-		return buffer;
+		return s_ptr<VertexBuffer>(buffer);
 	}
 
-	IndexBuffer* OGLHardwareBufferManager::create(const INDEX_BUFFER_DESC& desc)
+	s_ptr<IndexBuffer> OGLHardwareBufferManager::create(const INDEX_BUFFER_DESC& desc)
 	{
 		OGLIndexBuffer* buffer = new OGLIndexBuffer();
 		buffer->mHardwareBuffer = new OGLHardwareBuffer(desc.size, OGLHelper::getSize(desc.format));
@@ -32,6 +32,6 @@ namespace Hollow {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, desc.size * OGLHelper::getSize(desc.format), desc.data, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-		return buffer;
+		return s_ptr<IndexBuffer>(buffer);
 	}
 }

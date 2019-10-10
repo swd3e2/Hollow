@@ -13,7 +13,6 @@ namespace Hollow {
 	{
 	public:
 		virtual s_ptr<Shader> create(const SHADER_DESC& desc) override;
-		
 		virtual s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc) override;
 	private:
 		void getError(GLuint shaderId)

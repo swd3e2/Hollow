@@ -1,7 +1,7 @@
 #include "OGLRenderStateManager.h"
 
 namespace Hollow {
-	SamplerState* OGLRenderStateManager::createSamplerState(const SAMPLER_STATE_DESC& desc)
+	s_ptr<SamplerState> OGLRenderStateManager::createSamplerState(const SAMPLER_STATE_DESC& desc)
 	{
 		OGLSamplerState* sampler = new OGLSamplerState();
 
@@ -28,22 +28,25 @@ namespace Hollow {
 			glSamplerParameteri(sampler->samplerObjectId, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 		}
 
-		return sampler;
+		return s_ptr<SamplerState>(sampler);
 	}
 
-	RasterizerState* OGLRenderStateManager::createRasterizerState(const RASTERIZER_STATE_DESC& desc)
+	s_ptr<RasterizerState> OGLRenderStateManager::createRasterizerState(const RASTERIZER_STATE_DESC& desc)
 	{
-		return new OGLRasterizerState(desc);
+		RasterizerState* rasterizer = new OGLRasterizerState(desc);
+		return s_ptr<RasterizerState>(rasterizer);
 	}
 
-	BlendState* OGLRenderStateManager::createBlendState(const BLEND_STATE_DESC& desc)
+	s_ptr<BlendState> OGLRenderStateManager::createBlendState(const BLEND_STATE_DESC& desc)
 	{
-		return new OGLBlendState(desc);
+		BlendState* blendState = new OGLBlendState(desc);
+		return s_ptr<BlendState>(blendState);
 	}
 
-	DepthStencil* OGLRenderStateManager::createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc)
+	s_ptr<DepthStencil> OGLRenderStateManager::createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc)
 	{
-		return new OGLDepthStencilState(desc);
+		DepthStencil* depthStencil = new OGLDepthStencilState(desc);
+		return s_ptr<DepthStencil>(depthStencil);
 	}
 }
 

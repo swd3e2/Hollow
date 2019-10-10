@@ -1,7 +1,7 @@
 #include "OGLRenderTargetManager.h"
 
 namespace Hollow {
-	RenderTarget* OGLRenderTargetManager::create(RENDER_TARGET_DESC desc)
+	s_ptr<RenderTarget> OGLRenderTargetManager::create(RENDER_TARGET_DESC desc)
 	{
 		OGLRenderTarget* renderTarget = new OGLRenderTarget(desc.width, desc.height, desc.count);
 
@@ -51,7 +51,7 @@ namespace Hollow {
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		return renderTarget;
+		return s_ptr<RenderTarget>(renderTarget);
 	}
 
 	unsigned int OGLRenderTargetManager::getTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format)

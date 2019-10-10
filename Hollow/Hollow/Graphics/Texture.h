@@ -7,6 +7,7 @@
 #include "Hollow/Platform.h"
 #include <string>
 #include "Hollow/Common/Log.h"
+#include "CommonTypes.h"
 
 namespace Hollow {
 	struct TEXTURE_DESC
@@ -18,31 +19,12 @@ namespace Hollow {
 		std::string name;
 	};
 
-	class TextureData
-	{
-	public:
-		int width;
-		int height;
-		int pitch;
-		int pixelSize;
-		s_ptr<void> data;
-		bool unorderedAccess;
-		TextureFormat format;
-		TextureType type;
-		std::string filename;
-		int size;
-	public:
-		TextureData() :
-			format(FORMAT_B8G8R8A8_UNORM), unorderedAccess(false)
-		{}
-	};
-
 	class Texture
 	{
 	public:
 		int width;
 		int height;
-		TextureType type = TextureType::TEXTURE2D;
+		TextureType type = TextureType::TT_TEXTURE2D;
 		std::string name;
 	public:
 		Texture(int width, int height) : width(width), height(height) {}

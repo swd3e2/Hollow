@@ -4,6 +4,7 @@
 #define HW_SHADER_H
 #include <string>
 #include "CommonTypes.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	struct SHADER_DESC
@@ -23,7 +24,7 @@ namespace Hollow {
 		ShaderType type;
 		std::string shaderContent;
 	public:
-		static Shader* create(const SHADER_DESC& desc);
+		static s_ptr<Shader> create(const SHADER_DESC& desc);
 		virtual void release() = 0;
 	};
 }

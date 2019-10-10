@@ -17,12 +17,13 @@
 #include "Hollow/Graphics/Window.h"
 #include "OGLInputLayout.h"
 #include "OGLHelper.h"
-#include "OGLPipelineStateManager.h"
+#include "OGLShaderPipeline.h"
 #include "OGLInputLayoutManager.h"
 #include "OGLBlendState.h"
 #include "OGLDepthStencilState.h"
 #include "OGLRasterizerState.h"
 #include "OGLRenderStateManager.h"
+#include "Win32/OGLWin32Window.h"
 
 namespace Hollow {
 	class OGLRenderApi : public RenderApi
@@ -35,32 +36,31 @@ namespace Hollow {
 		bool frontCounterClockwise = false;
 		FillMode fillMode;
 		CullMode cullMode;
-		OGLIndexBuffer* mCurrentIndexBuffer;
+		s_ptr<OGLIndexBuffer> mCurrentIndexBuffer;
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();
-		virtual void setIndexBuffer(IndexBuffer*) override;
-		virtual void setVertexBuffer(VertexBuffer*) override;
-		virtual void setTexture(UINT, s_ptr<Texture>) override;
+		virtual void setIndexBuffer(const s_ptr<IndexBuffer>& indexBuffer) override;
+		virtual void setVertexBuffer(const s_ptr<VertexBuffer>& vertexBuffer) override;
+		virtual void setTexture(UINT, const s_ptr<Texture>& texture) override;
 		virtual void unsetTexture(UINT) override;
-		virtual void setTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) override;
-		virtual void setTextureDepthBuffer(UINT, RenderTarget*) override;
-		virtual void setGpuBuffer(GPUBuffer*) override;
+		virtual void setTextureColorBuffer(UINT, const s_ptr<RenderTarget>& renderTarget, UINT targetNum) override;
+		virtual void setTextureDepthBuffer(UINT, const s_ptr<RenderTarget>& renderTarget) override;
+		virtual void setGpuBuffer(const s_ptr<GPUBuffer>& gBuffer) override;
 		virtual void setViewport(int w0, int y0, int w, int y) override;
-		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) override;
-		virtual void setRenderTarget(RenderTarget* renderTarget) override;
-		virtual void setInputLayout(InputLayout* layout) override;
-		virtual void setPipelineState(PipelineState* pipeline) override;
+		virtual void clearRenderTarget(const s_ptr<RenderTarget>& renderTarget, const float* color) override;
+		virtual void setRenderTarget(const s_ptr<RenderTarget>& renderTarget) override;
+		virtual void setInputLayout(const s_ptr<InputLayout>& layout) override;
 		virtual void draw(UINT count) override;
 		virtual void drawIndexed(UINT count) override;
 		virtual void present() override;
 		
-		virtual void setSampler(const int samplerUnit, SamplerState* sampler) override;
-		virtual void setTextureSampler(const int textureUnit, SamplerState* sampler) override;
-		virtual void setDepthStencilState(DepthStencil* depthStencil) override;
-		virtual void setRasterizerState(RasterizerState* rasterizerState) override;
-		virtual void setBlendState(BlendState* blendState) override;
-		virtual void setShaderPipeline(ShaderPipeline* shaderPipeline) override;
+		virtual void setSampler(const int samplerUnit, const s_ptr<SamplerState>& sampler) override;
+		virtual void setTextureSampler(const int textureUnit, const s_ptr<SamplerState>& sampler) override;
+		virtual void setDepthStencilState(const s_ptr<DepthStencil>& depthStencil) override;
+		virtual void setRasterizerState(const s_ptr<RasterizerState>& rasterizerState) override;
+		virtual void setBlendState(const s_ptr<BlendState>& blendState) override;
+		virtual void setShaderPipeline(const s_ptr<ShaderPipeline>& shaderPipeline) override;
 
 		virtual void drawInstanced() override;
 		virtual void drawIndexedInstanced() override;

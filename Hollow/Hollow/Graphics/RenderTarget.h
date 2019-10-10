@@ -3,6 +3,7 @@
 #ifndef HW_RENDER_TARGET_H
 #define HW_RENDER_TARGET_H
 
+#include "Hollow/Platform.h"
 #include "Hollow/Math/Vector4.h"
 #include "CommonTypes.h"
 
@@ -27,7 +28,7 @@ namespace Hollow {
 			width(width), height(height), count(count)
 		{}
 
-		static RenderTarget* create(RENDER_TARGET_DESC desc);
+		static s_ptr<RenderTarget> create(RENDER_TARGET_DESC desc);
 
 		int getWidth() const { return width; }
 		int getHeight() const { return height; }

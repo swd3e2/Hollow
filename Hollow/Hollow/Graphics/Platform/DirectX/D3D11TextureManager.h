@@ -13,9 +13,9 @@ namespace Hollow {
 	class D3D11TextureManager : public TextureManager
 	{
 	public:
-		virtual s_ptr<Texture> create2dTexture(const s_ptr<TextureData>& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<TextureData>>& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const s_ptr<TextureData>& desc) override;
+		virtual s_ptr<Texture> create2dTexture(const s_ptr<Import::Texture>& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<Import::Texture>>& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const s_ptr<Import::Texture>& desc) override;
 	private:
 		DXGI_FORMAT getFormat(TextureFormat format);
 	};

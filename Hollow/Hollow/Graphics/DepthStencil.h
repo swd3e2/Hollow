@@ -3,6 +3,7 @@
 #include "CommonTypes.h"
 #include <stdint.h>
 #include "CommonTypes.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	struct DEPTH_STENCIL_STATEOP_DESC
@@ -38,6 +39,6 @@ namespace Hollow {
 	class DepthStencil
 	{
 	public:
-		static DepthStencil* create(const DEPTH_STENCIL_STATE_DESC& desc);
+		static s_ptr<DepthStencil> create(const DEPTH_STENCIL_STATE_DESC& desc);
 	};
 }

@@ -8,7 +8,7 @@ namespace Hollow {
 	class D3D11RenderTargetManager : public RenderTargetManager
 	{
 	public:
-		virtual RenderTarget* create(RENDER_TARGET_DESC desc) override;
+		virtual s_ptr<RenderTarget> create(RENDER_TARGET_DESC desc) override;
 	private:
 		DXGI_FORMAT getDepthResourceFormat(DXGI_FORMAT depthformat);
 		DXGI_FORMAT getDepthSRVFormat(DXGI_FORMAT depthformat);

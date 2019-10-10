@@ -12,9 +12,11 @@ namespace Hollow {
 	class OGLTextureManager : public TextureManager
 	{
 	public:
-		virtual s_ptr<Texture> create2dTexture(const s_ptr<TextureData>& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<TextureData>>& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const s_ptr<TextureData>& desc) override;
+		virtual s_ptr<Texture> create2dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc) override;
+		virtual s_ptr<Texture> create2dTexture(const TEXTURE_DESC& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<Import::Texture>>& texture, const TEXTURE_DESC& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc) override;
+		virtual s_ptr<Texture> create3dTexture(const TEXTURE_DESC& desc) override;
 	};
 }
 

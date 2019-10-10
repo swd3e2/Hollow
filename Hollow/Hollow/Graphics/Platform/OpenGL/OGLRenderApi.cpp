@@ -8,7 +8,6 @@ namespace Hollow {
 		ShaderManager::startUp<OGLShaderManager>();
 		GPUBufferManager::startUp<OGLGPUBufferManager>();
 		RenderTargetManager::startUp<OGLRenderTargetManager>();
-		PipelineStateManager::startUp<OGLPipelineStateManager>();
 		InputLayoutManager::startUp<OGLInputLayoutManager>();
 		RenderStateManager::startUp<OGLRenderStateManager>();
 
@@ -24,33 +23,32 @@ namespace Hollow {
 		ShaderManager::shutdown();
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
-		PipelineStateManager::shutdown();
 		InputLayoutManager::shutdown();
 	}
 
-	void OGLRenderApi::setIndexBuffer(IndexBuffer* buffer)
+	void OGLRenderApi::setIndexBuffer(const s_ptr<IndexBuffer>& buffer)
 	{
-		OGLIndexBuffer* iBuffer = static_cast<OGLIndexBuffer*>(buffer);
+		s_ptr<OGLIndexBuffer> iBuffer = std::static_pointer_cast<OGLIndexBuffer>(buffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<OGLHardwareBuffer*>(iBuffer->mHardwareBuffer)->mVbo);
 		mCurrentIndexBuffer = iBuffer;
 	}
 
-	void OGLRenderApi::setVertexBuffer(VertexBuffer* buffer)
+	void OGLRenderApi::setVertexBuffer(const s_ptr<VertexBuffer>& buffer)
 	{
 		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
 		glBindVertexBuffer(0, oglBuffer->mVbo, 0, buffer->mHardwareBuffer->getStride());
 	}
 
-	void OGLRenderApi::setTexture(UINT location, s_ptr<Texture> texture)
+	void OGLRenderApi::setTexture(UINT location, const s_ptr<Texture>& texture)
 	{
 		OGLTexture* oglTexture = std::static_pointer_cast<OGLTexture>(texture).get();
 
 		glActiveTexture(location + GL_TEXTURE0);
-		if (texture->type == TextureType::TEXTURE2D) 
+		if (texture->type == TextureType::TT_TEXTURE2D) 
 		{
 			glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
 		} 
-		else 
+		else
 		{
 			glBindTexture(GL_TEXTURE_CUBE_MAP, oglTexture->textureId);
 		}
@@ -62,23 +60,23 @@ namespace Hollow {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void OGLRenderApi::setTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
+	void OGLRenderApi::setTextureColorBuffer(UINT slot, const s_ptr<RenderTarget>& renderTarget, UINT targetNum)
 	{
-		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+		s_ptr<OGLRenderTarget> oglRenderTarget = std::static_pointer_cast<OGLRenderTarget>(renderTarget);
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->texture[targetNum]);
 	}
 
-	void OGLRenderApi::setTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
+	void OGLRenderApi::setTextureDepthBuffer(UINT slot, const s_ptr<RenderTarget>& renderTarget)
 	{
-		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+		s_ptr<OGLRenderTarget> oglRenderTarget = std::static_pointer_cast<OGLRenderTarget>(renderTarget);
 		glActiveTexture(slot + GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, oglRenderTarget->depth);
 	}
 
-	void OGLRenderApi::setGpuBuffer(GPUBuffer* buffer)
+	void OGLRenderApi::setGpuBuffer(const s_ptr<GPUBuffer>& buffer)
 	{
-		OGLGpuBuffer* gpuBuffer = static_cast<OGLGpuBuffer*>(buffer);
+		s_ptr<OGLGpuBuffer> gpuBuffer = std::static_pointer_cast<OGLGpuBuffer>(buffer);
 		glBindBufferBase(GL_UNIFORM_BUFFER, gpuBuffer->getLocation(), gpuBuffer->UBO);
 	}
 
@@ -87,9 +85,9 @@ namespace Hollow {
 		glViewport(w0, y0, w, y);
 	}
 
-	void OGLRenderApi::clearRenderTarget(RenderTarget* renderTarget, const float* color)
+	void OGLRenderApi::clearRenderTarget(const s_ptr<RenderTarget>& renderTarget, const float* color)
 	{
-		OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+		s_ptr<OGLRenderTarget> oglRenderTarget = std::static_pointer_cast<OGLRenderTarget>(renderTarget);
 
 		if (oglRenderTarget != nullptr) 
 		{
@@ -105,11 +103,11 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::setRenderTarget(RenderTarget* renderTarget)
+	void OGLRenderApi::setRenderTarget(const s_ptr<RenderTarget>& renderTarget)
 	{
 		if (renderTarget != nullptr) 
 		{
-			OGLRenderTarget* oglRenderTarget = static_cast<OGLRenderTarget*>(renderTarget);
+			s_ptr<OGLRenderTarget> oglRenderTarget = std::static_pointer_cast<OGLRenderTarget>(renderTarget);
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
 		} 
 		else 
@@ -118,22 +116,16 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::setInputLayout(InputLayout* layout)
+	void OGLRenderApi::setInputLayout(const s_ptr<InputLayout>& layout)
 	{
 		mCurrentLayout = layout;
-		OGLInputLayout* oglLayout = static_cast<OGLInputLayout*>(layout);
+		s_ptr<OGLInputLayout> oglLayout = std::static_pointer_cast<OGLInputLayout>(layout);
 		glBindVertexArray(oglLayout->vao);
 	}
 
-	void OGLRenderApi::setPipelineState(PipelineState* pipeline)
+	void OGLRenderApi::setDepthStencilState(const s_ptr<DepthStencil>& depthStencil)
 	{
-		OGLPipelineState* oglPipeline = static_cast<OGLPipelineState*>(pipeline);
-		glBindProgramPipeline(oglPipeline->pipelineId);
-	}
-
-	void OGLRenderApi::setDepthStencilState(DepthStencil* depthStencil)
-	{
-		const DEPTH_STENCIL_STATE_DESC& desc = static_cast<OGLDepthStencilState*>(depthStencil)->desc;
+		const DEPTH_STENCIL_STATE_DESC& desc = std::static_pointer_cast<OGLDepthStencilState>(depthStencil)->desc;
 
 		if (desc.depthEnable) 
 		{
@@ -172,19 +164,19 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::setSampler(const int samplerUnit, SamplerState* sampler)
+	void OGLRenderApi::setSampler(const int samplerUnit, const s_ptr<SamplerState>& sampler)
 	{
 
 	}
 
-	void OGLRenderApi::setTextureSampler(const int textureUnit, SamplerState* sampler)
+	void OGLRenderApi::setTextureSampler(const int textureUnit, const s_ptr<SamplerState>& sampler)
 	{
-		glBindSampler(textureUnit, static_cast<OGLSamplerState*>(sampler)->samplerObjectId);
+		glBindSampler(textureUnit, std::static_pointer_cast<OGLSamplerState>(sampler)->samplerObjectId);
 	}
 
-	void OGLRenderApi::setRasterizerState(RasterizerState* rasterizerState)
+	void OGLRenderApi::setRasterizerState(const s_ptr<RasterizerState>& rasterizerState)
 	{
-		const RASTERIZER_STATE_DESC& desc = static_cast<OGLRasterizerState*>(rasterizerState)->desc;
+		const RASTERIZER_STATE_DESC& desc = std::static_pointer_cast<OGLRasterizerState>(rasterizerState)->desc;
 
 		if (desc.frontCounterClockwise != frontCounterClockwise) 
 		{
@@ -257,9 +249,9 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::setBlendState(BlendState* blendState)
+	void OGLRenderApi::setBlendState(const s_ptr<BlendState>& blendState)
 	{
-		const BLEND_STATE_DESC& desc = static_cast<OGLBlendState*>(blendState)->desc;
+		const BLEND_STATE_DESC& desc = std::static_pointer_cast<OGLBlendState>(blendState)->desc;
 
 		for (int i = 0; i < 8; i++) {
 			if (desc.blend[i].blendEnabled) 
@@ -286,9 +278,10 @@ namespace Hollow {
 		}
 	}
 
-	void OGLRenderApi::setShaderPipeline(ShaderPipeline* shaderPipeline)
+	void OGLRenderApi::setShaderPipeline(const s_ptr<ShaderPipeline>& shaderPipeline)
 	{
-
+		s_ptr<OGLShaderPipeline> oglPipeline = std::static_pointer_cast<OGLShaderPipeline>(shaderPipeline);
+		glBindProgramPipeline(oglPipeline->pipelineId);
 	}
 
 	void OGLRenderApi::drawInstanced()

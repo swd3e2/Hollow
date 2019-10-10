@@ -51,28 +51,27 @@ namespace Hollow {
 
 		virtual void onStartUp() override;
 
-		virtual void setIndexBuffer(IndexBuffer* buffer) override;
-		virtual void setVertexBuffer(VertexBuffer* buffer) override;
-		virtual void setTexture(UINT slot, s_ptr<Texture> texture) override;
+		virtual void setIndexBuffer(const s_ptr<IndexBuffer>& buffer) override;
+		virtual void setVertexBuffer(const s_ptr<VertexBuffer>& buffer) override;
+		virtual void setTexture(UINT slot, const s_ptr<Texture>& texture) override;
 		virtual void unsetTexture(UINT) override;
-		virtual void setTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum) override;
-		virtual void setTextureDepthBuffer(UINT slot, RenderTarget* renderTarget) override;
+		virtual void setTextureColorBuffer(UINT slot, const s_ptr<RenderTarget>& renderTarget, UINT targetNum) override;
+		virtual void setTextureDepthBuffer(UINT slot, const s_ptr<RenderTarget>& renderTarget) override;
 		virtual void present() override;
 		virtual void draw(UINT count) override;
 		virtual void drawIndexed(UINT count) override;
-		virtual void setGpuBuffer(GPUBuffer*) override;
+		virtual void setGpuBuffer(const s_ptr<GPUBuffer>& gBuffer) override;
 		virtual void setViewport(int w0, int y0, int w, int y) override;
-		virtual void setRenderTarget(RenderTarget* renderTarget) override;
-		virtual void clearRenderTarget(RenderTarget* renderTarget, const float* color) override;
-		virtual void setPipelineState(PipelineState* pipeline) override;
-		virtual void setInputLayout(InputLayout* layout) override;
+		virtual void setRenderTarget(const s_ptr<RenderTarget>& renderTarget) override;
+		virtual void clearRenderTarget(const s_ptr<RenderTarget>& renderTarget, const float* color) override;
+		virtual void setInputLayout(const s_ptr<InputLayout>& layout) override;
 
-		virtual void setSampler(const int slot, SamplerState* sampler) override;
-		virtual void setTextureSampler(const int textureUnit, SamplerState* sampler) override;
-		virtual void setDepthStencilState(DepthStencil* depthStencil) override;
-		virtual void setRasterizerState(RasterizerState* rasterizerState) override;
-		virtual void setBlendState(BlendState* blendState) override;
-		virtual void setShaderPipeline(ShaderPipeline* shaderPipeline) override;
+		virtual void setSampler(const int slot, const s_ptr<SamplerState>& sampler) override;
+		virtual void setTextureSampler(const int textureUnit, const s_ptr<SamplerState>& sampler) override;
+		virtual void setDepthStencilState(const s_ptr<DepthStencil>& depthStencil) override;
+		virtual void setRasterizerState(const s_ptr<RasterizerState>& rasterizerState) override;
+		virtual void setBlendState(const s_ptr<BlendState>& blendState) override;
+		virtual void setShaderPipeline(const s_ptr<ShaderPipeline>& shaderPipeline) override;
 
 		virtual void drawInstanced() override;
 		virtual void drawIndexedInstanced() override;

@@ -4,13 +4,14 @@
 #define HW_GPU_BUFFER_MANAGER_H
 
 #include "Hollow/Core/CModule.h"
-#include "Base/GPUBuffer.h"
+#include "GPUBuffer.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	class GPUBufferManager : public CModule<GPUBufferManager>
 	{
 	public:
-		virtual GPUBuffer* create(unsigned int location, unsigned int size) = 0;
+		virtual s_ptr<GPUBuffer> create(unsigned int location, unsigned int size) = 0;
 	};
 }
 

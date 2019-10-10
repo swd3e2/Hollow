@@ -6,7 +6,7 @@
 
 namespace Hollow {
 
-	InputLayout* Hollow::D3D11InputLayoutManager::create(const INPUT_LAYOUT_DESC& desc)
+	s_ptr<InputLayout> Hollow::D3D11InputLayoutManager::create(const INPUT_LAYOUT_DESC& desc)
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11DeviceContext* deviceContext = r->getContext().getDeviceContext();
@@ -59,7 +59,7 @@ namespace Hollow {
 		SAFE_RELEASE(shaderBlob);
 		delete[] layout;
 
-		return inputLayout;
+		return s_ptr<InputLayout>(inputLayout);
 	}
 
 }

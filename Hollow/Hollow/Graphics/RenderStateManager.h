@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Base/SamplerState.h"
-#include "Base/RasterizerState.h"
-#include "Base/BlendState.h"
-#include "Base/DepthStencil.h"
+#include "SamplerState.h"
+#include "RasterizerState.h"
+#include "BlendState.h"
+#include "DepthStencil.h"
 #include "Hollow/Core/CModule.h"
 
 namespace Hollow {
@@ -15,9 +15,9 @@ namespace Hollow {
 	class RenderStateManager : public CModule<RenderStateManager>
 	{
 	public:
-		virtual SamplerState*		createSamplerState(const SAMPLER_STATE_DESC& desc) = 0;
-		virtual RasterizerState*	createRasterizerState(const RASTERIZER_STATE_DESC& desc) = 0;
-		virtual BlendState*			createBlendState(const BLEND_STATE_DESC& desc) = 0;
-		virtual DepthStencil*		createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) = 0;
+		virtual s_ptr<SamplerState>		createSamplerState(const SAMPLER_STATE_DESC& desc) = 0;
+		virtual s_ptr<RasterizerState>	createRasterizerState(const RASTERIZER_STATE_DESC& desc) = 0;
+		virtual s_ptr<BlendState>		createBlendState(const BLEND_STATE_DESC& desc) = 0;
+		virtual s_ptr<DepthStencil>		createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc) = 0;
 	};
 }

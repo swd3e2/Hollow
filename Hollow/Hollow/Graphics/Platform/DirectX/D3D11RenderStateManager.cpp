@@ -3,7 +3,7 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	SamplerState* D3D11RenderStateManager::createSamplerState(const SAMPLER_STATE_DESC& desc)
+	s_ptr<SamplerState> D3D11RenderStateManager::createSamplerState(const SAMPLER_STATE_DESC& desc)
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
@@ -23,10 +23,10 @@ namespace Hollow {
 
 		device->CreateSamplerState(&samplerDesc, &samplerState->m_SamplerState);
 
-		return samplerState;
+		return s_ptr<SamplerState>(samplerState);
 	}
 
-	RasterizerState* D3D11RenderStateManager::createRasterizerState(const RASTERIZER_STATE_DESC& desc)
+	s_ptr<RasterizerState> D3D11RenderStateManager::createRasterizerState(const RASTERIZER_STATE_DESC& desc)
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
@@ -47,10 +47,10 @@ namespace Hollow {
 
 		device->CreateRasterizerState(&rasterizerDesc, &rasterizerState->m_RasterizerState);
 
-		return rasterizerState;
+		return s_ptr<RasterizerState>(rasterizerState);
 	}
 
-	BlendState* D3D11RenderStateManager::createBlendState(const BLEND_STATE_DESC& desc)
+	s_ptr<BlendState> D3D11RenderStateManager::createBlendState(const BLEND_STATE_DESC& desc)
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
@@ -74,10 +74,10 @@ namespace Hollow {
 
 		device->CreateBlendState(&blendDesc, &blendState->m_BlendState);
 
-		return blendState;
+		return s_ptr<BlendState>(blendState);
 	}
 
-	DepthStencil* D3D11RenderStateManager::createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc)
+	s_ptr<DepthStencil> D3D11RenderStateManager::createDepthStencilState(const DEPTH_STENCIL_STATE_DESC& desc)
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
@@ -107,7 +107,7 @@ namespace Hollow {
 
 		device->CreateDepthStencilState(&dssDesc, &depthStencil->depthStencilState);
 
-		return depthStencil;
+		return s_ptr<DepthStencil>(depthStencil);
 	}
 }
 

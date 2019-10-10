@@ -2,9 +2,9 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	s_ptr<Texture> D3D11TextureManager::create2dTexture(const s_ptr<TextureData>& desc)
+	s_ptr<Texture> D3D11TextureManager::create2dTexture(const s_ptr<Import::Texture>& desc)
 	{
-		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
+		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->name.c_str(), desc->size);
 		D3D11Texture* texture = new D3D11Texture();
 
 		texture->active = true;
@@ -26,10 +26,10 @@ namespace Hollow {
 		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 		textureDesc.MipLevels = 5;
 
-		// If texture is created for compute shader
-		if (desc->unorderedAccess) {
-			textureDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
-		}
+		//// If texture is created for compute shader
+		//if (desc->unorderedAccess) {
+		//	textureDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
+		//}
 
 		if (desc->data != nullptr) {
 			D3D11_SUBRESOURCE_DATA initData;
@@ -59,7 +59,7 @@ namespace Hollow {
 			}
 		}
 
-		if (desc->unorderedAccess) {
+		/*if (desc->unorderedAccess) {
 			D3D11_UNORDERED_ACCESS_VIEW_DESC descUAV;
 			ZeroMemory(&descUAV, sizeof(descUAV));
 			descUAV.Format = textureDesc.Format;
@@ -69,7 +69,7 @@ namespace Hollow {
 				HW_ERROR("D3DTexture: Can't create unorderered access view");
 				return nullptr;
 			}
-		}
+		}*/
 
 		// Setup the shader resource view description.
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -86,14 +86,14 @@ namespace Hollow {
 		deviceContext->GenerateMips(texture->m_TextureShaderResource);
 
 		s_ptr<Texture> texturePtr(texture);
-		textureList[desc->filename] = texturePtr;
+		textureList[desc->name] = texturePtr;
 
 		return texturePtr;
 	}
 
-	s_ptr<Texture> D3D11TextureManager::create3dTexture(const std::vector<s_ptr<TextureData>>& desc)
+	s_ptr<Texture> D3D11TextureManager::create3dTexture(const std::vector<s_ptr<Import::Texture>>& desc)
 	{
-		HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
+		HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->name.c_str(), desc[1]->name.c_str(), desc[2]->name.c_str(), desc[3]->name.c_str(), desc[4]->name.c_str(), desc[5]->name.c_str());
 		D3D11Texture* texture = new D3D11Texture();
 
 		texture->active = true;
@@ -141,12 +141,12 @@ namespace Hollow {
 		}
 
 		s_ptr<Texture> texturePtr(texture);
-		textureList[desc[0]->filename] = texturePtr;
+		textureList[desc[0]->name] = texturePtr;
 
 		return texturePtr;
 	}
 
-	s_ptr<Texture> D3D11TextureManager::create3dTexture(const s_ptr<TextureData>& desc)
+	s_ptr<Texture> D3D11TextureManager::create3dTexture(const s_ptr<Import::Texture>& desc)
 	{
 		D3D11Texture* texture = new D3D11Texture();
 
@@ -268,7 +268,7 @@ namespace Hollow {
 		}
 
 		s_ptr<Texture> texturePtr(texture);
-		textureList[desc->filename] = texturePtr;
+		textureList[desc->name] = texturePtr;
 
 		return texturePtr;
 	}

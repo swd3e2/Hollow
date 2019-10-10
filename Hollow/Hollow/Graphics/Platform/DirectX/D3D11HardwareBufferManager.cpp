@@ -3,7 +3,7 @@
 #include "D3D11Context.h"
 
 namespace Hollow {
-	VertexBuffer* D3D11HardwareBufferManager::create(const VERTEX_BUFFER_DESC& desc)
+	s_ptr<VertexBuffer> D3D11HardwareBufferManager::create(const VERTEX_BUFFER_DESC& desc)
 	{
 		D3D11VertexBuffer* buffer = new D3D11VertexBuffer();
 		buffer->mHardwareBuffer = new D3D11HardwareBuffer(desc.size, desc.stride);
@@ -27,10 +27,10 @@ namespace Hollow {
 		device->CreateBuffer(&bufferDesc, &bufferData,
 			&static_cast<D3D11HardwareBuffer*>(buffer->mHardwareBuffer)->m_Buffer);
 
-		return buffer;
+		return s_ptr<VertexBuffer>(buffer);
 	}
 
-	IndexBuffer* D3D11HardwareBufferManager::create(const INDEX_BUFFER_DESC& desc)
+	s_ptr<IndexBuffer> D3D11HardwareBufferManager::create(const INDEX_BUFFER_DESC& desc)
 	{
 		D3D11IndexBuffer* buffer = new D3D11IndexBuffer();
 		buffer->mHardwareBuffer = new D3D11HardwareBuffer(desc.size, D3D11Helper::getSize(desc.format));
@@ -53,6 +53,6 @@ namespace Hollow {
 
 		device->CreateBuffer(&bufferDesc, &bufferData, &static_cast<D3D11HardwareBuffer*>(buffer->mHardwareBuffer)->m_Buffer);
 
-		return buffer;
+		return s_ptr<IndexBuffer>(buffer);
 	}
 }

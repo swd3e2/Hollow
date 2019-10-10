@@ -3,6 +3,7 @@
 #include <utility>
 #include <vector>
 #include <string>
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	enum INPUT_DATA_TYPE
@@ -89,7 +90,7 @@ namespace Hollow {
 	private:
 		size_t stride;
 	public:
-		static InputLayout* create(const INPUT_LAYOUT_DESC& desc);
+		static s_ptr<InputLayout> create(const INPUT_LAYOUT_DESC& desc);
 		size_t getStride() const { return stride; }
 	};
 }

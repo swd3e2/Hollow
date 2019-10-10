@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CommonTypes.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	struct RASTERIZER_STATE_DESC
@@ -17,6 +18,6 @@ namespace Hollow {
 	class RasterizerState
 	{
 	public:
-		static RasterizerState* create(const RASTERIZER_STATE_DESC& desc);
+		static s_ptr<RasterizerState> create(const RASTERIZER_STATE_DESC& desc);
 	};
 }

@@ -12,8 +12,8 @@ namespace Hollow {
 	class OGLHardwareBufferManager : public HardwareBufferManager
 	{
 	public:
-		virtual VertexBuffer* create(const VERTEX_BUFFER_DESC& desc) override;
-		virtual IndexBuffer* create(const INDEX_BUFFER_DESC& desc) override;
+		virtual s_ptr<VertexBuffer> create(const VERTEX_BUFFER_DESC& desc) override;
+		virtual s_ptr<IndexBuffer> create(const INDEX_BUFFER_DESC& desc) override;
 	};
 }
 

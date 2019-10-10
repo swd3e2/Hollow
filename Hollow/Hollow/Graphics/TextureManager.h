@@ -6,7 +6,7 @@
 #include "Hollow/Common/Log.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Import/Texture.h"
-#include "Base/Texture.h"
+#include "Texture.h"
 #include <unordered_map>
 #include <string>
 #include "Hollow/Platform.h"
@@ -20,11 +20,15 @@ namespace Hollow {
 		const std::string baseTexturePapth = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/";
 	public:
 		s_ptr<Texture> createTextureFromFile(const std::string& filename, bool fromDefaultFolder = true);
+		
+		virtual s_ptr<Texture> create2dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc) = 0;
+		virtual s_ptr<Texture> create2dTexture(const TEXTURE_DESC& desc) = 0;
+		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<Import::Texture>>& texture, const TEXTURE_DESC& desc) = 0;
+		virtual s_ptr<Texture> create3dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc) = 0;
+		virtual s_ptr<Texture> create3dTexture(const TEXTURE_DESC& desc) = 0;
+
 		void remove(const s_ptr<Texture>& texture);
 		void removeAll();
-		virtual s_ptr<Texture> create2dTexture(const s_ptr<Import::Texture>& desc) = 0;
-		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<Import::Texture>>& desc) = 0;
-		virtual s_ptr<Texture> create3dTexture(const s_ptr<Import::Texture>& desc) = 0;
 	};
 }
 

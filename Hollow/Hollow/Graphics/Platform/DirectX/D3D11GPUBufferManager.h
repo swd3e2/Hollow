@@ -11,7 +11,7 @@ namespace Hollow {
 	class D3D11GPUBufferManager : public GPUBufferManager
 	{
 	public:
-		virtual GPUBuffer* create(unsigned int location, unsigned int size) override;
+		virtual s_ptr<GPUBuffer> create(unsigned int location, unsigned int size) override;
 	};
 }
 

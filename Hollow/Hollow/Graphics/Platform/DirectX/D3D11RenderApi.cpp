@@ -1,8 +1,6 @@
 #include "D3D11RenderApi.h"
 #include "D3D11Context.h"
 #include "D3D11RenderTarget.h"
-#include "D3D11PixelShader.h"
-#include "D3D11VertexShader.h"
 #include "D3D11BlendState.h"
 #include "D3D11SamplerState.h"
 #include "D3D11RasterizerState.h"
@@ -17,8 +15,8 @@
 #include "D3D11InputLayout.h"
 #include "D3D11Helper.h"
 #include "Hollow/Common/Helper.h"
-#include "D3D11PipelineStateManager.h"
 #include "D3D11InputLayoutManager.h"
+#include "D3D11Win32Window.h"
 
 namespace Hollow {
 	D3D11RenderApi::D3D11RenderApi(int width, int height)
@@ -39,7 +37,6 @@ namespace Hollow {
 		ShaderManager::shutdown();
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
-		PipelineStateManager::shutdown();
 		InputLayoutManager::shutdown();
 	}
 
@@ -129,12 +126,11 @@ namespace Hollow {
 		ShaderManager::startUp<D3D11ShaderManager>();
 		GPUBufferManager::startUp<D3D11GPUBufferManager>();
 		RenderTargetManager::startUp<D3D11RenderTargetManager>();
-		PipelineStateManager::startUp<D3D11PipelineStateManager>();
 		InputLayoutManager::startUp<D3D11InputLayoutManager>();
 		RenderStateManager::startUp<D3D11RenderStateManager>();
 	}
 
-	void D3D11RenderApi::setTexture(UINT slot, s_ptr<Texture> texture)
+	void D3D11RenderApi::setTexture(UINT slot, const s_ptr<Texture>& texture)
 	{
 		D3D11Texture* d3dTexture = std::static_pointer_cast<D3D11Texture>(texture).get();
 		if (texture != nullptr && d3dTexture->m_TextureShaderResource != nullptr) {
@@ -154,35 +150,39 @@ namespace Hollow {
 		context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
 	}
 
-	void D3D11RenderApi::setTextureColorBuffer(UINT slot, RenderTarget* renderTarget, UINT targetNum)
+	void D3D11RenderApi::setTextureColorBuffer(UINT slot, const s_ptr<RenderTarget>& renderTarget, UINT targetNum)
 	{
-		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
+		D3D11RenderTarget* d3dRenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dRenderTarget->getShaderResourceView()[targetNum]);
 	}
 
-	void D3D11RenderApi::setTextureDepthBuffer(UINT slot, RenderTarget* renderTarget)
+	void D3D11RenderApi::setTextureDepthBuffer(UINT slot, const s_ptr<RenderTarget>& renderTarget)
 	{
-		D3D11RenderTarget* d3dRenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
+		D3D11RenderTarget* d3dRenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
 		auto ptr = d3dRenderTarget->getDepthStencilResource();
 		context->getDeviceContext()->PSSetShaderResources(slot, 1, &ptr);
 	}
 
-	void D3D11RenderApi::setIndexBuffer(IndexBuffer* buffer)
+	void D3D11RenderApi::setIndexBuffer(const s_ptr<IndexBuffer>& buffer)
 	{
-		D3D11IndexBuffer* buff = (D3D11IndexBuffer*)(buffer);
+		s_ptr<D3D11IndexBuffer> buff = std::static_pointer_cast<D3D11IndexBuffer>(buffer);
 		context->getDeviceContext()->IASetIndexBuffer(static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->get(), DXGI_FORMAT_R32_UINT, 0);
 	}
 
-	void D3D11RenderApi::setVertexBuffer(VertexBuffer* buffer)
+	void D3D11RenderApi::setVertexBuffer(const s_ptr<VertexBuffer>& buffer)
 	{
-		D3D11VertexBuffer* buff = (D3D11VertexBuffer*)(buffer);
-		context->getDeviceContext()->IASetVertexBuffers(0, 1, static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getAddressOf(), static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getStridePtr(), &this->offset);
+		s_ptr<D3D11VertexBuffer> buff = std::static_pointer_cast<D3D11VertexBuffer>(buffer);
+		context->getDeviceContext()->IASetVertexBuffers(0, 1, 
+			static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getAddressOf(), 
+			static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getStridePtr(), 
+			&this->offset
+		);
 	}
 
-	void D3D11RenderApi::clearRenderTarget(RenderTarget* renderTarget, const float* color)
+	void D3D11RenderApi::clearRenderTarget(const s_ptr<RenderTarget>& renderTarget, const float* color)
 	{
 		if (renderTarget != nullptr) {
-			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
+			D3D11RenderTarget* d3d11RenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
 			for (int i = 0; i < d3d11RenderTarget->count; i++) {
 				context->getDeviceContext()->ClearRenderTargetView(d3d11RenderTarget->getRenderTaget()[i], color);
 			}
@@ -193,40 +193,10 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::setPipelineState(PipelineState* pipeline)
-	{
-		D3D11PipelineState* d3dPipeline = static_cast<D3D11PipelineState*>(pipeline);
-
-		D3D11VertexShader* d3dVertexShader = d3dPipeline->getVertexShader();
-		if (d3dVertexShader != nullptr) {
-			context->getDeviceContext()->VSSetShader(d3dVertexShader->getShader(), NULL, 0);
-		}
-
-		D3D11PixelShader* d3dPixelShader = d3dPipeline->getPixelShader();
-		if (d3dPixelShader != nullptr) {
-			context->getDeviceContext()->PSSetShader(d3dPixelShader->getShader(), NULL, 0);
-		}
-
-		D3D11GeometryShader* d3dGeometryShader = d3dPipeline->getGeometryShader();
-		if (d3dGeometryShader != nullptr) {
-			context->getDeviceContext()->GSSetShader(d3dGeometryShader->getShader(), NULL, 0);
-		}
-
-		D3D11DomainShader* d3dDomainShader = d3dPipeline->getDomainShader();
-		if (d3dDomainShader != nullptr) {
-			context->getDeviceContext()->DSSetShader(d3dDomainShader->getShader(), NULL, 0);
-		}
-
-		D3D11HullShader* d3dHullShader = d3dPipeline->getHullShader();
-		if (d3dHullShader != nullptr) {
-			context->getDeviceContext()->HSSetShader(d3dHullShader->getShader(), NULL, 0);
-		}
-	}
-
-	void D3D11RenderApi::setRenderTarget(RenderTarget* renderTarget)
+	void D3D11RenderApi::setRenderTarget(const s_ptr<RenderTarget>& renderTarget)
 	{
 		if (renderTarget != nullptr) {
-			D3D11RenderTarget* d3d11RenderTarget = static_cast<D3D11RenderTarget*>(renderTarget);
+			D3D11RenderTarget* d3d11RenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
 			context->getDeviceContext()->OMSetRenderTargets(d3d11RenderTarget->count, d3d11RenderTarget->getRenderTaget(), d3d11RenderTarget->getDepthStencilView());
 		} else {
 			context->getDeviceContext()->OMSetRenderTargets(3, nullRTV, NULL);
@@ -234,38 +204,64 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::setSampler(const int slot, SamplerState* sampler)
+	void D3D11RenderApi::setSampler(const int slot, const s_ptr<SamplerState>& sampler)
 	{
-		ID3D11SamplerState** samplerState = static_cast<D3D11SamplerState*>(sampler)->getSamplerState();
+		ID3D11SamplerState** samplerState = std::static_pointer_cast<D3D11SamplerState>(sampler)->getSamplerState();
 		context->getDeviceContext()->PSSetSamplers(slot, 1, samplerState);
 		context->getDeviceContext()->DSSetSamplers(slot, 1, samplerState);
 	}
 
-	void D3D11RenderApi::setTextureSampler(const int textureUnit, SamplerState* sampler)
+	void D3D11RenderApi::setTextureSampler(const int textureUnit, const s_ptr<SamplerState>& sampler)
 	{
 		
 	}
 
-	void D3D11RenderApi::setDepthStencilState(DepthStencil* depthStencil)
+	void D3D11RenderApi::setDepthStencilState(const s_ptr<DepthStencil>& depthStencil)
 	{
-		ID3D11DepthStencilState* state = static_cast<D3D11DepthStencil*>(depthStencil)->depthStencilState;
+		ID3D11DepthStencilState* state = std::static_pointer_cast<D3D11DepthStencil>(depthStencil)->depthStencilState;
 		context->getDeviceContext()->OMSetDepthStencilState(state, 0xFF);
 	}
 
-	void D3D11RenderApi::setRasterizerState(RasterizerState* rasterizerState)
+	void D3D11RenderApi::setRasterizerState(const s_ptr<RasterizerState>& rasterizerState)
 	{
-		ID3D11RasterizerState* rasterizer = static_cast<D3D11RasterizerState*>(rasterizerState)->getRasterizerState();
+		ID3D11RasterizerState* rasterizer = std::static_pointer_cast<D3D11RasterizerState>(rasterizerState)->getRasterizerState();
 		context->getDeviceContext()->RSSetState(rasterizer);
 	}
 
-	void D3D11RenderApi::setBlendState(BlendState* blendState)
+	void D3D11RenderApi::setBlendState(const s_ptr<BlendState>& blendState)
 	{
-		ID3D11BlendState* blend = static_cast<D3D11BlendState*>(blendState)->getBlendState();
+		ID3D11BlendState* blend = std::static_pointer_cast<D3D11BlendState>(blendState)->getBlendState();
 		context->getDeviceContext()->OMSetBlendState(blend, nullptr, 0xFFFFFFFF);
 	}	
 
-	void D3D11RenderApi::setShaderPipeline(ShaderPipeline* shaderPipeline)
+	void D3D11RenderApi::setShaderPipeline(const s_ptr<ShaderPipeline>& shaderPipeline)
 	{
+		D3D11ShaderPipeline* d3dPipeline = std::static_pointer_cast<D3D11ShaderPipeline>(shaderPipeline).get();
+
+		const s_ptr<D3D11Shader>& vertexShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getVertexShader());
+		if (vertexShader != nullptr) {
+			context->getDeviceContext()->VSSetShader(static_cast<ID3D11VertexShader*>(vertexShader->getShader()), NULL, 0);
+		}
+
+		const s_ptr<D3D11Shader>& pixelShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getPixelShader());
+		if (pixelShader != nullptr) {
+			context->getDeviceContext()->PSSetShader(static_cast<ID3D11PixelShader*>(pixelShader->getShader()), NULL, 0);
+		}
+
+		const s_ptr<D3D11Shader>& geometryShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getGeometryShader());
+		if (geometryShader != nullptr) {
+			context->getDeviceContext()->GSSetShader(static_cast<ID3D11GeometryShader*>(geometryShader->getShader()), NULL, 0);
+		}
+
+		const s_ptr<D3D11Shader>& hullShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getHullShader());
+		if (hullShader != nullptr) {
+			context->getDeviceContext()->HSSetShader(static_cast<ID3D11HullShader*>(hullShader->getShader()), NULL, 0);
+		}
+
+		const s_ptr<D3D11Shader>& domainShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getDomainShader());
+		if (domainShader != nullptr) {
+			context->getDeviceContext()->DSSetShader(static_cast<ID3D11DomainShader*>(domainShader->getShader()), NULL, 0);
+		}
 	}
 
 	void D3D11RenderApi::drawInstanced()
@@ -281,9 +277,9 @@ namespace Hollow {
 		context->getDeviceContext()->OMSetBlendState(blend != nullptr ? blend->getBlendState() : 0, factor, mask);
 	}
 
-	void D3D11RenderApi::setInputLayout(InputLayout* layout)
+	void D3D11RenderApi::setInputLayout(const s_ptr<InputLayout>& layout)
 	{
-		D3D11InputLayout* inputLayout = static_cast<D3D11InputLayout*>(layout);
+		s_ptr<D3D11InputLayout> inputLayout = std::static_pointer_cast<D3D11InputLayout>(layout);
 		context->getDeviceContext()->IASetInputLayout(inputLayout->m_InputLayout);
 	}
 
@@ -292,9 +288,9 @@ namespace Hollow {
 		context->getDeviceContext()->DrawIndexed(count, 0, 0);
 	}
 
-	void D3D11RenderApi::setGpuBuffer(GPUBuffer* buffer)
+	void D3D11RenderApi::setGpuBuffer(const s_ptr<GPUBuffer>& buffer)
 	{
-		D3D11GPUBuffer* gpuBuffer = static_cast<D3D11GPUBuffer*>(buffer);
+		s_ptr<D3D11GPUBuffer> gpuBuffer = std::static_pointer_cast<D3D11GPUBuffer>(buffer);
 		context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 		context->getDeviceContext()->PSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 		context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);

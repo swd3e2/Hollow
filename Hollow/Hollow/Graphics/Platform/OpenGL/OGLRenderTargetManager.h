@@ -12,7 +12,7 @@ namespace Hollow {
 	class OGLRenderTargetManager : public RenderTargetManager
 	{
 	public:
-		virtual RenderTarget* create(RENDER_TARGET_DESC desc);
+		virtual s_ptr<RenderTarget> create(RENDER_TARGET_DESC desc);
 	private:
 		unsigned int getTextureFormat(RENDER_TARGET_TEXTURE_FORMAT format);
 		unsigned int getTextureType(RENDER_TARGET_TEXTURE_FORMAT format);
