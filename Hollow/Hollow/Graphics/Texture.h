@@ -3,7 +3,7 @@
 #ifndef HW_TEXTURE_H
 #define HW_TEXTURE_H
 
-#include "Hollow/Graphics/CommonTypes.h"
+#include <memory>
 #include "Hollow/Platform.h"
 #include <string>
 #include "Hollow/Common/Log.h"
