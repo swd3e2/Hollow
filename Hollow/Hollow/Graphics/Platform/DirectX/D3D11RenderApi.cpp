@@ -134,9 +134,9 @@ namespace Hollow {
 		RenderStateManager::startUp<D3D11RenderStateManager>();
 	}
 
-	void D3D11RenderApi::setTexture(UINT slot, Texture* texture)
+	void D3D11RenderApi::setTexture(UINT slot, s_ptr<Texture> texture)
 	{
-		D3D11Texture* d3dTexture = static_cast<D3D11Texture*>(texture);
+		D3D11Texture* d3dTexture = std::static_pointer_cast<D3D11Texture>(texture).get();
 		if (texture != nullptr && d3dTexture->m_TextureShaderResource != nullptr) {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
@@ -260,7 +260,9 @@ namespace Hollow {
 
 	void D3D11RenderApi::setBlendState(BlendState* blendState)
 	{
-	}
+		ID3D11BlendState* blend = static_cast<D3D11BlendState*>(blendState)->getBlendState();
+		context->getDeviceContext()->OMSetBlendState(blend, nullptr, 0xFFFFFFFF);
+	}	
 
 	void D3D11RenderApi::setShaderPipeline(ShaderPipeline* shaderPipeline)
 	{

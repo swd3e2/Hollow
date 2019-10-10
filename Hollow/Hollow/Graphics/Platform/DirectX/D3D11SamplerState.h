@@ -3,7 +3,7 @@
 #ifndef HW_D3D11_SAMPLER_STATE_H
 #define HW_D3D11_SAMPLER_STATE_H
 
-#include "Hollow/Graphics/Base/SamplerState.h"
+#include "Hollow/Graphics/SamplerState.h"
 #include "Hollow/Platform.h"
 #include "D3D11Prerequisites.h"
 

@@ -1,15 +1,15 @@
 #include "OGLTextureManager.h"
 
 namespace Hollow {
-	Texture* OGLTextureManager::create2dTexture(TextureData* desc)
+	s_ptr<Texture> OGLTextureManager::create2dTexture(const s_ptr<TextureData>& desc)
 	{
-		Hollow::Logger::instance()->log("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
+		Hollow::Logger::instance()->log("OGLTextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		OGLTexture* texture = new OGLTexture(desc->width, desc->height);
 
 		glGenTextures(1, &texture->textureId);
 		glBindTexture(GL_TEXTURE_2D, texture->textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, desc->width, desc->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, *desc->data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, desc->width, desc->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, desc->data.get());
 
 		glActiveTexture(GL_TEXTURE1);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -21,13 +21,13 @@ namespace Hollow {
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		textureList[desc->filename] = texture;
-		delete desc;
+		s_ptr<Texture> texturePtr(texture);
+		textureList[desc->filename] = texturePtr;
 
-		return texture;
+		return texturePtr;
 	}
 
-	Texture* OGLTextureManager::create3dTexture(TextureData** desc)
+	s_ptr<Texture> OGLTextureManager::create3dTexture(const std::vector<s_ptr<TextureData>>& desc)
 	{
 		Hollow::Logger::instance()->log("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 		HW_INFO("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
@@ -37,7 +37,7 @@ namespace Hollow {
 		glGenTextures(1, &texture->textureId);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture->textureId);
 		for (int i = 0; i < 6; i++) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, desc[i]->width, desc[i]->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, *desc[i]->data);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, desc[i]->width, desc[i]->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, desc[i]->data.get());
 		}
 
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -48,15 +48,13 @@ namespace Hollow {
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-		textureList[desc[0]->filename] = texture;
 
-		for (int i = 0; i < 6; i++) {
-			delete desc[i];
-		}
+		s_ptr<Texture> texturePtr(texture);
+		textureList[desc[0]->filename] = texturePtr;
 
-		return texture;
+		return texturePtr;
 	}
-	Texture* OGLTextureManager::create3dTexture(TextureData* desc)
+	s_ptr<Texture> OGLTextureManager::create3dTexture(const s_ptr<TextureData>& desc)
 	{
 		int xOffset = desc->width / 4;
 		int yOffset = desc->height / 3;
@@ -65,7 +63,7 @@ namespace Hollow {
 			data[i] = new unsigned char[xOffset * yOffset * 4];
 		}
 
-		unsigned char* textureData = (unsigned char*)*desc->data;
+		unsigned char* textureData = (unsigned char*)desc->data.get();
 
 		OGLTexture* texture = new OGLTexture(xOffset, yOffset);
 		texture->type = TextureType::TEXTURE_CUBE;
@@ -149,8 +147,10 @@ namespace Hollow {
 		for (int i = 0; i < data.size(); i++) {
 			delete[] data[i];
 		}
-		delete desc;
 
-		return texture;
+		s_ptr<Texture> texturePtr(texture);
+		textureList[desc->filename] = texturePtr;
+
+		return texturePtr;
 	}
 }

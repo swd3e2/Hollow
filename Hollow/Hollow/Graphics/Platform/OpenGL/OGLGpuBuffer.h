@@ -3,7 +3,7 @@
 #ifndef HW_OGL_GPU_BUFFER_H
 #define HW_OGL_GPU_BUFFER_H
 
-#include "Hollow/Graphics/Base/GPUBuffer.h"
+#include "Hollow/Graphics/GPUBuffer.h"
 #include "OGLPrerequisites.h"
 
 namespace Hollow {

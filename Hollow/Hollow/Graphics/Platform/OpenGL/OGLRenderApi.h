@@ -4,7 +4,7 @@
 #define HW_OGL_RENDER_API_H
 
 #include "OGLPrerequisites.h"
-#include "Hollow/Graphics/Base/RenderApi.h"
+#include "Hollow/Graphics/RenderApi.h"
 #include <iostream>
 #include "Hollow/Common/Log.h"
 #include "Hollow/Math/Matrix4.h"
@@ -14,7 +14,7 @@
 #include "OGLShaderManager.h"
 #include "OGLGPUBufferManager.h"
 #include "OGLRenderTargetManager.h"
-#include "Hollow/Graphics/Base/Window.h"
+#include "Hollow/Graphics/Window.h"
 #include "OGLInputLayout.h"
 #include "OGLHelper.h"
 #include "OGLPipelineStateManager.h"
@@ -41,7 +41,7 @@ namespace Hollow {
 		~OGLRenderApi();
 		virtual void setIndexBuffer(IndexBuffer*) override;
 		virtual void setVertexBuffer(VertexBuffer*) override;
-		virtual void setTexture(UINT, Texture*) override;
+		virtual void setTexture(UINT, s_ptr<Texture>) override;
 		virtual void unsetTexture(UINT) override;
 		virtual void setTextureColorBuffer(UINT, RenderTarget*, UINT targetNum) override;
 		virtual void setTextureDepthBuffer(UINT, RenderTarget*) override;

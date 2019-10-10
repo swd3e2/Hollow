@@ -136,8 +136,6 @@ private:
 
 	DepthStencil* less;
 	DepthStencil* greater;
-	DepthStencil* greaterStencil;
-	DepthStencil* lessStencil;
 
 	RasterizerState* cullBack;
 	RasterizerState* cullFront;
@@ -366,37 +364,6 @@ public:
 		{
 			DEPTH_STENCIL_STATE_DESC depthDesc;
 			depthDesc.depthEnable = true;
-			depthDesc.depthFunc = ComparisonFunction::CMP_LESS;
-
-			depthDesc.stencilEnable = true;
-			depthDesc.stencilWriteMask = 0x00;
-			depthDesc.stencilReadMask = 0xFF;
-
-			depthDesc.front.depthFailOp	= StencilOperation::SOP_KEEP;
-			depthDesc.front.failOp		= StencilOperation::SOP_KEEP;
-			depthDesc.front.passOp		= StencilOperation::SOP_KEEP;
-			depthDesc.front.stencilFunc	= ComparisonFunction::CMP_EQUAL;
-
-			greaterStencil = DepthStencil::create(depthDesc);
-		}
-		{
-			DEPTH_STENCIL_STATE_DESC depthDesc;
-			depthDesc.depthEnable = false;
-
-			depthDesc.stencilEnable = true;
-			depthDesc.stencilWriteMask = 0xFF;
-			depthDesc.stencilReadMask = 0xFF;
-
-			depthDesc.front.depthFailOp = StencilOperation::SOP_KEEP;
-			depthDesc.front.failOp		= StencilOperation::SOP_KEEP;
-			depthDesc.front.passOp		= StencilOperation::SOP_REPLACE;
-			depthDesc.front.stencilFunc = ComparisonFunction::CMP_ALWAYS;
-
-			lessStencil = DepthStencil::create(depthDesc);
-		}
-		{
-			DEPTH_STENCIL_STATE_DESC depthDesc;
-			depthDesc.depthEnable = true;
 			depthDesc.depthFunc = ComparisonFunction::CMP_GREATER;
 			greater = DepthStencil::create(depthDesc);
 		}
@@ -594,16 +561,9 @@ public:
 
 	void gBufferPass()
 	{
+		renderer->setDepthStencilState(less);
 		renderer->setRasterizerState(cullBack);
 		renderer->setRenderTarget(gBuffer);
-		renderer->setDepthStencilState(lessStencil);
-
-		renderer->setPipelineState(flatColor);
-		renderer->setVertexBuffer(quadVB2);
-		renderer->setIndexBuffer(quadIB2);
-		renderer->drawIndexed(6);
-
-		renderer->setDepthStencilState(greaterStencil);
 		renderer->setPipelineState(gBufferPipeline);
 
 		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
@@ -634,8 +594,8 @@ public:
 					if (material->diffuseTexture != nullptr) 
 					{
 						renderer->setTexture(0, material->diffuseTexture);
-					} 
-					else 
+					}
+					else
 					{
 						renderer->unsetTexture(0);
 					}

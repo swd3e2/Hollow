@@ -7,12 +7,9 @@
 #include "Hollow/Graphics/ShaderManager.h"
 #include <d3dcompiler.h>
 #include "Hollow/Common/Log.h"
-#include "D3D11VertexShader.h"
-#include "D3D11PixelShader.h"
-#include "D3D11GeometryShader.h"
-#include "D3D11DomainShader.h"
-#include "D3D11HullShader.h"
-#include "D3D11ComputeShader.h"
+#include "D3D11Shader.h"
+#include "Hollow/Platform.h"
+#include "D3D11ShaderPipeline.h"
 
 namespace Hollow {
 	class D3D11ShaderManager : public ShaderManager
@@ -22,10 +19,12 @@ namespace Hollow {
 	public:
 		D3D11ShaderManager();
 
-		virtual Shader* create(const SHADER_DESC& desc) override;
+		virtual s_ptr<Shader> create(const SHADER_DESC& desc) override;
+		virtual s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc) override;
 	private:
 		HRESULT compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob);
-		const char* getTarget(const SHADER_TYPE& type);
+		HRESULT createShader(const SHADER_DESC& desc, ID3DBlob* blob, const Microsoft::WRL::ComPtr<ID3D11DeviceChild>& shader);
+		const char* getTarget(const ShaderType type) const;
 	};
 }
 

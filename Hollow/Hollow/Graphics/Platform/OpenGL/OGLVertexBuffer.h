@@ -3,7 +3,7 @@
 #ifndef HW_OGL_VERTEX_BUFFER_H
 #define HW_OGL_VERTEX_BUFFER_H
 
-#include "Hollow/Graphics/Base/VertexBuffer.h"
+#include "Hollow/Graphics/VertexBuffer.h"
 #include "OGLPrerequisites.h"
 
 namespace Hollow {

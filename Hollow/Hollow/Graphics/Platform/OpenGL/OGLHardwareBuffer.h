@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/HardwareBuffer.h"
+#include "Hollow/Graphics/HardwareBuffer.h"
 #include "OGLPrerequisites.h"
 #include "OGLInputLayout.h"
 

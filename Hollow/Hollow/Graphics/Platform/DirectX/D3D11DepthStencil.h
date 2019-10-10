@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/DepthStencil.h"
+#include "Hollow/Graphics/DepthStencil.h"
 #include "D3D11Prerequisites.h"
 #include "Hollow/Platform.h"
 

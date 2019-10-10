@@ -157,10 +157,9 @@ namespace Hollow {
 
 	void GLTFImporter::processMesh(GLTF::Node* node, tinygltf::Node childModelNode, GLTF::LoadedModel& model, tinygltf::Model& tModel, std::ifstream& file)
 	{
-		GLTF::LoadedMesh* mesh = new GLTF::LoadedMesh();
-
-		// Poisitons and normals
 		tinygltf::Mesh& tMesh = tModel.meshes[childModelNode.mesh];
+
+		GLTF::LoadedMesh* mesh = new GLTF::LoadedMesh();
 		mesh->material = tMesh.primitives[0].material;
 		mesh->name = tMesh.name.size() ? tMesh.name : ("Mesh " + std::to_string(model.meshCounter));
 		mesh->id = model.meshIdCounter++;
@@ -255,7 +254,7 @@ namespace Hollow {
 			delete[] data;
 		}
 
-		model.meshes.push_back(mesh);
+		model.meshes.push_back(u_ptr<GLTF::LoadedMesh>(mesh));
 
 		tinygltf::Material& material = tModel.materials[tMesh.primitives[0].material];
 
@@ -330,14 +329,14 @@ namespace Hollow {
 		node->mesh = model.meshes.size() - 1;
 	}
 
-	Import::Model* GLTFImporter::import(const char* filename)
+	s_ptr<Import::Model> GLTFImporter::import(const char* filename)
 	{
 		tinygltf::Model model;
 		tinygltf::TinyGLTF loader;
 		std::string err;
 		std::string warn;
 
-		GLTF::LoadedModel* lModel = new GLTF::LoadedModel();
+		u_ptr<GLTF::LoadedModel> lModel(new GLTF::LoadedModel());
 
 		bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, filename);
 
@@ -353,7 +352,6 @@ namespace Hollow {
 		std::ifstream file(somestring + model.buffers[0].uri, std::fstream::in | std::fstream::binary);
 
 		if (!file.is_open()) {
-			delete lModel;
 			return nullptr;
 		}
 
@@ -363,7 +361,7 @@ namespace Hollow {
 
 		file.close();
 
-		Import::Model* gltfModel = new Import::Model();
+		s_ptr<Import::Model> gltfModel(new Import::Model());
 		gltfModel->materials = std::move(lModel->materials);
 
 		for (auto& model : lModel->meshes) {
@@ -403,12 +401,10 @@ namespace Hollow {
 
 		prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
 
-		delete lModel;
-
 		return gltfModel;
 	}
 
-	void GLTFImporter::prepareModel(GLTF::Node* node, const Matrix4& parentTransform, Import::Model* model)
+	void GLTFImporter::prepareModel(GLTF::Node* node, const Matrix4& parentTransform, const s_ptr<Import::Model>& model)
 	{
 		Matrix4 transform = parentTransform;
 

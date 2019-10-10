@@ -4,7 +4,7 @@
 #define HW_D3D11_GEOMETRY_SHADER_H
 
 #include "D3D11Prerequisites.h"
-#include "Hollow/Graphics/Base/Shader.h"
+#include "Hollow/Graphics/Shader.h"
 
 namespace Hollow {
 	class D3D11GeometryShader : public Shader

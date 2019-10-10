@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/PipelineState.h"
+#include "Hollow/Graphics/PipelineState.h"
 #include "D3D11VertexShader.h"
 #include "D3D11PixelShader.h"
 #include "D3D11GeometryShader.h"

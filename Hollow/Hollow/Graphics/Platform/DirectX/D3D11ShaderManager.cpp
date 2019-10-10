@@ -9,33 +9,30 @@ namespace Hollow {
 		m_Device = r->getContext().getDevice();
 	}
 
-	Shader* D3D11ShaderManager::create(const SHADER_DESC& desc)
+	s_ptr<Shader> D3D11ShaderManager::create(const SHADER_DESC& desc)
 	{
-		switch (desc.type)
-		{
-			case SHADER_TYPE::VERTEX: {
-				D3D11VertexShader* shader = new D3D11VertexShader(SHADER_TYPE::VERTEX);
-				ID3DBlob* shaderBlob = nullptr;
+		D3D11Shader* shader = new D3D11Shader();
+		ID3DBlob* shaderBlob = nullptr;
 
-				if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
-					m_Device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &shader->m_Shader);
-					shaderBlob->Release();
-				}
-				return shader;
-			} break;
-			case SHADER_TYPE::PIXEL: {
-				D3D11PixelShader* shader = new D3D11PixelShader(SHADER_TYPE::PIXEL);
-				ID3DBlob* shaderBlob = nullptr;
-
-				if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
-					m_Device->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &shader->m_Shader);
-					shaderBlob->Release();
-				}
-				return shader;
-			} break;
-		default:
-			break;
+		if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
+			createShader(desc, shaderBlob, shader);
+			shaderBlob->Release();
 		}
+
+		return s_ptr<Shader>(shader);
+	}
+
+	s_ptr<ShaderPipeline> D3D11ShaderManager::create(const SHADER_PIPELINE_DESC& desc)
+	{
+		D3D11ShaderPipeline* shader = new D3D11ShaderPipeline();
+
+		shader->vertexShader = desc.vertexShader;
+		shader->pixelShader = desc.pixelShader;
+		shader->geometryShader = desc.geometryShader;
+		shader->hullShader = desc.hullShader;
+		shader->domainShader = desc.domainShader;
+
+		return s_ptr<ShaderPipeline>(shader);
 	}
 
 	HRESULT D3D11ShaderManager::compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob)
@@ -68,16 +65,52 @@ namespace Hollow {
 		return hr;
 	}
 
-	const char* D3D11ShaderManager::getTarget(const SHADER_TYPE& type)
+	HRESULT D3D11ShaderManager::createShader(const SHADER_DESC& desc, ID3DBlob* blob, const Microsoft::WRL::ComPtr<ID3D11DeviceChild>& shaderPtr)
+	{
+		switch (desc.type)
+		{
+		case ShaderType::ST_VERTEX:
+			ID3D11VertexShader** shader = nullptr;
+			shaderPtr->QueryInterface(shader);
+			return m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, shader);
+		case ShaderType::ST_PIXEL: {
+			ID3D11PixelShader** shader = nullptr;
+			shaderPtr->QueryInterface(shader);
+			return m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, shader);
+		} break;
+		case ShaderType::ST_GEOMERTY: {
+			ID3D11GeometryShader** shader = nullptr;
+			shaderPtr->QueryInterface(shader);
+			return m_Device->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, shader);
+		} break;
+		case ShaderType::ST_HULL: {
+			ID3D11HullShader** shader = nullptr;
+			shaderPtr->QueryInterface(shader);
+			return m_Device->CreateHullShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, shader);
+		} break;
+		case ShaderType::ST_DOMAIN: {
+			ID3D11DomainShader** shader = nullptr;
+			shaderPtr->QueryInterface(shader);
+			return m_Device->CreateDomainShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, shader);
+		} break;
+		case ShaderType::ST_COMPUTE: {
+			ID3D11ComputeShader** shader = nullptr;
+			shaderPtr->QueryInterface(shader);
+			return m_Device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, shader);
+		} break;
+		}
+	}
+
+	const char* D3D11ShaderManager::getTarget(const ShaderType type) const
 	{
 		switch (type)
 		{
-			case SHADER_TYPE::VERTEX:	return "vs_5_0";
-			case SHADER_TYPE::PIXEL:	return "ps_5_0";
-			case SHADER_TYPE::GEOMERTY:	return "gs_5_0";
-			case SHADER_TYPE::COMPUTE:	return "cs_5_0";
-			case SHADER_TYPE::HULL:		return "hs_5_0";
-			case SHADER_TYPE::DOMAINS:	return "ds_5_0";
+			case ShaderType::ST_VERTEX:		return "vs_5_0";
+			case ShaderType::ST_PIXEL:		return "ps_5_0";
+			case ShaderType::ST_GEOMERTY:	return "gs_5_0";
+			case ShaderType::ST_COMPUTE:	return "cs_5_0";
+			case ShaderType::ST_HULL:		return "hs_5_0";
+			case ShaderType::ST_DOMAIN:		return "ds_5_0";
 		}
 	}
 }

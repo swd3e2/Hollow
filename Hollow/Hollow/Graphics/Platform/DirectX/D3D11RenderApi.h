@@ -3,7 +3,7 @@
 #ifndef HW_D3D11_RENDER_API_H
 #define HW_D3D11_RENDER_API_H
 
-#include "Hollow/Graphics/Base/RenderApi.h"
+#include "Hollow/Graphics/RenderApi.h"
 #include "D3D11Prerequisites.h"
 #include "Hollow/Common/Log.h"
 #include "D3D11RenderStateManager.h"

@@ -4,7 +4,7 @@
 #define HW_D3D11_RASTERIZER_STATE_H
 
 #include "D3D11Prerequisites.h"
-#include "Hollow/Graphics/Base/RasterizerState.h"
+#include "Hollow/Graphics/RasterizerState.h"
 
 namespace Hollow {
 	class D3D11RasterizerState : public RasterizerState

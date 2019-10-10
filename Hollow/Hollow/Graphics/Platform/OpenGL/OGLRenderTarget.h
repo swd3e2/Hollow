@@ -3,7 +3,7 @@
 #ifndef HW_OGL_RENDER_TARGET_H
 #define HW_OGL_RENDER_TARGET_H
 
-#include "Hollow/Graphics/Base/RenderTarget.h"
+#include "Hollow/Graphics/RenderTarget.h"
 #include "OGLPrerequisites.h"
 
 namespace Hollow {

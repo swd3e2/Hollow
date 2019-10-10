@@ -47,24 +47,27 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;
 
+	PhysicsSystem::startUp();
+
 	ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 	DelayedTaskManager::instance()->update();
 
 	Light* light = Hollow::EntityManager::instance()->create<Light>();
 	light->addComponent<LightComponent>();
 
-	PhysicsSystem::startUp();
 	SystemManager::instance()->addSystem(PhysicsSystem::instance());
 
-	for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
-		TransformComponent* transform = entity.getComponent<TransformComponent>();
-		entity.addComponent<PhysicsComponent>(transform->position, 0.0f);
-	}
-
-	GameObject* rigid = EntityManager::instance()->create<GameObject>();
-	rigid->addComponent<RenderableComponent>("C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj");
-	rigid->addComponent<TransformComponent>(Vector3(0.0f, 10.0f, 0.0f), Vector3(1000.0f, 1.0f, 1000.0f), Vector3(0.0f, 0.0f, 0.0f));
-	rigid->addComponent<PhysicsComponent>(Vector3(0.0f, 10.0f, 0.0f), 0.02f);
+	/*{
+		GameObject* obj = EntityManager::instance()->create<GameObject>();
+		obj->addComponent<TransformComponent>();
+		RenderableComponent* objRenderable = obj->addComponent<RenderableComponent>();
+		PhysicsComponent* objPhysics = obj->addComponent<PhysicsComponent>();
+		
+		Hollow::Import::Model* model = MeshManager::instance()->import("C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj");
+		objRenderable->load(model);
+		objPhysics->load(model);
+		delete model;
+	}*/
 
 	while (!window->isClosed()) {
 		core.preUpdate();

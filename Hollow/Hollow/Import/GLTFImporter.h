@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Hollow/Common/Helper.h"
 #include "vendor/tinygltf/tiny_gltf.h"
+#include "Hollow/Platform.h"
 
 #include <fstream>
 #include <unordered_map>
@@ -52,28 +53,20 @@ namespace Hollow {
 			unsigned int meshIdCounter = 0;
 			unsigned int nodeCounter = 0;
 			unsigned int meshCounter = 0;
-			std::vector<LoadedMesh*> meshes;
+			std::vector<u_ptr<LoadedMesh>> meshes;
 			std::unordered_map<unsigned int, Import::Material> materials;
 			std::vector<Animation> animations;
 			Node* rootNode;
 			AnimationNode* animationRootNode;
 			std::vector<AnimationNode*> animationNodes;
-
-			~LoadedModel()
-			{
-				for (auto& it : meshes) {
-					delete it;
-				}
-			}
 		};
 	}
 
 	class GLTFImporter
 	{
 	public:
-		Import::Model* import(const char* filename);
-
-		void prepareModel(GLTF::Node* node, const Matrix4& parentTransform, Import::Model* model);
+		s_ptr<Import::Model> import(const char* filename);
+		void prepareModel(GLTF::Node* node, const Matrix4& parentTransform, const s_ptr<Import::Model>& model);
 		bool hasMesh(tinygltf::Node node, tinygltf::Model& model);
 		void processMesh(GLTF::Node* node, tinygltf::Node childModelNode, GLTF::LoadedModel& model, tinygltf::Model& tModel, std::ifstream& file);
 		void load(GLTF::Node* node, const tinygltf::Node& modelNode, tinygltf::Model& tModel, GLTF::LoadedModel& model, std::ifstream& file);

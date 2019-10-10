@@ -12,6 +12,7 @@
 #include <Hollow/Resources/MeshManager.h>
 #include <unordered_map>
 #include "Hollow/Graphics/TextureManager.h"
+#include "Hollow/Platform.h"
 
 struct RenderableObject {
 	Hollow::VertexBuffer* vBuffer;
@@ -57,11 +58,46 @@ public:
 		materials.clear();
 	}
 
+	void load(const Hollow::s_ptr<Hollow::Import::Model>& model)
+	{
+		A = model->A;
+		B = model->B;
+
+		if (model == nullptr) { return; }
+		for (int i = 0; i < model->meshes.size(); i++) {
+			RenderableObject* renderable = new RenderableObject();
+			renderable->id = i;
+			renderable->material = model->meshes[i]->material;
+
+			renderable->vBuffer = Hollow::VertexBuffer::create({ model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size(), sizeof(Hollow::Vertex) });
+			renderable->iBuffer = Hollow::IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), Hollow::INDEX_FORMAT::UINT });
+
+			renderables.push_back(renderable);
+		}
+
+		for (auto& it : model->materials) {
+			Hollow::Material* material = new Hollow::Material;
+			material->name = it.second.name;
+			material->materialData.color = it.second.baseColorFactor;
+
+			material->materialData.metallicFactor = it.second.metallicFactor;
+			material->materialData.roughnessFactor = it.second.roughnessFactor;
+			material->materialData.emissiveFactor = it.second.emissiveFactor;
+
+			std::string diffuseTexture = it.second.diffuseTexture;
+			if (diffuseTexture.size()) {
+				material->materialData.hasDiffuseTexture = true;
+				material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
+			}
+			materials[it.first] = material;
+		}
+	}
+
 	void load(const std::string& filename)
 	{
 		this->filename = filename;
 		using namespace Hollow;
-		Import::Model* model = MeshManager::instance()->import(filename.c_str());
+		s_ptr<Hollow::Import::Model> model = MeshManager::instance()->import(filename.c_str());
 		A = model->A;
 		B = model->B;
 
@@ -93,7 +129,5 @@ public:
 			}
 			materials[it.first] = material;
 		}
-
-		delete model;
 	}
 };

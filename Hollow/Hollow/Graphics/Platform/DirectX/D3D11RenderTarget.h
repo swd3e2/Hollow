@@ -4,7 +4,7 @@
 #define HW_D3D11_RENDER_TARGET_H
 
 #include "D3D11Prerequisites.h"
-#include "Hollow/Graphics/Base/RenderTarget.h"
+#include "Hollow/Graphics/RenderTarget.h"
 
 namespace Hollow {
 	class D3D11RenderTarget : public RenderTarget

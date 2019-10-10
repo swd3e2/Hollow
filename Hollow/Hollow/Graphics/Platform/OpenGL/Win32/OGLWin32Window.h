@@ -12,7 +12,7 @@
 #include "Hollow/Events/EventSystem.h"
 #include "Hollow/Events/ButtonPressedEvent.h"
 #include "Hollow/Events/ButtonReleasedEvent.h"
-#include "Hollow/Graphics/Base/Win32Window.h"
+#include "Hollow/Graphics/Win32Window.h"
 #include <memory>
 #include "../OGLPrerequisites.h"
 #include "../GL/glew.h"

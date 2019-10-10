@@ -37,7 +37,7 @@ public:
 
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
-				TransformComponent* transform = entity.getComponent<TransformComponent>();
+				/*TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
 				btTransform tr;
 				physics->body->getMotionState()->getWorldTransform(tr);
@@ -45,7 +45,7 @@ public:
 
 				transform->position.x = pos.getX();
 				transform->position.y = pos.getY();
-				transform->position.z = pos.getZ();
+				transform->position.z = pos.getZ();*/
 			}
 		}
 	}

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Hollow/Graphics/PipelineState.h"
+#include "Hollow/Graphics/ShaderPipeline.h"
 #include "OGLPrerequisites.h"
 
 namespace Hollow {
-	class OGLPipelineState : public PipelineState
+	class OGLShaderPipeline : public ShaderPipeline
 	{
 	public:
 		GLuint pipelineId;

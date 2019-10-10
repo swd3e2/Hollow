@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/InputLayout.h"
+#include "Hollow/Graphics/InputLayout.h"
 #include "OGLPrerequisites.h"
 
 namespace Hollow {

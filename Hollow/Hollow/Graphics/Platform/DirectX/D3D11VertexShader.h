@@ -5,7 +5,7 @@
 
 #include <wrl/client.h>
 #include "D3D11Prerequisites.h"
-#include "Hollow/Graphics/Base/Shader.h"
+#include "Hollow/Graphics/Shader.h"
 
 namespace Hollow{
 	class D3D11VertexShader : public Shader

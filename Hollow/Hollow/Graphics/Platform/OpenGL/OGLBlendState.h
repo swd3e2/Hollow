@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/BlendState.h"
+#include "Hollow/Graphics/BlendState.h"
 #include "OGLPrerequisites.h"
 
 namespace Hollow {

@@ -5,35 +5,16 @@
 
 #include "Hollow/Graphics/ShaderManager.h"
 #include "OGLShader.h"
+#include "OGLShaderPipeline.h"
 #include "Hollow/Common/Log.h"
 
 namespace Hollow {
 	class OGLShaderManager : public ShaderManager
 	{
 	public:
-		virtual Shader* create(const SHADER_DESC& desc) override
-		{
-			const char* shaderCode = desc.content.c_str();
-
-			switch (desc.type)
-			{
-				case SHADER_TYPE::VERTEX: {
-					OGLShader* shader = new OGLShader(SHADER_TYPE::VERTEX);
-					shader->shaderId = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &shaderCode);
-					getError(shader->shaderId);
-					return shader;
-				} break;
-				case SHADER_TYPE::PIXEL: {
-					OGLShader* shader = new OGLShader(SHADER_TYPE::PIXEL);
-					shader->shaderId = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &shaderCode);
-					getError(shader->shaderId);
-					return shader;
-				} break;
-				default:
-					break;
-			}
-			return nullptr;
-		}
+		virtual s_ptr<Shader> create(const SHADER_DESC& desc) override;
+		
+		virtual s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc) override;
 	private:
 		void getError(GLuint shaderId)
 		{

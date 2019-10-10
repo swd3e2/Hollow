@@ -2,7 +2,7 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	Texture* D3D11TextureManager::create2dTexture(TextureData* desc)
+	s_ptr<Texture> D3D11TextureManager::create2dTexture(const s_ptr<TextureData>& desc)
 	{
 		HW_INFO("D3D11TextureManager: creating 2d texture, filename {} bytes {}", desc->filename.c_str(), desc->size);
 		D3D11Texture* texture = new D3D11Texture();
@@ -19,7 +19,7 @@ namespace Hollow {
 		textureDesc.ArraySize = 1;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
-		textureDesc.Format = getFormat(desc->format);
+		textureDesc.Format = D3D11Helper::getFormat(desc->format);
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
 		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 		textureDesc.CPUAccessFlags = 0;
@@ -33,13 +33,12 @@ namespace Hollow {
 
 		if (desc->data != nullptr) {
 			D3D11_SUBRESOURCE_DATA initData;
-			initData.pSysMem = *desc->data;
+			initData.pSysMem = desc->data.get();
 			initData.SysMemPitch = desc->pitch;
 			initData.SysMemSlicePitch = 0;
 
 			if (FAILED(device->CreateTexture2D(&textureDesc, nullptr, &texture->m_Texture))) {
 				HW_ERROR("D3DTexture: Can't create 2D texture");
-				delete texture;
 				return nullptr;
 			}
 
@@ -51,12 +50,11 @@ namespace Hollow {
 			box.front = 0;
 			box.back = 1;
 
-			deviceContext->UpdateSubresource(texture->m_Texture, 0, &box, *desc->data, desc->pitch, 1);
+			deviceContext->UpdateSubresource(texture->m_Texture, 0, &box, desc->data.get(), desc->pitch, 1);
 		}
 		else {
 			if (FAILED(device->CreateTexture2D(&textureDesc, NULL, &texture->m_Texture))) {
 				HW_ERROR("D3DTexture: Can't create 2D texture");
-				delete texture;
 				return nullptr;
 			}
 		}
@@ -69,7 +67,6 @@ namespace Hollow {
 			descUAV.Texture2D.MipSlice = 0;
 			if (FAILED(device->CreateUnorderedAccessView(texture->m_Texture, &descUAV, &texture->m_UnorderedAccessView))) {
 				HW_ERROR("D3DTexture: Can't create unorderered access view");
-				delete texture;
 				return nullptr;
 			}
 		}
@@ -83,20 +80,18 @@ namespace Hollow {
 		
 		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
-			delete texture;
 			return nullptr;
 		}
 
 		deviceContext->GenerateMips(texture->m_TextureShaderResource);
 
-		textureList[desc->filename] = texture;
+		s_ptr<Texture> texturePtr(texture);
+		textureList[desc->filename] = texturePtr;
 
-		delete desc;
-
-		return texture;
+		return texturePtr;
 	}
 
-	Texture* D3D11TextureManager::create3dTexture(TextureData** desc)
+	s_ptr<Texture> D3D11TextureManager::create3dTexture(const std::vector<s_ptr<TextureData>>& desc)
 	{
 		HW_INFO("D3D11TextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", desc[0]->filename.c_str(), desc[1]->filename.c_str(), desc[2]->filename.c_str(), desc[3]->filename.c_str(), desc[4]->filename.c_str(), desc[5]->filename.c_str());
 		D3D11Texture* texture = new D3D11Texture();
@@ -122,14 +117,13 @@ namespace Hollow {
 		D3D11_SUBRESOURCE_DATA pData[6];
 
 		for (int i = 0; i < 6; i++) {
-			pData[i].pSysMem = *desc[i]->data;
+			pData[i].pSysMem = desc[i]->data.get();
 			pData[i].SysMemPitch = desc[i]->pitch;
 			pData[i].SysMemSlicePitch = 0;
 		}
 
 		if (device->CreateTexture2D(&textureDesc, pData, &texture->m_Texture) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create 2D texture");
-			delete texture;
 			return nullptr;
 		}
 
@@ -143,20 +137,16 @@ namespace Hollow {
 		// Create the shader resource view for the texture.
 		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
-			delete texture;
 			return nullptr;
 		}
 
-		textureList[desc[0]->filename] = texture;
+		s_ptr<Texture> texturePtr(texture);
+		textureList[desc[0]->filename] = texturePtr;
 
-		for (int i = 0; i < 6; i++) {
-			delete desc[i];
-		}
-
-		return texture;
+		return texturePtr;
 	}
 
-	Texture* D3D11TextureManager::create3dTexture(TextureData* desc)
+	s_ptr<Texture> D3D11TextureManager::create3dTexture(const s_ptr<TextureData>& desc)
 	{
 		D3D11Texture* texture = new D3D11Texture();
 
@@ -167,26 +157,7 @@ namespace Hollow {
 			data[i] = new unsigned char[xOffset * yOffset * 4];
 		}
 
-		unsigned char* textureData = (unsigned char*)*desc->data;
-
-
-		// planes
-		//for (int i = 0; i < 4; i++) {
-		//	for (int j = 0; j < 3; j++) {
-		//		HW_INFO("plane {} {}", i, j);
-		//		// bits
-		//		for (int ox = 0; ox < xOffset; ox++) {
-		//			for (int oy = 0; oy < yOffset; oy++) {
-		//				HW_INFO("{} {} {} {}",
-		//					(int)textureData[(ox * 4) + (i * xOffset * 4) + (yOffset * desc->width * j * 4) + (oy * desc->width * 4) + 0],
-		//					(int)textureData[(ox * 4) + (i * xOffset * 4) + (yOffset * desc->width * j * 4) + (oy * desc->width * 4) + 1],
-		//					(int)textureData[(ox * 4) + (i * xOffset * 4) + (yOffset * desc->width * j * 4) + (oy * desc->width * 4) + 2],
-		//					(int)textureData[(ox * 4) + (i * xOffset * 4) + (yOffset * desc->width * j * 4) + (oy * desc->width * 4) + 3]
-		//				);
-		//			}
-		//		}
-		//	}
-		//}
+		unsigned char* textureData = (unsigned char*)desc->data.get();
 
 		// forward 1 1
 		// ? * xOffset * 4 - width | yOffset * desc->width * ? * 4 - plane
@@ -276,7 +247,6 @@ namespace Hollow {
 
 		if (device->CreateTexture2D(&textureDesc, pData, &texture->m_Texture) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create 2D texture");
-			delete texture;
 			return nullptr;
 		}
 
@@ -290,31 +260,16 @@ namespace Hollow {
 		// Create the shader resource view for the texture.
 		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
 			HW_ERROR("D3DTexture: Can't create shader resource view for 2d texture");
-			delete texture;
 			return nullptr;
 		}
 
 		for (int i = 0; i < data.size(); i++) {
 			delete[] data[i];
 		}
-		delete desc;
 
-		return texture;
-	}
+		s_ptr<Texture> texturePtr(texture);
+		textureList[desc->filename] = texturePtr;
 
-	DXGI_FORMAT D3D11TextureManager::getFormat(TextureFormat format)
-	{
-		switch (format)
-		{
-		case FORMAT_B8G8R8A8_UNORM:
-			return DXGI_FORMAT_B8G8R8A8_UNORM;
-			break;
-		case FORMAT_R32G32B32A32:
-			return DXGI_FORMAT_R32G32B32A32_FLOAT;
-			break;
-		default:
-			return DXGI_FORMAT_B8G8R8A8_UNORM;
-			break;
-		}
+		return texturePtr;
 	}
 }

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "OGLPrerequisites.h"
-#include "Hollow/Graphics/Base/InputLayout.h"
-#include "Hollow/Graphics/Base/HardwareBuffer.h"
-#include "Hollow/Graphics/Base/CommonTypes.h"
+#include "Hollow/Graphics/InputLayout.h"
+#include "Hollow/Graphics/HardwareBuffer.h"
+#include "Hollow/Graphics/CommonTypes.h"
 
 namespace Hollow {
 	class OGLHelper
@@ -270,6 +270,79 @@ namespace Hollow {
 				break;
 			case StencilOperation::SOP_INVERT:
 				res = GL_INVERT;
+				break;
+			}
+
+			return res;
+		}
+
+		static GLuint getBlend(const BlendFunction& blendFunc)
+		{
+			GLuint res = 0;
+
+			switch (blendFunc)
+			{
+			case BlendFunction::BF_ZERO:
+				res = GL_ZERO;
+				break;
+			case BlendFunction::BF_ONE:
+				res = GL_ONE;
+				break;
+			case BlendFunction::BF_SRC_COLOR:
+				res = GL_SRC_COLOR;
+				break;
+			case BlendFunction::BF_INV_SRC_COLOR:
+				res = GL_ONE_MINUS_SRC_COLOR;
+				break;
+			case BlendFunction::BF_SRC_APLHA:
+				res = GL_SRC_ALPHA;
+				break;
+			case BlendFunction::BF_INV_SRC_APLHA:
+				res = GL_ONE_MINUS_SRC_ALPHA;
+				break;
+			case BlendFunction::BF_DEST_APLHA:
+				res = GL_DST_ALPHA;
+				break;
+			case BlendFunction::BF_INV_DEST_APLHA:
+				res = GL_ONE_MINUS_DST_ALPHA;
+				break;
+			case BlendFunction::BF_DEST_COLOR:
+				res = GL_DST_COLOR;
+				break;
+			case BlendFunction::BF_INV_DEST_COLOR:
+				res = GL_ONE_MINUS_DST_COLOR;
+				break;
+			case BlendFunction::BF_BLEND_FACTOR:
+				res = GL_CONSTANT_COLOR;
+				break;
+			case BlendFunction::BF_INV_BLEND_FACTOR:
+				res = GL_ONE_MINUS_CONSTANT_COLOR;
+				break;
+			}
+
+			return res;
+		}
+
+		static GLuint getBlendOperation(const BlendOperation& blendOp)
+		{
+			GLuint res = 0;
+
+			switch (blendOp)
+			{
+			case BlendOperation::BOP_ADD:
+				res = GL_FUNC_ADD;
+				break;
+			case BlendOperation::BOP_SUBTRACT:
+				res = GL_FUNC_SUBTRACT;
+				break;
+			case BlendOperation::BOP_REV_SUBTRACT:
+				res = GL_FUNC_REVERSE_SUBTRACT;
+				break;
+			case BlendOperation::BOP_MIN:
+				res = GL_MIN;
+				break;
+			case BlendOperation::BOP_MAX:
+				res = GL_MAX;
 				break;
 			}
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/RasterizerState.h"
+#include "Hollow/Graphics/RasterizerState.h"
 
 namespace Hollow {
 	class OGLRasterizerState : public RasterizerState

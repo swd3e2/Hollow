@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hollow/Graphics/Base/InputLayout.h"
+#include "Hollow/Graphics/InputLayout.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11Prerequisites.h"
 
 namespace Hollow {

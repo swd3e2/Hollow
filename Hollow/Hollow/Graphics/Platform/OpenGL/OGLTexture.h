@@ -3,7 +3,7 @@
 #ifndef HW_OGL_TEXTURE_H
 #define HW_OGL_TEXTURE_H
 
-#include "Hollow/Graphics/Base/Texture.h"
+#include "Hollow/Graphics/Texture.h"
 
 namespace Hollow {
 	class OGLTexture : public Texture

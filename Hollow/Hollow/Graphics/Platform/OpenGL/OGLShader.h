@@ -3,7 +3,7 @@
 #ifndef HW_OGL_SHADER_H
 #define HW_OGL_SHADER_H
 
-#include "Hollow/Graphics/Base/Shader.h"
+#include "Hollow/Graphics/Shader.h"
 #include "OGLPrerequisites.h"
 #define DEFAULT_SHADER_ID -1
 

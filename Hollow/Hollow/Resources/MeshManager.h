@@ -7,6 +7,7 @@
 #include "Hollow/Importer/AssimpImporter.h"
 #include "Hollow/Importer/GLTFImporter.h"
 #include "Hollow/Importer/HollowModelImporter.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 	class MeshManager : public CModule<MeshManager>
@@ -16,9 +17,9 @@ namespace Hollow {
 		GLTFImporter gltfImporter;
 		HollowModelImporter hwImporter;
 	public:
-		Import::Model* import(const char* filename)
+		s_ptr<Import::Model> import(const char* filename)
 		{
-			Import::Model* model = nullptr;
+			s_ptr<Import::Model> model;
 
 			if (!FileSystem::exists(filename)) {
 				return nullptr;

@@ -4,19 +4,20 @@
 #include "vendor/tinygltf/json.hpp"
 #include "Hollow/Common/FileSystem.h"
 #include "Hollow/Common/Helper.h"
+#include "Hollow/Platform.h"
 
 namespace Hollow {
 
 	class HollowModelImporter
 	{
 	public:
-		Import::Model* import(const char* filename)
+		s_ptr<Import::Model> import(const char* filename)
 		{
 			using json = nlohmann::json;
 
 			auto j = json::parse(FileSystem::getFileContent(filename));
 
-			Import::Model* model = new Import::Model();
+			s_ptr<Import::Model> model(new Import::Model());
 
 			std::string binFilename = j["Data"]["filename"].get<std::string>();
 

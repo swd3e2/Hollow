@@ -3,7 +3,7 @@
 #ifndef HW_D3D11_GPU_BUFFER_H
 #define HW_D3D11_GPU_BUFFER_H
 
-#include "Hollow/Graphics/Base/GPUBuffer.h"
+#include "Hollow/Graphics/GPUBuffer.h"
 #include "D3D11Prerequisites.h"
 
 namespace Hollow {

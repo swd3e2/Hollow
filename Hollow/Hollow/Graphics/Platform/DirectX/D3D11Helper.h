@@ -1,9 +1,9 @@
 #pragma once
 
 #include "D3D11Prerequisites.h"
-#include "Hollow/Graphics/Base/InputLayout.h"
-#include "Hollow/Graphics/Base/HardwareBuffer.h"
-#include "Hollow/Graphics/Base/CommonTypes.h"
+#include "Hollow/Graphics/InputLayout.h"
+#include "Hollow/Graphics/HardwareBuffer.h"
+#include "Hollow/Graphics/CommonTypes.h"
 #include <string>
 
 namespace Hollow {
@@ -390,6 +390,19 @@ namespace Hollow {
 			}
 
 			return res;
+		}
+
+		static DXGI_FORMAT getFormat(TextureFormat format)
+		{
+			switch (format)
+			{
+			case FORMAT_B8G8R8A8_UNORM:
+				return DXGI_FORMAT_B8G8R8A8_UNORM;
+			case FORMAT_R32G32B32A32:
+				return DXGI_FORMAT_R32G32B32A32_FLOAT;
+			default:
+				return DXGI_FORMAT_B8G8R8A8_UNORM;
+			}
 		}
 	};
 }

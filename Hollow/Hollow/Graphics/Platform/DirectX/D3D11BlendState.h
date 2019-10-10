@@ -4,7 +4,7 @@
 #define HW_D3D11_BLEND_STATE_H
 
 #include "D3D11Prerequisites.h"
-#include "Hollow/Graphics/Base/BlendState.h"
+#include "Hollow/Graphics/BlendState.h"
 
 namespace Hollow {
 	class D3D11BlendState : public BlendState
