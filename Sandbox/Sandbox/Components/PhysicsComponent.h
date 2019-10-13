@@ -2,7 +2,7 @@
 #include <Hollow/ECS/Component.h>
 #include "Hollow/Math/Vector3.h"
 #include <btBulletDynamicsCommon.h>
-#include "Hollow/Importer/Mesh.h"
+#include "Hollow/Import/Mesh.h"
 #include "Hollow/Platform.h"
 
 class PhysicsComponent : public Hollow::Component<PhysicsComponent>

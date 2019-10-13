@@ -6,22 +6,17 @@
 #include "ECS/EntityManager.h"
 #include "ECS/SystemManager.h"
 #include "Events/EventSystem.h"
-
 #include "Common/Timer.h"
 #include "Input/InputManager.h"
-
 #include "Common/Console.h"
-#include <thread>
 #include "Core/TaskManager.h"
 #include "RenderApiManager.h"
 #include "Common/Log.h" 
-#include "Importer/FreeImgImporter.h"
+#include "Import/FreeImgImporter.h"
 #include "WindowManager.h"
-
-#include "Hollow/Core/DelayedTaskManager.h"
-#include "Hollow/Resources/MeshManager.h"
 #include "Hollow/Core/DelayedTaskManager.h"
 #include "Common/Logger.h"
+#include "Resources/MeshManager.h"
 
 namespace Hollow {
 	/**

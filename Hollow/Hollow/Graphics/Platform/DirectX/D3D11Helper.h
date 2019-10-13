@@ -12,396 +12,320 @@ namespace Hollow {
 	public:
 		static DXGI_FORMAT getInputLayoutFormat(INPUT_DATA_TYPE type)
 		{
-			DXGI_FORMAT result;
-
 			switch (type)
 			{
 			case Hollow::Float:		
-				result = DXGI_FORMAT_R32_FLOAT;
-				break;
+				return DXGI_FORMAT_R32_FLOAT;
 			case Hollow::Float2:
-				result = DXGI_FORMAT_R32G32_FLOAT;
-				break;
+				return DXGI_FORMAT_R32G32_FLOAT;
 			case Hollow::Float3:
-				result = DXGI_FORMAT_R32G32B32_FLOAT;
-				break;
+				return DXGI_FORMAT_R32G32B32_FLOAT;
 			case Hollow::Float4:
-				result = DXGI_FORMAT_R32G32B32A32_FLOAT;
-				break;
+				return DXGI_FORMAT_R32G32B32A32_FLOAT;
 			case Hollow::Int:
-				result = DXGI_FORMAT_R32_SINT;
-				break;
+				return DXGI_FORMAT_R32_SINT;
 			case Hollow::Int2:
-				result = DXGI_FORMAT_R32G32_SINT;
-				break;
+				return DXGI_FORMAT_R32G32_SINT;
 			case Hollow::Int3:
-				result = DXGI_FORMAT_R32G32B32_SINT;
-				break;
+				return DXGI_FORMAT_R32G32B32_SINT;
 			case Hollow::Int4:
-				result = DXGI_FORMAT_R32G32B32A32_SINT;
-				break;
+				return DXGI_FORMAT_R32G32B32A32_SINT;
 			case Hollow::Bool:
-				result = DXGI_FORMAT_R32_UINT;
-				break;
+				return DXGI_FORMAT_R32_UINT;
 			}
-
-			return result;
 		}
 
 		static std::string getInputLayoutShaderFormat(INPUT_DATA_TYPE type)
 		{
-			std::string result;
-
 			switch (type)
 			{
 			case Hollow::Float:		
-				result = "float";
-				break;
+				return "float";
 			case Hollow::Float2:	
-				result = "float2";
-				break;
+				return "float2";
 			case Hollow::Float3:
-				result = "float3";
-				break;
+				return "float3";
 			case Hollow::Float4:
-				result = "float4";
-				break;
+				return "float4";
 			case Hollow::Int:
-				result = "int";
-				break;
+				return "int";
 			case Hollow::Int2:
-				result = "int2";
-				break;
+				return "int2";
 			case Hollow::Int3:
-				result = "int3";
-				break;
+				return "int3";
 			case Hollow::Int4:
-				result = "int4";
-				break;
+				return "int4";
 			case Hollow::Bool:
-				result = "bool";
-				break;
+				return "bool";
 			}
-
-			return result;
 		}
 
 		static unsigned int getSize(INDEX_FORMAT format)
 		{
-			unsigned int result = 0;
-
 			switch (format)
 			{
 			case Hollow::INDEX_FORMAT::UINT:
 			case Hollow::INDEX_FORMAT::INT:
-				result = 4;
-				break;
+				return 4;
 			}
-
-			return result;
 		}
 
 		static D3D11_TEXTURE_ADDRESS_MODE getAddressingMode(const AddressingMode& mode)
 		{
-			D3D11_TEXTURE_ADDRESS_MODE res;
-
 			switch (mode)
 			{
 			case AddressingMode::AM_WRAP:
-				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-				break;
+				return  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 			case AddressingMode::AM_CLAMP:
-				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
-				break;
+				return  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
 			case AddressingMode::AM_MIRROR:
-				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_MIRROR;
-				break;
+				return  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_MIRROR;
 			case AddressingMode::AM_BORDER:
-				res =  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_BORDER;
-				break;
+				return  D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_BORDER;
 			default:
-				res = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+				return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 			}
-
-			return res;
 		}
 
 		static D3D11_COMPARISON_FUNC getComparisonFunction(const ComparisonFunction& func)
 		{
-			D3D11_COMPARISON_FUNC res;
-
 			switch (func)
 			{
 			case ComparisonFunction::CMP_NEVER:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
 			case ComparisonFunction::CMP_LESS:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
 			case ComparisonFunction::CMP_EQUAL:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_EQUAL;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_EQUAL;
 			case ComparisonFunction::CMP_LEQUAL:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL;
 			case ComparisonFunction::CMP_GREATER:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_GREATER;
 			case ComparisonFunction::CMP_NOT_EQUAL:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NOT_EQUAL;
 			case ComparisonFunction::CMP_ALWAYS:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
-				break;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
 			default:
-				res = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
+				return D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
 			}
-
-			return res;
 		}
 
 		static D3D11_FILTER getFilteringMode(const FilterMode& _min, const FilterMode& mag, const FilterMode& mip, const bool comparison)
 		{
-			D3D11_FILTER res;
-
 #define MERGE_FILTERS(_comparison, _min, _mag, _mip) ((_comparison << 16) | (_min << 8) | (_mag << 4) | (_mip))
 			switch ((MERGE_FILTERS((int)comparison, (int)_min, (int)mag, (int)mip)))
 			{
 			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_POINT):
-				res = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
 			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
 			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
-				res = D3D11_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			case MERGE_FILTERS(true, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
 			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_POINT):
-				res = D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
 			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
-				res = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
 			case MERGE_FILTERS(true, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 			case MERGE_FILTERS(true, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC):
-				res = D3D11_FILTER_COMPARISON_ANISOTROPIC;
-				break;
+				return D3D11_FILTER_COMPARISON_ANISOTROPIC;
 			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_POINT):
-				res = D3D11_FILTER_MIN_MAG_MIP_POINT;
-				break;
+				return D3D11_FILTER_MIN_MAG_MIP_POINT;
 			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
 			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
-				res = D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
-				break;
+				return D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			case MERGE_FILTERS(false, FilterMode::FM_POINT, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
 			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_POINT):
-				res = D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
-				break;
+				return D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
 			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_POINT, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_POINT):
-				res = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-				break;
+				return D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 			case MERGE_FILTERS(false, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR, FilterMode::FM_LINEAR):
-				res = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-				break;
+				return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			case MERGE_FILTERS(false, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC, FilterMode::FM_ANISOTROPIC):
-				res = D3D11_FILTER_ANISOTROPIC;
-				break;
+				return D3D11_FILTER_ANISOTROPIC;
 			default:
-				res = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+				return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 			}
 #undef MERGE_FILTERS
-
-			return res;
 		}
 
 		static D3D11_DEPTH_WRITE_MASK getDepthWriteMask(const DepthWriteMask& writeMask)
 		{
-			D3D11_DEPTH_WRITE_MASK mask = D3D11_DEPTH_WRITE_MASK_ALL;
 			switch (writeMask)
 			{
 			case DepthWriteMask::DWM_ALL:
-				mask = D3D11_DEPTH_WRITE_MASK_ALL;
-				break;
+				return D3D11_DEPTH_WRITE_MASK_ALL;
 			case DepthWriteMask::DWM_ZERO:
-				mask = D3D11_DEPTH_WRITE_MASK_ZERO;
-				break;
+				return D3D11_DEPTH_WRITE_MASK_ZERO;
+			default:
+				return D3D11_DEPTH_WRITE_MASK_ALL;
 			}
-
-			return mask;
 		}
 
 		static D3D11_STENCIL_OP getDepthStencilOperation(const StencilOperation& stecnilOp)
 		{
-			D3D11_STENCIL_OP res = D3D11_STENCIL_OP_KEEP;
-
 			switch (stecnilOp)
 			{
 			case StencilOperation::SOP_KEEP:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
 			case StencilOperation::SOP_ZERO:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_ZERO;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_ZERO;
 			case StencilOperation::SOP_INCR:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
 			case StencilOperation::SOP_INCR_WRAP:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR_SAT;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR_SAT;
 			case StencilOperation::SOP_DECR:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
 			case StencilOperation::SOP_DECR_WRAP:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR_SAT;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR_SAT;
 			case StencilOperation::SOP_REPLACE:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_REPLACE;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_REPLACE;
 			case StencilOperation::SOP_INVERT:
-				res = D3D11_STENCIL_OP::D3D11_STENCIL_OP_INVERT;
-				break;
+				return D3D11_STENCIL_OP::D3D11_STENCIL_OP_INVERT;
 			default:
-				break;
+				return D3D11_STENCIL_OP_KEEP;
 			}
-
-			return res;
 		}
 
 		static D3D11_CULL_MODE getCullMode(const CullMode& cullMode)
 		{
-			D3D11_CULL_MODE res = D3D11_CULL_MODE::D3D11_CULL_NONE;
-
 			switch (cullMode)
 			{
 			case CullMode::CLM_BACK:
-				res = D3D11_CULL_MODE::D3D11_CULL_BACK;
-				break;
+				return D3D11_CULL_MODE::D3D11_CULL_BACK;
 			case CullMode::CLM_FRONT:
-				res = D3D11_CULL_MODE::D3D11_CULL_FRONT;
-				break;
+				return D3D11_CULL_MODE::D3D11_CULL_FRONT;
 			case CullMode::CLM_NONE:
-				res = D3D11_CULL_MODE::D3D11_CULL_NONE;
-				break;
+				return D3D11_CULL_MODE::D3D11_CULL_NONE;
 			}
-
-			return res;
 		}
 
 		static D3D11_FILL_MODE getFillMode(const FillMode& mode)
 		{
-			D3D11_FILL_MODE res = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-
 			switch (mode)
 			{
 			case FillMode::FM_SOLID:
-				res = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-				break;
+				return D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			case FillMode::FM_WIREFRAME:
-				res = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
-				break;
+				return D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+			default:
+				return D3D11_FILL_MODE::D3D11_FILL_SOLID;
 			}
-
-			return res;
 		}
 
 		static D3D11_BLEND getBlend(const BlendFunction& blendFunc)
 		{
-			D3D11_BLEND res = D3D11_BLEND::D3D11_BLEND_ONE;
-
 			switch (blendFunc)
 			{
 			case BlendFunction::BF_ZERO:
-				res = D3D11_BLEND::D3D11_BLEND_ZERO;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_ZERO;
 			case BlendFunction::BF_ONE:
-				res = D3D11_BLEND::D3D11_BLEND_ONE;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_ONE;
 			case BlendFunction::BF_SRC_COLOR:
-				res = D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_SRC_COLOR;
 			case BlendFunction::BF_INV_SRC_COLOR:
-				res = D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_INV_SRC_COLOR;
 			case BlendFunction::BF_SRC_APLHA:
-				res = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
 			case BlendFunction::BF_INV_SRC_APLHA:
-				res = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
 			case BlendFunction::BF_DEST_APLHA:
-				res = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
 			case BlendFunction::BF_INV_DEST_APLHA:
-				res = D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_DEST_ALPHA;
 			case BlendFunction::BF_DEST_COLOR:
-				res = D3D11_BLEND::D3D11_BLEND_DEST_COLOR;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_DEST_COLOR;
 			case BlendFunction::BF_INV_DEST_COLOR:
-				res = D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_INV_DEST_COLOR;
 			case BlendFunction::BF_BLEND_FACTOR:
-				res = D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
 			case BlendFunction::BF_INV_BLEND_FACTOR:
-				res = D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
-				break;
+				return D3D11_BLEND::D3D11_BLEND_BLEND_FACTOR;
+			default:
+				return D3D11_BLEND::D3D11_BLEND_ONE;
 			}
-
-			return res;
 		}
 
 		static D3D11_BLEND_OP getBlendOperation(const BlendOperation& blendOp)
 		{
-			D3D11_BLEND_OP res = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-
 			switch (blendOp)
 			{
 			case BlendOperation::BOP_ADD:
-				res = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-				break;
+				return D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 			case BlendOperation::BOP_SUBTRACT:
-				res = D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
-				break;
+				return D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
 			case BlendOperation::BOP_REV_SUBTRACT:
-				res = D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
-				break;
+				return D3D11_BLEND_OP::D3D11_BLEND_OP_SUBTRACT;
 			case BlendOperation::BOP_MIN:
-				res = D3D11_BLEND_OP::D3D11_BLEND_OP_MIN;
-				break;
+				return D3D11_BLEND_OP::D3D11_BLEND_OP_MIN;
 			case BlendOperation::BOP_MAX:
-				res = D3D11_BLEND_OP::D3D11_BLEND_OP_MAX;
-				break;
+				return D3D11_BLEND_OP::D3D11_BLEND_OP_MAX;
 			}
-
-			return res;
 		}
 
 		static DXGI_FORMAT getFormat(TextureFormat format)
 		{
 			switch (format)
 			{
-			case FORMAT_B8G8R8A8_UNORM:
+			case Hollow::TF_R8:
+				return DXGI_FORMAT_R8_UNORM;
+			case Hollow::TF_RG8:
+				return DXGI_FORMAT_R8G8_UNORM;
+			case Hollow::TF_RGB8:
+			case Hollow::TF_RGBA8:
+				return DXGI_FORMAT_R8G8B8A8_UNORM;
+			case Hollow::TF_BGR8:
+				return DXGI_FORMAT_B8G8R8X8_UNORM;
+			case Hollow::TF_BGRA8:
 				return DXGI_FORMAT_B8G8R8A8_UNORM;
-			case FORMAT_R32G32B32A32:
+			case Hollow::TF_R16:
+				return DXGI_FORMAT_R16_UNORM;
+			case Hollow::TF_RG16:
+				return DXGI_FORMAT_R16G16_UNORM;
+			case Hollow::TF_RGB16:
+			case Hollow::TF_RGBA16:
+				return DXGI_FORMAT_R16G16B16A16_UNORM;
+			case Hollow::TF_R32:
+				return DXGI_FORMAT_R32_FLOAT;
+			case Hollow::TF_RG32:
+				return DXGI_FORMAT_R32G32_FLOAT;
+			case Hollow::TF_RGB32:
+				return DXGI_FORMAT_R32G32B32_FLOAT;
+			case Hollow::TF_RGBA32:
 				return DXGI_FORMAT_R32G32B32A32_FLOAT;
-			default:
-				return DXGI_FORMAT_B8G8R8A8_UNORM;
+			}
+		}
+
+		static int getPicth(TextureFormat format, UINT32 width)
+		{
+			switch (format)
+			{
+			case Hollow::TF_R8:
+			case Hollow::TF_R16:
+			case Hollow::TF_R32:
+				return 1 * width;
+			case Hollow::TF_RG8:
+			case Hollow::TF_RG16:
+			case Hollow::TF_RG32:
+				return 2 * width;
+			case Hollow::TF_RGB8:
+			case Hollow::TF_BGR8:
+			case Hollow::TF_RGB16:
+			case Hollow::TF_RGB32:
+				return 3 * width;
+			case Hollow::TF_RGBA8:
+			case Hollow::TF_BGRA8:
+			case Hollow::TF_RGBA16:
+			case Hollow::TF_RGBA32:
+				return 4 * width;
 			}
 		}
 	};

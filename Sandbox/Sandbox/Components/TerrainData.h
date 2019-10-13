@@ -4,7 +4,7 @@
 #include <Hollow/Graphics/Vertex.h>
 #include <vector>
 #include <Hollow/Graphics/HardwareBufferManager.h>
-#include <Hollow/Importer/FreeImgImporter.h>
+#include <Hollow/Import/FreeImgImporter.h>
 #include "Hollow/Platform.h"
 
 struct TerrainVertex
@@ -28,13 +28,13 @@ struct TerrainVertex
 class TerrainData : public Hollow::Component<TerrainData>
 {
 public:
-	Hollow::VertexBuffer* vBuffer;
-	Hollow::IndexBuffer* iBuffer;
+	Hollow::s_ptr<Hollow::VertexBuffer> vBuffer;
+	Hollow::s_ptr<Hollow::IndexBuffer> iBuffer;
 	Hollow::s_ptr<Hollow::Texture> tex;
 
 	std::string filename;
 	int denominator = 1;
-	Hollow::s_ptr<Hollow::TextureData> desc;
+	Hollow::s_ptr<Hollow::Import::Texture> desc;
 	unsigned short* data;
 	unsigned char* colorData;
 public:
@@ -50,10 +50,10 @@ public:
 		this->filename = filename;
 
 		if (0) {
-			desc = Hollow::FreeImgImporter::instance()->import(filename.c_str(), false);
+			desc = Hollow::FreeImgImporter::instance()->import(filename.c_str());
 			data = (unsigned short*)desc->data.get();
 		} else {
-			desc = std::make_shared<Hollow::TextureData>();
+			desc = std::make_shared<Hollow::Import::Texture>();
 			desc->width = 1025;
 			desc->height = 1025;
 			desc->pitch = 4;
@@ -62,7 +62,7 @@ public:
 			fread(data, sizeof(unsigned short), desc->width * desc->height, file);
 		}
 		
-		Hollow::s_ptr<Hollow::TextureData> texData = Hollow::FreeImgImporter::instance()->import("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp", false);
+		Hollow::s_ptr<Hollow::Import::Texture> texData = Hollow::FreeImgImporter::instance()->import("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp");
 		colorData = (unsigned char*)texData->data.get();
 
 		std::vector<TerrainVertex> vertices;
@@ -214,7 +214,7 @@ public:
 		//	third.normal = cross;
 		//}
 
-		tex = Hollow::TextureManager::instance()->createTextureFromFile("g.jpg", true);
+		//tex = Hollow::TextureManager::instance()->createTextureFromFile("g.jpg", true);
 		//tex = Hollow::TextureManager::instance()->createTextureFromFile("test.gif", true);
 
 		vBuffer = Hollow::VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(TerrainVertex) });

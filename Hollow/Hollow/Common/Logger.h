@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "vendor/spdlog/include/spdlog/fmt/fmt.h"
+#include <iostream>
 
 #define LOG_BUFFER_SIZE 500
 namespace Hollow {
@@ -24,6 +25,9 @@ namespace Hollow {
 			fmt::format_to(buf, string, args...); // replaces itoa(42, buffer, 10)
 			std::string res = fmt::to_string(buf);
 			buffer[counter++ % 500] = res;
+
+			fwrite(res.c_str(), sizeof(char), res.size(), stdout);
+			fflush(stdout);
 			size++;
 			if (size > 500) {
 				size = 500;

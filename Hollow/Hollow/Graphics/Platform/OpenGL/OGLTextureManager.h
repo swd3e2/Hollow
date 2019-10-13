@@ -7,16 +7,14 @@
 #include "OGLTexture.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/TextureManager.h"
+#include "OGLHelper.h"
 
 namespace Hollow {
 	class OGLTextureManager : public TextureManager
 	{
 	public:
-		virtual s_ptr<Texture> create2dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc) override;
-		virtual s_ptr<Texture> create2dTexture(const TEXTURE_DESC& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const std::vector<s_ptr<Import::Texture>>& texture, const TEXTURE_DESC& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc) override;
-		virtual s_ptr<Texture> create3dTexture(const TEXTURE_DESC& desc) override;
+		virtual s_ptr<Texture> create(const TEXTURE_DESC& desc) override;
+		virtual s_ptr<Texture> create(const TEXTURE_DESC& desc, const s_ptr<Import::Texture>& texture) override;
 	};
 }
 

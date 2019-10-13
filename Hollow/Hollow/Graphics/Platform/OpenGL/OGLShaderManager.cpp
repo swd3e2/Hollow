@@ -27,7 +27,7 @@ namespace Hollow {
 
 		if (desc.vertexShader != nullptr)
 		{
-			glUseProgramStages(pipeline->pipelineId, GL_VERTEX_SHADER_BIT, static_cast<OGLShader*>(desc.vertexShader)->shaderId);
+			glUseProgramStages(pipeline->pipelineId, GL_VERTEX_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.vertexShader)->shaderId);
 		}
 
 		if (desc.pixelShader != nullptr)
@@ -52,17 +52,17 @@ namespace Hollow {
 
 		if (desc.geometryShader != nullptr)
 		{
-			glUseProgramStages(pipeline->pipelineId, GL_GEOMETRY_SHADER_BIT, dynamic_cast<OGLShader*>(desc.geometryShader)->shaderId);
+			glUseProgramStages(pipeline->pipelineId, GL_GEOMETRY_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.geometryShader)->shaderId);
 		}
 
 		if (desc.hullShader != nullptr)
 		{
-			glUseProgramStages(pipeline->pipelineId, GL_TESS_CONTROL_SHADER_BIT, dynamic_cast<OGLShader*>(desc.hullShader)->shaderId);
+			glUseProgramStages(pipeline->pipelineId, GL_TESS_CONTROL_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.hullShader)->shaderId);
 		}
 
 		if (desc.domainShader != nullptr)
 		{
-			glUseProgramStages(pipeline->pipelineId, GL_TESS_EVALUATION_SHADER_BIT, dynamic_cast<OGLShader*>(desc.domainShader)->shaderId);
+			glUseProgramStages(pipeline->pipelineId, GL_TESS_EVALUATION_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.domainShader)->shaderId);
 		}
 
 		return s_ptr<ShaderPipeline>(pipeline);

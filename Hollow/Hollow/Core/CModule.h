@@ -66,10 +66,9 @@ namespace Hollow {
 			_shutdown = true;
 			delete _instance;
 		}
-
+	protected:
 		virtual void onStartUp() {}
 		virtual void onShutdown() {}
-	protected:
 		static bool isStartedUp() { return _startedUp; }
 		static bool isShutdown() { return _shutdown; }
 	};

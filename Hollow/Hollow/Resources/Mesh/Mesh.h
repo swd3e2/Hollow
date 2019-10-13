@@ -15,15 +15,13 @@ namespace Hollow {
 	{
 	public:
 		std::string name;
-		VertexBuffer* vBuffer;
-		IndexBuffer* iBuffer;
+		s_ptr<VertexBuffer> vBuffer;
+		s_ptr<IndexBuffer> iBuffer;
 		Material* material;
 	public:
 		Model() {}
 		~Model()
 		{
-			delete vBuffer;
-			delete iBuffer;
 			delete material;
 		}
 	};

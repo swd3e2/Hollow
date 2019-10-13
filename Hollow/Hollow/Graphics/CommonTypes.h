@@ -92,8 +92,20 @@ namespace Hollow {
 
 	enum TextureFormat
 	{
-		TF_B8G8R8A8_UNORM,
-		TF_R32G32B32A32
+		TF_R8,
+		TF_RG8,
+		TF_RGB8,
+		TF_BGR8,
+		TF_RGBA8,
+		TF_BGRA8,
+		TF_R16,
+		TF_RG16,
+		TF_RGB16,
+		TF_RGBA16,
+		TF_R32,
+		TF_RG32,
+		TF_RGB32,
+		TF_RGBA32
 	};
 
 	enum TextureType
@@ -112,5 +124,13 @@ namespace Hollow {
 		ST_COMPUTE, 
 		ST_HULL, 
 		ST_DOMAIN
+	};
+
+	enum TextureUsage
+	{
+		TU_STATIC,
+		TU_DYNAMIC,
+		TU_RENDER_TARGET,	
+		TU_DEPTH_STENCIL
 	};
 }

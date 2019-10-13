@@ -3,7 +3,7 @@
 #ifndef HW_WINDOW_MANAGER_H
 #define HW_WINDOW_MANAGER_H
 
-#include "Graphics/Base/Window.h"
+#include "Graphics/Window.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Platform.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11Win32Window.h"

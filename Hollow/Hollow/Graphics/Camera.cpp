@@ -70,8 +70,7 @@ namespace Hollow {
 	void Camera::updateViewMatrix()
 	{
 		Matrix4 rotation = Matrix4::rotation(this->m_Rotation.x, this->m_Rotation.y, 0.0f);
-		m_CamTarget = Vector4::normalize(Vector4(0.0f, 0.0f, 1.0f, 0.0f) * rotation);
-		m_CamTarget = m_CamTarget + m_Position;
+		m_CamTarget = Vector4::normalize(Vector4(0.0f, 0.0f, 1.0f, 0.0f) * rotation) + m_Position;
 		m_ViewMatrix = Matrix4::lookAt(m_Position, m_CamTarget, Vector4(0.0f, 1.0f, 0.0f, 0.0f));
 
 		Matrix4 temp = Matrix4::rotation(this->m_Rotation.x, this->m_Rotation.y, this->m_Rotation.z);

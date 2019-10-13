@@ -5,7 +5,7 @@
 
 #include "Hollow/Platform.h"
 #include "Hollow/Core/CModule.h"
-#include "Graphics/Base/RenderApi.h"
+#include "Graphics/RenderApi.h"
 #include "Graphics/Platform/DirectX/D3D11RenderApi.h"
 #include "Graphics/Platform/OpenGL/OGLRenderApi.h"
 #include "Graphics/RendererType.h"

@@ -3,13 +3,13 @@
 #include "D3D11RenderApi.h"
 
 namespace Hollow {
-	RenderTarget* D3D11RenderTargetManager::create(RENDER_TARGET_DESC desc)
+	s_ptr<RenderTarget> D3D11RenderTargetManager::create(RENDER_TARGET_DESC desc)
 	{
 		D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
 		ID3D11Device* device = r->getContext().getDevice();
 
 		HRESULT hr = S_OK;
-		D3D11RenderTarget* renderTarget = new D3D11RenderTarget(desc.width, desc.height, desc.count);
+		s_ptr<D3D11RenderTarget> renderTarget = std::make_shared<D3D11RenderTarget>(desc.width, desc.height, desc.count);
 		
 		renderTarget->m_BackBuffer = new ID3D11Texture2D*[desc.count];
 		renderTarget->m_RenderTarget = new ID3D11RenderTargetView*[desc.count];
@@ -89,7 +89,7 @@ namespace Hollow {
 
 		device->CreateShaderResourceView(renderTarget->m_DepthStencilBuffer, &srvd, &renderTarget->m_DepthResourceView);
 		
-		return renderTarget;
+		return std::static_pointer_cast<RenderTarget>(renderTarget);
 	}
 
 	DXGI_FORMAT D3D11RenderTargetManager::getDepthResourceFormat(DXGI_FORMAT depthformat)

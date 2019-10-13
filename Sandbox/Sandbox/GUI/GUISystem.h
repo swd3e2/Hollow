@@ -3,7 +3,7 @@
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_win32.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_dx11.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_opengl3.h"
-#include "Hollow/Graphics/Base/Window.h"
+#include "Hollow/Graphics/Window.h"
 #include <Hollow/Events/IEventListener.h>
 #include <Hollow/Events/EventSystem.h>
 #include "Sandbox/ProjectSettings.h"

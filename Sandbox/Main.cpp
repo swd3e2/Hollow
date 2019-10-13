@@ -14,7 +14,7 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/Terrain.h"
 #include "Sandbox/Components/TerrainData.h"
-#include "Hollow/Graphics/Base/InputLayout.h"
+#include "Hollow/Graphics/InputLayout.h"
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Systems/PhysicsSystem.h"

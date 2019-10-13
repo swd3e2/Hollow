@@ -23,30 +23,13 @@ namespace Hollow {
 		s_ptr<Shader> hullShader;
 		s_ptr<Shader> domainShader;
 	public:
-		s_ptr<Shader>& getVertexShader()
-		{
-			return vertexShader;
-		}
+		static s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc);
 
-		s_ptr<Shader>& getPixelShader()
-		{
-			return pixelShader;
-		}
-
-		s_ptr<Shader>& getGeometryShader()
-		{
-			return geometryShader;
-		}
-
-		s_ptr<Shader>& getHullShader()
-		{
-			return hullShader;
-		}
-
-		s_ptr<Shader>& getDomainShader()
-		{
-			return domainShader;
-		}
+		inline s_ptr<Shader>& getVertexShader() { return vertexShader; }
+		inline s_ptr<Shader>& getPixelShader() { return pixelShader; }
+		inline s_ptr<Shader>& getGeometryShader() { return geometryShader; }
+		inline s_ptr<Shader>& getHullShader() { return hullShader; }
+		inline s_ptr<Shader>& getDomainShader() { return domainShader; }
 	};
 
 	class ComputePipeline

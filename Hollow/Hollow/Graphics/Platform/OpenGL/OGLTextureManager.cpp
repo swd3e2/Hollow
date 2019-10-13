@@ -1,89 +1,9 @@
 #include "OGLTextureManager.h"
 
 namespace Hollow {
-	s_ptr<Texture> OGLTextureManager::create2dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc)
+	s_ptr<Texture> OGLTextureManager::create(const TEXTURE_DESC& desc)
 	{
-		OGLTexture* oglTexture = new OGLTexture(texture->width, texture->height);
-
-		glGenTextures(1, &oglTexture->textureId);
-		glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture->data.get());
-
-		glActiveTexture(GL_TEXTURE1);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		s_ptr<Texture> texturePtr(oglTexture);
-		textureList[texture->name] = texturePtr;
-
-		return texturePtr;
-	}
-
-	s_ptr<Texture> OGLTextureManager::create2dTexture(const TEXTURE_DESC& desc)
-	{
-		OGLTexture* oglTexture = new OGLTexture(desc.width, desc.height);
-
-		glGenTextures(1, &oglTexture->textureId);
-		glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, desc.width, desc.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture->data.get());
-
-		glActiveTexture(GL_TEXTURE1);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		s_ptr<Texture> texturePtr(oglTexture);
-		textureList[texture->name] = texturePtr;
-
-		return texturePtr;
-	}
-
-	s_ptr<Texture> OGLTextureManager::create3dTexture(const std::vector<s_ptr<Import::Texture>>& texture, const TEXTURE_DESC& desc)
-	{
-		HW_INFO("OGLTextureManager: creating 3d texture, filenames {} {} {} {} {} {} ", 
-			texture[0]->name.c_str(), 
-			texture[1]->name.c_str(), 
-			texture[2]->name.c_str(), 
-			texture[3]->name.c_str(), 
-			texture[4]->name.c_str(), 
-			texture[5]->name.c_str()
-		);
-		OGLTexture* oglTexture = new OGLTexture(texture[0]->width, texture[0]->height);
-		oglTexture->type = TextureType::TT_TEXTURE_CUBE;
-
-		glGenTextures(1, &oglTexture->textureId);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, oglTexture->textureId);
-		for (int i = 0; i < 6; i++) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, texture[i]->width, texture[i]->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture[i]->data.get());
-		}
-
-		/*glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);*/
-
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-
-		s_ptr<Texture> texturePtr(oglTexture);
-		textureList[texture[0]->name] = texturePtr;
-
-		return texturePtr;
-	}
-	s_ptr<Texture> OGLTextureManager::create3dTexture(const s_ptr<Import::Texture>& texture, const TEXTURE_DESC& desc)
-	{
+		/*
 		int xOffset = texture->width / 4;
 		int yOffset = texture->height / 3;
 		std::array<unsigned char*, 6> data;
@@ -163,25 +83,69 @@ namespace Hollow {
 		for (int i = 0; i < 6; i++) {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, xOffset, yOffset, 0, GL_BGRA, GL_UNSIGNED_BYTE, data[i]);
 		}
+		*/
 
-		/*glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);*/
+		OGLTexture* oglTexture = new OGLTexture(desc);
 
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		GLuint numFaces = desc.format == TextureType::TT_TEXTURE_CUBE ? 6 : 1 * desc.arraySlices;
+		oglTexture->textureTarget = OGLHelper::getTextureTarget(desc.type, desc.samples, numFaces);
+		oglTexture->texFormat = OGLHelper::getTextureFormat(desc.format);
 
-		for (int i = 0; i < data.size(); i++) {
-			delete[] data[i];
+		int numMips = desc.numMips + 1;
+
+		glCreateTextures(oglTexture->textureTarget, 1, &oglTexture->textureId);
+
+		if (desc.samples <=	 1) {
+			glTexParameteri(oglTexture->textureId, GL_TEXTURE_MAX_LEVEL, desc.numMips);
 		}
 
-		s_ptr<Texture> texturePtr(oglTexture);
-		textureList[texture->name] = texturePtr;
+		switch (desc.type)
+		{
+		case TextureType::TT_TEXTURE1D:
+		{
+			if (numFaces <= 1)
+			{
+				glTexStorage1D(GL_TEXTURE_1D, numMips, oglTexture->texFormat, desc.width);
+			}
+			else
+			{
+				glTexStorage2D(GL_TEXTURE_1D_ARRAY, numMips, oglTexture->texFormat, desc.width, numFaces);
+			}
+		}
+		break;
+		case TextureType::TT_TEXTURE2D:
+		{
+			if (numFaces <= 1)
+			{
+				glTexStorage2D(GL_TEXTURE_2D, numMips, oglTexture->texFormat, desc.width, desc.height);
+			}
+			else
+			{
+				glTexStorage3D(GL_TEXTURE_2D_ARRAY, numMips, oglTexture->texFormat, desc.width, desc.height, numFaces);
+			}
+		}
+		break;
+		case TextureType::TT_TEXTURE3D:
+			glTexStorage3D(GL_TEXTURE_3D, numMips, oglTexture->texFormat, desc.width, desc.height, desc.depth);
+			break;
+		case TextureType::TT_TEXTURE_CUBE:
+		{
+			if (numFaces <= 6)
+			{
+				glTexStorage2D(GL_TEXTURE_CUBE_MAP, numMips, oglTexture->texFormat, desc.width, desc.height);
+			}
+			else
+			{
+				glTexStorage3D(GL_TEXTURE_CUBE_MAP_ARRAY, numMips, oglTexture->texFormat, desc.width, desc.height, numFaces);
+			}
+		}
+		break;
+		}
 
-		return texturePtr;
+		return s_ptr<Texture>(oglTexture);
 	}
-	s_ptr<Texture> OGLTextureManager::create3dTexture(const TEXTURE_DESC& desc)
+
+	s_ptr<Texture> OGLTextureManager::create(const TEXTURE_DESC& desc, const s_ptr<Import::Texture>& texture)
 	{
 		return s_ptr<Texture>();
 	}

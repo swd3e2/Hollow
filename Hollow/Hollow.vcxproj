@@ -117,6 +117,7 @@
     <ClInclude Include="Hollow\Graphics\ShaderManager.h" />
     <ClInclude Include="Hollow\Graphics\TextureManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLTexture.h" />
+    <ClInclude Include="Hollow\Resources\MeshManager.h" />
     <ClInclude Include="Hollow\WindowManager.h" />
     <ClInclude Include="Hollow\Import\FreeImgImporter.h" />
     <ClInclude Include="Hollow\Math\EAngle.h" />
@@ -136,7 +137,6 @@
     <ClInclude Include="Hollow\Graphics\RenderApi.h" />
     <ClInclude Include="Hollow\Graphics\Vertex.h" />
     <ClInclude Include="Hollow\Resources\Material.h" />
-    <ClInclude Include="Hollow\Resources\MeshManager.h" />
     <ClInclude Include="Hollow\Resources\Mesh\Mesh.h" />
     <ClInclude Include="Hollow\Common\FileSystem.h" />
     <ClInclude Include="Hollow\Common\Helper.h" />
@@ -172,6 +172,8 @@
     <ClCompile Include="Hollow\Graphics\RenderTarget.cpp" />
     <ClCompile Include="Hollow\Graphics\SamplerState.cpp" />
     <ClCompile Include="Hollow\Graphics\Shader.cpp" />
+    <ClCompile Include="Hollow\Graphics\ShaderPipeline.cpp" />
+    <ClCompile Include="Hollow\Graphics\Texture.cpp" />
     <ClCompile Include="Hollow\Graphics\Win32Window.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui.cpp" />
     <ClCompile Include="Hollow\Graphics\GUI\ImGui\imgui_demo.cpp" />
@@ -199,7 +201,6 @@
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLTextureManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLRenderStateManager.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\Win32\OGLWin32Window.cpp" />
-    <ClCompile Include="Hollow\Graphics\TextureManager.cpp" />
     <ClCompile Include="Hollow\Import\FreeImgImporter.cpp" />
     <ClCompile Include="Hollow\Import\GLTFImporter.cpp" />
     <ClCompile Include="Hollow\Import\gltf\tinygltf.cpp" />

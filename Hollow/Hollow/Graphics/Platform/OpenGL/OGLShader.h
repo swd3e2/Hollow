@@ -15,10 +15,6 @@ namespace Hollow {
 		int prevShaderId;
 
 	public:
-		OGLShader(SHADER_TYPE type) :
-			Shader(type), shaderId(DEFAULT_SHADER_ID)
-		{}
-
 		~OGLShader()
 		{
 			release();

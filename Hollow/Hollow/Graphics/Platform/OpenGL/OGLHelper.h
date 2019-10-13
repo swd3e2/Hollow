@@ -11,197 +11,98 @@ namespace Hollow {
 	public:
 		static GLuint getInputLayoutFormat(const INPUT_DATA_TYPE type)
 		{
-			GLuint result = GL_FLOAT;
-
 			switch (type)
 			{
-			case Hollow::Float:
-				result = GL_FLOAT;
-				break;
-			case Hollow::Float2:
-				result = GL_FLOAT;
-				break;
-			case Hollow::Float3:
-				result = GL_FLOAT;
-				break;
-			case Hollow::Float4:
-				result = GL_FLOAT;
-				break;
-			case Hollow::Int:
-				result = GL_INT;
-				break;
-			case Hollow::Int2:
-				result = GL_INT;
-				break;
-			case Hollow::Int3:
-				result = GL_INT;
-				break;
-			case Hollow::Int4:
-				result = GL_INT;
-				break;
-			case Hollow::Bool:
-				result = GL_BOOL;
-				break;
+			case Hollow::Float: 
+			case Hollow::Float2: 
+			case Hollow::Float3: 
+			case Hollow::Float4: 
+				return GL_FLOAT;
+			case Hollow::Int: 
+			case Hollow::Int2: 
+			case Hollow::Int3: 
+			case Hollow::Int4: 
+				return GL_INT;
+			case Hollow::Bool: 
+				return GL_BOOL;
 			}
-
-			return result;
 		}
 
 		static std::string getInputLayoutShaderFormat(const INPUT_DATA_TYPE type)
 		{
-			std::string result;
-
 			switch (type)
 			{
-			case Hollow::Float:
-				result = "float";
-				break;
-			case Hollow::Float2:
-				result = "float2";
-				break;
-			case Hollow::Float3:
-				result = "float3";
-				break;
-			case Hollow::Float4:
-				result = "float4";
-				break;
-			case Hollow::Int:
-				result = "int";
-				break;
-			case Hollow::Int2:
-				result = "int2";
-				break;
-			case Hollow::Int3:
-				result = "int3";
-				break;
-			case Hollow::Int4:
-				result = "int4";
-				break;
-			case Hollow::Bool:
-				result = "bool";
-				break;
+			case Hollow::Float: return "float";
+			case Hollow::Float2: return "float2";
+			case Hollow::Float3: return "float3";
+			case Hollow::Float4: return "float4";
+			case Hollow::Int: return "int";
+			case Hollow::Int2: return "int2";
+			case Hollow::Int3: return "int3";
+			case Hollow::Int4: return "int4";
+			case Hollow::Bool: return "bool";
 			}
-
-			return result;
 		}
 
 		static unsigned int getSize(const INDEX_FORMAT format)
 		{
-			unsigned int result = 4;
-
 			switch (format)
 			{
 			case Hollow::INDEX_FORMAT::UINT:
 			case Hollow::INDEX_FORMAT::INT:
-				result = 4;
-				break;
+				return 4;
 			}
-
-			return result;
 		}
 
 		static GLuint getFormat(const INDEX_FORMAT format)
 		{
-			GLuint result;
-
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT:
-				result = GL_UNSIGNED_INT;
-				break;
-			case Hollow::INDEX_FORMAT::INT:
-				result = GL_INT;
-				break;
-			default:
-				result = GL_UNSIGNED_INT;
+			case Hollow::INDEX_FORMAT::UINT: return GL_UNSIGNED_INT;
+			case Hollow::INDEX_FORMAT::INT: return GL_INT;
+			default: return GL_UNSIGNED_INT;
 			}
-
-			return result;
 		}
 
 		static GLint getComparisonFunction(const ComparisonFunction comparisonFunc)
 		{
-			GLint result;
-
 			switch (comparisonFunc)
 			{
-			case ComparisonFunction::CMP_NEVER:
-				result = GL_NEVER;
-				break;
-			case ComparisonFunction::CMP_LESS:
-				result = GL_LESS;
-				break;
-			case ComparisonFunction::CMP_EQUAL:
-				result = GL_EQUAL;
-				break;
-			case ComparisonFunction::CMP_LEQUAL:
-				result = GL_LEQUAL;
-				break;
-			case ComparisonFunction::CMP_GREATER:
-				result = GL_GREATER;
-				break;
-			case ComparisonFunction::CMP_NOT_EQUAL:
-				result = GL_NOTEQUAL;
-				break;
-			case ComparisonFunction::CMP_ALWAYS:
-				result = GL_ALWAYS;
-				break;
-			default:
-				result = GL_NEVER;
-				break;
+			case ComparisonFunction::CMP_NEVER: return GL_NEVER;
+			case ComparisonFunction::CMP_LESS: return GL_LESS;
+			case ComparisonFunction::CMP_EQUAL: return GL_EQUAL;
+			case ComparisonFunction::CMP_LEQUAL: return GL_LEQUAL;
+			case ComparisonFunction::CMP_GREATER: return GL_GREATER;
+			case ComparisonFunction::CMP_NOT_EQUAL: return GL_NOTEQUAL;
+			case ComparisonFunction::CMP_ALWAYS: return GL_ALWAYS;
+			default: return GL_NEVER;
 			}
-
-			return result;
 		}
 
 		static GLuint getAddressingMode(const AddressingMode addressingMode)
 		{
-			GLuint result;
-
 			switch (addressingMode)
 			{
-			case AddressingMode::AM_WRAP:
-				result = GL_REPEAT;
-				break;
-			case AddressingMode::AM_CLAMP:
-				result = GL_CLAMP;
-				break;
-			case AddressingMode::AM_MIRROR:
-				result = GL_MIRRORED_REPEAT;
-				break;
-			case AddressingMode::AM_BORDER:
-				result = GL_CLAMP_TO_BORDER;
-				break;
-			default:
-				result = GL_REPEAT;
+			case AddressingMode::AM_WRAP: return GL_REPEAT;
+			case AddressingMode::AM_CLAMP: return GL_CLAMP;
+			case AddressingMode::AM_MIRROR: return GL_MIRRORED_REPEAT;
+			case AddressingMode::AM_BORDER: return GL_CLAMP_TO_BORDER;
+			default: return GL_REPEAT;
 			}
-
-			return result;
 		}
 
 		static GLuint getFilteringMode(const FilterMode filteringMode)
 		{
-			GLuint result;
-
 			switch (filteringMode)
 			{
-			case FilterMode::FM_POINT:
-				result = GL_NEAREST;
-				break;
-			case FilterMode::FM_LINEAR:
-				result = GL_LINEAR;
-				break;
-			default:
-				result = GL_LINEAR;
+			case FilterMode::FM_POINT: return GL_NEAREST;
+			case FilterMode::FM_LINEAR: return GL_LINEAR;
+			default: return GL_LINEAR;
 			}
-
-			return result;
 		}
 
 		static GLuint getMinMipFilteringMode(const FilterMode _min, const FilterMode _mip)
 		{
-			GLuint result = GL_NEAREST_MIPMAP_LINEAR;
-
 			switch (_min)
 			{
 			case FilterMode::FM_NONE:
@@ -210,14 +111,11 @@ namespace Hollow {
 				{
 				case FilterMode::FM_LINEAR:
 				case FilterMode::FM_ANISOTROPIC:
-					result = GL_NEAREST_MIPMAP_LINEAR;
-					break;
+					return GL_NEAREST_MIPMAP_LINEAR;
 				case FilterMode::FM_POINT:
-					result = GL_NEAREST_MIPMAP_NEAREST;
-					break;
+					return GL_NEAREST_MIPMAP_NEAREST;
 				case FilterMode::FM_NONE:
-					result = GL_NEAREST;
-					break;
+					return GL_NEAREST;
 				}
 				break;
 			case FilterMode::FM_LINEAR:
@@ -226,127 +124,183 @@ namespace Hollow {
 				{
 				case FilterMode::FM_LINEAR:
 				case FilterMode::FM_ANISOTROPIC:
-					result = GL_LINEAR_MIPMAP_LINEAR;
-					break;
+					return GL_LINEAR_MIPMAP_LINEAR;
 				case FilterMode::FM_POINT:
-					result = GL_LINEAR_MIPMAP_NEAREST;
-					break;
+					return GL_LINEAR_MIPMAP_NEAREST;
 				case FilterMode::FM_NONE:
-					result = GL_LINEAR;
-					break;
+					return GL_LINEAR;
 				}
 				break;
 			}
-
-			return result;
 		}
 
 		static GLuint getDepthStencilOperation(const StencilOperation stecnilOp)
 		{
-			GLuint res = GL_KEEP;
-
 			switch (stecnilOp)
 			{
-			case StencilOperation::SOP_KEEP:
-				res = GL_KEEP;
-				break;
-			case StencilOperation::SOP_ZERO:
-				res = GL_ZERO;
-				break;
-			case StencilOperation::SOP_INCR:
-				res = GL_INCR;
-				break;
-			case StencilOperation::SOP_INCR_WRAP:
-				res = GL_INCR_WRAP;
-				break;
-			case StencilOperation::SOP_DECR:
-				res = GL_DECR;
-				break;
-			case StencilOperation::SOP_DECR_WRAP:
-				res = GL_DECR_WRAP;
-				break;
-			case StencilOperation::SOP_REPLACE:
-				res = GL_REPLACE;
-				break;
-			case StencilOperation::SOP_INVERT:
-				res = GL_INVERT;
-				break;
+			case StencilOperation::SOP_KEEP: return GL_KEEP;
+			case StencilOperation::SOP_ZERO: return GL_ZERO;
+			case StencilOperation::SOP_INCR: return GL_INCR;
+			case StencilOperation::SOP_INCR_WRAP: return GL_INCR_WRAP;
+			case StencilOperation::SOP_DECR: return GL_DECR;
+			case StencilOperation::SOP_DECR_WRAP: return GL_DECR_WRAP;
+			case StencilOperation::SOP_REPLACE: return GL_REPLACE;
+			case StencilOperation::SOP_INVERT: return GL_INVERT;
 			}
-
-			return res;
 		}
 
 		static GLuint getBlend(const BlendFunction& blendFunc)
 		{
-			GLuint res = 0;
-
 			switch (blendFunc)
 			{
-			case BlendFunction::BF_ZERO:
-				res = GL_ZERO;
-				break;
-			case BlendFunction::BF_ONE:
-				res = GL_ONE;
-				break;
-			case BlendFunction::BF_SRC_COLOR:
-				res = GL_SRC_COLOR;
-				break;
-			case BlendFunction::BF_INV_SRC_COLOR:
-				res = GL_ONE_MINUS_SRC_COLOR;
-				break;
-			case BlendFunction::BF_SRC_APLHA:
-				res = GL_SRC_ALPHA;
-				break;
-			case BlendFunction::BF_INV_SRC_APLHA:
-				res = GL_ONE_MINUS_SRC_ALPHA;
-				break;
-			case BlendFunction::BF_DEST_APLHA:
-				res = GL_DST_ALPHA;
-				break;
-			case BlendFunction::BF_INV_DEST_APLHA:
-				res = GL_ONE_MINUS_DST_ALPHA;
-				break;
-			case BlendFunction::BF_DEST_COLOR:
-				res = GL_DST_COLOR;
-				break;
-			case BlendFunction::BF_INV_DEST_COLOR:
-				res = GL_ONE_MINUS_DST_COLOR;
-				break;
-			case BlendFunction::BF_BLEND_FACTOR:
-				res = GL_CONSTANT_COLOR;
-				break;
-			case BlendFunction::BF_INV_BLEND_FACTOR:
-				res = GL_ONE_MINUS_CONSTANT_COLOR;
-				break;
+			case BlendFunction::BF_ZERO: return GL_ZERO;
+			case BlendFunction::BF_ONE: return GL_ONE;
+			case BlendFunction::BF_SRC_COLOR: return GL_SRC_COLOR;
+			case BlendFunction::BF_INV_SRC_COLOR: return GL_ONE_MINUS_SRC_COLOR;
+			case BlendFunction::BF_SRC_APLHA: return GL_SRC_ALPHA;
+			case BlendFunction::BF_INV_SRC_APLHA: return GL_ONE_MINUS_SRC_ALPHA;
+			case BlendFunction::BF_DEST_APLHA: return GL_DST_ALPHA;
+			case BlendFunction::BF_INV_DEST_APLHA: return GL_ONE_MINUS_DST_ALPHA;
+			case BlendFunction::BF_DEST_COLOR: return GL_DST_COLOR;
+			case BlendFunction::BF_INV_DEST_COLOR: return GL_ONE_MINUS_DST_COLOR;
+			case BlendFunction::BF_BLEND_FACTOR: return GL_CONSTANT_COLOR;
+			case BlendFunction::BF_INV_BLEND_FACTOR: return GL_ONE_MINUS_CONSTANT_COLOR;
 			}
-
-			return res;
 		}
 
 		static GLuint getBlendOperation(const BlendOperation& blendOp)
 		{
-			GLuint res = 0;
-
 			switch (blendOp)
 			{
-			case BlendOperation::BOP_ADD:
-				res = GL_FUNC_ADD;
-				break;
-			case BlendOperation::BOP_SUBTRACT:
-				res = GL_FUNC_SUBTRACT;
-				break;
-			case BlendOperation::BOP_REV_SUBTRACT:
-				res = GL_FUNC_REVERSE_SUBTRACT;
-				break;
-			case BlendOperation::BOP_MIN:
-				res = GL_MIN;
-				break;
-			case BlendOperation::BOP_MAX:
-				res = GL_MAX;
-				break;
+			case BlendOperation::BOP_ADD: return GL_FUNC_ADD;
+			case BlendOperation::BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
+			case BlendOperation::BOP_REV_SUBTRACT: return  GL_FUNC_REVERSE_SUBTRACT;
+			case BlendOperation::BOP_MIN: return GL_MIN;
+			case BlendOperation::BOP_MAX: return GL_MAX;
+			default: return GL_FUNC_ADD;
 			}
+		}
 
-			return res;
+		static GLuint getTextureTarget(TextureType type, int numSamples, int numFaces)
+		{
+			switch (type)
+			{
+			case TextureType::TT_TEXTURE1D:
+				if (numFaces <= 1)
+					return GL_TEXTURE_1D;
+				else
+					return GL_TEXTURE_1D_ARRAY;
+			case TextureType::TT_TEXTURE2D:
+				if (numSamples > 1)
+				{
+					if (numFaces <= 1)
+						return GL_TEXTURE_2D_MULTISAMPLE;
+					else
+						return GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
+				}
+				else
+				{
+					if (numFaces <= 1)
+						return GL_TEXTURE_2D;
+					else
+						return GL_TEXTURE_2D_ARRAY;
+				}
+			case TextureType::TT_TEXTURE3D:
+				return GL_TEXTURE_3D;
+			case TextureType::TT_TEXTURE_CUBE:
+				if (numFaces <= 6)
+					return GL_TEXTURE_CUBE_MAP;
+				else
+					return GL_TEXTURE_CUBE_MAP_ARRAY;
+			default:
+				return 0;
+			};
+		}
+
+		static GLuint getTextureFormat(TextureFormat format)
+		{
+			switch (format)
+			{
+			case TextureFormat::TF_R8: 
+				return GL_R8;
+			case TextureFormat::TF_RG8: 
+				return GL_RG8;
+			case TextureFormat::TF_RGB8: 
+			case TextureFormat::TF_BGR8: 
+				return GL_RGB8;
+			case TextureFormat::TF_RGBA8: 
+				return GL_RGBA8;
+			case TextureFormat::TF_BGRA8: 
+				return GL_BGRA;
+			case TextureFormat::TF_R16: 
+				return GL_R16;
+			case TextureFormat::TF_RG16: 
+				return GL_RG16;
+			case TextureFormat::TF_RGB16: 
+				return GL_RGB16;
+			case TextureFormat::TF_RGBA16: 
+				return GL_RGBA16;
+			case TextureFormat::TF_R32: 
+				return GL_R32F;
+			case TextureFormat::TF_RG32: 
+				return GL_RG32F;
+			case TextureFormat::TF_RGB32: 
+				return GL_RGB32F;
+			case TextureFormat::TF_RGBA32: 
+				return GL_RGBA32F;
+			}
+		}
+
+		static GLuint getInternalTextureFormat(TextureFormat format)
+		{
+			switch (format)
+			{
+			case TextureFormat::TF_R8:
+			case TextureFormat::TF_R16:
+			case TextureFormat::TF_R32:
+				return GL_RED;
+			case TextureFormat::TF_RG8:
+			case TextureFormat::TF_RG16:
+			case TextureFormat::TF_RG32:
+				return GL_RG;
+			case TextureFormat::TF_RGB8:
+			case TextureFormat::TF_RGB16:
+			case TextureFormat::TF_RGB32:
+				return GL_RGB;
+			case TextureFormat::TF_RGBA8:
+			case TextureFormat::TF_RGBA16:
+			case TextureFormat::TF_RGBA32:
+				return GL_RGBA;
+			case TextureFormat::TF_BGRA8:
+				return GL_BGRA;
+			case TextureFormat::TF_BGR8:
+				return GL_BGR;
+			}
+		}
+
+		static GLuint getInternalType(TextureFormat format)
+		{
+			switch (format)
+			{
+			case TextureFormat::TF_R8:
+			case TextureFormat::TF_RG8:
+			case TextureFormat::TF_BGR8:
+			case TextureFormat::TF_RGB8:
+				return GL_UNSIGNED_BYTE;
+			case TextureFormat::TF_RGBA8:
+			case TextureFormat::TF_BGRA8:
+				return GL_UNSIGNED_INT_8_8_8_8_REV;
+			case TextureFormat::TF_R16:
+			case TextureFormat::TF_RG16:
+			case TextureFormat::TF_RGB16:
+			case TextureFormat::TF_RGBA16:
+				return GL_UNSIGNED_SHORT;
+			case TextureFormat::TF_R32:
+			case TextureFormat::TF_RG32:
+			case TextureFormat::TF_RGB32:
+			case TextureFormat::TF_RGBA32:
+				return GL_FLOAT;
+			}
 		}
 	};
 }

@@ -5,7 +5,6 @@
 
 #include "Hollow/Graphics/RenderApi.h"
 #include "D3D11Prerequisites.h"
-#include "Hollow/Common/Log.h"
 #include "D3D11RenderStateManager.h"
 
 namespace Hollow {

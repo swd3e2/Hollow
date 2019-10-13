@@ -4,9 +4,9 @@
 #define HW_MESH_MANAGER_H
 
 #include "Hollow/Core/CModule.h"
-#include "Hollow/Importer/AssimpImporter.h"
-#include "Hollow/Importer/GLTFImporter.h"
-#include "Hollow/Importer/HollowModelImporter.h"
+#include "Hollow/Import/AssimpImporter.h"
+#include "Hollow/Import/GLTFImporter.h"
+#include "Hollow/Import/HollowModelImporter.h"
 #include "Hollow/Platform.h"
 
 namespace Hollow {

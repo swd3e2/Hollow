@@ -6,10 +6,9 @@ namespace Hollow {
 		Console::RedirectIOToConsole();
 		Log::Init();
 
-		Logger::startUp();
+		MeshManager::startUp();
 		FreeImgImporter::startUp();
 		TaskManager::startUp();
-		MeshManager::startUp();
 		DelayedTaskManager::startUp();
 		EventSystem::startUp();
 		InputManager::startUp();
@@ -28,10 +27,10 @@ namespace Hollow {
 		InputManager::shutdown();
 		EventSystem::shutdown();
 		DelayedTaskManager::shutdown();
-		MeshManager::shutdown();
 		/* @todo: check fix error */
 		//TaskManager::shutdown();
 		FreeImgImporter::shutdown();
+		MeshManager::shutdown();
 		Logger::shutdown();
 	}
 

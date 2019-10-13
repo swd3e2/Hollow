@@ -23,7 +23,7 @@ namespace Hollow {
 		virtual s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc) override;
 	private:
 		HRESULT compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob);
-		HRESULT createShader(const SHADER_DESC& desc, ID3DBlob* blob, const Microsoft::WRL::ComPtr<ID3D11DeviceChild>& shader);
+		HRESULT createShader(const SHADER_DESC& desc, ID3DBlob* blob, ID3D11DeviceChild* shader);
 		const char* getTarget(const ShaderType type) const;
 	};
 }

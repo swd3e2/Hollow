@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Hollow/ECS/Component.h>
-#include <Hollow/Graphics/Base/HardwareBuffer.h>
 #include <string>
 #include <Hollow/Graphics/Vertex.h>
 #include <vendor/tinygltf/json.hpp>
@@ -9,26 +8,16 @@
 #include <Hollow/Graphics/HardwareBufferManager.h>
 #include <Hollow/Common/Helper.h>
 #include <Hollow/Resources/Material.h>
-#include <Hollow/Resources/MeshManager.h>
 #include <unordered_map>
 #include "Hollow/Graphics/TextureManager.h"
 #include "Hollow/Platform.h"
 
-struct RenderableObject {
-	Hollow::VertexBuffer* vBuffer;
-	Hollow::IndexBuffer* iBuffer;
+class RenderableObject {
+public:
+	Hollow::s_ptr<Hollow::VertexBuffer> vBuffer;
+	Hollow::s_ptr<Hollow::IndexBuffer> iBuffer;
 	int material;
 	int id;
-
-	~RenderableObject()
-	{
-		if (vBuffer != nullptr) {
-			delete vBuffer;
-		}
-		if (iBuffer != nullptr) {
-			delete iBuffer;
-		}
-	}
 };
 
 class RenderableComponent : public Hollow::Component<RenderableComponent>
@@ -87,7 +76,7 @@ public:
 			std::string diffuseTexture = it.second.diffuseTexture;
 			if (diffuseTexture.size()) {
 				material->materialData.hasDiffuseTexture = true;
-				material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
+				//material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
 			}
 			materials[it.first] = material;
 		}
@@ -125,7 +114,7 @@ public:
 			std::string diffuseTexture = it.second.diffuseTexture;
 			if (diffuseTexture.size()) {
 				material->materialData.hasDiffuseTexture = true;
-				material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
+				//material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
 			}
 			materials[it.first] = material;
 		}
