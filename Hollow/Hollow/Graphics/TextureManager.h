@@ -3,7 +3,7 @@
 #ifndef HW_TEXTURE_MANAGER_H
 #define HW_TEXTURE_MANAGER_H
 
-#include "Hollow/Common/Logger.h"
+#include "Hollow/Common/Log.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Import/Texture.h"
 #include "Texture.h"

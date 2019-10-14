@@ -12,7 +12,6 @@
 #endif
 
 #include "Hollow/Common/Log.h"
-#include "Hollow/Common/Logger.h"
 
 namespace Hollow {
 	class OGLRenderApi;

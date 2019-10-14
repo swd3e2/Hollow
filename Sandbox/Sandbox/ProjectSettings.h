@@ -96,7 +96,7 @@ public:
 						Hollow::Vector3 position = transform != nullptr ? transform->position : Hollow::Vector3();
 
 						objRenderable->load(model);
-						objPhysics->load(model, position);
+						//objPhysics->load(model, position);
 					}
 				}
 			}

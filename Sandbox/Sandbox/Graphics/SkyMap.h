@@ -21,7 +21,12 @@ public:
 	SkyMap()
 	{
 		Hollow::s_ptr<Hollow::Import::Texture> texture = Hollow::FreeImgImporter::instance()->import(filename.c_str());
-		
+		HW_INFO("Cubemap texture not found, filename {}", filename.c_str());
+		HW_DEBUG("Cubemap texture not found, filename {}", filename.c_str());
+		HW_ERROR("Cubemap texture not found, filename {}", filename.c_str());
+		HW_TRACE("Cubemap texture not found, filename {}", filename.c_str());
+		HW_WARN("Cubemap texture not found, filename {}", filename.c_str());
+
 		if (!texture) {
 			HW_INFO("Cubemap texture not found, filename {}", filename.c_str());
 		}		

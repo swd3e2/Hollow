@@ -4,7 +4,7 @@
 #define HW_SHADER_MANAGER_H
 
 #include "Hollow/Core/CModule.h"
-#include "Hollow/Common/Logger.h"
+#include "Hollow/Common/Log.h"
 #include "Shader.h"
 #include "ShaderPipeline.h"
 

@@ -87,9 +87,6 @@
     <ClInclude Include="Hollow\Core\CModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Common\Console.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Common\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -235,9 +232,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\RenderApiManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Common\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11BlendState.h">
@@ -569,12 +563,6 @@
     <ClCompile Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayoutManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Common\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hollow\Common\Console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11RenderStateManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -621,6 +609,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Common\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,10 +7,8 @@
 #include <Hollow/Events/IEventListener.h>
 #include <Hollow/Events/EventSystem.h>
 #include "Sandbox/ProjectSettings.h"
-#include "LogTab.h"
 #include "HierarchyTab.h"
 #include "RendererTab.h"
-#include "Hollow/Common/Logger.h"
 #include "Hollow/Core/DelayedTaskManager.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11Context.h"
 
@@ -32,7 +30,6 @@ public:
 	char* projectFolder = new char[100]{ 0 };
 	char* projectName = new char[100]{ 0 };
 
-	GUI::LogTab logTab;
 	GUI::HierarchyTab hierarchyTab;
 	GUI::RendererTab rendererTab;
 

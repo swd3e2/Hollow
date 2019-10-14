@@ -13,8 +13,29 @@ namespace Hollow {
 			getError(shader->shaderId);
 		} break;
 		case ShaderType::ST_PIXEL: {
+			const char* entrance = strstr(shaderCode, "uniform sampler2D");
+			const char* temp;
+			int size = 0;
+			std::vector<std::string> textures;
+			while (entrance != nullptr)
+			{
+				entrance += strlen("uniform sampler2D") + 1; // skip "uniform sampler2D" and space
+				temp = strstr(entrance, ";");
+				size = temp - entrance;
+				char* temp = new char[size + 1];
+				strncpy(temp, entrance, size);
+				temp[size] = '\0';
+				textures.push_back(temp);
+				entrance = strstr(entrance, "uniform sampler2D");
+			}
+			
 			shader->shaderId = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &shaderCode);
-			getError(shader->shaderId);
+
+			if (!getError(shader->shaderId)) {
+				for (int i = 0; i < textures.size(); i++) {
+					glProgramUniform1i(shader->shaderId, glGetUniformLocation(shader->shaderId, textures[i].c_str()), i);
+				}
+			}
 		} break;
 		}
 		return s_ptr<Shader>(shader);
@@ -66,5 +87,22 @@ namespace Hollow {
 		}
 
 		return s_ptr<ShaderPipeline>(pipeline);
+	}
+
+	bool OGLShaderManager::getError(GLuint shaderId)
+	{
+		GLint isLinked = 0;
+		glGetProgramiv(shaderId, GL_LINK_STATUS, &isLinked);
+
+		if (isLinked == GL_FALSE) {
+			GLint maxLength = 0;
+			glGetProgramiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
+			GLchar* infoLog = new GLchar[maxLength];
+			glGetProgramInfoLog(shaderId, maxLength, &maxLength, infoLog);
+			HW_ERROR("{}", infoLog);
+			delete[] infoLog;
+			return true;
+		}
+		return false;
 	}
 }

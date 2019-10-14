@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Hollow\Common\Logger.h" />
     <ClInclude Include="Hollow\Core.h" />
     <ClInclude Include="Hollow\Core\CModule.h" />
     <ClInclude Include="Hollow\Core\DelayedTaskManager.h" />
@@ -148,7 +147,6 @@
     <ClInclude Include="Hollow\Input\KeyCodes.h" />
     <ClInclude Include="Hollow\ECS\SystemManager.h" />
     <ClInclude Include="Hollow\Platform.h" />
-    <ClInclude Include="Hollow\Common\Console.h" />
     <ClInclude Include="Hollow\ECS\ISystem.h" />
     <ClInclude Include="Hollow\ECS\System.h" />
     <ClInclude Include="Hollow\Resources\Mesh\SubMesh.h" />
@@ -161,7 +159,6 @@
     <ClInclude Include="Hollow\Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Hollow\Common\Console.cpp" />
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Core.cpp" />
     <ClCompile Include="Hollow\Events\EventSystem.cpp" />

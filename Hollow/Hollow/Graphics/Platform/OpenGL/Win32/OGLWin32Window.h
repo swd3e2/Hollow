@@ -19,7 +19,7 @@
 #include "../GL/wglew.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Hollow/Graphics/GUI/ImGui/imgui_impl_win32.h"
-#include "Hollow/Common/Logger.h"
+#include "Hollow/Common/Log.h"
 
 LRESULT  ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

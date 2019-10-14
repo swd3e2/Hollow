@@ -8,25 +8,25 @@
 #include "Events/EventSystem.h"
 #include "Common/Timer.h"
 #include "Input/InputManager.h"
-#include "Common/Console.h"
 #include "Core/TaskManager.h"
 #include "RenderApiManager.h"
 #include "Common/Log.h" 
 #include "Import/FreeImgImporter.h"
 #include "WindowManager.h"
 #include "Hollow/Core/DelayedTaskManager.h"
-#include "Common/Logger.h"
+#include "Common/Log.h"
 #include "Resources/MeshManager.h"
 
 namespace Hollow {
 	/**
-	 * Core class which contains all core systems and start ups them
+	 * Core class which contains all core systems and start initialize them
 	 */
 	class Core
 	{
 	public:
-		HWND*			 m_HWND;
-		Timer			 m_Timer;
+		HWND* m_HWND;
+		Timer m_Timer;
+		Log log;
 		double			 dt;
 	public:
 		Core();

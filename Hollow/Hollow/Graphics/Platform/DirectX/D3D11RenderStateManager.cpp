@@ -21,7 +21,9 @@ namespace Hollow {
 		samplerDesc.MipLODBias = desc.mipLODBias;
 		samplerDesc.Filter = D3D11Helper::getFilteringMode(desc.minFilterModel, desc.magFilterMode, desc.mipFilterMode, desc.comparisonFunction != ComparisonFunction::CMP_NEVER);
 
-		device->CreateSamplerState(&samplerDesc, &samplerState->m_SamplerState);
+		if (FAILED(device->CreateSamplerState(&samplerDesc, &samplerState->m_SamplerState))) {
+			HW_ERROR("Failed to create sampler state");
+		}
 
 		return s_ptr<SamplerState>(samplerState);
 	}
@@ -45,7 +47,9 @@ namespace Hollow {
 		rasterizerDesc.ScissorEnable = false;
 		rasterizerDesc.SlopeScaledDepthBias = 1.0f;
 
-		device->CreateRasterizerState(&rasterizerDesc, &rasterizerState->m_RasterizerState);
+		if (FAILED(device->CreateRasterizerState(&rasterizerDesc, &rasterizerState->m_RasterizerState))) {
+			HW_ERROR("Failed to create rasterizer state");
+		}
 
 		return s_ptr<RasterizerState>(rasterizerState);
 	}
@@ -72,7 +76,9 @@ namespace Hollow {
 			blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 		}
 
-		device->CreateBlendState(&blendDesc, &blendState->m_BlendState);
+		if (FAILED(device->CreateBlendState(&blendDesc, &blendState->m_BlendState))) {
+			HW_ERROR("Failed to create blend state");
+		}
 
 		return s_ptr<BlendState>(blendState);
 	}
@@ -105,7 +111,9 @@ namespace Hollow {
 			dssDesc.BackFace.StencilFunc = D3D11Helper::getComparisonFunction(desc.back.stencilFunc);
 		}
 
-		device->CreateDepthStencilState(&dssDesc, &depthStencil->depthStencilState);
+		if (FAILED(device->CreateDepthStencilState(&dssDesc, &depthStencil->depthStencilState))) {
+			HW_ERROR("Failed to create depth stencil state");
+		}
 
 		return s_ptr<DepthStencil>(depthStencil);
 	}

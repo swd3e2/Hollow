@@ -13,7 +13,7 @@ namespace Hollow {
 	public:
 		int shaderId;
 		int prevShaderId;
-
+		
 	public:
 		~OGLShader()
 		{

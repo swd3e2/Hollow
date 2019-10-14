@@ -3,9 +3,6 @@
 namespace Hollow {
 	Core::Core()
 	{
-		Console::RedirectIOToConsole();
-		Log::Init();
-
 		MeshManager::startUp();
 		FreeImgImporter::startUp();
 		TaskManager::startUp();
@@ -31,7 +28,6 @@ namespace Hollow {
 		//TaskManager::shutdown();
 		FreeImgImporter::shutdown();
 		MeshManager::shutdown();
-		Logger::shutdown();
 	}
 
 	void Core::preUpdate()

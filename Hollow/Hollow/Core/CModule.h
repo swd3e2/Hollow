@@ -4,6 +4,7 @@
 #define HW_CMODULE_H
 
 #include "Hollow/Platform.h"
+#include "Hollow/Common/Log.h"
 #include <assert.h>
 #include <typeinfo>
 #include <utility>
@@ -29,12 +30,12 @@ namespace Hollow {
 		static T* instance()
 		{
 			if (!isStartedUp()) {
-				//Hollow::Log::GetCoreLogger()->critical("Trying to use module without starting it up, {}", typeid(T).name());
+				HW_ERROR("Trying to use module without starting it up, {}", typeid(T).name());
 				assert(false && "Trying to use module without starting it up");
 			}
 
 			if (isShutdown()) {
-				//Hollow::Log::GetCoreLogger()->critical("Module is shutdown, {}", typeid(T).name());
+				HW_ERROR("Module is shutdown, {}", typeid(T).name());
 				assert(false && "Module is shutdown");
 			}
 
@@ -44,6 +45,10 @@ namespace Hollow {
 		template<typename ...ARGS>
 		static void startUp(ARGS&& ...args)
 		{
+#ifdef _DEBUG
+			HW_INFO("Starting up {}", typeid(T).name());
+#endif
+
 			_instance = new T(std::forward(args)...);
 			_startedUp = true;
 			_instance->onStartUp();
@@ -52,6 +57,9 @@ namespace Hollow {
 		template<class SubClass, typename ...Args>
 		static void startUp(Args&& ...args)
 		{
+#ifdef _DEBUG
+			HW_INFO("Starting up {}", typeid(SubClass).name());
+#endif
 			_instance = (T*)(new SubClass(std::forward<Args>(args)...));
 			_startedUp = true;
 			_instance->onStartUp();
