@@ -19,7 +19,7 @@ layout(std140, binding = 2) uniform PerObject
 	bool hasAnimation;
 };
 
-uniform sampler2D tex0;
+uniform sampler2D tex0; //0
 
 void main()
 {

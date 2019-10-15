@@ -30,7 +30,7 @@ layout(std140, binding = 4) uniform MaterialData
 	bool hasSpecularMap;
 };
 
-uniform sampler2D tex0;
+uniform sampler2D tex0; //0
 
 void main()
 {

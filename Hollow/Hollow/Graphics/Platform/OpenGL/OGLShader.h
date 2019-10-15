@@ -13,7 +13,6 @@ namespace Hollow {
 	public:
 		int shaderId;
 		int prevShaderId;
-		
 	public:
 		~OGLShader()
 		{
@@ -23,7 +22,7 @@ namespace Hollow {
 		virtual void release() override
 		{
 			if (shaderId != DEFAULT_SHADER_ID) {
-				glDeleteShader(shaderId);
+				glDeleteProgram(shaderId);
 			}
 		}
 	};

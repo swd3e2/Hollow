@@ -6,6 +6,8 @@
 namespace Hollow {
 	class OGLShaderPipeline : public ShaderPipeline
 	{
+	private:
+		friend class OGLShaderManager;
 	public:
 		GLuint pipelineId;
 	};

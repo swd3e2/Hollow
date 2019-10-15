@@ -7,8 +7,8 @@ in VS_OUT
 
 out vec4 FragColor;
 
-uniform samplerCube tex4;
-uniform sampler2D tex5;
+uniform samplerCube tex4;	//4;
+uniform sampler2D tex5;		//5;
 
 void main()
 {

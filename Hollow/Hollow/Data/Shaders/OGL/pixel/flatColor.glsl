@@ -53,10 +53,10 @@ layout(std140, binding = 5) uniform LightData
 	int numLights;
 };
 
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform sampler2D tex2;
-uniform sampler2D tex3;
+uniform sampler2D tex0; //0
+uniform sampler2D tex1; //1
+uniform sampler2D tex2; //2
+uniform sampler2D tex3; //3
 
 void main()
 {

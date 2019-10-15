@@ -7,7 +7,7 @@
 #include "OGLShader.h"
 #include "OGLShaderPipeline.h"
 #include "Hollow/Common/Log.h"
-#include <vector>
+#include <unordered_map>
 
 namespace Hollow {
 	class OGLShaderManager : public ShaderManager

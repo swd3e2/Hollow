@@ -38,11 +38,11 @@ layout(std140, binding = 4) uniform MaterialData
 	bool hasSpecularMap;
 };
 
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform sampler2D tex2;
-uniform sampler2D tex3;
-uniform samplerCube tex4;
+uniform sampler2D tex0;		//0
+uniform sampler2D tex1;		//1
+uniform sampler2D tex2;		//2
+uniform sampler2D tex3;		//3
+uniform samplerCube tex4;	//4
 
 void main()
 {
