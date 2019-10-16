@@ -99,11 +99,13 @@ public:
 		Hollow::TEXTURE_DESC desc;
 		desc.width = texture->width / 4;
 		desc.height = texture->height / 3;
-		desc.format = Hollow::TextureFormat::TF_RGB8;
+		desc.format = Hollow::TextureFormat::TF_RGBA8;
 		desc.type = Hollow::TextureType::TT_TEXTURE_CUBE;
+		desc.numMips = 3;
 
 		Hollow::s_ptr<Hollow::Texture> cubemap = Hollow::Texture::create(desc);
-		//cubemap->update(data.data());
+		cubemap->update(data.data());
+		cubemap->generateMipMap();
 
 		mesh = getCube();
 		mesh->models[0]->material = new Hollow::Material();

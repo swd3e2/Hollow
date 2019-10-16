@@ -5,10 +5,7 @@ namespace Hollow {
 	{
 		// @todo: check double creation
 		_instance = this;
-		int hConHandle;
-		long lStdHandle;
 		CONSOLE_SCREEN_BUFFER_INFO coninfo;
-		FILE* fp;
 
 		// allocate a console for this app
 		AllocConsole();
@@ -46,7 +43,7 @@ namespace Hollow {
 	{
 		time_t rawtime;
 		struct tm* timeinfo;
-		char buffer[80];
+		char buffer[12];
 
 		time(&rawtime);
 		timeinfo = localtime(&rawtime);

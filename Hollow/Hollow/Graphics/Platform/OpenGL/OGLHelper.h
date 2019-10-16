@@ -32,15 +32,24 @@ namespace Hollow {
 		{
 			switch (type)
 			{
-			case Hollow::Float: return "float";
-			case Hollow::Float2: return "float2";
-			case Hollow::Float3: return "float3";
-			case Hollow::Float4: return "float4";
-			case Hollow::Int: return "int";
-			case Hollow::Int2: return "int2";
-			case Hollow::Int3: return "int3";
-			case Hollow::Int4: return "int4";
-			case Hollow::Bool: return "bool";
+			case Hollow::Float: 
+				return "float";
+			case Hollow::Float2: 
+				return "float2";
+			case Hollow::Float3: 
+				return "float3";
+			case Hollow::Float4: 
+				return "float4";
+			case Hollow::Int: 
+				return "int";
+			case Hollow::Int2: 
+				return "int2";
+			case Hollow::Int3: 
+				return "int3";
+			case Hollow::Int4: 
+				return "int4";
+			case Hollow::Bool: 
+				return "bool";
 			}
 		}
 
@@ -58,9 +67,12 @@ namespace Hollow {
 		{
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT: return GL_UNSIGNED_INT;
-			case Hollow::INDEX_FORMAT::INT: return GL_INT;
-			default: return GL_UNSIGNED_INT;
+			case Hollow::INDEX_FORMAT::UINT: 
+				return GL_UNSIGNED_INT;
+			case Hollow::INDEX_FORMAT::INT: 
+				return GL_INT;
+			default: 
+				return GL_UNSIGNED_INT;
 			}
 		}
 
@@ -68,14 +80,22 @@ namespace Hollow {
 		{
 			switch (comparisonFunc)
 			{
-			case ComparisonFunction::CMP_NEVER: return GL_NEVER;
-			case ComparisonFunction::CMP_LESS: return GL_LESS;
-			case ComparisonFunction::CMP_EQUAL: return GL_EQUAL;
-			case ComparisonFunction::CMP_LEQUAL: return GL_LEQUAL;
-			case ComparisonFunction::CMP_GREATER: return GL_GREATER;
-			case ComparisonFunction::CMP_NOT_EQUAL: return GL_NOTEQUAL;
-			case ComparisonFunction::CMP_ALWAYS: return GL_ALWAYS;
-			default: return GL_NEVER;
+			case ComparisonFunction::CMP_NEVER: 
+				return GL_NEVER;
+			case ComparisonFunction::CMP_LESS: 
+				return GL_LESS;
+			case ComparisonFunction::CMP_EQUAL: 
+				return GL_EQUAL;
+			case ComparisonFunction::CMP_LEQUAL: 
+				return GL_LEQUAL;
+			case ComparisonFunction::CMP_GREATER: 
+				return GL_GREATER;
+			case ComparisonFunction::CMP_NOT_EQUAL: 
+				return GL_NOTEQUAL;
+			case ComparisonFunction::CMP_ALWAYS: 
+				return GL_ALWAYS;
+			default: 
+				return GL_NEVER;
 			}
 		}
 
@@ -83,11 +103,16 @@ namespace Hollow {
 		{
 			switch (addressingMode)
 			{
-			case AddressingMode::AM_WRAP: return GL_REPEAT;
-			case AddressingMode::AM_CLAMP: return GL_CLAMP;
-			case AddressingMode::AM_MIRROR: return GL_MIRRORED_REPEAT;
-			case AddressingMode::AM_BORDER: return GL_CLAMP_TO_BORDER;
-			default: return GL_REPEAT;
+			case AddressingMode::AM_WRAP: 
+				return GL_REPEAT;
+			case AddressingMode::AM_CLAMP: 
+				return GL_CLAMP;
+			case AddressingMode::AM_MIRROR: 
+				return GL_MIRRORED_REPEAT;
+			case AddressingMode::AM_BORDER: 
+				return GL_CLAMP_TO_BORDER;
+			default: 
+				return GL_REPEAT;
 			}
 		}
 
@@ -95,9 +120,12 @@ namespace Hollow {
 		{
 			switch (filteringMode)
 			{
-			case FilterMode::FM_POINT: return GL_NEAREST;
-			case FilterMode::FM_LINEAR: return GL_LINEAR;
-			default: return GL_LINEAR;
+			case FilterMode::FM_POINT: 
+				return GL_NEAREST;
+			case FilterMode::FM_LINEAR: 
+				return GL_LINEAR;
+			default: 
+				return GL_LINEAR;
 			}
 		}
 
@@ -138,14 +166,22 @@ namespace Hollow {
 		{
 			switch (stecnilOp)
 			{
-			case StencilOperation::SOP_KEEP: return GL_KEEP;
-			case StencilOperation::SOP_ZERO: return GL_ZERO;
-			case StencilOperation::SOP_INCR: return GL_INCR;
-			case StencilOperation::SOP_INCR_WRAP: return GL_INCR_WRAP;
-			case StencilOperation::SOP_DECR: return GL_DECR;
-			case StencilOperation::SOP_DECR_WRAP: return GL_DECR_WRAP;
-			case StencilOperation::SOP_REPLACE: return GL_REPLACE;
-			case StencilOperation::SOP_INVERT: return GL_INVERT;
+			case StencilOperation::SOP_KEEP: 
+				return GL_KEEP;
+			case StencilOperation::SOP_ZERO: 
+				return GL_ZERO;
+			case StencilOperation::SOP_INCR: 
+				return GL_INCR;
+			case StencilOperation::SOP_INCR_WRAP: 
+				return GL_INCR_WRAP;
+			case StencilOperation::SOP_DECR: 
+				return GL_DECR;
+			case StencilOperation::SOP_DECR_WRAP: 
+				return GL_DECR_WRAP;
+			case StencilOperation::SOP_REPLACE: 
+				return GL_REPLACE;
+			case StencilOperation::SOP_INVERT: 
+				return GL_INVERT;
 			}
 		}
 
@@ -153,18 +189,30 @@ namespace Hollow {
 		{
 			switch (blendFunc)
 			{
-			case BlendFunction::BF_ZERO: return GL_ZERO;
-			case BlendFunction::BF_ONE: return GL_ONE;
-			case BlendFunction::BF_SRC_COLOR: return GL_SRC_COLOR;
-			case BlendFunction::BF_INV_SRC_COLOR: return GL_ONE_MINUS_SRC_COLOR;
-			case BlendFunction::BF_SRC_APLHA: return GL_SRC_ALPHA;
-			case BlendFunction::BF_INV_SRC_APLHA: return GL_ONE_MINUS_SRC_ALPHA;
-			case BlendFunction::BF_DEST_APLHA: return GL_DST_ALPHA;
-			case BlendFunction::BF_INV_DEST_APLHA: return GL_ONE_MINUS_DST_ALPHA;
-			case BlendFunction::BF_DEST_COLOR: return GL_DST_COLOR;
-			case BlendFunction::BF_INV_DEST_COLOR: return GL_ONE_MINUS_DST_COLOR;
-			case BlendFunction::BF_BLEND_FACTOR: return GL_CONSTANT_COLOR;
-			case BlendFunction::BF_INV_BLEND_FACTOR: return GL_ONE_MINUS_CONSTANT_COLOR;
+			case BlendFunction::BF_ZERO: 
+				return GL_ZERO;
+			case BlendFunction::BF_ONE: 
+				return GL_ONE;
+			case BlendFunction::BF_SRC_COLOR: 
+				return GL_SRC_COLOR;
+			case BlendFunction::BF_INV_SRC_COLOR: 
+				return GL_ONE_MINUS_SRC_COLOR;
+			case BlendFunction::BF_SRC_APLHA: 
+				return GL_SRC_ALPHA;
+			case BlendFunction::BF_INV_SRC_APLHA: 
+				return GL_ONE_MINUS_SRC_ALPHA;
+			case BlendFunction::BF_DEST_APLHA: 
+				return GL_DST_ALPHA;
+			case BlendFunction::BF_INV_DEST_APLHA: 
+				return GL_ONE_MINUS_DST_ALPHA;
+			case BlendFunction::BF_DEST_COLOR: 
+				return GL_DST_COLOR;
+			case BlendFunction::BF_INV_DEST_COLOR: 
+				return GL_ONE_MINUS_DST_COLOR;
+			case BlendFunction::BF_BLEND_FACTOR: 
+				return GL_CONSTANT_COLOR;
+			case BlendFunction::BF_INV_BLEND_FACTOR: 
+				return GL_ONE_MINUS_CONSTANT_COLOR;
 			}
 		}
 
@@ -172,12 +220,18 @@ namespace Hollow {
 		{
 			switch (blendOp)
 			{
-			case BlendOperation::BOP_ADD: return GL_FUNC_ADD;
-			case BlendOperation::BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
-			case BlendOperation::BOP_REV_SUBTRACT: return  GL_FUNC_REVERSE_SUBTRACT;
-			case BlendOperation::BOP_MIN: return GL_MIN;
-			case BlendOperation::BOP_MAX: return GL_MAX;
-			default: return GL_FUNC_ADD;
+			case BlendOperation::BOP_ADD: 
+				return GL_FUNC_ADD;
+			case BlendOperation::BOP_SUBTRACT: 
+				return GL_FUNC_SUBTRACT;
+			case BlendOperation::BOP_REV_SUBTRACT: 
+				return  GL_FUNC_REVERSE_SUBTRACT;
+			case BlendOperation::BOP_MIN: 
+				return GL_MIN;
+			case BlendOperation::BOP_MAX: 
+				return GL_MAX;
+			default: 
+				return GL_FUNC_ADD;
 			}
 		}
 

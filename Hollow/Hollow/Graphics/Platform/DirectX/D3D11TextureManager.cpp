@@ -5,7 +5,8 @@ namespace Hollow {
 	s_ptr<Texture> D3D11TextureManager::create(const TEXTURE_DESC& desc)
 	{
 		D3D11Texture* texture = new D3D11Texture(desc);
-		
+		texture->type = desc.type;
+
 		UINT32 numFaces = desc.type == TextureType::TT_TEXTURE_CUBE ? 6 : 1 * (desc.arraySlices == 0 ? 1 : desc.arraySlices);
 		UINT32 numMips = desc.numMips + 1;
 
@@ -32,10 +33,12 @@ namespace Hollow {
 
 		if (desc.numMips >= 1)
 		{
+			textureDesc.BindFlags |= D3D11_BIND_RENDER_TARGET;
 			textureDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 		}
 
 		if (device->CreateTexture2D(&textureDesc, nullptr, &texture->m_Texture) != S_OK) {
+			HW_ERROR("Cant create texture 2D");
 			return nullptr;
 		}
 
@@ -58,8 +61,8 @@ namespace Hollow {
 				srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
 				srvDesc.Texture1D.MostDetailedMip = 0;
 				srvDesc.Texture1D.MipLevels = numMips;
-
 			}
+			break;
 		case Hollow::TT_TEXTURE2D:
 			if (desc.samples > 1)
 			{
@@ -91,10 +94,12 @@ namespace Hollow {
 					srvDesc.Texture2D.MipLevels = numMips;
 				}
 			}
+			break;
 		case Hollow::TT_TEXTURE3D:
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
 			srvDesc.Texture3D.MostDetailedMip = 0;
 			srvDesc.Texture3D.MipLevels = numMips;
+			break;
 		case Hollow::TT_TEXTURE_CUBE:
 			if (numFaces > 6) 
 			{
@@ -110,11 +115,12 @@ namespace Hollow {
 				srvDesc.TextureCube.MostDetailedMip = 0;
 				srvDesc.TextureCube.MipLevels = numMips;
 			}
+			break;
 		}
-		HW_INFO("Cubemap texture not found, filename {}", 123);
 
 		// Create the shader resource view for the texture.
 		if (device->CreateShaderResourceView(texture->m_Texture, &srvDesc, &texture->m_TextureShaderResource) != S_OK) {
+			HW_ERROR("Cant create shader resource view");
 			return nullptr;
 		}
 

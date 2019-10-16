@@ -14,7 +14,7 @@ namespace Hollow {
 		glCreateTextures(oglTexture->textureTarget, 1, &oglTexture->textureId);
 
 		if (desc.samples <=	 1) {
-			glTextureParameteri(oglTexture->textureId, GL_TEXTURE_MAX_LEVEL, desc.numMips);
+			glTextureParameteri(oglTexture->textureId, GL_TEXTURE_MAX_LEVEL, desc.numMips - 1);
 		}
 
 		switch (desc.type)
@@ -35,7 +35,7 @@ namespace Hollow {
 		{
 			if (numFaces <= 1)
 			{
-				glTexStorage2D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height);
+				glTextureStorage2D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height);
 			}
 			else
 			{

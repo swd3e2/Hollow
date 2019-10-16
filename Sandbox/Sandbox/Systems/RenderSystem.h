@@ -145,15 +145,13 @@ public:
 	{
 		// Gpu buffers
 		{
-			m_WVPConstantBuffer = GPUBufferManager::instance()->create(0, sizeof(WVP));
-			shadowConstantBuffer = GPUBufferManager::instance()->create(1, sizeof(ShadowStruct));
-
-			perModel = GPUBufferManager::instance()->create(2, sizeof(PerModel));
-			perMesh = GPUBufferManager::instance()->create(3, sizeof(PerMesh));
-
-			materialConstantBuffer = GPUBufferManager::instance()->create(4, sizeof(MaterialData));
-			lightInfoBuffer = GPUBufferManager::instance()->create(5, sizeof(LightInfo));
-			boneInfo = GPUBufferManager::instance()->create(6, sizeof(Matrix4));
+			m_WVPConstantBuffer			= GPUBufferManager::instance()->create(0, sizeof(WVP));
+			shadowConstantBuffer		= GPUBufferManager::instance()->create(1, sizeof(ShadowStruct));
+			perModel					= GPUBufferManager::instance()->create(2, sizeof(PerModel));
+			perMesh						= GPUBufferManager::instance()->create(3, sizeof(PerMesh));
+			materialConstantBuffer		= GPUBufferManager::instance()->create(4, sizeof(MaterialData));
+			lightInfoBuffer				= GPUBufferManager::instance()->create(5, sizeof(LightInfo));
+			boneInfo					= GPUBufferManager::instance()->create(6, sizeof(Matrix4));
 		}
 		// Shaders
 		{
@@ -376,11 +374,16 @@ public:
 		desc.magFilterMode = FilterMode::FM_LINEAR;
 		desc.minFilterModel = FilterMode::FM_LINEAR;
 		desc.mipFilterMode = FilterMode::FM_LINEAR;
+		
 		desc.comparisonFunction = ComparisonFunction::CMP_NEVER;
 		sampler = RenderStateManager::instance()->createSamplerState(desc);
 
 		renderer->setSampler(0, sampler);
 		renderer->setSampler(1, sampler);
+
+		for (int i = 0; i < 10; i++) {
+			renderer->setTextureSampler(i, sampler);
+		}
 
 		timer.start();
 	}

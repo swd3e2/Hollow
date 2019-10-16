@@ -26,36 +26,46 @@ namespace Hollow {
 			case Hollow::TT_TEXTURE1D:
 				break;
 			case Hollow::TT_TEXTURE2D: {
-				glTextureSubImage2D(textureId,  // target
-					0, // level
-					0, // xoffset
-					0, // yoffset
-					width, // width
-					height, // height
+				glTextureSubImage2D(textureId, 
+					0,
+					0,
+					0, 
+					width,
+					height, 
 					OGLHelper::getInternalTextureFormat(format), // format
 					OGLHelper::getInternalType(format), // type
-					data // data
+					data
 				);
 			} break;
 			case Hollow::TT_TEXTURE3D:
 				break;
 			case Hollow::TT_TEXTURE_CUBE: {
-				glTextureSubImage2D(textureId,  // target
-					0, // level
-					0, // xoffset
-					0, // yoffset
-					width, // width
-					height, // height
-					OGLHelper::getInternalTextureFormat(format), // format
-					OGLHelper::getInternalType(format), // type
-					data // data
-				);
+				unsigned char** texData = (unsigned char**)data;
+				for (int face = 0; face < 6; face++) {
+					glTextureSubImage3D(textureId,  // target
+						0,
+						0,
+						0,
+						face,
+						width,
+						height,
+						0,
+						OGLHelper::getInternalTextureFormat(format),
+						OGLHelper::getInternalType(format), 
+						texData[face]
+					);
+				}
 			} break;
 				break;
 			default:
 				break;
 			}
 			
+		}
+		
+		virtual void generateMipMap() override
+		{
+			glGenerateTextureMipmap(textureId);
 		}
 
 		virtual ~OGLTexture()

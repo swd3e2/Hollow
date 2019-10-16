@@ -30,12 +30,6 @@ public:
 public:
 	RenderableComponent() {}
 
-	RenderableComponent(const std::string& filename) :
-		filename(filename)
-	{
-		load(filename);
-	}
-
 	virtual ~RenderableComponent()
 	{
 		for (auto& it : renderables) {
@@ -76,45 +70,22 @@ public:
 			std::string diffuseTexture = it.second.diffuseTexture;
 			if (diffuseTexture.size()) {
 				material->materialData.hasDiffuseTexture = true;
-				//material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
-			}
-			materials[it.first] = material;
-		}
-	}
+				std::string filepath = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + diffuseTexture;
 
-	void load(const std::string& filename)
-	{
-		this->filename = filename;
-		using namespace Hollow;
-		s_ptr<Hollow::Import::Model> model = MeshManager::instance()->import(filename.c_str());
-		A = model->A;
-		B = model->B;
+				if (Hollow::FileSystem::exists(filepath)) {
+					Hollow::s_ptr<Hollow::Import::Texture> diffuse = Hollow::FreeImgImporter::instance()->import(filepath.c_str());
 
-		if (model == nullptr) { return; }
-		for (int i = 0; i < model->meshes.size(); i++) {
-			RenderableObject* renderable = new RenderableObject();
-			renderable->id = i;
-			renderable->material = model->meshes[i]->material;
+					Hollow::TEXTURE_DESC desc;
+					desc.width = diffuse->width;
+					desc.height = diffuse->height;
+					desc.format = diffuse->bpp == 32 ? Hollow::TextureFormat::TF_RGBA8 : Hollow::TextureFormat::TF_RGB8;
+					desc.type = Hollow::TextureType::TT_TEXTURE2D;
+					desc.numMips = 5;
 
-			renderable->vBuffer = VertexBuffer::create({ model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size(), sizeof(Hollow::Vertex) });
-			renderable->iBuffer = IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), INDEX_FORMAT::UINT });
-
-			renderables.push_back(renderable);
-		}
-
-		for (auto& it : model->materials) {
-			Hollow::Material* material = new Hollow::Material;
-			material->name = it.second.name;
-			material->materialData.color = it.second.baseColorFactor;
-
-			material->materialData.metallicFactor = it.second.metallicFactor;
-			material->materialData.roughnessFactor = it.second.roughnessFactor;
-			material->materialData.emissiveFactor = it.second.emissiveFactor;
-
-			std::string diffuseTexture = it.second.diffuseTexture;
-			if (diffuseTexture.size()) {
-				material->materialData.hasDiffuseTexture = true;
-				//material->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(diffuseTexture);
+					material->diffuseTexture = Hollow::TextureManager::instance()->create(desc);
+					material->diffuseTexture->update(diffuse->data.get());
+					material->diffuseTexture->generateMipMap();
+				}
 			}
 			materials[it.first] = material;
 		}

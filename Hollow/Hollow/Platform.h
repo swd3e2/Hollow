@@ -3,7 +3,7 @@
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
 namespace Hollow {
-	using UINT = unsigned int;
+	using UINT32 = unsigned int;
 
 	template <typename T>
 	using s_ptr = std::shared_ptr<T>;

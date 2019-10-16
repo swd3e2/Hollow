@@ -45,27 +45,8 @@ namespace Hollow {
 		static s_ptr<Texture> create(const TEXTURE_DESC& desc);
 
 		virtual void update(void* data) = 0;
+		virtual void generateMipMap() = 0;
 		virtual ~Texture() {}
-	};
-
-	class Texture1D
-	{
-
-	};
-
-	class Texture2D
-	{
-
-	};
-
-	class Texutre3D
-	{
-
-	};
-
-	class TextureCube
-	{
-
 	};
 }
 

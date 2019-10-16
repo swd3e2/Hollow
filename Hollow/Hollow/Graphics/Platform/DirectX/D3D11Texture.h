@@ -12,7 +12,7 @@
 namespace Hollow {
 	class D3D11Texture : public Texture
 	{
-	public:
+	public:	
 		D3D11Texture(const TEXTURE_DESC& desc) :
 			Texture(desc)
 		{}
@@ -29,6 +29,7 @@ namespace Hollow {
 			SAFE_RELEASE(m_TextureShaderResource);
 			m_TextureShaderResource = textureShaderResource;
 		}
+
 		virtual void update(void* data) override
 		{
 			D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
@@ -43,9 +44,27 @@ namespace Hollow {
 			box.front = 0;
 			box.back = 1;
 
-			deviceContext->UpdateSubresource(m_Texture, 0, &box, data, D3D11Helper::getPicth(format, width), 1);
+			if (type == TextureType::TT_TEXTURE2D) 
+			{
+				deviceContext->UpdateSubresource(m_Texture, 0, &box, data, D3D11Helper::getPicth(format, width), 1);
+			}
+			else if (type == TextureType::TT_TEXTURE_CUBE) 
+			{
+				unsigned char** texData = (unsigned char**)data;
+				for (int face = 0; face < 6; face++) {
+					deviceContext->UpdateSubresource(m_Texture, face * (numMips + 1), &box, texData[face] , D3D11Helper::getPicth(format, width), 0);
+				}
+			}
 		}
 
+		virtual void generateMipMap() override
+		{
+			D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+			ID3D11Device* device = r->getContext().getDevice();
+			ID3D11DeviceContext* deviceContext = r->getContext().getDeviceContext();
+
+			deviceContext->GenerateMips(m_TextureShaderResource);
+		}
 	public:
 		ID3D11UnorderedAccessView* m_UnorderedAccessView;
 		ID3D11ShaderResourceView* m_TextureShaderResource;

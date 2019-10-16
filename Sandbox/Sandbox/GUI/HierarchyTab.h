@@ -226,7 +226,7 @@ namespace GUI {
 						if (ImGui::Button("Load from file")) {
 							filename = Hollow::FileSystem::openFile("");
 							if (filename.size()) {
-								DelayedTaskManager::instance()->add([&, renderableComponent]() { renderableComponent->load(filename); });
+								//DelayedTaskManager::instance()->add([&, renderableComponent]() { renderableComponent->load(filename); });
 							}
 						}
 					}
