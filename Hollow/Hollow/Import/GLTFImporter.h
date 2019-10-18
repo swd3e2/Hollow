@@ -55,10 +55,10 @@ namespace Hollow {
 			unsigned int meshCounter = 0;
 			std::vector<u_ptr<LoadedMesh>> meshes;
 			std::unordered_map<unsigned int, Import::Material> materials;
-			std::vector<Animation> animations;
+			std::vector<Import::Animation> animations;
 			Node* rootNode;
-			AnimationNode* animationRootNode;
-			std::vector<AnimationNode*> animationNodes;
+			Import::AnimationNode* animationRootNode;
+			std::vector<Import::AnimationNode*> animationNodes;
 		};
 	}
 
@@ -71,7 +71,7 @@ namespace Hollow {
 		void processMesh(GLTF::Node* node, tinygltf::Node childModelNode, GLTF::LoadedModel& model, tinygltf::Model& tModel, std::ifstream& file);
 		void load(GLTF::Node* node, const tinygltf::Node& modelNode, tinygltf::Model& tModel, GLTF::LoadedModel& model, std::ifstream& file);
 		void processAnimation(GLTF::LoadedModel& lModel, tinygltf::Model& model, std::ifstream& file);
-		void processAnimationNode(AnimationNode* node, const tinygltf::Node& modelNode, GLTF::LoadedModel& lModel, tinygltf::Model& model);
+		void processAnimationNode(Import::AnimationNode* node, const tinygltf::Node& modelNode, GLTF::LoadedModel& lModel, tinygltf::Model& model);
 		void processSkin(GLTF::LoadedModel& lModel, tinygltf::Model& model, std::ifstream& file);
 	};
 }

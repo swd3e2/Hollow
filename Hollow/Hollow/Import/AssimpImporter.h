@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Hollow/Common/Log.h"
 #include "vendor/assimp/assimp/Importer.hpp"
 #include "vendor/assimp/assimp/scene.h"     
 #include "vendor/assimp/assimp/postprocess.h"
@@ -13,12 +14,16 @@
 namespace Hollow {
 	class AssimpImporter
 	{
+	private:
+		unsigned int animationNodeNextId = 0;
 	public:
 		AssimpImporter() {  }
 		~AssimpImporter() {  }
 
 		s_ptr<Import::Model> import(const char* filename, bool async = true)
 		{
+			animationNodeNextId = 0;
+
 			s_ptr<Import::Model> data(new Import::Model());
 
 			Assimp::Importer importer;
@@ -27,9 +32,22 @@ namespace Hollow {
 				aiProcessPreset_TargetRealtime_Quality
 			);
 
-			if (!scene) return nullptr;
+			if (!scene) 
+				return data;
 
-			// Mesh data
+			parseCommonData(data, scene);
+
+			if (scene->mNumAnimations > 0)
+				parseAnimationData(data, scene);
+
+			importer.FreeScene();
+
+			return data;
+		}
+		private:
+		// Mesh data
+		void parseCommonData(const s_ptr<Import::Model>& data, const aiScene* scene)
+		{
 			if (scene->mNumMeshes > 0) {
 				aiNode* temp;
 
@@ -51,7 +69,7 @@ namespace Hollow {
 						if (vertex.pos.x < data->A.x && vertex.pos.y < data->A.y && vertex.pos.z < data->A.z) {
 							data->A = vertex.pos;
 						}
-						if (vertex.pos.x > data->B.x && vertex.pos.y > data->B.y && vertex.pos.z > data->B.z) {
+						if (vertex.pos.x > data->B.x&& vertex.pos.y > data->B.y&& vertex.pos.z > data->B.z) {
 							data->B = vertex.pos;
 						}
 
@@ -95,8 +113,7 @@ namespace Hollow {
 
 						// Material data
 						aiMaterial* aMaterial = scene->mMaterials[aMesh->mMaterialIndex];
-					
-					
+
 						Import::Material material;
 						material.name = aMaterial->GetName().C_Str();
 
@@ -120,10 +137,84 @@ namespace Hollow {
 					data->meshes.push_back(mesh);
 				}
 			}
+		}
 
-			importer.FreeScene();
+		void parseAnimationData(const s_ptr<Import::Model>& data, const aiScene* scene)
+		{
+			std::unordered_map<std::string, Import::AnimationNode*> animationNodes;
+			createAnimationNodes(animationNodes, scene->mRootNode, nullptr);
 
-			return data;
+			for (int i = 0; i < scene->mNumAnimations; i++) {
+				aiAnimation* assimpAnimation = scene->mAnimations[i];
+				Import::Animation* animation = new Import::Animation();
+
+				for (int j = 0; j < assimpAnimation->mNumChannels; j++) {
+					aiNodeAnim* assimpChannel = assimpAnimation->mChannels[j];
+
+					if (animationNodes.find(assimpChannel->mNodeName.C_Str()) == animationNodes.end()) {
+						HW_ERROR("Could not find animation node in nodes list, {}", assimpChannel->mNodeName.C_Str());
+						continue;
+					}
+
+					Import::AnimationNode* node = animationNodes[assimpChannel->mNodeName.C_Str()];
+					Import::AnimationNodeData* animationData = nullptr;
+
+					if (animation->data.find(node->id) != animation->data.end()) {
+						animationData = animation->data[node->id];
+					} else {
+						animation->data[node->id] = animationData = new Import::AnimationNodeData;
+					}
+
+					for (int k = 0; k < assimpChannel->mNumPositionKeys; k++) {
+						animationData->positions[assimpChannel->mPositionKeys[k].mTime] = Vector3(
+							assimpChannel->mPositionKeys[k].mValue.x, 
+							assimpChannel->mPositionKeys[k].mValue.y, 
+							assimpChannel->mPositionKeys[k].mValue.z
+						);
+					}
+
+					for (int k = 0; k < assimpChannel->mNumRotationKeys; k++) {
+						animationData->rotations[assimpChannel->mRotationKeys[k].mTime] = Quaternion(
+							assimpChannel->mRotationKeys[k].mValue.x, 
+							assimpChannel->mRotationKeys[k].mValue.y,
+							assimpChannel->mRotationKeys[k].mValue.z, 
+							assimpChannel->mRotationKeys[k].mValue.w
+						);
+					}
+
+					for (int k = 0; k < assimpChannel->mNumScalingKeys; k++) {
+						animationData->scale[assimpChannel->mScalingKeys[k].mTime] = Vector3(
+							assimpChannel->mScalingKeys[k].mValue.x, 
+							assimpChannel->mScalingKeys[k].mValue.y, 
+							assimpChannel->mScalingKeys[k].mValue.z
+						);
+					}
+				}
+				data->animations.push_back(animation);
+			}
+		}
+
+		void createAnimationNodes(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const aiNode* node, Import::AnimationNode* parentNode)
+		{
+			for (int i = 0; i < node->mNumChildren; i++) {
+				Import::AnimationNode* animNode = new Import::AnimationNode();
+				animNode->id = animationNodeNextId++;
+
+				animNode->localTransform = Matrix4(
+					node->mChildren[i]->mTransformation.a1, node->mChildren[i]->mTransformation.a2, node->mChildren[i]->mTransformation.a3, node->mChildren[i]->mTransformation.a4,
+					node->mChildren[i]->mTransformation.b1, node->mChildren[i]->mTransformation.b2, node->mChildren[i]->mTransformation.b3, node->mChildren[i]->mTransformation.b4,
+					node->mChildren[i]->mTransformation.c1, node->mChildren[i]->mTransformation.c2, node->mChildren[i]->mTransformation.c3, node->mChildren[i]->mTransformation.c4,
+					node->mChildren[i]->mTransformation.d1, node->mChildren[i]->mTransformation.d2, node->mChildren[i]->mTransformation.d3, node->mChildren[i]->mTransformation.d4
+				);
+
+				animationNodes[node->mChildren[i]->mName.C_Str()] = animNode;
+
+				if (parentNode != nullptr) {
+					parentNode->childrens.push_back(parentNode);
+				}
+
+				createAnimationNodes(animationNodes, node->mChildren[i], animNode);
+			}
 		}
 	};
 

@@ -5,6 +5,8 @@
 #include "Hollow/Math/Vector4.h"
 #include "Hollow/Graphics/Vertex.h"
 #include <limits>
+#include <vector>
+#include "Animation.h"
 
 namespace Hollow {
 	namespace Import {
@@ -40,6 +42,7 @@ namespace Hollow {
 			std::vector<Mesh*> meshes;
 			Vector3 A, B; // A - left near down, B - right far up
 			std::unordered_map<unsigned int, Material> materials;
+			std::vector<Animation*> animations;
 
 			Model()
 			{

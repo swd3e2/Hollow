@@ -7,6 +7,14 @@ namespace Hollow {
 			m[i] = 0;
 	}
 
+	Matrix4::Matrix4(float _a1, float _a2, float _a3, float _a4, float _b1, float _b2, float _b3, float _b4, float _c1, float _c2, float _c3, float _c4, float _d1, float _d2, float _d3, float _d4)
+	{
+		v.v1 = Vector4(_a1, _a2, _a3, _a4);
+		v.v2 = Vector4(_b1, _b2, _b3, _b4);
+		v.v3 = Vector4(_c1, _c2, _c3, _c4);
+		v.v4 = Vector4(_d1, _d2, _d3, _d4);
+	}
+
 	Matrix4::Matrix4(const Matrix4& other)
 	{
 		for (int i = 0; i < 16; i++)

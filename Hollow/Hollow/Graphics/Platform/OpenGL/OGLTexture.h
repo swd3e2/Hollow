@@ -43,14 +43,6 @@ namespace Hollow {
 						OGLHelper::getInternalType(format),
 						texData[face]
 					);
-					/*for (int mipLevel = 0; mipLevel < numMips; mipLevel++) {
-						int temp = pow(2, mipLevel);
-						glTextureSubImage3D(textureId, mipLevel, 0, 0, face, width / temp, height / temp, 1,
-							OGLHelper::getInternalTextureFormat(format),
-							OGLHelper::getInternalType(format),
-							texData[face]
-						);
-					}*/
 				}
 			} break;
 				break;

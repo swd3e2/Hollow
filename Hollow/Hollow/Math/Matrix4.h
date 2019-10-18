@@ -46,6 +46,10 @@ namespace Hollow {
 		};
 	public:
 		Matrix4();
+		Matrix4(float _a1, float _a2, float _a3, float _a4,
+				float _b1, float _b2, float _b3, float _b4,
+				float _c1, float _c2, float _c3, float _c4,
+				float _d1, float _d2, float _d3, float _d4);
 		Matrix4(const Matrix4& other);
 		Matrix4(Matrix4&& other);
 		Matrix4(const float* other, int size);
