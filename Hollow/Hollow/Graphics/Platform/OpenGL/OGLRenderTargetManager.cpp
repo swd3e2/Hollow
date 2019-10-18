@@ -9,47 +9,26 @@ namespace Hollow {
 
 		unsigned int* temp = new unsigned int[desc.count];
 
-		glGenFramebuffers(1, &renderTarget->FBO);
-		glBindFramebuffer(GL_FRAMEBUFFER, renderTarget->FBO);
-
-		glGenTextures(desc.count, renderTarget->texture);
+		glCreateFramebuffers(1, &renderTarget->FBO);
+		glCreateTextures(GL_TEXTURE_2D, desc.count, renderTarget->texture);
 
 		for (int i = 0; i < desc.count; i++) {
-			glBindTexture(GL_TEXTURE_2D, renderTarget->texture[i]);
-
-			glTexImage2D(GL_TEXTURE_2D, 0, getTextureFormat(desc.textureFormat), desc.width, desc.height, 0, GL_RGBA, getTextureType(desc.textureFormat), NULL);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, renderTarget->texture[i], 0);
+			glTextureStorage2D(renderTarget->texture[i], 1, getTextureFormat(desc.textureFormat), desc.width, desc.height);
+			glNamedFramebufferTexture(renderTarget->FBO, GL_COLOR_ATTACHMENT0 + i, renderTarget->texture[i], 0);
 			temp[i] = GL_COLOR_ATTACHMENT0 + i;
 		}
 
-		glDrawBuffers(desc.count, temp);
+		glNamedFramebufferDrawBuffers(renderTarget->FBO, desc.count, temp);
 
-		glGenTextures(1, &renderTarget->depth);
-		glBindTexture(GL_TEXTURE_2D, renderTarget->depth);
+		glCreateTextures(GL_TEXTURE_2D, 1, &renderTarget->depth);
+		glTextureStorage2D(renderTarget->depth, 1, GL_DEPTH24_STENCIL8, desc.width, desc.height);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, desc.width, desc.height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
-		
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glNamedFramebufferTexture(renderTarget->FBO, GL_DEPTH_STENCIL_ATTACHMENT, renderTarget->depth, 0);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, renderTarget->depth, 0);
-
+		glBindFramebuffer(GL_FRAMEBUFFER, renderTarget->FBO);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			HW_ERROR("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
 		}
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		return s_ptr<RenderTarget>(renderTarget);
 	}
@@ -58,12 +37,10 @@ namespace Hollow {
 	{
 		switch (format)
 		{
-			case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8: {
-				return GL_RGBA;
-			} break;
-			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8:
+				return GL_RGBA8;
+			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32:
 				return GL_RGBA32F;
-			} break;
 			default:
 				return GL_RGBA;
 		}
@@ -72,12 +49,10 @@ namespace Hollow {
 	{
 		switch (format)
 		{
-		case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8: {
+		case RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8:
 				return GL_UNSIGNED_BYTE;
-			} break;
-			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32: {
+			case RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32:
 				return GL_FLOAT;
-			} break;
 			default:
 				return GL_UNSIGNED_BYTE;
 		}

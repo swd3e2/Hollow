@@ -1,5 +1,5 @@
 #include "SamplerState.h"
-#include "Hollow/Graphics/RenderStateManager.h"
+#include "RenderStateManager.h"
 
 namespace Hollow {
 	s_ptr<SamplerState> SamplerState::create(const SAMPLER_STATE_DESC& desc)
@@ -7,3 +7,4 @@ namespace Hollow {
 		return RenderStateManager::instance()->createSamplerState(desc);
 	}
 }
+

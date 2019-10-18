@@ -27,6 +27,7 @@
     <ClInclude Include="Sandbox\Components\LightComponent.h" />
     <ClInclude Include="Sandbox\Systems\PhysicsSystem.h" />
     <ClInclude Include="Sandbox\Components\PhysicsComponent.h" />
+    <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

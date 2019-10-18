@@ -6,6 +6,7 @@
 #include "Hollow/Graphics/Texture.h"
 #include "OGLPrerequisites.h"
 #include "OGLHelper.h"
+#include "Hollow/Common/Log.h"
 
 namespace Hollow {
 	class OGLTexture : public Texture
@@ -26,14 +27,9 @@ namespace Hollow {
 			case Hollow::TT_TEXTURE1D:
 				break;
 			case Hollow::TT_TEXTURE2D: {
-				glTextureSubImage2D(textureId, 
-					0,
-					0,
-					0, 
-					width,
-					height, 
-					OGLHelper::getInternalTextureFormat(format), // format
-					OGLHelper::getInternalType(format), // type
+				glTextureSubImage2D(textureId, 0, 0, 0, width, height, 
+					OGLHelper::getInternalTextureFormat(format), 
+					OGLHelper::getInternalType(format), 
 					data
 				);
 			} break;
@@ -42,18 +38,19 @@ namespace Hollow {
 			case Hollow::TT_TEXTURE_CUBE: {
 				unsigned char** texData = (unsigned char**)data;
 				for (int face = 0; face < 6; face++) {
-					glTextureSubImage3D(textureId,  // target
-						0,
-						0,
-						0,
-						face,
-						width,
-						height,
-						0,
+					glTextureSubImage3D(textureId, 0, 0, 0, face, width, height, 1,
 						OGLHelper::getInternalTextureFormat(format),
-						OGLHelper::getInternalType(format), 
+						OGLHelper::getInternalType(format),
 						texData[face]
 					);
+					/*for (int mipLevel = 0; mipLevel < numMips; mipLevel++) {
+						int temp = pow(2, mipLevel);
+						glTextureSubImage3D(textureId, mipLevel, 0, 0, face, width / temp, height / temp, 1,
+							OGLHelper::getInternalTextureFormat(format),
+							OGLHelper::getInternalType(format),
+							texData[face]
+						);
+					}*/
 				}
 			} break;
 				break;

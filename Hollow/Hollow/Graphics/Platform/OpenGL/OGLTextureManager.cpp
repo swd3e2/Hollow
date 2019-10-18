@@ -5,7 +5,7 @@ namespace Hollow {
 	{
 		OGLTexture* oglTexture = new OGLTexture(desc);
 
-		GLuint numFaces = desc.format == TextureType::TT_TEXTURE_CUBE ? 6 : 1 * desc.arraySlices;
+		GLuint numFaces = desc.format == TextureType::TT_TEXTURE_CUBE ? 6 : desc.arraySlices;
 		oglTexture->textureTarget = OGLHelper::getTextureTarget(desc.type, desc.samples, numFaces);
 		oglTexture->texFormat = OGLHelper::getTextureFormat(desc.format);
 
@@ -14,7 +14,8 @@ namespace Hollow {
 		glCreateTextures(oglTexture->textureTarget, 1, &oglTexture->textureId);
 
 		if (desc.samples <=	 1) {
-			glTextureParameteri(oglTexture->textureId, GL_TEXTURE_MAX_LEVEL, desc.numMips - 1);
+			glTextureParameteri(oglTexture->textureId, GL_TEXTURE_BASE_LEVEL, 0);
+			glTextureParameteri(oglTexture->textureId, GL_TEXTURE_MAX_LEVEL, numMips - 1);
 		}
 
 		switch (desc.type)

@@ -3,8 +3,8 @@
 #ifndef HW_SAMPLER_H
 #define HW_SAMPLER_H
 
-#include "CommonTypes.h"
 #include "Hollow/Platform.h"
+#include "CommonTypes.h"
 
 #define MAX_LOD (3.402823466e+38f)
 
@@ -31,6 +31,9 @@ namespace Hollow {
 	class SamplerState
 	{
 	public:
+		SamplerState() = default;
+		~SamplerState() {}
+
 		static s_ptr<SamplerState> create(const SAMPLER_STATE_DESC& desc);
 	};
 }

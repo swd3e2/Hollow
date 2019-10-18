@@ -17,6 +17,7 @@ namespace Hollow {
 		glSamplerParameterf(sampler->samplerObjectId, GL_TEXTURE_MIN_LOD, desc.minLOD);
 		glSamplerParameterf(sampler->samplerObjectId, GL_TEXTURE_MAX_LOD, desc.maxLOD);
 		glSamplerParameterf(sampler->samplerObjectId, GL_TEXTURE_LOD_BIAS, desc.mipLODBias);
+		glSamplerParameterf(sampler->samplerObjectId, GL_TEXTURE_MAX_ANISOTROPY, desc.maxAnisotropy);
 		
 		if (desc.comparisonFunction != ComparisonFunction::CMP_NEVER)
 		{

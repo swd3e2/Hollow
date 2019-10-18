@@ -106,7 +106,7 @@ namespace Hollow {
 			case AddressingMode::AM_WRAP: 
 				return GL_REPEAT;
 			case AddressingMode::AM_CLAMP: 
-				return GL_CLAMP;
+				return GL_CLAMP_TO_EDGE;
 			case AddressingMode::AM_MIRROR: 
 				return GL_MIRRORED_REPEAT;
 			case AddressingMode::AM_BORDER: 

@@ -593,9 +593,6 @@
     <ClCompile Include="Hollow\Graphics\RenderTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Graphics\SamplerState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Graphics\SamplerState.h">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -615,6 +612,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Graphics\GPUBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Graphics\SamplerState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

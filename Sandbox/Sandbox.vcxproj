@@ -38,6 +38,7 @@
     <ClInclude Include="Sandbox\GUI\HierarchyTab.h" />
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
+    <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Systems\PhysicsSystem.h" />
     <ClInclude Include="Sandbox\Systems\RenderSystem.h" />
@@ -82,12 +83,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDIr)Hollow\vendor\assimp;$(SolutionDIr)Hollow\vendor\bullet\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDIr)Hollow\vendor\bullet\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDIr)Hollow\vendor\assimp;$(SolutionDIr)Hollow\vendor\bullet\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDIr)Hollow\vendor\bullet\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
