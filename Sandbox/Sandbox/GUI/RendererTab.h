@@ -76,7 +76,7 @@ namespace GUI {
 			ImGui::End();
 
 			ImGui::Begin("Scene");
-			if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+			if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 				if (ImGui::CollapsingHeader("G buffer")) {
 					ImGui::Image(std::static_pointer_cast<D3D11RenderTarget>(renderSystem->gBuffer)->getDepthStencilResource(), ImVec2(200, 200));
 					ImGui::Image(std::static_pointer_cast<D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[0], ImVec2(200, 200));
@@ -90,7 +90,7 @@ namespace GUI {
 				if (ImGui::CollapsingHeader("Picker map")) {
 					ImGui::Image((void*)std::static_pointer_cast<D3D11RenderTarget>(renderSystem->picker)->getShaderResourceView()[0], ImVec2(200, 200));
 				}
-			} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+			} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 				if (ImGui::CollapsingHeader("G buffer")) {
 					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->gBuffer)->depth, ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->gBuffer)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));

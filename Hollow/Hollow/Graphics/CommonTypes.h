@@ -133,4 +133,10 @@ namespace Hollow {
 		TU_RENDER_TARGET,	
 		TU_DEPTH_STENCIL
 	};
+
+	enum RendererType {
+		None,
+		OpenGL,
+		DirectX
+	};
 }

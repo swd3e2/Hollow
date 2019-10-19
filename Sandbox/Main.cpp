@@ -30,7 +30,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	Hollow::Window* window = WindowManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
 	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
-	ProjectSettings::startUp<ProjectSettings>(Hollow::RendererType::OpenGL);
+	ProjectSettings::startUp<ProjectSettings>();
 
 	Hollow::Camera* camera = new Hollow::Camera(true);
 	camera->setProjectionValues(80.0f, static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100000.0f);
@@ -63,8 +63,6 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
 		renderable->load(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
-		transform->scale = Hollow::Vector3(1.0f, 1.0f, 1.0f);
-		transform->rotation = Hollow::Quaternion(-0.242, -0.664, 0.242, 0.664);
 	}
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();

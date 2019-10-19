@@ -75,9 +75,9 @@ namespace Hollow {
 		virtual void drawInstanced() override;
 		virtual void drawIndexedInstanced() override;
 
-		void setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask);
-
 		D3D11Context& getContext() { return *context; }
+		
+		virtual RendererType getRendererType() override { return RendererType::DirectX; }
 	};
 }
 

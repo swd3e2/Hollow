@@ -6,6 +6,7 @@
 #include "Math.h"
 #include <cmath>
 #include "Matrix4.h"
+#include "Vector3.h"
 
 namespace Hollow {
 	class Quaternion
@@ -23,6 +24,22 @@ namespace Hollow {
 		Quaternion(float x, float y, float z, float w) :
 			x(x), y(y), z(z), w(w)
 		{}
+
+		// From euler angles
+		Quaternion(const Vector3& vec) 
+		{
+			double cy = cos(vec.z * 0.5);
+			double sy = sin(vec.z * 0.5);
+			double cp = cos(vec.y * 0.5);
+			double sp = sin(vec.y * 0.5);
+			double cr = cos(vec.x * 0.5);
+			double sr = sin(vec.x * 0.5);
+
+			w = cy * cp * cr + sy * sp * sr;
+			x = cy * cp * sr - sy * sp * cr;
+			y = sy * cp * sr + cy * sp * cr;
+			z = sy * cp * cr - cy * sp * sr;
+		}
 
 		Quaternion(const Quaternion& other) :
 			x(other.x), y(other.y), z(other.z), w(other.w)

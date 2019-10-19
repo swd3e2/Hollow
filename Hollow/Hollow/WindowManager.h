@@ -6,9 +6,9 @@
 #include "Graphics/Window.h"
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Platform.h"
+#include "Graphics/CommonTypes.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11Win32Window.h"
 #include "Hollow/Graphics/Platform/OpenGL/Win32/OGLWin32Window.h"
-#include "Hollow/Graphics/RendererType.h"
 
 namespace Hollow {
 	class WindowManager

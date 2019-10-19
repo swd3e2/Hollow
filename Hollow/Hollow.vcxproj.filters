@@ -219,9 +219,6 @@
     <ClInclude Include="Hollow\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Graphics\RendererType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Core\DelayedTaskManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>

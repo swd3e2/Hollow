@@ -37,11 +37,8 @@ public:
 	/** Project settings filename for saving */
 	std::string projectFileName;
 
-	Hollow::RendererType rendererType;
-
 	bool isProjectLoaded = false;
 public:
-	ProjectSettings(Hollow::RendererType type) : rendererType(type) {}
 	/**
 	 * Loads settings from json file
 	 * @param[in] filename	Filename of settings file
@@ -78,11 +75,10 @@ public:
 							it["TransformComponent"]["scale"][1].get<float>(),
 							it["TransformComponent"]["scale"][2].get<float>()
 						),
-						Hollow::Quaternion(
+						Hollow::Vector3(
 							it["TransformComponent"]["rotation"][0].get<float>(),
 							it["TransformComponent"]["rotation"][1].get<float>(),
-							it["TransformComponent"]["rotation"][2].get<float>(),
-							0.0f
+							it["TransformComponent"]["rotation"][2].get<float>()
 						)
 					);
 				}
@@ -117,11 +113,10 @@ public:
 							it["TransformComponent"]["scale"][1].get<float>(),
 							it["TransformComponent"]["scale"][2].get<float>()
 						),
-						Hollow::Quaternion(
+						Hollow::Vector3(
 							it["TransformComponent"]["rotation"][0].get<float>(),
 							it["TransformComponent"]["rotation"][1].get<float>(),
-							it["TransformComponent"]["rotation"][2].get<float>(),
-							0.0f
+							it["TransformComponent"]["rotation"][2].get<float>()
 						)
 					);
 				}
@@ -151,12 +146,12 @@ public:
 						it["LightComponent"]["color"][2].get<float>()
 					);
 
-					light->lightData.constant	= it["LightComponent"]["constant"].get<float>();
-					light->lightData.linear		= it["LightComponent"]["linear"].get<float>();
-					light->lightData.quadratic	= it["LightComponent"]["quadratic"].get<float>();
-					light->lightData.cutoff		= it["LightComponent"]["cutoff"].get<float>();
-					light->lightData.distance	= it["LightComponent"]["distance"].get<float>();
-					light->lightData.type		= it["LightComponent"]["type"].get<float>();
+					light->lightData.constant = it["LightComponent"]["constant"].get<float>();
+					light->lightData.linear = it["LightComponent"]["linear"].get<float>();
+					light->lightData.quadratic = it["LightComponent"]["quadratic"].get<float>();
+					light->lightData.cutoff = it["LightComponent"]["cutoff"].get<float>();
+					light->lightData.distance = it["LightComponent"]["distance"].get<float>();
+					light->lightData.type = it["LightComponent"]["type"].get<float>();
 				}
 
 				if (it.find("TerrainData") != it.end()) {
@@ -290,9 +285,6 @@ public:
 
 		Hollow::DelayedTaskManager::instance()->add(func);
 	}
-
-	Hollow::RendererType getRendererType() const { return rendererType; }
-private:
 };
 
 #endif

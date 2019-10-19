@@ -188,7 +188,7 @@ namespace GUI {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedTerrain->getComponent<TransformComponent>();
 						ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat4("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}
@@ -236,19 +236,21 @@ namespace GUI {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();
 						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f)) {
-							PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
-							
-							btTransform origin;
-							physics->body->getMotionState()->getWorldTransform(origin);
-							btVector3& originVec = origin.getOrigin();
-							physics->body->activate(true);
-							physics->body->translate(btVector3(
-								component->position.x - originVec.getX(), 
-								component->position.y - originVec.getY(), 
-								component->position.z - originVec.getZ()
-							));
+							if (selectedGameObject->hasComponent<PhysicsComponent>()) {
+								PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+
+								btTransform origin;
+								physics->body->getMotionState()->getWorldTransform(origin);
+								btVector3& originVec = origin.getOrigin();
+								physics->body->activate(true);
+								physics->body->translate(btVector3(
+									component->position.x - originVec.getX(),
+									component->position.y - originVec.getY(),
+									component->position.z - originVec.getZ()
+								));
+							}
 						}
-						ImGui::DragFloat4("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}
@@ -265,9 +267,9 @@ namespace GUI {
 
 				ImGui::Text("Diffuse texture");
 				if (selectedMaterial->diffuseTexture != nullptr) {
-					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
-					} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();
@@ -285,10 +287,10 @@ namespace GUI {
 
 				ImGui::Text("Normal texture");
 				if (selectedMaterial->normalTexture != nullptr) {
-					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					}
-					else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
 					}
 
@@ -305,10 +307,10 @@ namespace GUI {
 
 				ImGui::Text("Specular texture");
 				if (selectedMaterial->specularTexture != nullptr) {
-					if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->specularTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					}
-					else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->specularTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();

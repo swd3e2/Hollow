@@ -178,7 +178,7 @@ public:
 			terrainLayout = InputLayout::create(terrainLayoutDesc);
 
 
-			if (ProjectSettings::instance()->getRendererType() == RendererType::DirectX) 
+			if (renderer->getRendererType() == RendererType::DirectX) 
 			{
 				{
 					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
@@ -579,7 +579,7 @@ public:
 
 				Hollow::Matrix4 trs = Matrix4::transpose(
 					Matrix4::scaling(transform->scale)
-					* transform->rotation.toMatrix4()
+					* Quaternion(transform->rotation).toMatrix4()
 					* Matrix4::translation(transform->position)
 				);
 
@@ -642,7 +642,7 @@ public:
 				{
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
-						* transform->rotation.toMatrix4().transpose()
+						* Quaternion(transform->rotation).toMatrix4()
 						* Matrix4::translation(transform->position)
 					);
 
@@ -680,7 +680,7 @@ public:
 
 				perModelData.transform = Matrix4::transpose(
 					Matrix4::scaling(transform->scale)
-					* transform->rotation.toMatrix4()
+					* Quaternion(transform->rotation).toMatrix4()
 					* Matrix4::translation(transform->position)
 				);
 				perModel->update(&perModelData);
@@ -704,7 +704,7 @@ public:
 				if (data->vBuffer != nullptr) {
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
-						* transform->rotation.toMatrix4()
+						* Quaternion(transform->rotation).toMatrix4()
 						* Matrix4::translation(transform->position)
 					);
 
@@ -733,7 +733,7 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
 				Hollow::Matrix4 trs = Matrix4::scaling(transform->scale)
-					* transform->rotation.toMatrix4()
+					* Quaternion(transform->rotation).toMatrix4()
 					* Matrix4::translation(transform->position);
 
 				perModelData.transform = Matrix4::transpose(trs);

@@ -40,6 +40,7 @@ namespace Hollow {
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();
+
 		virtual void setIndexBuffer(const s_ptr<IndexBuffer>& indexBuffer) override;
 		virtual void setVertexBuffer(const s_ptr<VertexBuffer>& vertexBuffer) override;
 		virtual void setTexture(UINT, const s_ptr<Texture>& texture) override;
@@ -64,6 +65,8 @@ namespace Hollow {
 
 		virtual void drawInstanced() override;
 		virtual void drawIndexedInstanced() override;
+
+		virtual RendererType getRendererType() override { return RendererType::OpenGL; }
 	};
 }
 

@@ -75,7 +75,7 @@ public:
 					Hollow::TEXTURE_DESC desc;
 					desc.width = diffuse->width;
 					desc.height = diffuse->height;
-					desc.format = diffuse->bpp == 32 ? Hollow::TextureFormat::TF_RGBA8 : Hollow::TextureFormat::TF_RGB8;
+					desc.format = diffuse->bpp == 32 ? Hollow::TextureFormat::TF_BGRA8 : Hollow::TextureFormat::TF_BGR8;
 					desc.type = Hollow::TextureType::TT_TEXTURE2D;
 					desc.numMips = 5;
 

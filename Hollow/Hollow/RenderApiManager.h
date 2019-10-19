@@ -8,7 +8,7 @@
 #include "Graphics/RenderApi.h"
 #include "Graphics/Platform/DirectX/D3D11RenderApi.h"
 #include "Graphics/Platform/OpenGL/OGLRenderApi.h"
-#include "Graphics/RendererType.h"
+#include "Graphics/CommonTypes.h"
 
 namespace Hollow {
 	class RenderApiManager

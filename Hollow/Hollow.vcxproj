@@ -62,7 +62,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayout.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLInputLayoutManager.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLSamplerState.h" />
-    <ClInclude Include="Hollow\Graphics\RendererType.h" />
     <ClInclude Include="Hollow\Graphics\GPUBuffer.h" />
     <ClInclude Include="Hollow\Graphics\InputLayout.h" />
     <ClInclude Include="Hollow\Graphics\RenderTexture.h" />

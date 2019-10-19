@@ -74,8 +74,7 @@ namespace Hollow {
 			size_t componentTypeId = T::staticGetTypeId();
 
 			// Trying to find container, if found - just return it
-			if (componentContainers.find(componentTypeId) != componentContainers.end())
-			{
+			if (componentContainers.find(componentTypeId) != componentContainers.end()) {
 				return (ComponentContainer<T>*)(componentContainers[componentTypeId]);
 			}
 			// if not - need to create one
@@ -102,8 +101,7 @@ namespace Hollow {
 		template<class T>
 		void destroy(size_t entityId)
 		{
-			if (has<T>(entityId))
-			{
+			if (has<T>(entityId)) {
 				size_t componentTypeId = T::staticGetTypeId();
 
 				ComponentContainer<T>* container = getContainer<T>();
@@ -128,10 +126,8 @@ namespace Hollow {
 		{
 			size_t componentTypeId = T::staticGetTypeId();
 
-			if (componentMap.find(entityId) != componentMap.end())
-			{
-				if (componentMap[entityId].find(componentTypeId) != componentMap[entityId].end())
-				{
+			if (componentMap.find(entityId) != componentMap.end()) {
+				if (componentMap[entityId].find(componentTypeId) != componentMap[entityId].end()) {
 					return true;
 				}
 			}
@@ -141,8 +137,7 @@ namespace Hollow {
 		template<class T>
 		T* get(size_t entityId)
 		{
-			if (has<T>(entityId))
-			{
+			if (has<T>(entityId)) {
 				size_t componentTypeId = T::staticGetTypeId();
 
 				ComponentContainer<T>* container = getContainer<T>();

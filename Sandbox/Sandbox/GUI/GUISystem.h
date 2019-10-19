@@ -46,11 +46,11 @@ public:
 
 		ImFont* pFont = io.Fonts->AddFontFromFileTTF("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Roboto-Medium.ttf", 16.0f);
 
-		if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplWin32_Init(static_cast<D3D11Win32Window*>(window)->getHWND());
 			D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
 			ImGui_ImplDX11_Init(context.getDevice(), context.getDeviceContext());
-		} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+		} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 			result = ImGui_ImplWin32_Init(static_cast<OGLWin32Window*>(window)->getHWND());
 			const char* glsl_version = "#version 460";
 			result = ImGui_ImplOpenGL3_Init(glsl_version);
@@ -62,9 +62,9 @@ public:
 
 	~GUISystem()
 	{
-		if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplDX11_Shutdown();
-		} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+		} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 			ImGui_ImplOpenGL3_Shutdown();
 		}
 		ImGui_ImplWin32_Shutdown();
@@ -73,9 +73,9 @@ public:
 
 	void begin()
 	{
-		if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplDX11_NewFrame();
-		} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+		} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 			ImGui_ImplOpenGL3_NewFrame();
 		}
 		ImGui_ImplWin32_NewFrame();
@@ -169,9 +169,9 @@ public:
 		ImGui::End();
 
 		ImGui::Render();
-		if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		} else if (ProjectSettings::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+		} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 

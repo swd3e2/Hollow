@@ -272,11 +272,6 @@ namespace Hollow {
 	{
 	}
 
-	void D3D11RenderApi::setBlendState(D3D11BlendState* blend, float* factor, unsigned int mask)
-	{
-		context->getDeviceContext()->OMSetBlendState(blend != nullptr ? blend->getBlendState() : 0, factor, mask);
-	}
-
 	void D3D11RenderApi::setInputLayout(const s_ptr<InputLayout>& layout)
 	{
 		s_ptr<D3D11InputLayout> inputLayout = std::static_pointer_cast<D3D11InputLayout>(layout);

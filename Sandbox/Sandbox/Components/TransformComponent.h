@@ -12,11 +12,16 @@ class TransformComponent : public Hollow::Component<TransformComponent>
 public:
 	Hollow::Vector3 position;
 	Hollow::Vector3 scale;
-	Hollow::Quaternion rotation;
+	// Euler
+	Hollow::Vector3 rotation;
+	// Quaternion
+	Hollow::Quaternion rotationQ;
 public:
-	TransformComponent() = default;
+	TransformComponent() :
+		scale(1.0f, 1.0f, 1.0f)
+	{}
 
-	TransformComponent(const Hollow::Vector3& position, const Hollow::Vector3& scale, const Hollow::Quaternion& rotation) :
+	TransformComponent(const Hollow::Vector3& position, const Hollow::Vector3& scale, const Hollow::Vector3& rotation) :
 		position(position), scale(scale), rotation(rotation)
 	{}
 
@@ -42,12 +47,11 @@ public:
 		this->scale.z = sz;
 	}
 
-	void setRotation(float rx, float ry, float rz, float rw)
+	void setRotation(float rx, float ry, float rz)
 	{
 		this->rotation.x = rx;
 		this->rotation.y = ry;
 		this->rotation.z = rz;
-		this->rotation.w = rw;
 	}
 
 	void setTransform(float * position, float * scale, float * rotation)

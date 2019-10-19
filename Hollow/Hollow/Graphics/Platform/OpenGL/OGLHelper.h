@@ -283,9 +283,8 @@ namespace Hollow {
 			case TextureFormat::TF_BGR8: 
 				return GL_RGB8;
 			case TextureFormat::TF_RGBA8: 
-				return GL_RGBA8;
 			case TextureFormat::TF_BGRA8: 
-				return GL_BGRA;
+				return GL_RGBA8;
 			case TextureFormat::TF_R16: 
 				return GL_R16;
 			case TextureFormat::TF_RG16: 
