@@ -11,43 +11,27 @@
 namespace Hollow {
 	struct VertexBoneData
 	{
-		int IDs[NUM_BONES_PER_VEREX];
-		float Weights[NUM_BONES_PER_VEREX];
+		int joints[NUM_BONES_PER_VEREX] {};
+		float weights[NUM_BONES_PER_VEREX] {};
 	};
 
 	struct Vertex
 	{
-		Vertex(float px, float py, float pz) :
-			pos(px, py, pz)
-		{
-			for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
-			{
-				boneData.IDs[i] = 0;
-				boneData.Weights[i] = 0.0f;
-			}
-		}
-
-		Vertex(float px, float py, float pz, float tv, float tu)
-			: Vertex(px, py, pz)
-		{
-			texCoord = Vector2(tv, tu);
-		}
-
-		Vertex() :
-			pos(0.0f, 0.0f, 0.0f), texCoord(0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
-		{
-		}
+	public:
+		Vertex() = default;
 
 		Vertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
 			: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
-		{
-			for (int i = 0; i < NUM_BONES_PER_VEREX; i++)
-			{
-				boneData.IDs[i] = 0;
-				boneData.Weights[i] = 0.0f;
-			}
-		}
+		{}
 
+		Vertex(float px, float py, float pz) :
+			Vertex(px, py, pz, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
+		{}
+
+		Vertex(float px, float py, float pz, float tv, float tu)
+			: Vertex(px, py, pz, tv, tu, 0.0f, 0.0f, 0.0f)
+		{}
+	public:
 		Vector3 pos;
 		Vector2 texCoord;
 		Vector3 normal;

@@ -419,70 +419,68 @@ public:
 		shadow.shadowCamera->update(dt);
 		//calculateAABBPlane();
 
-		if (ProjectSettings::instance()->isProjectLoaded) {
-			updateWVP(this->m_Camera);
-			// GBuffer pass
-			timer.restart();
-			for (int i = 0; i < 5; i++) {
-				renderer->setTextureSampler(i, sampler);
-			}
-			gBufferPass();
-			gbufferTime = timer.getMilisecondsElapsed();
+		updateWVP(this->m_Camera);
+		// GBuffer pass
+		timer.restart();
+		for (int i = 0; i < 5; i++) {
+			renderer->setTextureSampler(i, sampler);
+		}
+		gBufferPass();
+		gbufferTime = timer.getMilisecondsElapsed();
 
-			// Picker pass
-			timer.restart();
-			renderer->setDepthStencilState(less);
-			pickerPass();
-			pickerTime = timer.getMilisecondsElapsed();
+		// Picker pass
+		timer.restart();
+		renderer->setDepthStencilState(less);
+		pickerPass();
+		pickerTime = timer.getMilisecondsElapsed();
 
-			// Shadow pass
-			timer.restart();
-			shadowPass();
-			shadowTime = timer.getMilisecondsElapsed();
+		// Shadow pass
+		timer.restart();
+		shadowPass();
+		shadowTime = timer.getMilisecondsElapsed();
 
-			// Light pass
-			{
-				renderer->setTextureSampler(0, renderTargetSampler);
-				renderer->setTextureSampler(1, renderTargetSampler);
-				renderer->setTextureSampler(3, renderTargetSampler);
-				renderer->setTextureSampler(4, renderTargetSampler);
-				renderer->setTextureSampler(5, renderTargetSampler);
+		// Light pass
+		{
+			renderer->setTextureSampler(0, renderTargetSampler);
+			renderer->setTextureSampler(1, renderTargetSampler);
+			renderer->setTextureSampler(3, renderTargetSampler);
+			renderer->setTextureSampler(4, renderTargetSampler);
+			renderer->setTextureSampler(5, renderTargetSampler);
 
-				renderer->setRasterizerState(cullBack);
-				renderer->setRenderTarget(0);
-				renderer->setTextureColorBuffer(0, gBuffer, 0);
-				renderer->setTextureColorBuffer(1, gBuffer, 1);
-				renderer->setTextureColorBuffer(2, gBuffer, 2);
-				renderer->setTextureDepthBuffer(3, shadow.renderTarget);
-				renderer->setTextureDepthBuffer(5, gBuffer);
+			renderer->setRasterizerState(cullBack);
+			renderer->setRenderTarget(0);
+			renderer->setTextureColorBuffer(0, gBuffer, 0);
+			renderer->setTextureColorBuffer(1, gBuffer, 1);
+			renderer->setTextureColorBuffer(2, gBuffer, 2);
+			renderer->setTextureDepthBuffer(3, shadow.renderTarget);
+			renderer->setTextureDepthBuffer(5, gBuffer);
 
-				renderer->setShaderPipeline(lightPipeline);
-				updateLight();
+			renderer->setShaderPipeline(lightPipeline);
+			updateLight();
 
-				renderer->setVertexBuffer(quadVB);
-				renderer->setIndexBuffer(quadIB);
-				renderer->drawIndexed(6);
+			renderer->setVertexBuffer(quadVB);
+			renderer->setIndexBuffer(quadIB);
+			renderer->drawIndexed(6);
 
-				renderer->setDepthStencilState(greater);
-				renderer->setRasterizerState(cullFront);
-				DrawSkyMap();
+			renderer->setDepthStencilState(greater);
+			renderer->setRasterizerState(cullFront);
+			DrawSkyMap();
 
-				renderer->unsetTexture(0);
-				renderer->unsetTexture(1);
-				renderer->unsetTexture(2);
-				renderer->unsetTexture(3);
-				renderer->unsetTexture(5);
-			}
+			renderer->unsetTexture(0);
+			renderer->unsetTexture(1);
+			renderer->unsetTexture(2);
+			renderer->unsetTexture(3);
+			renderer->unsetTexture(5);
+		}
 
-			lightTime = timer.getMilisecondsElapsed();;
+		lightTime = timer.getMilisecondsElapsed();;
 
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) 
-				&& InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)
-			) {
-				Vector4 selectedColor = picker->readPixel(InputManager::mcx, InputManager::mcy);
-				pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
-				Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
-			}
+		if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_CONTROL) 
+			&& InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_LEFT)
+		) {
+			Vector4 selectedColor = picker->readPixel(InputManager::mcx, InputManager::mcy);
+			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
+			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
 		}
 	}
 
@@ -581,7 +579,7 @@ public:
 
 				Hollow::Matrix4 trs = Matrix4::transpose(
 					Matrix4::scaling(transform->scale)
-					* Matrix4::rotation(transform->rotation)
+					* transform->rotation.toMatrix4()
 					* Matrix4::translation(transform->position)
 				);
 
@@ -644,7 +642,7 @@ public:
 				{
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
-						* Matrix4::rotation(transform->rotation)
+						* transform->rotation.toMatrix4().transpose()
 						* Matrix4::translation(transform->position)
 					);
 
@@ -682,7 +680,7 @@ public:
 
 				perModelData.transform = Matrix4::transpose(
 					Matrix4::scaling(transform->scale)
-					* Matrix4::rotation(transform->rotation)
+					* transform->rotation.toMatrix4()
 					* Matrix4::translation(transform->position)
 				);
 				perModel->update(&perModelData);
@@ -706,7 +704,7 @@ public:
 				if (data->vBuffer != nullptr) {
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
-						* Matrix4::rotation(transform->rotation)
+						* transform->rotation.toMatrix4()
 						* Matrix4::translation(transform->position)
 					);
 
@@ -735,7 +733,7 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
 				Hollow::Matrix4 trs = Matrix4::scaling(transform->scale)
-					* Matrix4::rotation(transform->rotation)
+					* transform->rotation.toMatrix4()
 					* Matrix4::translation(transform->position);
 
 				perModelData.transform = Matrix4::transpose(trs);

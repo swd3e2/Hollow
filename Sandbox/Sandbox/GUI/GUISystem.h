@@ -155,10 +155,10 @@ public:
 			ImGui::EndPopup();
 		}
 
-		if (ProjectSettings::instance()->isProjectLoaded) {
+		//if (ProjectSettings::instance()->isProjectLoaded) {
 			rendererTab.Draw(dt);
 			hierarchyTab.Draw();
-		}
+		//}
 		
 		end();
 	}

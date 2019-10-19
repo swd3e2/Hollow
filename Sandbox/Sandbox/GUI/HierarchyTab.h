@@ -188,7 +188,7 @@ namespace GUI {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedTerrain->getComponent<TransformComponent>();
 						ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat4("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}
@@ -248,7 +248,7 @@ namespace GUI {
 								component->position.z - originVec.getZ()
 							));
 						}
-						ImGui::DragFloat3("Rotation", (float*)& component->rotation, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat4("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}

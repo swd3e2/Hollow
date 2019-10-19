@@ -43,6 +43,7 @@ namespace Hollow {
 			Vector3 A, B; // A - left near down, B - right far up
 			std::unordered_map<unsigned int, Material> materials;
 			std::vector<Animation*> animations;
+			AnimationNode* rootNode;
 
 			Model()
 			{
