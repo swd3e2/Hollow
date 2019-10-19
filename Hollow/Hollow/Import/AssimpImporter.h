@@ -170,9 +170,21 @@ namespace Hollow {
 			}
 		}
 
-		void parseAnimationData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
+		void parseAnimationData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, s_ptr<Import::Model>& data, const aiScene* scene)
 		{
-			createAnimationNodes(animationNodes, scene->mRootNode, nullptr);
+			data->rootNode = new Import::AnimationNode();
+			data->rootNode->id = animationNodeNextId++;
+			data->rootNode->name = scene->mRootNode->mName.C_Str();
+
+			data->rootNode->localTransform = Matrix4(
+				scene->mRootNode->mTransformation.a1, scene->mRootNode->mTransformation.a2, scene->mRootNode->mTransformation.a3, scene->mRootNode->mTransformation.a4,
+				scene->mRootNode->mTransformation.b1, scene->mRootNode->mTransformation.b2, scene->mRootNode->mTransformation.b3, scene->mRootNode->mTransformation.b4,
+				scene->mRootNode->mTransformation.c1, scene->mRootNode->mTransformation.c2, scene->mRootNode->mTransformation.c3, scene->mRootNode->mTransformation.c4,
+				scene->mRootNode->mTransformation.d1, scene->mRootNode->mTransformation.d2, scene->mRootNode->mTransformation.d3, scene->mRootNode->mTransformation.d4
+			);
+
+			animationNodes[scene->mRootNode->mName.C_Str()] = data->rootNode;
+			createAnimationNodes(animationNodes, scene->mRootNode, data->rootNode);
 
 			for (int i = 0; i < scene->mNumAnimations; i++) {
 				aiAnimation* assimpAnimation = scene->mAnimations[i];
@@ -229,6 +241,7 @@ namespace Hollow {
 			for (int i = 0; i < node->mNumChildren; i++) {
 				Import::AnimationNode* animNode = new Import::AnimationNode();
 				animNode->id = animationNodeNextId++;
+				animNode->name = node->mChildren[i]->mName.C_Str();
 
 				animNode->localTransform = Matrix4(
 					node->mChildren[i]->mTransformation.a1, node->mChildren[i]->mTransformation.a2, node->mChildren[i]->mTransformation.a3, node->mChildren[i]->mTransformation.a4,
@@ -238,10 +251,7 @@ namespace Hollow {
 				);
 
 				animationNodes[node->mChildren[i]->mName.C_Str()] = animNode;
-
-				if (parentNode != nullptr) {
-					parentNode->childrens.push_back(parentNode);
-				}
+				parentNode->childrens.push_back(animNode);
 
 				createAnimationNodes(animationNodes, node->mChildren[i], animNode);
 			}

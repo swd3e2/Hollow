@@ -24,6 +24,7 @@
 #include <Hollow/Test.h>
 #include <Hollow/Common/Timer.h>
 #include "Sandbox/Components/LightComponent.h"
+#include "Sandbox/Components/AnimationComponent.h"
 
 using namespace Hollow;
 
@@ -152,7 +153,7 @@ public:
 			perMesh						= GPUBuffer::create(3, sizeof(PerMesh));
 			materialConstantBuffer		= GPUBuffer::create(4, sizeof(MaterialData));
 			lightInfoBuffer				= GPUBuffer::create(5, sizeof(LightInfo));
-			boneInfo					= GPUBuffer::create(6, sizeof(Matrix4));
+			boneInfo					= GPUBuffer::create(6, sizeof(Matrix4) * 150);
 		}
 		// Shaders
 		{
@@ -576,6 +577,15 @@ public:
 			{
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+				if (entity.hasComponent<AnimationComponent>()) {
+					perModelData.hasAnimation = true;
+					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+					boneInfo->update(&animation->nodeInfo);
+					renderer->setGpuBuffer(boneInfo);
+				} else {
+					perModelData.hasAnimation = false;
+				}
 
 				Hollow::Matrix4 trs = Matrix4::transpose(
 					Matrix4::scaling(transform->scale)

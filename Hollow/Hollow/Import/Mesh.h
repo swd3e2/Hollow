@@ -56,6 +56,10 @@ namespace Hollow {
 				for (auto& it : meshes) {
 					delete it;
 				}
+				for (auto& it : animations) {
+					delete it;
+				}
+				delete rootNode;
 			}
 		};
 	}

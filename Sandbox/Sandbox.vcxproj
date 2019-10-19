@@ -20,6 +20,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sandbox\Components\AnimationComponent.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
     <ClInclude Include="Sandbox\Components\PhysicsComponent.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Sandbox\GUI\HierarchyTab.h" />
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
+    <ClInclude Include="Sandbox\Systems\AnimationSystem.h" />
     <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
     <ClInclude Include="Sandbox\Systems\PhysicsSystem.h" />

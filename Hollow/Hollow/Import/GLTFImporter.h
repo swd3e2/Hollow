@@ -47,6 +47,13 @@ namespace Hollow {
 			Node(std::string& name) :
 				name(name)
 			{}
+
+			~Node()
+			{
+				for (auto& it : childrens) {
+					delete it;
+				}
+			}
 		};
 
 		struct LoadedModel
@@ -60,6 +67,10 @@ namespace Hollow {
 			Node* rootNode;
 			Import::AnimationNode* animationRootNode;
 			std::vector<Import::AnimationNode*> animationNodes;
+
+			~LoadedModel()
+			{
+			}
 		};
 	}
 

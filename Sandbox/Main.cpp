@@ -18,6 +18,8 @@
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Systems/PhysicsSystem.h"
+#include "Sandbox/Components/AnimationComponent.h"
+#include "Sandbox/Systems/AnimationSystem.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -40,9 +42,11 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	renderPass.m_Camera = camera;
 
 	MoveSystem moveSystem(camera);
+	AnimationSystem animationSystem;
 
 	SystemManager::instance()->addSystem(&renderPass);
 	SystemManager::instance()->addSystem(&moveSystem);
+	SystemManager::instance()->addSystem(&animationSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;
@@ -58,17 +62,33 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	SystemManager::instance()->addSystem(PhysicsSystem::instance());
 
 	{
-		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/DefenderLingerie00.fbx");
-		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
-		renderable->load(mesh);
-		TransformComponent* transform = entity->addComponent<TransformComponent>();
+		//GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/DefenderLingerie00.fbx");
+		//RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
+		//renderable->load(mesh);
+		////AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+		//TransformComponent* transform = entity->addComponent<TransformComponent>();
 	}
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
  		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
 		renderable->load(mesh);
+
+		std::unordered_map<int, int> joints;
+		for (auto& it : mesh->meshes) {
+			for (auto& vert : it->vertices) {
+				for (int i = 0; i < 4; i++) {
+					if (joints.find(vert.boneData.joints[i]) == joints.end()) {
+						joints[vert.boneData.joints[i]] = 1;
+					} else {
+						joints[vert.boneData.joints[i]]++;
+					}
+				}
+			}
+		}
+
+		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
 	}
 	/*{
