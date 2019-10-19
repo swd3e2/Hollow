@@ -43,9 +43,6 @@ public:
 
 	void load(const Hollow::s_ptr<Hollow::Import::Model>& model)
 	{
-		A = model->A;
-		B = model->B;
-
 		if (model == nullptr) { return; }
 		for (int i = 0; i < model->meshes.size(); i++) {
 			RenderableObject* renderable = new RenderableObject();

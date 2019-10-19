@@ -62,16 +62,17 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/DefenderLingerie00.fbx");
 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
 		renderable->load(mesh);
-		entity->addComponent<TransformComponent>();
+		TransformComponent* transform = entity->addComponent<TransformComponent>();
+		transform->scale = Hollow::Vector3(1.0f, 1.0f, 1.0f);
+		transform->rotation = Hollow::Quaternion(-0.242, -0.664, 0.242, 0.664);
 	}
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/AnimatedCube.gltf");
-		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
+		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
+ 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
 		renderable->load(mesh);
-		entity->addComponent<TransformComponent>();
+		TransformComponent* transform = entity->addComponent<TransformComponent>();
 	}
-
 	/*{
 		GameObject* obj = EntityManager::instance()->create<GameObject>();
 		obj->addComponent<TransformComponent>();

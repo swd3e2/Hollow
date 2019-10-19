@@ -24,7 +24,7 @@ namespace Hollow {
 		{
 			animationNodeNextId = 0;
 
-			s_ptr<Import::Model> data(new Import::Model());
+			s_ptr<Import::Model> model(new Import::Model());
 
 			Assimp::Importer importer;
 
@@ -33,20 +33,24 @@ namespace Hollow {
 			);
 
 			if (!scene) 
-				return data;
+				return model;
 
-			parseCommonData(data, scene);
+			std::unordered_map<std::string, Import::AnimationNode*> animationNodes;
+			
+			if (scene->mNumAnimations > 0) {
+				parseAnimationData(animationNodes, model, scene);
+				model->rootNode = animationNodes[scene->mRootNode->mName.C_Str()];
+			}
 
-			if (scene->mNumAnimations > 0)
-				parseAnimationData(data, scene);
+			parseCommonData(animationNodes, model, scene);
 
 			importer.FreeScene();
 
-			return data;
+			return model;
 		}
 		private:
 		// Mesh data
-		void parseCommonData(const s_ptr<Import::Model>& data, const aiScene* scene)
+		void parseCommonData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
 		{
 			if (scene->mNumMeshes > 0) {
 				aiNode* temp;
@@ -134,14 +138,40 @@ namespace Hollow {
 
 						data->materials[mesh->material] = material;
 					}
+
+					if (scene->mMeshes[i]->HasBones()){
+						for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++) {
+							aiBone* aibone = scene->mMeshes[i]->mBones[j];
+
+							if (animationNodes.find(aibone->mName.C_Str()) == animationNodes.end()){
+								HW_ERROR("Animation node presented in mesh not found in nodes list, {}", aibone->mName.C_Str());
+								continue;
+							}
+
+							Import::AnimationNode* node = animationNodes[aibone->mName.C_Str()];
+
+							for (int k = 0; k < aibone->mNumWeights; k++) {
+								int vertexId = aibone->mWeights[k].mVertexId;
+								float weight = aibone->mWeights[k].mWeight;
+
+								for (int l = 0; l < 4; l++) {
+									if (mesh->vertices[vertexId].boneData.weights[l] == 0.0) {
+										mesh->vertices[vertexId].boneData.joints[l] = node->id;
+										mesh->vertices[vertexId].boneData.weights[l] = weight;
+										break;
+									}
+								}
+							}
+						}
+					}
+
 					data->meshes.push_back(mesh);
 				}
 			}
 		}
 
-		void parseAnimationData(const s_ptr<Import::Model>& data, const aiScene* scene)
+		void parseAnimationData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
 		{
-			std::unordered_map<std::string, Import::AnimationNode*> animationNodes;
 			createAnimationNodes(animationNodes, scene->mRootNode, nullptr);
 
 			for (int i = 0; i < scene->mNumAnimations; i++) {
@@ -217,5 +247,4 @@ namespace Hollow {
 			}
 		}
 	};
-
 }

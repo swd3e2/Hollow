@@ -6,6 +6,7 @@
 #include "Hollow/Common/Helper.h"
 #include "vendor/tinygltf/tiny_gltf.h"
 #include "Hollow/Platform.h"
+#include "Hollow/Common/FileSystem.h"
 
 #include <fstream>
 #include <unordered_map>
@@ -28,7 +29,7 @@ namespace Hollow {
 			std::vector<Vector3> normals;
 			std::vector<Vector3> positions;
 			std::vector<Vector2> texCoords;
-			std::vector<float*>  weigths;
+			std::vector<Vector4> weights;
 			std::vector<unsigned short*> joints;
 			std::vector<unsigned int> indices;
 			std::string name;
@@ -55,7 +56,7 @@ namespace Hollow {
 			unsigned int meshCounter = 0;
 			std::vector<u_ptr<LoadedMesh>> meshes;
 			std::unordered_map<unsigned int, Import::Material> materials;
-			std::vector<Import::Animation> animations;
+			std::vector<Import::Animation*> animations;
 			Node* rootNode;
 			Import::AnimationNode* animationRootNode;
 			std::vector<Import::AnimationNode*> animationNodes;

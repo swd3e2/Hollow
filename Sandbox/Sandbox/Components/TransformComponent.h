@@ -5,36 +5,24 @@
 
 #include <Hollow/ECS/Component.h>
 #include <Hollow/Math/Vector3.h>
+#include "Hollow/Math/Quaternion.h"
 
 class TransformComponent : public Hollow::Component<TransformComponent>
 {
 public:
 	Hollow::Vector3 position;
 	Hollow::Vector3 scale;
-	Hollow::Vector3 rotation;
+	Hollow::Quaternion rotation;
 public:
-	TransformComponent(const Hollow::Vector3& position, const Hollow::Vector3& scale, const Hollow::Vector3& rotation) :
+	TransformComponent() = default;
+
+	TransformComponent(const Hollow::Vector3& position, const Hollow::Vector3& scale, const Hollow::Quaternion& rotation) :
 		position(position), scale(scale), rotation(rotation)
 	{}
 
 	TransformComponent(float * position, float * scale, float * rotation)
 	{
 		this->setTransform(position, scale, rotation);
-	}
-
-	TransformComponent()
-	{
-		position.x = 0.0f;
-		position.y = 0.0f;
-		position.z = 0.0f;
-
-		scale.x = 1.0f;
-		scale.y = 1.0f;
-		scale.z = 1.0f;
-
-		rotation.x = 0.0f;
-		rotation.y = 0.0f;
-		rotation.z = 0.0f;
 	}
 
 	TransformComponent(const TransformComponent&) = default;
@@ -54,11 +42,12 @@ public:
 		this->scale.z = sz;
 	}
 
-	void setRotation(float rx, float ry, float rz)
+	void setRotation(float rx, float ry, float rz, float rw)
 	{
 		this->rotation.x = rx;
 		this->rotation.y = ry;
 		this->rotation.z = rz;
+		this->rotation.w = rw;
 	}
 
 	void setTransform(float * position, float * scale, float * rotation)

@@ -78,10 +78,11 @@ public:
 							it["TransformComponent"]["scale"][1].get<float>(),
 							it["TransformComponent"]["scale"][2].get<float>()
 						),
-						Hollow::Vector3(
+						Hollow::Quaternion(
 							it["TransformComponent"]["rotation"][0].get<float>(),
 							it["TransformComponent"]["rotation"][1].get<float>(),
-							it["TransformComponent"]["rotation"][2].get<float>()
+							it["TransformComponent"]["rotation"][2].get<float>(),
+							0.0f
 						)
 					);
 				}
@@ -116,10 +117,11 @@ public:
 							it["TransformComponent"]["scale"][1].get<float>(),
 							it["TransformComponent"]["scale"][2].get<float>()
 						),
-						Hollow::Vector3(
+						Hollow::Quaternion(
 							it["TransformComponent"]["rotation"][0].get<float>(),
 							it["TransformComponent"]["rotation"][1].get<float>(),
-							it["TransformComponent"]["rotation"][2].get<float>()
+							it["TransformComponent"]["rotation"][2].get<float>(),
+							0.0f
 						)
 					);
 				}
