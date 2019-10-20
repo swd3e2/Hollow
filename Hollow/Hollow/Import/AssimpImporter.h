@@ -39,7 +39,6 @@ namespace Hollow {
 			
 			if (scene->mNumAnimations > 0) {
 				parseAnimationData(animationNodes, model, scene);
-				model->rootNode = animationNodes[scene->mRootNode->mName.C_Str()];
 			}
 
 			parseCommonData(animationNodes, model, scene);
@@ -142,7 +141,7 @@ namespace Hollow {
 					if (scene->mMeshes[i]->HasBones()){
 						for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++) {
 							aiBone* aibone = scene->mMeshes[i]->mBones[j];
-
+							
 							if (animationNodes.find(aibone->mName.C_Str()) == animationNodes.end()){
 								HW_ERROR("Animation node presented in mesh not found in nodes list, {}", aibone->mName.C_Str());
 								continue;
@@ -170,9 +169,52 @@ namespace Hollow {
 			}
 		}
 
-		void parseAnimationData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
+		void parseAnimationData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, s_ptr<Import::Model>& data, const aiScene* scene)
 		{
-			createAnimationNodes(animationNodes, scene->mRootNode, nullptr);
+			// Create assimp node map 
+			std::unordered_map<std::string, aiNode*> assimpNodes;
+			createAssimpNodeMap(assimpNodes, scene->mRootNode);
+
+			// Create list of bones that used as bones
+			std::unordered_map<std::string, aiNode*> assimpBoneNodes;
+			std::unordered_map<std::string, aiBone*> assimpBones;
+
+			for (int i = 0; i < scene->mNumMeshes; i++) {
+				if (scene->mMeshes[i]->HasBones()) {
+					for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++) {
+						aiBone* aibone = scene->mMeshes[i]->mBones[j];
+						if (assimpNodes.find(aibone->mName.C_Str()) == assimpNodes.end()) {
+							HW_ERROR("Bone not found in nodes list, {}", aibone->mName.C_Str());
+							assert(false);
+						}
+						assimpBoneNodes[scene->mMeshes[i]->mBones[j]->mName.C_Str()] = assimpNodes[aibone->mName.C_Str()];
+						assimpBones[scene->mMeshes[i]->mBones[j]->mName.C_Str()] = scene->mMeshes[i]->mBones[j];
+					}
+				}
+			}
+
+			// Iterate up to root till find the node that isn't in bone list
+			aiNode* rootNode = assimpBoneNodes.begin()->second;
+
+			while (hasParentBone(assimpBones, rootNode)) {
+				rootNode = rootNode->mParent;
+			}
+
+
+			aiBone* rootBone = assimpBones[rootNode->mName.C_Str()];
+			data->rootNode = new Import::AnimationNode();
+			data->rootNode->id = animationNodeNextId++;
+			data->rootNode->name = rootNode->mName.C_Str();
+
+			data->rootNode->localTransform = Matrix4(
+				rootBone->mOffsetMatrix.a1, rootBone->mOffsetMatrix.a2, rootBone->mOffsetMatrix.a3, rootBone->mOffsetMatrix.a4,
+				rootBone->mOffsetMatrix.b1, rootBone->mOffsetMatrix.b2, rootBone->mOffsetMatrix.b3, rootBone->mOffsetMatrix.b4,
+				rootBone->mOffsetMatrix.c1, rootBone->mOffsetMatrix.c2, rootBone->mOffsetMatrix.c3, rootBone->mOffsetMatrix.c4,
+				rootBone->mOffsetMatrix.d1, rootBone->mOffsetMatrix.d2, rootBone->mOffsetMatrix.d3, rootBone->mOffsetMatrix.d4
+			);
+
+			animationNodes[rootNode->mName.C_Str()] = data->rootNode;
+			createAnimationNodes(assimpBoneNodes, assimpBones, animationNodes, rootNode, data->rootNode);
 
 			for (int i = 0; i < scene->mNumAnimations; i++) {
 				aiAnimation* assimpAnimation = scene->mAnimations[i];
@@ -187,6 +229,7 @@ namespace Hollow {
 					}
 
 					Import::AnimationNode* node = animationNodes[assimpChannel->mNodeName.C_Str()];
+					assimpBoneNodes[assimpChannel->mNodeName.C_Str()] = assimpNodes[assimpChannel->mNodeName.C_Str()];
 					Import::AnimationNodeData* animationData = nullptr;
 
 					if (animation->data.find(node->id) != animation->data.end()) {
@@ -205,7 +248,7 @@ namespace Hollow {
 
 					for (int k = 0; k < assimpChannel->mNumRotationKeys; k++) {
 						animationData->rotations[assimpChannel->mRotationKeys[k].mTime] = Quaternion(
-							assimpChannel->mRotationKeys[k].mValue.x, 
+							assimpChannel->mRotationKeys[k].mValue.x,
 							assimpChannel->mRotationKeys[k].mValue.y,
 							assimpChannel->mRotationKeys[k].mValue.z, 
 							assimpChannel->mRotationKeys[k].mValue.w
@@ -224,27 +267,78 @@ namespace Hollow {
 			}
 		}
 
-		void createAnimationNodes(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const aiNode* node, Import::AnimationNode* parentNode)
+		void createAnimationNodes(std::unordered_map<std::string, aiNode*>& assimpBoneNodes, std::unordered_map<std::string, aiBone*>& assimpBones, std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const aiNode* node, Import::AnimationNode* parentNode)
 		{
 			for (int i = 0; i < node->mNumChildren; i++) {
+				if (!hasChildBone(assimpBoneNodes, node->mChildren[i]))
+					continue;
+
 				Import::AnimationNode* animNode = new Import::AnimationNode();
-				animNode->id = animationNodeNextId++;
+				animNode->name = node->mChildren[i]->mName.C_Str();
 
-				animNode->localTransform = Matrix4(
-					node->mChildren[i]->mTransformation.a1, node->mChildren[i]->mTransformation.a2, node->mChildren[i]->mTransformation.a3, node->mChildren[i]->mTransformation.a4,
-					node->mChildren[i]->mTransformation.b1, node->mChildren[i]->mTransformation.b2, node->mChildren[i]->mTransformation.b3, node->mChildren[i]->mTransformation.b4,
-					node->mChildren[i]->mTransformation.c1, node->mChildren[i]->mTransformation.c2, node->mChildren[i]->mTransformation.c3, node->mChildren[i]->mTransformation.c4,
-					node->mChildren[i]->mTransformation.d1, node->mChildren[i]->mTransformation.d2, node->mChildren[i]->mTransformation.d3, node->mChildren[i]->mTransformation.d4
-				);
-
-				animationNodes[node->mChildren[i]->mName.C_Str()] = animNode;
-
-				if (parentNode != nullptr) {
-					parentNode->childrens.push_back(parentNode);
+				// If no vertex uses that bone we dont need it's id
+				if (assimpBoneNodes.find(animNode->name) != assimpBoneNodes.end()) {
+					animNode->id = animationNodeNextId++;
+				} else {
+					animNode->id = -1;
 				}
 
-				createAnimationNodes(animationNodes, node->mChildren[i], animNode);
+				if (assimpBones.find(animNode->name) != assimpBones.end()) {
+					aiBone* bone = assimpBones[animNode->name];
+					animNode->localTransform = Matrix4(
+						bone->mOffsetMatrix.a1, bone->mOffsetMatrix.a2, bone->mOffsetMatrix.a3, bone->mOffsetMatrix.a4,
+						bone->mOffsetMatrix.b1, bone->mOffsetMatrix.b2, bone->mOffsetMatrix.b3, bone->mOffsetMatrix.b4,
+						bone->mOffsetMatrix.c1, bone->mOffsetMatrix.c2, bone->mOffsetMatrix.c3, bone->mOffsetMatrix.c4,
+						bone->mOffsetMatrix.d1, bone->mOffsetMatrix.d2, bone->mOffsetMatrix.d3, bone->mOffsetMatrix.d4
+					);
+				} else {
+					// @todo: maybe set transform from aiNode
+					animNode->localTransform = Matrix4::identity();
+				}
+				
+
+				animationNodes[node->mChildren[i]->mName.C_Str()] = animNode;
+				parentNode->childrens.push_back(animNode);
+
+				createAnimationNodes(assimpBoneNodes, assimpBones, animationNodes, node->mChildren[i], animNode);
 			}
+		}
+
+		void createAssimpNodeMap(std::unordered_map<std::string, aiNode*>& assimpNodes, const aiNode* node)
+		{
+			for (int i = 0; i < node->mNumChildren; i++) {
+				assimpNodes[node->mChildren[i]->mName.C_Str()] = node->mChildren[i];
+				createAssimpNodeMap(assimpNodes, node->mChildren[i]);
+			}
+		}
+
+		bool hasChildBone(std::unordered_map<std::string, aiNode*>& assimpBoneNodes, aiNode* node)
+		{
+			if (assimpBoneNodes.find(node->mName.C_Str()) != assimpBoneNodes.end()) {
+				return true;
+			}
+
+			bool result = false;
+
+			for (int i = 0; i < node->mNumChildren; i++) {
+				result = result || assimpBoneNodes.find(node->mChildren[i]->mName.C_Str()) != assimpBoneNodes.end();
+				result = result || hasChildBone(assimpBoneNodes, node->mChildren[i]);
+			}
+
+			return result;
+		}
+
+		bool hasParentBone(std::unordered_map<std::string, aiBone*>& assimpBones, aiNode* node)
+		{
+			bool result = false;
+
+			aiNode* temp = node;
+			while (temp->mParent != nullptr) {
+				result = result || assimpBones.find(temp->mParent->mName.C_Str()) != assimpBones.end();
+				temp = temp->mParent;
+			}
+
+			return result;
 		}
 	};
 }

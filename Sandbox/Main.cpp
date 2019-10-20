@@ -18,6 +18,8 @@
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Systems/PhysicsSystem.h"
+#include "Sandbox/Components/AnimationComponent.h"
+#include "Sandbox/Systems/AnimationSystem.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -27,8 +29,10 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 {
 	Hollow::Core core;
 
-	Hollow::Window* window = WindowManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
-	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
+
+	Hollow::Window* window = WindowManager::create(rendererType, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
+	Hollow::RenderApi* renderer = RenderApiManager::create(rendererType, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	ProjectSettings::startUp<ProjectSettings>();
 
@@ -40,9 +44,11 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	renderPass.m_Camera = camera;
 
 	MoveSystem moveSystem(camera);
+	AnimationSystem animationSystem;
 
 	SystemManager::instance()->addSystem(&renderPass);
 	SystemManager::instance()->addSystem(&moveSystem);
+	SystemManager::instance()->addSystem(&animationSystem);
 
 	GUISystem* gui = new GUISystem(window, renderer);
 	gui->rendererTab.renderSystem = &renderPass;
@@ -59,17 +65,20 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/DefenderLingerie00.fbx");
+		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/model.dae");
 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
 		renderable->load(mesh);
+		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+		animation->currentAnimation = 0;
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
 	}
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
- 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
-		renderable->load(mesh);
+ 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
+		transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
 	}
 	/*{
 		GameObject* obj = EntityManager::instance()->create<GameObject>();

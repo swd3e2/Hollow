@@ -7,26 +7,23 @@ namespace Hollow {
 			tinygltf::Node& rootNode = model.nodes[model.skins[0].skeleton];
 			lModel.animationRootNode = new Import::AnimationNode();
 			lModel.animationRootNode->id = model.skins[0].skeleton;
-			lModel.animationNodes.push_back(lModel.animationRootNode);
+			lModel.animationRootNode->name = model.nodes[model.skins[0].skeleton].name;
+			lModel.animationNodes[lModel.animationRootNode->id] = lModel.animationRootNode;
 
 			tinygltf::Accessor& accessor = model.accessors[model.skins[0].inverseBindMatrices];
 			tinygltf::BufferView& bufferView = model.bufferViews[accessor.bufferView];
 			file.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
 
 			Matrix4* matrixData = new Matrix4[model.skins[0].joints.size()];
-			file.read((char*)matrixData, sizeof(float) * accessor.count * 16);
+			file.read((char*)matrixData, sizeof(Matrix4) * accessor.count);
 
 			processAnimationNode(lModel.animationRootNode, rootNode, lModel, model);
 
 			for (int i = 0; i < model.skins[0].joints.size(); i++) {
-				for (Import::AnimationNode*& node : lModel.animationNodes) {
-					if (node->id == model.skins[0].joints[i]) {
-						node->id = i;
-						node->localTransform = matrixData[i];
-						break;
-					}
-				}
+				lModel.animationNodes[model.skins[0].joints[i]]->localTransform = Matrix4::transpose(matrixData[i]);
 			}
+
+			delete[] matrixData;
 		}
 	}
 
@@ -37,9 +34,10 @@ namespace Hollow {
 			
 			Import::AnimationNode* animationNode = new Import::AnimationNode();
 			animationNode->id = childId;
+			animationNode->name = modelAnimationNode.name;
 
 			node->childrens.push_back(animationNode);
-			lModel.animationNodes.push_back(animationNode);
+			lModel.animationNodes[animationNode->id] = animationNode;
 			processAnimationNode(animationNode, modelAnimationNode, lModel, model);
 		}
 	}
@@ -176,7 +174,7 @@ namespace Hollow {
 					file.read((char*)data, sizeof(float) * accessor.count * 4);
 
 					for (int i = 0; i < accessor.count; i++) {
-						mesh->weights.push_back({ data[i] , data[i + 1] , data[i + 2] , data[i + 3] });
+						mesh->weights.push_back({ data[i * 4] , data[i * 4 + 1] , data[i * 4 + 2] , data[i * 4 + 3] });
 					}
 					delete[] data;
 				}
@@ -195,7 +193,12 @@ namespace Hollow {
 					file.read((char*)data, sizeof(unsigned short) * accessor.count * 4);
 
 					for (int i = 0; i < accessor.count; i++) {
-						mesh->joints.push_back(new unsigned short[4] { data[i] , data[i + 1] , data[i + 2] , data[i + 3] });
+						mesh->joints.push_back(new unsigned short[4] {
+							(unsigned short)tModel.skins[0].joints[data[i * 4]],
+							(unsigned short)tModel.skins[0].joints[data[i * 4  + 1]], 
+							(unsigned short)tModel.skins[0].joints[data[i * 4  + 2]], 
+							(unsigned short)tModel.skins[0].joints[data[i * 4  + 3]] 
+						});
 					}
 					delete[] data;
 				}
@@ -376,7 +379,8 @@ namespace Hollow {
 			gltfModel->meshes.push_back(mesh);
 		}
 
-		prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
+		// temp for animation
+		//prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
 
 		return gltfModel;
 	}

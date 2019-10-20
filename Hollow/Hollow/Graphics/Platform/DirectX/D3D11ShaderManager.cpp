@@ -54,7 +54,7 @@ namespace Hollow {
 		};
 
 		HRESULT hr = D3DCompile(desc.content.data(), desc.content.size(), NULL, defines, NULL, 
-			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS,// | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0, &shaderBlob, &errorBlob);
 
 		if (FAILED(hr)) {
@@ -81,19 +81,19 @@ namespace Hollow {
 			return m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11VertexShader**)(shaderPtr));
 		}
 		case ShaderType::ST_PIXEL: {
-			return m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11PixelShader * *)(shaderPtr));
+			return m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11PixelShader**)(shaderPtr));
 		}
 		case ShaderType::ST_GEOMERTY: {
-			return m_Device->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11GeometryShader * *)(shaderPtr));
+			return m_Device->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11GeometryShader**)(shaderPtr));
 		}
 		case ShaderType::ST_HULL: {
-			return m_Device->CreateHullShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11HullShader * *)(shaderPtr));
+			return m_Device->CreateHullShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11HullShader**)(shaderPtr));
 		}
 		case ShaderType::ST_DOMAIN: {
-			return m_Device->CreateDomainShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11DomainShader * *)(shaderPtr));
+			return m_Device->CreateDomainShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11DomainShader**)(shaderPtr));
 		}
 		case ShaderType::ST_COMPUTE: {
-			return m_Device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11ComputeShader * *)(shaderPtr));
+			return m_Device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11ComputeShader**)(shaderPtr));
 		}
 		}
 	}

@@ -28,6 +28,8 @@
     <ClInclude Include="Sandbox\Systems\PhysicsSystem.h" />
     <ClInclude Include="Sandbox\Components\PhysicsComponent.h" />
     <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
+    <ClInclude Include="Sandbox\Systems\AnimationSystem.h" />
+    <ClInclude Include="Sandbox\Components\AnimationComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

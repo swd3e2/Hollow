@@ -7,6 +7,7 @@
 #include "Hollow/Math/Quaternion.h"
 #include <map>
 #include <vector>
+#include <string>
 
 namespace Hollow {
 	namespace Import {
@@ -20,6 +21,7 @@ namespace Hollow {
 		struct AnimationNode
 		{
 			int id;
+			std::string name;
 			Matrix4 localTransform;
 			std::vector<AnimationNode*> childrens;
 		};
@@ -28,6 +30,13 @@ namespace Hollow {
 		{
 			std::map<int, AnimationNodeData*> data;
 			double duration = 0.0;
+
+			~Animation()
+			{
+				for (auto& it : data) {
+					delete it.second;
+				}
+			}
 		};
 	}
 }

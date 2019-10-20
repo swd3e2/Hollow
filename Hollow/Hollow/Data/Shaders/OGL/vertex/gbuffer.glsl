@@ -32,13 +32,31 @@ layout(std140, binding = 2) uniform PerObject
 {
 	mat4 transform;
 	vec3 color;
+	bool selected;
 	bool hasAnimation;
+};
+
+layout(std140, binding = 6) uniform BoneTransformations
+{
+	mat4 boneInfo[200];
 };
 
 void main()
 {
+	vs_out.position = vec4(pos.x, pos.y, pos.z, 1.0f);
+
+	if (hasAnimation) {
+		mat4 BoneTransform = boneInfo[boneIDs[0]] * weights[0];
+		BoneTransform += boneInfo[boneIDs[1]] * weights[1];
+		BoneTransform += boneInfo[boneIDs[2]] * weights[2];
+		BoneTransform += boneInfo[boneIDs[3]] * weights[3];
+
+		vs_out.position = vs_out.position * BoneTransform;
+	}
+
 	vs_out.normal = normalize(normal * mat3(transform));
 	vs_out.texCoord = texCoord;
-	vs_out.position = vec4(pos.x, pos.y, pos.z, 1.0f) * transform;
+	vs_out.position = vs_out.position * transform;
+
 	gl_Position = vs_out.position * WVP;
 }
