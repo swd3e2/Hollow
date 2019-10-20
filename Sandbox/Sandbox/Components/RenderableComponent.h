@@ -28,7 +28,12 @@ public:
 	Hollow::Vector3 A, B; // A - left near down, B - right far up
 	std::string filename;
 public:
-	RenderableComponent() {}
+	RenderableComponent() = default;
+
+	RenderableComponent(const Hollow::s_ptr<Hollow::Import::Model>& model)
+	{
+		load(model);
+	}
 
 	virtual ~RenderableComponent()
 	{

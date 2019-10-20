@@ -125,18 +125,6 @@ namespace Hollow {
 			matrix.md[2][1] = 2 * y * z + 2 * x * w;
 			matrix.md[2][2] = 1 - 2 * (x * x) - 2 * (y * y);
 
-			/*matrix.md[0][0] = 1 - 2 * (y * y) - 2 * (z * z);
-			matrix.md[0][1] = 2 * x * y + 2 * w * z;
-			matrix.md[0][2] = 2 * x * z - 2 * w * y;
-
-			matrix.md[1][0] = 2 * x * y - 2 * w * y;
-			matrix.md[1][1] = 1 - 2 * x * x - 2 * z * z;
-			matrix.md[1][2] = 2 * y * z + 2 * w * x;
-
-			matrix.md[2][0] = 2 * x * z + 2 * w * y;
-			matrix.md[2][1] = 2 * y * z - 2 * w * x;
-			matrix.md[2][2] = 1 - 2 * x * x - 2 * y * y;*/
-
 			matrix.md[3][3] = 1.0f;
 
 			return matrix;

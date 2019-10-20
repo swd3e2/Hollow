@@ -66,7 +66,7 @@ namespace Hollow {
 			std::vector<Import::Animation*> animations;
 			Node* rootNode;
 			Import::AnimationNode* animationRootNode;
-			std::vector<Import::AnimationNode*> animationNodes;
+			std::unordered_map<int, Import::AnimationNode*> animationNodes;
 
 			~LoadedModel()
 			{

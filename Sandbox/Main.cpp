@@ -29,8 +29,10 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 {
 	Hollow::Core core;
 
-	Hollow::Window* window = WindowManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
-	Hollow::RenderApi* renderer = RenderApiManager::create(Hollow::RendererType::OpenGL, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
+
+	Hollow::Window* window = WindowManager::create(rendererType, SCREEN_WIDTH, SCREEN_HEIGHT, Hollow::WindowType::Bordered);
+	Hollow::RenderApi* renderer = RenderApiManager::create(rendererType, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	ProjectSettings::startUp<ProjectSettings>();
 
@@ -62,34 +64,20 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	SystemManager::instance()->addSystem(PhysicsSystem::instance());
 
 	{
-		//GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		//Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/DefenderLingerie00.fbx");
-		//RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
-		//renderable->load(mesh);
-		////AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-		//TransformComponent* transform = entity->addComponent<TransformComponent>();
+		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/DefenderLingerie00.fbx");
+		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
+		renderable->load(mesh);
+		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+		animation->currentAnimation = 1;
+		TransformComponent* transform = entity->addComponent<TransformComponent>();
 	}
 	{
-		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		/*GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
- 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
-		renderable->load(mesh);
-
-		std::unordered_map<int, int> joints;
-		for (auto& it : mesh->meshes) {
-			for (auto& vert : it->vertices) {
-				for (int i = 0; i < 4; i++) {
-					if (joints.find(vert.boneData.joints[i]) == joints.end()) {
-						joints[vert.boneData.joints[i]] = 1;
-					} else {
-						joints[vert.boneData.joints[i]]++;
-					}
-				}
-			}
-		}
-
+ 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-		TransformComponent* transform = entity->addComponent<TransformComponent>();
+		TransformComponent* transform = entity->addComponent<TransformComponent>();*/
 	}
 	/*{
 		GameObject* obj = EntityManager::instance()->create<GameObject>();

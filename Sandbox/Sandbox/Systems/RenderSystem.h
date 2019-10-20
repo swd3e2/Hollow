@@ -153,7 +153,7 @@ public:
 			perMesh						= GPUBuffer::create(3, sizeof(PerMesh));
 			materialConstantBuffer		= GPUBuffer::create(4, sizeof(MaterialData));
 			lightInfoBuffer				= GPUBuffer::create(5, sizeof(LightInfo));
-			boneInfo					= GPUBuffer::create(6, sizeof(Matrix4) * 150);
+			boneInfo					= GPUBuffer::create(6, sizeof(Matrix4) * 200);
 		}
 		// Shaders
 		{
@@ -581,7 +581,7 @@ public:
 				if (entity.hasComponent<AnimationComponent>()) {
 					perModelData.hasAnimation = true;
 					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
-					boneInfo->update(&animation->nodeInfo);
+					boneInfo->update(animation->nodeInfo);
 					renderer->setGpuBuffer(boneInfo);
 				} else {
 					perModelData.hasAnimation = false;

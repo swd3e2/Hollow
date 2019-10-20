@@ -38,7 +38,7 @@ layout(std140, binding = 2) uniform PerObject
 
 layout(std140, binding = 6) uniform BoneTransformations
 {
-	mat4 boneInfo[150];
+	mat4 boneInfo[200];
 };
 
 void main()
@@ -47,9 +47,9 @@ void main()
 
 	if (hasAnimation) {
 		mat4 BoneTransform = boneInfo[boneIDs[0]] * weights[0];
-		/*BoneTransform += boneInfo[boneIDs[1]] * weights[1];
+		BoneTransform += boneInfo[boneIDs[1]] * weights[1];
 		BoneTransform += boneInfo[boneIDs[2]] * weights[2];
-		BoneTransform += boneInfo[boneIDs[3]] * weights[3];*/
+		BoneTransform += boneInfo[boneIDs[3]] * weights[3];
 
 		vs_out.position = vs_out.position * BoneTransform;
 	}

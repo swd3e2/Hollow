@@ -67,7 +67,7 @@ public:
 		}
 
 		numNodes = nodes.size();
-		nodeInfo = new Hollow::Matrix4[150];
+		nodeInfo = new Hollow::Matrix4[200];
 	}
 private:
 	void parseNodes(Node* parentNode, Hollow::Import::AnimationNode* node)

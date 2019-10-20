@@ -58,21 +58,27 @@ public:
 
 			std::tie(nextClosestScale, nextClosestTranslation, nextClosestRotation) = getNextClosest(time, data);
 
-			Hollow::Vector3 scaling = interpolateScaling(closestScale, nextClosestScale, time);
-			Hollow::Vector3 translation = interpolatePosition(closestTranslation, nextClosestTranslation, time);
-			Hollow::Quaternion rotation = interpolateRotation(closestRotation, nextClosestRotation, time);
+			Hollow::Vector3 scaling = closestScale.first < nextClosestScale.first 
+				? interpolateScaling(closestScale, nextClosestScale, time) 
+				: closestScale.second;
+			Hollow::Vector3 translation = closestTranslation.first < nextClosestTranslation.first 
+				? interpolatePosition(closestTranslation, nextClosestTranslation, time)  
+				: closestTranslation.second;
 
-			Hollow::Matrix4 nodeTransformation = Matrix4::transpose(Matrix4::translation(translation));
+			Hollow::Quaternion rotation = closestRotation.first < nextClosestRotation.first 
+				? interpolateRotation(closestRotation, nextClosestRotation, time)
+				: closestRotation.second;
+
+			Hollow::Matrix4 nodeTransformation = Matrix4::transpose(Matrix4::transpose(rotation.toMatrix4()) * Matrix4::translation(translation));
 			Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
 
-			//container[node->id] = component->globalInverse * GlobalTransformation * bone->localTransform;
-			container[node->id] = Matrix4::identity();
+			container[node->id] = globalTransformation * node->localTransform;
 
 			for (auto& it : node->childs) {
 				animate(time, it, globalTransformation, animation, container);
 			}
 		} else {
-			container[node->id] = Matrix4::identity();
+			container[node->id] = parentTransform * node->localTransform;
 
 			for (auto& it : node->childs) {
 				animate(time, it, node->localTransform, animation, container);
@@ -83,9 +89,14 @@ public:
 
 	std::tuple<std::pair<double, Hollow::Vector3>, std::pair<double, Hollow::Vector3>, std::pair<double, Hollow::Quaternion>> getClosest(double time, AnimationNodeData* data)
 	{
+		// Set all to zero so if we not found keyframe at 0 we could return at least something
 		std::pair<double, Hollow::Vector3> scale;
+		scale.second = Hollow::Vector3(1.0f, 1.0f, 1.0f);
+		scale.first = 0.0f;
 		std::pair<double, Hollow::Vector3> translation;
+		translation.first = 0.0f;
 		std::pair<double, Hollow::Quaternion> rotation;
+		rotation.first = 0.0f;
 
 		for (auto& it : data->scale) {
 			if (it.first < time) {
