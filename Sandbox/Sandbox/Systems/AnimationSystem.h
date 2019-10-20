@@ -72,7 +72,10 @@ public:
 			Hollow::Matrix4 nodeTransformation = Matrix4::transpose(Matrix4::transpose(rotation.toMatrix4()) * Matrix4::translation(translation));
 			Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
 
-			container[node->id] = globalTransformation * node->localTransform;
+			// If id of node is -1 means that node isn't used by any vertex so we can skip it
+			if (node->id != -1) {
+				container[node->id] = globalTransformation * node->localTransform;
+			}
 
 			for (auto& it : node->childs) {
 				animate(time, it, globalTransformation, animation, container);

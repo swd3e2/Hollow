@@ -20,8 +20,8 @@ namespace Hollow {
 			processAnimationNode(lModel.animationRootNode, rootNode, lModel, model);
 
 			for (int i = 0; i < model.skins[0].joints.size(); i++) {
-				lModel.animationNodes[model.skins[0].joints[i]]->localTransform = matrixData[i];
-			}	
+				lModel.animationNodes[model.skins[0].joints[i]]->localTransform = Matrix4::transpose(matrixData[i]);
+			}
 
 			delete[] matrixData;
 		}

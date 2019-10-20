@@ -75,7 +75,7 @@ private:
 		for (auto& it : node->childrens) {
 			Node* childNode = new Node();
 			childNode->id = it->id;
-			childNode->localTransform = Hollow::Matrix4::transpose(it->localTransform);
+			childNode->localTransform = it->localTransform;
 			childNode->name = it->name;
 
 			parentNode->childs.push_back(childNode);
