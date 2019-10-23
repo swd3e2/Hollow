@@ -19,11 +19,9 @@ namespace Hollow {
 
 			processAnimationNode(lModel.animationRootNode, rootNode, lModel, model);
 
-			std::vector<int> temp;
 			for (int i = 0; i < model.skins[0].joints.size(); i++) {
-				temp.push_back(model.skins[0].joints[i]);
-				lModel.animationNodes[model.skins[0].joints[i]]->localTransform = Matrix4::transpose(matrixData[i]);
-				
+				lModel.nodes[model.skins[0].joints[i]]->skinned = true;
+				lModel.animationNodes[model.skins[0].joints[i]]->localTransform = Matrix4::transpose(matrixData[i]) * lModel.nodes[model.skins[0].joints[i]]->transformation;
 			}
 
 			delete[] matrixData;
@@ -144,7 +142,7 @@ namespace Hollow {
 
 			std::string name = childModelNode.name.size() ? childModelNode.name : ("Node " + std::to_string(model.nodeCounter++));
 			GLTF::Node* childNode = new GLTF::Node(name);
-			childNode->id = getNodeId(childModelNode, tModel);
+			childNode->id = childId;
 			model.nodes[childNode->id] = childNode;
 
 			load(childNode, childModelNode, tModel, model, file);
@@ -212,10 +210,10 @@ namespace Hollow {
 
 						for (int i = 0; i < accessor.count; i++) {
 							mesh->joints.push_back(new unsigned short[4]{
-								(unsigned short)tModel.skins[0].joints[data[i * 4]],
-								(unsigned short)tModel.skins[0].joints[data[i * 4 + 1]],
-								(unsigned short)tModel.skins[0].joints[data[i * 4 + 2]],
-								(unsigned short)tModel.skins[0].joints[data[i * 4 + 3]]
+								(unsigned short)tModel.skins[childModelNode.skin].joints[data[i * 4]],
+								(unsigned short)tModel.skins[childModelNode.skin].joints[data[i * 4 + 1]],
+								(unsigned short)tModel.skins[childModelNode.skin].joints[data[i * 4 + 2]],
+								(unsigned short)tModel.skins[childModelNode.skin].joints[data[i * 4 + 3]]
 								});
 						}
 						delete[] data;
@@ -406,9 +404,9 @@ namespace Hollow {
 
 			gltfModel->meshes.push_back(mesh);
 		}
-
+		
 		// temp for animation
-		prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
+		//prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
 
 		return gltfModel;
 	}

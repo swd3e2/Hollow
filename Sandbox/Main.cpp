@@ -58,11 +58,14 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	//ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 	DelayedTaskManager::instance()->update();
 
+	Light* light = Hollow::EntityManager::instance()->create<Light>();
+	light->addComponent<LightComponent>();
+
 	SystemManager::instance()->addSystem(PhysicsSystem::instance());
 
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/BrainStem.gltf");
+		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
  		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
