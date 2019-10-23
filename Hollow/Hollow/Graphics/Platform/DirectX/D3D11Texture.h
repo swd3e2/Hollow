@@ -66,9 +66,9 @@ namespace Hollow {
 			deviceContext->GenerateMips(m_TextureShaderResource);
 		}
 	public:
-		ID3D11UnorderedAccessView* m_UnorderedAccessView;
-		ID3D11ShaderResourceView* m_TextureShaderResource;
-		ID3D11Texture2D* m_Texture;
+		ID3D11UnorderedAccessView* m_UnorderedAccessView = nullptr;
+		ID3D11ShaderResourceView* m_TextureShaderResource = nullptr;
+		ID3D11Texture2D* m_Texture = nullptr;
 	};
 }
 

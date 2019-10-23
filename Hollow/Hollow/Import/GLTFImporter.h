@@ -39,6 +39,8 @@ namespace Hollow {
 
 		struct Node
 		{
+			int id;
+			bool skinned;
 			std::vector<Node*> childrens;
 			Matrix4 transformation;
 			std::string name;
@@ -64,6 +66,7 @@ namespace Hollow {
 			std::vector<u_ptr<LoadedMesh>> meshes;
 			std::unordered_map<unsigned int, Import::Material> materials;
 			std::vector<Import::Animation*> animations;
+			std::unordered_map<int, GLTF::Node*> nodes;
 			Node* rootNode;
 			Import::AnimationNode* animationRootNode;
 			std::unordered_map<int, Import::AnimationNode*> animationNodes;
@@ -85,5 +88,6 @@ namespace Hollow {
 		void processAnimation(GLTF::LoadedModel& lModel, tinygltf::Model& model, std::ifstream& file);
 		void processAnimationNode(Import::AnimationNode* node, const tinygltf::Node& modelNode, GLTF::LoadedModel& lModel, tinygltf::Model& model);
 		void processSkin(GLTF::LoadedModel& lModel, tinygltf::Model& model, std::ifstream& file);
+		int getNodeId(const tinygltf::Node& modelNode, tinygltf::Model& tModel);
 	};
 }

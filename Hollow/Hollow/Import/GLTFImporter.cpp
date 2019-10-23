@@ -19,12 +19,25 @@ namespace Hollow {
 
 			processAnimationNode(lModel.animationRootNode, rootNode, lModel, model);
 
+			std::vector<int> temp;
 			for (int i = 0; i < model.skins[0].joints.size(); i++) {
+				temp.push_back(model.skins[0].joints[i]);
 				lModel.animationNodes[model.skins[0].joints[i]]->localTransform = Matrix4::transpose(matrixData[i]);
+				
 			}
 
 			delete[] matrixData;
 		}
+	}
+
+	int GLTFImporter::getNodeId(const tinygltf::Node& modelNode, tinygltf::Model& tModel)
+	{
+		for (int i = 0; i < tModel.nodes.size(); i++) {
+			if (modelNode == tModel.nodes[i]) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	void GLTFImporter::processAnimationNode(Import::AnimationNode* node, const tinygltf::Node& modelNode, GLTF::LoadedModel& lModel, tinygltf::Model& model)
@@ -131,6 +144,8 @@ namespace Hollow {
 
 			std::string name = childModelNode.name.size() ? childModelNode.name : ("Node " + std::to_string(model.nodeCounter++));
 			GLTF::Node* childNode = new GLTF::Node(name);
+			childNode->id = getNodeId(childModelNode, tModel);
+			model.nodes[childNode->id] = childNode;
 
 			load(childNode, childModelNode, tModel, model, file);
 			node->childrens.push_back(childNode);
@@ -141,155 +156,168 @@ namespace Hollow {
 	{
 		tinygltf::Mesh& tMesh = tModel.meshes[childModelNode.mesh];
 
-		GLTF::LoadedMesh* mesh = new GLTF::LoadedMesh();
-		mesh->material = tMesh.primitives[0].material;
-		mesh->name = tMesh.name.size() ? tMesh.name : ("Mesh " + std::to_string(model.meshCounter));
-		mesh->id = model.meshIdCounter++;
+		for (auto& primitive : tMesh.primitives) {
+			GLTF::LoadedMesh* mesh = new GLTF::LoadedMesh();
+			mesh->material = primitive.material;
+			mesh->name = tMesh.name.size() ? tMesh.name : ("Mesh " + std::to_string(model.meshCounter));
+			mesh->id = model.meshIdCounter++;
 
-		for (std::pair<const std::string, int>& attribute : tMesh.primitives[0].attributes) {
-			tinygltf::Accessor& accessor = tModel.accessors[attribute.second];
+			for (std::pair<const std::string, int>& attribute : primitive.attributes) {
+				tinygltf::Accessor& accessor = tModel.accessors[attribute.second];
+				tinygltf::BufferView& bufferView = tModel.bufferViews[accessor.bufferView];
+				file.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
+
+				if (accessor.componentType == COMPONENT_TYPE_FLOAT) {
+					if (attribute.first == "NORMAL") {
+						float* data = new float[accessor.count * 3];
+						file.read((char*)data, sizeof(float) * accessor.count * 3);
+
+						for (int i = 0; i < accessor.count; i++) {
+							mesh->normals.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
+						}
+						delete[] data;
+					}
+					else if (attribute.first == "POSITION") {
+						float* data = new float[accessor.count * 3];
+						file.read((char*)data, sizeof(float) * accessor.count * 3);
+
+						for (int i = 0; i < accessor.count; i++) {
+							mesh->positions.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
+						}
+						delete[] data;
+					}
+					else if (attribute.first == "WEIGHTS_0") {
+						float* data = new float[accessor.count * 4];
+						file.read((char*)data, sizeof(float) * accessor.count * 4);
+
+						for (int i = 0; i < accessor.count; i++) {
+							mesh->weights.push_back({ data[i * 4] , data[i * 4 + 1] , data[i * 4 + 2] , data[i * 4 + 3] });
+						}
+						delete[] data;
+					}
+					else if (attribute.first == "TEXCOORD_0") {
+						float* data = new float[accessor.count * 2];
+						file.read((char*)data, sizeof(float) * accessor.count * 2);
+
+						for (int i = 0; i < accessor.count; i++) {
+							mesh->texCoords.push_back(Vector2(data[i * 2], data[i * 2 + 1]));
+						}
+						delete[] data;
+					}
+				}
+				else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_SHORT) {
+					if (attribute.first == "JOINTS_0") {
+						unsigned short* data = new unsigned short[accessor.count * 4];
+						file.read((char*)data, sizeof(unsigned short) * accessor.count * 4);
+
+						for (int i = 0; i < accessor.count; i++) {
+							mesh->joints.push_back(new unsigned short[4]{
+								(unsigned short)tModel.skins[0].joints[data[i * 4]],
+								(unsigned short)tModel.skins[0].joints[data[i * 4 + 1]],
+								(unsigned short)tModel.skins[0].joints[data[i * 4 + 2]],
+								(unsigned short)tModel.skins[0].joints[data[i * 4 + 3]]
+								});
+						}
+						delete[] data;
+					}
+				}
+			}
+
+			// Indices
+			tinygltf::Accessor& accessor = tModel.accessors[primitive.indices];
 			tinygltf::BufferView& bufferView = tModel.bufferViews[accessor.bufferView];
 			file.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
 
-			if (accessor.componentType == COMPONENT_TYPE_FLOAT) {
-				if (attribute.first == "NORMAL") {
-					float* data = new float[accessor.count * 3];
-					file.read((char*)data, sizeof(float) * accessor.count * 3);
+			if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_SHORT) {
+				unsigned short* data = new unsigned short[accessor.count];
+				file.read((char*)data, sizeof(unsigned short) * accessor.count);
 
-					for (int i = 0; i < accessor.count; i++) {
-						mesh->normals.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
-					}
-					delete[] data;
+				for (int i = 0; i < accessor.count; i++) {
+					mesh->indices.push_back(data[i]);
 				}
-				else if (attribute.first == "POSITION") {
-					float* data = new float[accessor.count * 3];
-					file.read((char*)data, sizeof(float) * accessor.count * 3);
-
-					for (int i = 0; i < accessor.count; i++) {
-						mesh->positions.push_back(Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
-					}
-					delete[] data;
-				} else if (attribute.first == "WEIGHTS_0") {
-					float* data = new float[accessor.count * 4];
-					file.read((char*)data, sizeof(float) * accessor.count * 4);
-
-					for (int i = 0; i < accessor.count; i++) {
-						mesh->weights.push_back({ data[i * 4] , data[i * 4 + 1] , data[i * 4 + 2] , data[i * 4 + 3] });
-					}
-					delete[] data;
-				}
-				else if (attribute.first == "TEXCOORD_0") {
-					float* data = new float[accessor.count * 2];
-					file.read((char*)data, sizeof(float) * accessor.count * 2);
-
-					for (int i = 0; i < accessor.count; i++) {
-						mesh->texCoords.push_back(Vector2(data[i * 2], data[i * 2 + 1]));
-					}
-					delete[] data;
-				}
-			} else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_SHORT) {
-				if (attribute.first == "JOINTS_0") {
-					unsigned short* data = new unsigned short[accessor.count * 4];
-					file.read((char*)data, sizeof(unsigned short) * accessor.count * 4);
-
-					for (int i = 0; i < accessor.count; i++) {
-						mesh->joints.push_back(new unsigned short[4] {
-							(unsigned short)tModel.skins[0].joints[data[i * 4]],
-							(unsigned short)tModel.skins[0].joints[data[i * 4  + 1]], 
-							(unsigned short)tModel.skins[0].joints[data[i * 4  + 2]], 
-							(unsigned short)tModel.skins[0].joints[data[i * 4  + 3]] 
-						});
-					}
-					delete[] data;
-				}
+				delete[] data;
 			}
-		}
+			else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_INT) {
+				unsigned int* data = new unsigned int[accessor.count];
+				file.read((char*)data, sizeof(unsigned int) * accessor.count);
 
-		// Indices
-		tinygltf::Accessor& accessor = tModel.accessors[tMesh.primitives[0].indices];
-		tinygltf::BufferView& bufferView = tModel.bufferViews[accessor.bufferView];
-		file.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
-
-		if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_SHORT) {
-			unsigned short* data = new unsigned short[accessor.count];
-			file.read((char*)data, sizeof(unsigned short) * accessor.count);
-
-			for (int i = 0; i < accessor.count; i++) {
-				mesh->indices.push_back(data[i]);
-			}
-			delete[] data;
-		} else if (accessor.componentType == COMPONENT_TYPE_UNSIGNED_INT) {
-			unsigned int* data = new unsigned int[accessor.count];
-			file.read((char*)data, sizeof(unsigned int) * accessor.count);
-
-			for (int i = 0; i < accessor.count; i++) {
-				mesh->indices.push_back(data[i]);
-			}
-			delete[] data;
-		}
-
-		model.meshes.push_back(u_ptr<GLTF::LoadedMesh>(mesh));
-
-		tinygltf::Material& material = tModel.materials[tMesh.primitives[0].material];
-
-		if (model.materials.find(tMesh.primitives[0].material) == model.materials.end()) {
-			Import::Material lMaterial;
-
-			lMaterial.id = tMesh.primitives[0].material;
-			lMaterial.name = material.name;
-
-			for (std::pair<const std::string, tinygltf::Parameter>& values : material.values) {
-				if (values.first == "baseColorTexture") {
-					lMaterial.diffuseTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				} else if (values.first == "metallicRoughnessTexture") {
-					lMaterial.roughnesTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				} else if (values.first == "metallicFactor") {
-					lMaterial.metallicFactor = values.second.number_value;
-				} else if (values.first == "roughnessFactor") {
-					lMaterial.roughnessFactor = values.second.number_value;
-				} else if (values.first == "baseColorFactor") {
-					lMaterial.baseColorFactor = Vector4(
-						values.second.number_array[0],
-						values.second.number_array[1],
-						values.second.number_array[2],
-						values.second.number_array[3]
-					);
+				for (int i = 0; i < accessor.count; i++) {
+					mesh->indices.push_back(data[i]);
 				}
+				delete[] data;
 			}
 
-			for (std::pair<const std::string, tinygltf::Parameter>& values : material.additionalValues) {
-				if (values.first == "emisiveTexture") {
-					lMaterial.emisiveTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				} else if (values.first == "normalTexture") {
-					lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				} else if (values.first == "occlusionTexture") {
-					lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
-				} else if (values.first == "emissiveFactor") {
-					lMaterial.emissiveFactor = values.second.number_value;
-				}
-			}
+			model.meshes.push_back(u_ptr<GLTF::LoadedMesh>(mesh));
 
-			for (std::pair<const std::string, tinygltf::Value>& it : material.extensions){
-				std::vector<std::string> keys = it.second.Keys();
-				for (std::string& key : keys) {
-					auto& value = it.second.Get(key);
-					if (value.IsObject()) {
-						std::vector<std::string> innerKeys = value.Keys();
-						for (std::string& innerKey : innerKeys) {
-							if (key == "diffuseTexture" && innerKey == "index") {
-								tinygltf::Value index = value.Get(innerKey);
-								int val = index.Get<int>();
-								lMaterial.diffuseTexture = tModel.images[tModel.textures[val].source].uri;
-							} else if (key == "specularGlossinessTexture" && innerKey == "index") {
-								tinygltf::Value index = value.Get(innerKey);
-								int val = index.Get<int>();
-								lMaterial.specularTexture = tModel.images[tModel.textures[val].source].uri;
+			tinygltf::Material& material = tModel.materials[primitive.material];
+
+			if (model.materials.find(primitive.material) == model.materials.end()) {
+				Import::Material lMaterial;
+
+				lMaterial.id = primitive.material;
+				lMaterial.name = material.name;
+
+				for (std::pair<const std::string, tinygltf::Parameter>& values : material.values) {
+					if (values.first == "baseColorTexture") {
+						lMaterial.diffuseTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+					}
+					else if (values.first == "metallicRoughnessTexture") {
+						lMaterial.roughnesTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+					}
+					else if (values.first == "metallicFactor") {
+						lMaterial.metallicFactor = values.second.number_value;
+					}
+					else if (values.first == "roughnessFactor") {
+						lMaterial.roughnessFactor = values.second.number_value;
+					}
+					else if (values.first == "baseColorFactor") {
+						lMaterial.baseColorFactor = Vector4(
+							values.second.number_array[0],
+							values.second.number_array[1],
+							values.second.number_array[2],
+							values.second.number_array[3]
+						);
+					}
+				}
+
+				for (std::pair<const std::string, tinygltf::Parameter>& values : material.additionalValues) {
+					if (values.first == "emisiveTexture") {
+						lMaterial.emisiveTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+					}
+					else if (values.first == "normalTexture") {
+						lMaterial.normalTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+					}
+					else if (values.first == "occlusionTexture") {
+						lMaterial.occlusionTexture = tModel.images[tModel.textures[values.second.json_double_value["index"]].source].uri;
+					}
+					else if (values.first == "emissiveFactor") {
+						lMaterial.emissiveFactor = values.second.number_value;
+					}
+				}
+
+				for (std::pair<const std::string, tinygltf::Value>& it : material.extensions) {
+					std::vector<std::string> keys = it.second.Keys();
+					for (std::string& key : keys) {
+						auto& value = it.second.Get(key);
+						if (value.IsObject()) {
+							std::vector<std::string> innerKeys = value.Keys();
+							for (std::string& innerKey : innerKeys) {
+								if (key == "diffuseTexture" && innerKey == "index") {
+									tinygltf::Value index = value.Get(innerKey);
+									int val = index.Get<int>();
+									lMaterial.diffuseTexture = tModel.images[tModel.textures[val].source].uri;
+								}
+								else if (key == "specularGlossinessTexture" && innerKey == "index") {
+									tinygltf::Value index = value.Get(innerKey);
+									int val = index.Get<int>();
+									lMaterial.specularTexture = tModel.images[tModel.textures[val].source].uri;
+								}
 							}
 						}
 					}
 				}
-			}
-			model.materials[lMaterial.id] = lMaterial;
+				model.materials[lMaterial.id] = lMaterial;
+			}	
 		}
 
 		node->mesh = model.meshes.size() - 1;
@@ -380,7 +408,7 @@ namespace Hollow {
 		}
 
 		// temp for animation
-		//prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
+		prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
 
 		return gltfModel;
 	}

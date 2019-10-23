@@ -96,10 +96,19 @@ public:
 		std::pair<double, Hollow::Vector3> scale;
 		scale.second = Hollow::Vector3(1.0f, 1.0f, 1.0f);
 		scale.first = 0.0f;
+		if (data->scale.size() > 0) {
+			scale = std::make_pair(data->scale.begin()->first, data->scale.begin()->second);
+		}
 		std::pair<double, Hollow::Vector3> translation;
 		translation.first = 0.0f;
+		if (data->positions.size() > 0) {
+			translation = std::make_pair(data->positions.begin()->first, data->positions.begin()->second);
+		}
 		std::pair<double, Hollow::Quaternion> rotation;
 		rotation.first = 0.0f;
+		if (data->rotations.size() > 0) {
+			rotation = std::make_pair(data->rotations.begin()->first, data->rotations.begin()->second);
+		}
 
 		for (auto& it : data->scale) {
 			if (it.first < time) {

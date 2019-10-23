@@ -137,6 +137,7 @@ private:
 
 	s_ptr<RasterizerState> cullBack;
 	s_ptr<RasterizerState> cullFront;
+	s_ptr<RasterizerState> cullBackWF;
 	s_ptr<RasterizerState> cullNone;
 
 	s_ptr<SamplerState> sampler;
@@ -179,109 +180,63 @@ public:
 			terrainLayout = InputLayout::create(terrainLayoutDesc);
 
 
-			if (renderer->getRendererType() == RendererType::DirectX) 
+			std::string baseShaderPath;
+			std::string shaderExt;
+			if (renderer->getRendererType() == RendererType::DirectX) {
+				baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/";
+				shaderExt = ".hlsl";
+			} else {
+				baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
+				shaderExt = ".glsl";
+			}
 			{
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/gbuffer.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/gbuffer.hlsl"), "main" });
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/gbuffer" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/gbuffer" + shaderExt), "main" });
 
-					gBufferPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/depth.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/depth.hlsl"), "main" });
-
-					depthPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/light.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/light.hlsl"), "main" });
-
-					lightPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/SkyMap.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/SkyMap.hlsl"), "main" });
-
-					skyMapPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/terrain.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/terrain.hlsl"), "main" });
-
-					terrainPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/picker.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/picker.hlsl"), "main" });
-
-					pickerPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/flatColor.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/flatColor.hlsl"), "main" });
-
-					flatColor = ShaderPipeline::create(pipelineDesc);
-				}
-			} 
-			else 
+				gBufferPipeline = ShaderPipeline::create(pipelineDesc);
+			}
 			{
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/gbuffer.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/gbuffer.glsl"), "main" });
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/depth" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/depth" + shaderExt), "main" });
 
-					gBufferPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/depth.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/depth.glsl"), "main" });
+				depthPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/light" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/light" + shaderExt), "main" });
 
-					depthPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/light.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/light.glsl"), "main" });
+				lightPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/SkyMap" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/SkyMap" + shaderExt), "main" });
 
-					lightPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/SkyMap.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/SkyMap.glsl"), "main" });
+				skyMapPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/terrain" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/terrain" + shaderExt), "main" });
 
-					skyMapPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/terrain.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/terrain.glsl"), "main" });
+				terrainPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/picker" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/picker" + shaderExt), "main" });
 
-					terrainPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/picker.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/picker.glsl"), "main" });
+				pickerPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/flatColor" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/flatColor" + shaderExt), "main" });
 
-					pickerPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/flatColor.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/flatColor.glsl"), "main" });
-
-					flatColor = ShaderPipeline::create(pipelineDesc);
-				}
+				flatColor = ShaderPipeline::create(pipelineDesc);
 			}
 		}
 
@@ -365,6 +320,12 @@ public:
 			RASTERIZER_STATE_DESC desc;
 			desc.cullMode = CullMode::CLM_FRONT;
 			cullFront = RasterizerState::create(desc);
+		}
+		{
+			RASTERIZER_STATE_DESC desc;
+			desc.cullMode = CullMode::CLM_NONE;
+			desc.fillMode = FillMode::FM_WIREFRAME;
+			cullBackWF = RasterizerState::create(desc);
 		}
 		{
 			RASTERIZER_STATE_DESC desc;
@@ -567,7 +528,7 @@ public:
 	void gBufferPass()
 	{
 		renderer->setDepthStencilState(less);
-		renderer->setRasterizerState(cullBack);
+		renderer->setRasterizerState(cullBackWF);
 		renderer->setRenderTarget(gBuffer);
 		renderer->setShaderPipeline(gBufferPipeline);
 
@@ -605,14 +566,18 @@ public:
 				for (auto& object : renderable->renderables) 
 				{
 					Hollow::Material* material = renderable->materials[object->material];
-					if (material->diffuseTexture != nullptr) 
-					{
-						renderer->setTexture(0, material->diffuseTexture);
-					} else {
-						renderer->unsetTexture(0);
+					if (material) {
+						if (material->diffuseTexture != nullptr)
+						{
+							renderer->setTexture(0, material->diffuseTexture);
+						}
+						else {
+							renderer->unsetTexture(0);
+						}
+						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
+						renderer->setGpuBuffer(materialConstantBuffer);
 					}
-					materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
-					renderer->setGpuBuffer(materialConstantBuffer);
+					
 
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
@@ -663,6 +628,7 @@ public:
 			}
 		}
 		renderer->setInputLayout(defaultLayout);
+		renderer->setRasterizerState(cullBack);
 	}
 
 	void shadowPass()

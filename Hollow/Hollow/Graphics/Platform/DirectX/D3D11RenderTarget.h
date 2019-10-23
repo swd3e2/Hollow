@@ -13,8 +13,7 @@ namespace Hollow {
 		friend class D3D11RenderTargetManager;
 	public:
 		D3D11RenderTarget(int width, int height, int count) :
-			RenderTarget(width, height, count),
-			m_RenderTarget(nullptr), m_BackBuffer(nullptr), m_ShaderResourceView(nullptr)
+			RenderTarget(width, height, count)
 		{}
 
 		~D3D11RenderTarget() {
@@ -36,13 +35,13 @@ namespace Hollow {
 		inline ID3D11ShaderResourceView* getDepthStencilResource() const { return m_DepthResourceView; }
 		virtual Vector4 readPixel(int x, int y) override;
 	private:
-		ID3D11RenderTargetView** m_RenderTarget;
-		ID3D11Texture2D** m_BackBuffer;
-		ID3D11ShaderResourceView** m_ShaderResourceView;
+		ID3D11RenderTargetView** m_RenderTarget = nullptr;
+		ID3D11Texture2D** m_BackBuffer = nullptr;
+		ID3D11ShaderResourceView** m_ShaderResourceView = nullptr;
 
-		ID3D11DepthStencilView* m_DepthStencilView;
-		ID3D11Texture2D* m_DepthStencilBuffer;
-		ID3D11ShaderResourceView* m_DepthResourceView;
+		ID3D11DepthStencilView* m_DepthStencilView = nullptr;
+		ID3D11Texture2D* m_DepthStencilBuffer = nullptr;
+		ID3D11ShaderResourceView* m_DepthResourceView = nullptr;
 	};
 }
 

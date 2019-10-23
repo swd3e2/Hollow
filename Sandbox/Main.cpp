@@ -58,39 +58,16 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	//ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 	DelayedTaskManager::instance()->update();
 
-	Light* light = Hollow::EntityManager::instance()->create<Light>();
-	light->addComponent<LightComponent>();
-
 	SystemManager::instance()->addSystem(PhysicsSystem::instance());
 
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/model.dae");
-		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
-		renderable->load(mesh);
-		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-		animation->currentAnimation = 0;
-		TransformComponent* transform = entity->addComponent<TransformComponent>();
-	}
-	{
-		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
+		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/BrainStem.gltf");
  		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
-		transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
+		transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
 	}
-	/*{
-		GameObject* obj = EntityManager::instance()->create<GameObject>();
-		obj->addComponent<TransformComponent>();
-		RenderableComponent* objRenderable = obj->addComponent<RenderableComponent>();
-		PhysicsComponent* objPhysics = obj->addComponent<PhysicsComponent>();
-		
-		Hollow::Import::Model* model = MeshManager::instance()->import("C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj");
-		objRenderable->load(model);
-		objPhysics->load(model);
-		delete model;
-	}*/
 
 	while (!window->isClosed()) {
 		core.preUpdate();

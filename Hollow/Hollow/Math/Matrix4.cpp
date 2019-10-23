@@ -1,5 +1,7 @@
 #include "Matrix4.h"
 
+#define USE_SIMD 1
+
 namespace Hollow {
 	Matrix4::Matrix4()
 	{
@@ -254,11 +256,36 @@ namespace Hollow {
 	{
 		Matrix4 matrix;
 
+#ifdef USE_SIMD
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				matrix.md[i][j] = (md[i][0] * other.md[0][j]) + (md[i][1] * other.md[1][j]) + (md[i][2] * other.md[2][j]) + (md[i][3] * other.md[3][j]);
 			}
 		}
+#else
+		const __m128 BCx = _mm_load_ps((float*)&v.v1);
+		const __m128 BCy = _mm_load_ps((float*)&v.v2);
+		const __m128 BCz = _mm_load_ps((float*)&v.v3);
+		const __m128 BCw = _mm_load_ps((float*)&v.v4);
+
+		float* leftRowPointer = (float*)&other.v.v1;
+		float* resultRowPointer = (float*)&matrix.v.v1;
+
+		for (unsigned int i = 0; i < 4; ++i, leftRowPointer += 4, resultRowPointer += 4) {
+			__m128 ARx = _mm_set1_ps(leftRowPointer[0]);
+			__m128 ARy = _mm_set1_ps(leftRowPointer[1]);
+			__m128 ARz = _mm_set1_ps(leftRowPointer[2]);
+			__m128 ARw = _mm_set1_ps(leftRowPointer[3]);
+			
+			__m128 X = _mm_mul_ps(ARx, BCx);
+			__m128 Y = _mm_mul_ps(ARy, BCy);
+			__m128 Z = _mm_mul_ps(ARz, BCz);
+			__m128 W = _mm_mul_ps(ARw, BCw);
+
+			__m128 R = _mm_add_ps(X, _mm_add_ps(Y, _mm_add_ps(Z, W)));
+			_mm_store_ps(resultRowPointer, R);
+		}
+#endif
 
 		return matrix;
 	}
@@ -467,7 +494,6 @@ namespace Hollow {
 
 		return tempM;
 	}
-
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat)
 	{
