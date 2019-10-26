@@ -7,6 +7,7 @@
 #include "Sandbox/Entities/GameObject.h"
 #include <tuple>
 #include <utility>
+#include "Sandbox/Profiler.h"
 
 using namespace Hollow;
 
@@ -17,13 +18,14 @@ public:
 
 	virtual void Update(double dt) override
 	{
+		Profiler::begin("Animation System: update()");
 		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<AnimationComponent>()) {
 				AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
 
 				animationComponent->currentAnimationTime += dt / 1000.0;
 				if (animationComponent->animations.size() > 0) {
-					if (animationComponent->currentAnimationTime > 5.0) {
+					if (animationComponent->currentAnimationTime > animationComponent->animations[animationComponent->currentAnimation]->duration) {
 						animationComponent->currentAnimationTime = 0.0;
 					}
 
@@ -37,6 +39,7 @@ public:
 				}
 			}
 		}
+		Profiler::end();
 	}
 
 	virtual void PostUpdate(double dt) override {}
@@ -63,6 +66,7 @@ public:
 			Hollow::Vector3 scaling = closestScale.first < nextClosestScale.first
 				? interpolateScaling(closestScale, nextClosestScale, time)
 				: closestScale.second;
+
 			Hollow::Vector3 translation = closestTranslation.first < nextClosestTranslation.first
 				? interpolatePosition(closestTranslation, nextClosestTranslation, time)
 				: closestTranslation.second;

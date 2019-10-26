@@ -20,6 +20,7 @@
 #include "Sandbox/Systems/PhysicsSystem.h"
 #include "Sandbox/Components/AnimationComponent.h"
 #include "Sandbox/Systems/AnimationSystem.h"
+#include "Sandbox/Profiler.h"
 
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
@@ -43,6 +44,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	renderPass.skyMap = new SkyMap();
 	renderPass.m_Camera = camera;
 
+	Profiler profiler;
 	MoveSystem moveSystem(camera);
 	AnimationSystem animationSystem;
 
@@ -65,7 +67,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
+		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
  		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();

@@ -26,7 +26,7 @@ namespace Hollow {
 		HWND hWnd;
 	public:
 		Win32Window(HINSTANCE hInst, int width, int height, WindowType type);
-
+		virtual ~Win32Window();
 		inline HWND getHWND() { return hWnd; }
 		static LRESULT WINAPI _HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		static LRESULT WINAPI _HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

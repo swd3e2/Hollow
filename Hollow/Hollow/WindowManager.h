@@ -18,7 +18,8 @@ namespace Hollow {
 		{
 			switch (rendererType)
 			{
-				case RendererType::None: return nullptr;
+				case RendererType::None: 
+					return nullptr;
 				case RendererType::OpenGL: {
 					OGLWin32Window::startUp<OGLWin32Window>(GetModuleHandle(NULL), width, height, type);
 				} break; 

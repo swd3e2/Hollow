@@ -156,8 +156,8 @@ public:
 		}
 
 		//if (ProjectSettings::instance()->isProjectLoaded) {
-			/*rendererTab.Draw(dt);
-			hierarchyTab.Draw();*/
+			rendererTab.Draw(dt);
+			hierarchyTab.Draw();
 		//}
 		
 		end();

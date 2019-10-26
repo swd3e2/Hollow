@@ -9,13 +9,10 @@ namespace Hollow {
 
 	double Timer::getMilisecondsElapsed()
 	{
-		if (isrunning)
-		{
+		if (isrunning) {
 			auto elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - m_Start);
 			return elapsed.count();
-		}
-		else
-		{
+		} else {
 			auto elapsed = std::chrono::duration<double, std::milli>(m_Stop - m_Start);
 			return elapsed.count();
 		}
@@ -29,10 +26,9 @@ namespace Hollow {
 
 	bool Timer::stop()
 	{
-		if (!isrunning)
+		if (!isrunning) {
 			return false;
-		else
-		{
+		} else {
 			m_Stop = std::chrono::high_resolution_clock::now();
 			isrunning = false;
 			return true;
@@ -41,12 +37,9 @@ namespace Hollow {
 
 	bool Timer::start()
 	{
-		if (isrunning)
-		{
+		if (isrunning) {
 			return false;
-		}
-		else
-		{
+		} else {
 			m_Start = std::chrono::high_resolution_clock::now();
 			isrunning = true;
 			return true;

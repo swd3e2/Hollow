@@ -3,6 +3,10 @@
 #include "Hollow/Graphics/GUI/ImGui/imgui.h"
 #include "Sandbox/Systems/RenderSystem.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11RenderTarget.h"
+#include "psapi.h"
+#include "Hollow/Common/Helper.h"
+#include "Sandbox/Profiler.h"
+
 
 using namespace Hollow;
 
@@ -11,14 +15,27 @@ namespace GUI {
 	{
 	public:
 		RenderSystem* renderSystem;
-
+		MEMORYSTATUSEX memInfo;
+		DWORDLONG physMemUsed;
+		DWORDLONG totalPhysMem;
+		PROCESS_MEMORY_COUNTERS pmc;
 		int r = -1000, l = 1000, t = -1000, b = 1000, n = -1000, f = 2000;
 	public:
-		RendererTab() {}
+		RendererTab() {
+			memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+		}
 
 		void Draw(double dt)
 		{
+			GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
+			GlobalMemoryStatusEx(&memInfo);
+			totalPhysMem = memInfo.ullTotalPhys;
+			physMemUsed = pmc.WorkingSetSize;
+
 			ImGui::Begin("Renderer", NULL);
+			ImGui::Text(("Physical memory total: " + std::to_string(totalPhysMem / (1024 * 1024))).c_str());
+			ImGui::Text(("Physical memory usage: " + std::to_string(physMemUsed / (1024 * 1024))).c_str());
+
 			ImGui::Text("Main camera speed");
 
 			ImGui::Text("GBuffer pass");
@@ -72,7 +89,9 @@ namespace GUI {
 					renderSystem->shadow.shadowCamera->m_IsMainCamera = false;
 				}
 			}
-
+			for (auto& it : Profiler::getValues()) {
+				ImGui::Text((it.first + ": " + std::to_string(it.second)).c_str());
+			}
 			ImGui::End();
 
 			ImGui::Begin("Scene");

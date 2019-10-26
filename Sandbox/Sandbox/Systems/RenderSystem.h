@@ -25,6 +25,7 @@
 #include <Hollow/Common/Timer.h>
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/AnimationComponent.h"
+#include "Sandbox/Profiler.h"
 
 using namespace Hollow;
 
@@ -323,8 +324,8 @@ public:
 		}
 		{
 			RASTERIZER_STATE_DESC desc;
-			desc.cullMode = CullMode::CLM_NONE;
-			desc.fillMode = FillMode::FM_WIREFRAME;
+			desc.cullMode = CullMode::CLM_BACK;
+			desc.fillMode = FillMode::FM_SOLID;
 			cullBackWF = RasterizerState::create(desc);
 		}
 		{
@@ -374,6 +375,7 @@ public:
 
 	virtual void Update(double dt)
 	{
+		Profiler::begin("RenderSystem update(): ");
 		viewProjection = m_Camera->getProjectionMatrix() * m_Camera->getViewMatrix();
 
 		culled = 0;
@@ -444,6 +446,7 @@ public:
 			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
 		}
+		Profiler::end();
 	}
 
 	virtual void PostUpdate(double dt)
@@ -532,10 +535,8 @@ public:
 		renderer->setRenderTarget(gBuffer);
 		renderer->setShaderPipeline(gBufferPipeline);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
-		{
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>())
-			{
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -563,15 +564,12 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables) 
-				{
-					Hollow::Material* material = renderable->materials[object->material];
-					if (material) {
-						if (material->diffuseTexture != nullptr)
-						{
+				for (auto& object : renderable->renderables)  {
+					if (renderable->materials.find(object->material) != renderable->materials.end()) {
+						Hollow::Material* material = renderable->materials[object->material];
+						if (material->diffuseTexture != nullptr) {
 							renderer->setTexture(0, material->diffuseTexture);
-						}
-						else {
+						} else {
 							renderer->unsetTexture(0);
 						}
 						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
@@ -586,10 +584,8 @@ public:
 			}
 		}
 
-		for (auto& entity : EntityManager::instance()->container<Light>()) 
-		{
-			if (entity.hasComponent<LightComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Light>()) {
+			if (entity.hasComponent<LightComponent>()) {
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 
 				perModelData.transform = Matrix4::transpose(Matrix4::translation(lightComponent->lightData.position));
@@ -604,15 +600,12 @@ public:
 
 		renderer->setInputLayout(terrainLayout);
 		renderer->setShaderPipeline(terrainPipeline);
-		for (auto& entity : EntityManager::instance()->container<Terrain>())
-		{
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Terrain>()) {
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
 				TerrainData* data = entity.getComponent<TerrainData>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				if (data->vBuffer != nullptr) 
-				{
+				if (data->vBuffer != nullptr) {
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
 						* Quaternion(transform->rotation).toMatrix4()
@@ -645,10 +638,8 @@ public:
 		renderer->setRenderTarget(shadow.renderTarget);
 		renderer->setShaderPipeline(depthPipeline);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
-		{
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -660,18 +651,15 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables) 
-				{
+				for (auto& object : renderable->renderables) {
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
 					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 				}
 			}
 		}
-		for (auto& entity : EntityManager::instance()->container<Terrain>()) 
-		{
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Terrain>()) {
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
 				TerrainData* data = entity.getComponent<TerrainData>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -699,10 +687,8 @@ public:
 		renderer->setShaderPipeline(pickerPipeline);
 		renderer->setRasterizerState(cullBack);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
-		{
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -721,8 +707,7 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables)
-				{
+				for (auto& object : renderable->renderables) {
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
 					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
@@ -853,10 +838,8 @@ public:
 	{
 		int counter = 0;
 		memset(&lightInfo, 0, sizeof(LightInfo));
-		for (auto& entity : EntityManager::instance()->container<Light>()) 
-		{
-			if (entity.hasComponent<LightComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Light>()) {
+			if (entity.hasComponent<LightComponent>()) {
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 				lightInfo.lightData[counter++] = lightComponent->lightData;
 			}

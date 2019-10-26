@@ -52,6 +52,11 @@ namespace Hollow {
 		RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 	}
 
+	Win32Window::~Win32Window()
+	{
+		DestroyWindow(hWnd);
+	}
+
 	LRESULT __stdcall Win32Window::_HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		// retrieve ptr to window class
