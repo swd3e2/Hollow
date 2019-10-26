@@ -44,6 +44,7 @@ layout(std140, binding = 6) uniform BoneTransformations
 void main()
 {
 	vs_out.position = vec4(pos.x, pos.y, pos.z, 1.0f);
+	vs_out.normal = normal;
 
 	if (hasAnimation) {
 		mat4 BoneTransform = boneInfo[boneIDs[0]] * weights[0];
@@ -52,9 +53,10 @@ void main()
 		BoneTransform += boneInfo[boneIDs[3]] * weights[3];
 
 		vs_out.position = vs_out.position * BoneTransform;
+		vs_out.normal = vs_out.normal * mat3(BoneTransform);
 	}
 
-	vs_out.normal = normalize(normal * mat3(transform));
+	vs_out.normal = normalize(vs_out.normal * mat3(transform));
 	vs_out.texCoord = texCoord;
 	vs_out.position = vs_out.position * transform;
 

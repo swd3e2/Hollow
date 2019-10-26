@@ -7,6 +7,7 @@
 #include "Sandbox/Entities/GameObject.h"
 #include <tuple>
 #include <utility>
+#include "Sandbox/Profiler.h"
 
 using namespace Hollow;
 
@@ -17,13 +18,14 @@ public:
 
 	virtual void Update(double dt) override
 	{
+		Profiler::begin("Animation System: update()");
 		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<AnimationComponent>()) {
 				AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
 
 				animationComponent->currentAnimationTime += dt / 1000.0;
 				if (animationComponent->animations.size() > 0) {
-					if (animationComponent->currentAnimationTime > 5.0) {
+					if (animationComponent->currentAnimationTime > animationComponent->animations[animationComponent->currentAnimation]->duration) {
 						animationComponent->currentAnimationTime = 0.0;
 					}
 
@@ -37,12 +39,15 @@ public:
 				}
 			}
 		}
+		Profiler::end();
 	}
 
 	virtual void PostUpdate(double dt) override {}
 
 	void animate(double time, Node* node, const Matrix4& parentTransform, Animation* animation, Hollow::Matrix4* container)
 	{
+		Hollow::Matrix4 nodeTransformation = Matrix4::identity();
+
 		if (animation->data.find(node->id) != animation->data.end()) {
 			AnimationNodeData* data = animation->data[node->id];
 
@@ -58,34 +63,30 @@ public:
 
 			std::tie(nextClosestScale, nextClosestTranslation, nextClosestRotation) = getNextClosest(time, data);
 
-			Hollow::Vector3 scaling = closestScale.first < nextClosestScale.first 
-				? interpolateScaling(closestScale, nextClosestScale, time) 
+			Hollow::Vector3 scaling = closestScale.first < nextClosestScale.first
+				? interpolateScaling(closestScale, nextClosestScale, time)
 				: closestScale.second;
-			Hollow::Vector3 translation = closestTranslation.first < nextClosestTranslation.first 
-				? interpolatePosition(closestTranslation, nextClosestTranslation, time)  
+
+			Hollow::Vector3 translation = closestTranslation.first < nextClosestTranslation.first
+				? interpolatePosition(closestTranslation, nextClosestTranslation, time)
 				: closestTranslation.second;
 
-			Hollow::Quaternion rotation = closestRotation.first < nextClosestRotation.first 
+			Hollow::Quaternion rotation = closestRotation.first < nextClosestRotation.first
 				? interpolateRotation(closestRotation, nextClosestRotation, time)
 				: closestRotation.second;
 
-			Hollow::Matrix4 nodeTransformation = Matrix4::transpose(Matrix4::transpose(rotation.toMatrix4()) * Matrix4::translation(translation));
-			Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
+			nodeTransformation = Matrix4::transpose(Matrix4::transpose(rotation.toMatrix4()) * Matrix4::translation(translation));
+		}
 
-			// If id of node is -1 means that node isn't used by any vertex so we can skip it
-			if (node->id != -1) {
-				container[node->id] = globalTransformation * node->localTransform;
-			}
+		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
 
-			for (auto& it : node->childs) {
-				animate(time, it, globalTransformation, animation, container);
-			}
-		} else {
-			container[node->id] = parentTransform * node->localTransform;
+		// If id of node is -1 means that node isn't used by any vertex so we can skip it
+		if (node->id != -1) {
+			container[node->id] = globalTransformation * node->localTransform;
+		}
 
-			for (auto& it : node->childs) {
-				animate(time, it, node->localTransform, animation, container);
-			}
+		for (auto& it : node->childs) {
+			animate(time, it, globalTransformation, animation, container);
 		}
 	}
 
@@ -96,10 +97,19 @@ public:
 		std::pair<double, Hollow::Vector3> scale;
 		scale.second = Hollow::Vector3(1.0f, 1.0f, 1.0f);
 		scale.first = 0.0f;
+		if (data->scale.size() > 0) {
+			scale = std::make_pair(data->scale.begin()->first, data->scale.begin()->second);
+		}
 		std::pair<double, Hollow::Vector3> translation;
 		translation.first = 0.0f;
+		if (data->positions.size() > 0) {
+			translation = std::make_pair(data->positions.begin()->first, data->positions.begin()->second);
+		}
 		std::pair<double, Hollow::Quaternion> rotation;
 		rotation.first = 0.0f;
+		if (data->rotations.size() > 0) {
+			rotation = std::make_pair(data->rotations.begin()->first, data->rotations.begin()->second);
+		}
 
 		for (auto& it : data->scale) {
 			if (it.first < time) {

@@ -6,6 +6,7 @@
 #include <cmath>
 #include "Math.h"
 #include "Vector4.h"
+#include "xmmintrin.h"
 
 namespace Hollow {
 	class Matrix4

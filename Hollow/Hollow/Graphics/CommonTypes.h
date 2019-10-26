@@ -134,9 +134,16 @@ namespace Hollow {
 		TU_DEPTH_STENCIL
 	};
 
-	enum RendererType {
+	enum RendererType 
+	{
 		None,
 		OpenGL,
 		DirectX
+	};
+
+	enum WindowType
+	{
+		Bordered,
+		Borderless
 	};
 }

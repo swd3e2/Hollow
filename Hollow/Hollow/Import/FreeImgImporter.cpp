@@ -53,7 +53,7 @@ namespace Hollow {
 		
 		texture->size = texture->height * texture->pitch;
 
-		texture->data = s_ptr<void>(malloc(texture->size));
+		texture->data = s_ptr<void>(malloc(texture->size), free);
 		memcpy(texture->data.get(), bits, texture->size);
 
 		FreeImage_Unload(dib);

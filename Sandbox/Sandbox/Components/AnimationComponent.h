@@ -40,6 +40,7 @@ public:
 	{
 		rootNode = new Node();
 		rootNode->id = mesh->rootNode->id;
+		rootNode->name = mesh->rootNode->name;
 		rootNode->localTransform = mesh->rootNode->localTransform;
 
 		parseNodes(rootNode, mesh->rootNode);

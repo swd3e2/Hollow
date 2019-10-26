@@ -25,6 +25,7 @@
 #include <Hollow/Common/Timer.h>
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/AnimationComponent.h"
+#include "Sandbox/Profiler.h"
 
 using namespace Hollow;
 
@@ -137,6 +138,7 @@ private:
 
 	s_ptr<RasterizerState> cullBack;
 	s_ptr<RasterizerState> cullFront;
+	s_ptr<RasterizerState> cullBackWF;
 	s_ptr<RasterizerState> cullNone;
 
 	s_ptr<SamplerState> sampler;
@@ -179,109 +181,63 @@ public:
 			terrainLayout = InputLayout::create(terrainLayoutDesc);
 
 
-			if (renderer->getRendererType() == RendererType::DirectX) 
+			std::string baseShaderPath;
+			std::string shaderExt;
+			if (renderer->getRendererType() == RendererType::DirectX) {
+				baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/";
+				shaderExt = ".hlsl";
+			} else {
+				baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
+				shaderExt = ".glsl";
+			}
 			{
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/gbuffer.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/gbuffer.hlsl"), "main" });
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/gbuffer" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/gbuffer" + shaderExt), "main" });
 
-					gBufferPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/depth.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/depth.hlsl"), "main" });
-
-					depthPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/light.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/light.hlsl"), "main" });
-
-					lightPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/SkyMap.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/SkyMap.hlsl"), "main" });
-
-					skyMapPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/terrain.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/terrain.hlsl"), "main" });
-
-					terrainPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/picker.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/picker.hlsl"), "main" });
-
-					pickerPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/vertex/flatColor.hlsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/pixel/flatColor.hlsl"), "main" });
-
-					flatColor = ShaderPipeline::create(pipelineDesc);
-				}
-			} 
-			else 
+				gBufferPipeline = ShaderPipeline::create(pipelineDesc);
+			}
 			{
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/gbuffer.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/gbuffer.glsl"), "main" });
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/depth" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/depth" + shaderExt), "main" });
 
-					gBufferPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/depth.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/depth.glsl"), "main" });
+				depthPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/light" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/light" + shaderExt), "main" });
 
-					depthPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/light.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/light.glsl"), "main" });
+				lightPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/SkyMap" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/SkyMap" + shaderExt), "main" });
 
-					lightPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/SkyMap.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/SkyMap.glsl"), "main" });
+				skyMapPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/terrain" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/terrain" + shaderExt), "main" });
 
-					skyMapPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/terrain.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/terrain.glsl"), "main" });
+				terrainPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/picker" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/picker" + shaderExt), "main" });
 
-					terrainPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/picker.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/picker.glsl"), "main" });
+				pickerPipeline = ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent(baseShaderPath + "vertex/flatColor" + shaderExt), "main" });
+				pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent(baseShaderPath + "pixel/flatColor" + shaderExt), "main" });
 
-					pickerPipeline = ShaderPipeline::create(pipelineDesc);
-				}
-				{
-					SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-					pipelineDesc.vertexShader = Shader::create({ ShaderType::ST_VERTEX, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/vertex/flatColor.glsl"), "main" });
-					pipelineDesc.pixelShader = Shader::create({ ShaderType::ST_PIXEL, FileSystem::getFileContent("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/pixel/flatColor.glsl"), "main" });
-
-					flatColor = ShaderPipeline::create(pipelineDesc);
-				}
+				flatColor = ShaderPipeline::create(pipelineDesc);
 			}
 		}
 
@@ -368,6 +324,12 @@ public:
 		}
 		{
 			RASTERIZER_STATE_DESC desc;
+			desc.cullMode = CullMode::CLM_BACK;
+			desc.fillMode = FillMode::FM_SOLID;
+			cullBackWF = RasterizerState::create(desc);
+		}
+		{
+			RASTERIZER_STATE_DESC desc;
 			desc.cullMode = CullMode::CLM_NONE;
 			cullNone = RasterizerState::create(desc);
 		}
@@ -413,6 +375,7 @@ public:
 
 	virtual void Update(double dt)
 	{
+		Profiler::begin("RenderSystem update(): ");
 		viewProjection = m_Camera->getProjectionMatrix() * m_Camera->getViewMatrix();
 
 		culled = 0;
@@ -483,6 +446,7 @@ public:
 			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
 		}
+		Profiler::end();
 	}
 
 	virtual void PostUpdate(double dt)
@@ -567,14 +531,12 @@ public:
 	void gBufferPass()
 	{
 		renderer->setDepthStencilState(less);
-		renderer->setRasterizerState(cullBack);
+		renderer->setRasterizerState(cullBackWF);
 		renderer->setRenderTarget(gBuffer);
 		renderer->setShaderPipeline(gBufferPipeline);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
-		{
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>())
-			{
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -602,17 +564,18 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables) 
-				{
-					Hollow::Material* material = renderable->materials[object->material];
-					if (material->diffuseTexture != nullptr) 
-					{
-						renderer->setTexture(0, material->diffuseTexture);
-					} else {
-						renderer->unsetTexture(0);
+				for (auto& object : renderable->renderables)  {
+					if (renderable->materials.find(object->material) != renderable->materials.end()) {
+						Hollow::Material* material = renderable->materials[object->material];
+						if (material->diffuseTexture != nullptr) {
+							renderer->setTexture(0, material->diffuseTexture);
+						} else {
+							renderer->unsetTexture(0);
+						}
+						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
+						renderer->setGpuBuffer(materialConstantBuffer);
 					}
-					materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
-					renderer->setGpuBuffer(materialConstantBuffer);
+					
 
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
@@ -621,10 +584,8 @@ public:
 			}
 		}
 
-		for (auto& entity : EntityManager::instance()->container<Light>()) 
-		{
-			if (entity.hasComponent<LightComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Light>()) {
+			if (entity.hasComponent<LightComponent>()) {
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 
 				perModelData.transform = Matrix4::transpose(Matrix4::translation(lightComponent->lightData.position));
@@ -639,15 +600,12 @@ public:
 
 		renderer->setInputLayout(terrainLayout);
 		renderer->setShaderPipeline(terrainPipeline);
-		for (auto& entity : EntityManager::instance()->container<Terrain>())
-		{
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Terrain>()) {
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
 				TerrainData* data = entity.getComponent<TerrainData>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				if (data->vBuffer != nullptr) 
-				{
+				if (data->vBuffer != nullptr) {
 					perModelData.transform = Matrix4::transpose(
 						Matrix4::scaling(transform->scale)
 						* Quaternion(transform->rotation).toMatrix4()
@@ -663,6 +621,7 @@ public:
 			}
 		}
 		renderer->setInputLayout(defaultLayout);
+		renderer->setRasterizerState(cullBack);
 	}
 
 	void shadowPass()
@@ -679,10 +638,8 @@ public:
 		renderer->setRenderTarget(shadow.renderTarget);
 		renderer->setShaderPipeline(depthPipeline);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
-		{
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -694,18 +651,15 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables) 
-				{
+				for (auto& object : renderable->renderables) {
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
 					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 				}
 			}
 		}
-		for (auto& entity : EntityManager::instance()->container<Terrain>()) 
-		{
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Terrain>()) {
+			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
 				TerrainData* data = entity.getComponent<TerrainData>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -733,10 +687,8 @@ public:
 		renderer->setShaderPipeline(pickerPipeline);
 		renderer->setRasterizerState(cullBack);
 
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) 
-		{
-			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
@@ -755,8 +707,7 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables)
-				{
+				for (auto& object : renderable->renderables) {
 					renderer->setVertexBuffer(object->vBuffer);
 					renderer->setIndexBuffer(object->iBuffer);
 					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
@@ -887,10 +838,8 @@ public:
 	{
 		int counter = 0;
 		memset(&lightInfo, 0, sizeof(LightInfo));
-		for (auto& entity : EntityManager::instance()->container<Light>()) 
-		{
-			if (entity.hasComponent<LightComponent>()) 
-			{
+		for (auto& entity : EntityManager::instance()->container<Light>()) {
+			if (entity.hasComponent<LightComponent>()) {
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 				lightInfo.lightData[counter++] = lightComponent->lightData;
 			}

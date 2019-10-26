@@ -17,6 +17,7 @@
 #include "RasterizerState.h"
 #include "BlendState.h"
 #include "ShaderPipeline.h"
+#include "Window.h"
 
 namespace Hollow {
 	/**
@@ -162,6 +163,8 @@ namespace Hollow {
 		 * @param[in]	blendState			Blend state
 		 */
 		virtual void setBlendState(const s_ptr<BlendState>& blendState) = 0;
+
+		s_ptr<Window> createWindow();
 
 		virtual RendererType getRendererType() = 0;
 	};

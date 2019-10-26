@@ -67,6 +67,9 @@ namespace Hollow {
 
 		static void shutdown()
 		{
+#ifdef _DEBUG
+			HW_INFO("Shuting down {}", typeid(T).name());
+#endif
 			if (isShutdown()) {
 				assert(false && "Module is already shutdown");
 			}

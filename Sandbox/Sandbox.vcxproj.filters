@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Sandbox\Components\PhysicsComponent.cpp" />
+    <ClCompile Include="Sandbox\Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
     <ClInclude Include="Sandbox\Systems\AnimationSystem.h" />
     <ClInclude Include="Sandbox\Components\AnimationComponent.h" />
+    <ClInclude Include="Sandbox\Profiler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

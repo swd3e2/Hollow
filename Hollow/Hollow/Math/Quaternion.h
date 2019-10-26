@@ -113,6 +113,12 @@ namespace Hollow {
 		{
 			Matrix4 matrix;
 
+			const float n = 1.0f / sqrt(x * x + y * y + z * z + w * w);
+			x *= n;
+			y *= n;
+			z *= n;
+			w *= n;
+
 			matrix.md[0][0] = 1 - 2 * (y * y) - 2 * (z * z);
 			matrix.md[0][1] = 2 * x * y - 2 * z * w;
 			matrix.md[0][2] = 2 * x * z + 2 * y * w;

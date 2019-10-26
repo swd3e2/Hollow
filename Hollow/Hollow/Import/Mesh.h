@@ -20,7 +20,7 @@ namespace Hollow {
 			std::string occlusionTexture;
 
 			std::string name;
-			Vector4 baseColorFactor;
+			Vector4 baseColorFactor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 			float metallicFactor = 0.0f;
 			float roughnessFactor = 0.0f;
 			float emissiveFactor = 0.0f;
@@ -43,7 +43,7 @@ namespace Hollow {
 			Vector3 A, B; // A - left near down, B - right far up
 			std::unordered_map<unsigned int, Material> materials;
 			std::vector<Animation*> animations;
-			AnimationNode* rootNode;
+			AnimationNode* rootNode = nullptr;
 
 			Model()
 			{
@@ -59,7 +59,9 @@ namespace Hollow {
 				for (auto& it : animations) {
 					delete it;
 				}
-				delete rootNode;
+				if (rootNode != nullptr) {
+					delete rootNode;
+				}
 			}
 		};
 	}
