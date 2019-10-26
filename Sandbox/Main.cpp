@@ -68,9 +68,9 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
+			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
  		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-		AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+		//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
 		transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
 	}

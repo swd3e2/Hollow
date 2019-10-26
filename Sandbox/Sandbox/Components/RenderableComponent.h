@@ -87,6 +87,8 @@ public:
 					material->diffuseTexture = Hollow::TextureManager::instance()->create(desc);
 					material->diffuseTexture->update(diffuse->data.get());
 					material->diffuseTexture->generateMipMap();
+				} else {
+					HW_ERROR("Texture file not found, {}", filepath.c_str());
 				}
 			}
 			materials[it.first] = material;

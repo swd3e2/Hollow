@@ -29,7 +29,7 @@ namespace Hollow {
 			Assimp::Importer importer;
 
 			const aiScene* scene = importer.ReadFile(filename,
-				aiProcessPreset_TargetRealtime_Quality
+				0
 			);
 
 			if (!scene) 
@@ -38,10 +38,10 @@ namespace Hollow {
 			std::unordered_map<std::string, Import::AnimationNode*> animationNodes;
 			
 			if (scene->mNumAnimations > 0) {
-				parseAnimationData(animationNodes, model, scene);
+				processAnimations(animationNodes, model, scene);
 			}
 
-			parseCommonData(animationNodes, model, scene);
+			processMeshes(animationNodes, model, scene);
 
 			importer.FreeScene();
 
@@ -49,7 +49,7 @@ namespace Hollow {
 		}
 		private:
 		// Mesh data
-		void parseCommonData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
+		void processMeshes(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
 		{
 			if (scene->mNumMeshes > 0) {
 				aiNode* temp;
@@ -169,7 +169,7 @@ namespace Hollow {
 			}
 		}
 
-		void parseAnimationData(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, s_ptr<Import::Model>& data, const aiScene* scene)
+		void processAnimations(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, s_ptr<Import::Model>& data, const aiScene* scene)
 		{
 			// Create assimp node map 
 			std::unordered_map<std::string, aiNode*> assimpNodes;
@@ -219,6 +219,7 @@ namespace Hollow {
 			for (int i = 0; i < scene->mNumAnimations; i++) {
 				aiAnimation* assimpAnimation = scene->mAnimations[i];
 				Import::Animation* animation = new Import::Animation();
+				animation->duration = assimpAnimation->mDuration;
 
 				for (int j = 0; j < assimpAnimation->mNumChannels; j++) {
 					aiNodeAnim* assimpChannel = assimpAnimation->mChannels[j];

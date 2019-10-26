@@ -13,7 +13,6 @@ namespace Hollow {
 			return nullptr;
 		}
 
-
 		Import::Model* model = new Import::Model();
 
 		tinygltf::Node& modelRootNode = gltfModel.nodes[gltfModel.scenes[0].nodes[0]];
@@ -34,7 +33,7 @@ namespace Hollow {
 		}
 
 		processMeshes(model, gltfModel, binary);
-		processAnimation(model, gltfModel, binary);
+		processAnimations(model, gltfModel, binary);
 		processSkin(model, gltfModel, binary);
 
 		binary.close();
@@ -42,7 +41,7 @@ namespace Hollow {
 		fixAnimation(model, nodes);
 
 		// temp for animation
-		//prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
+		fixModel(rootNode, Matrix4::identity(), model);
 
 		return s_ptr<Import::Model>(model);
 	}
@@ -291,7 +290,7 @@ namespace Hollow {
 	/**
 	 * Loads keyframes for animation
 	 */
-	void GLTFImporter::processAnimation(Import::Model* model, tinygltf::Model& gltfModel, std::ifstream& binary)
+	void GLTFImporter::processAnimations(Import::Model* model, tinygltf::Model& gltfModel, std::ifstream& binary)
 	{
 		for (auto& animation : gltfModel.animations) {
 			Import::Animation* mAnimation = new Import::Animation();
@@ -389,6 +388,7 @@ namespace Hollow {
 			Node* childNode = new Node();
 			childNode->name = childModelNode.name.size() ? childModelNode.name : ("Node " + std::to_string(nodeCounter++));
 			childNode->id = childId;
+			childNode->mesh = childModelNode.mesh;
 
 			node->childrens.push_back(childNode);
 			nodes[childNode->id] = childNode;
@@ -427,11 +427,11 @@ namespace Hollow {
 		return folderPath;
 	}
 
-	void GLTFImporter::prepareModel(Node* node, const Matrix4& parentTransform, const s_ptr<Import::Model>& model)
+	void GLTFImporter::fixModel(Node* node, const Matrix4& parentTransform, Import::Model* model)
 	{
 		Matrix4 transform = parentTransform;
 		
-		if (node->mesh != -1 && !node->skinned) {
+		if (node->mesh != -1) {
 			for (auto& it : model->meshes[node->mesh]->vertices) {
 				it.pos = it.pos * transform;
 				it.normal = it.normal * transform;
@@ -440,7 +440,7 @@ namespace Hollow {
 		}
 
 		for (auto& it : node->childrens) {
-			prepareModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
+			fixModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
 		}
 	}
 }

@@ -38,9 +38,9 @@ namespace Hollow {
 		int nodeCounter = 0;
 	public:
 		s_ptr<Import::Model> import(const char* filename);
-		void prepareModel(Node* node, const Matrix4& parentTransform, const s_ptr<Import::Model>& model);
+		void fixModel(Node* node, const Matrix4& parentTransform, Import::Model* model);
 		void processHierarchy(Node* node, const tinygltf::Node& modelNode, const tinygltf::Model& gltfModel, std::unordered_map<int, Node*>& nodes);
-		void processAnimation(Import::Model* lModel, tinygltf::Model& model, std::ifstream& file);
+		void processAnimations(Import::Model* lModel, tinygltf::Model& model, std::ifstream& file);
 		void processAnimationNode(Import::AnimationNode* node, const tinygltf::Node& modelNode, std::unordered_map<int, Import::AnimationNode*>& nodes, const tinygltf::Model& gltfModel);
 		void processSkin(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary);
 		void fixAnimation(Import::Model* model, std::unordered_map<int, Node*>& nodes);
