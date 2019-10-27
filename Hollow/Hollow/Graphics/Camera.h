@@ -14,7 +14,7 @@ namespace Hollow {
 	class Camera
 	{
 	public:
-		Camera(bool mainCamera);
+		Camera(bool mainCamera = true);
 
 		void setProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ);
 		void setOrthoValues(float left, float right, float up, float down, float near, float far);

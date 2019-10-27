@@ -41,7 +41,7 @@ namespace Hollow {
 		fixAnimation(model, nodes);
 
 		// temp for animation
-		fixModel(rootNode, Matrix4::identity(), model);
+		fixModel(rootNode, rootNode->transformation, model);
 
 		return s_ptr<Import::Model>(model);
 	}
@@ -109,6 +109,12 @@ namespace Hollow {
 								mesh->vertices[i].pos.x = data[i * 3];
 								mesh->vertices[i].pos.y = data[i * 3 + 1];
 								mesh->vertices[i].pos.z = data[i * 3 + 2];
+
+								if (mesh->vertices[i].pos.x < model->A.x && mesh->vertices[i].pos.y < model->A.y && mesh->vertices[i].pos.z < model->A.z) {
+									model->A = mesh->vertices[i].pos;
+								} else if (mesh->vertices[i].pos.x > model->B.x&& mesh->vertices[i].pos.y > model->B.y&& mesh->vertices[i].pos.z > model->B.z) {
+									model->B = mesh->vertices[i].pos;
+								}
 							}
 							delete[] data;
 						} else if (attribute.first == "WEIGHTS_0") {

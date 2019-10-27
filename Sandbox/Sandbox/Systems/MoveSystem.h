@@ -41,7 +41,7 @@ public:
 	MoveComponent * moveComponent;
 	SelectComponent* selectComponent;
 public:
-	MoveSystem(Camera* camera) :
+	MoveSystem(Camera* camera = nullptr) :
 		camera(camera)
 	{
 		field.push_back({ XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(-FIELD_SIZE, 0, FIELD_SIZE, 0), XMFLOAT4(FIELD_SIZE, 0, FIELD_SIZE, 0) });

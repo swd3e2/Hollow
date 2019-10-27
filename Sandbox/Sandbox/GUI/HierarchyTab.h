@@ -75,11 +75,6 @@ namespace GUI {
 					selectedTerrain = nullptr;
 					selectedLight = nullptr;
 				}
-				if (ImGui::Button("-")) {
-					Hollow::DelayedTaskManager::instance()->add([&]() { 
-						Hollow::EntityManager::instance()->destroy(entity.getId()); 
-					});
-				}
 				if (ImGui::BeginPopupContextItem())
 				{
 					ImGui::Text("Add component:");
@@ -242,7 +237,7 @@ namespace GUI {
 						TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();
 						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f)) {
 							if (selectedGameObject->hasComponent<PhysicsComponent>()) {
-								/*PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+								PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
 
 								btTransform origin;
 								physics->body->getMotionState()->getWorldTransform(origin);
@@ -252,7 +247,7 @@ namespace GUI {
 									component->position.x - originVec.getX(),
 									component->position.y - originVec.getY(),
 									component->position.z - originVec.getZ()
-								));*/
+								));
 							}
 						}
 						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);

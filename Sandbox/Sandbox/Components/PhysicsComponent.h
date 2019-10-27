@@ -5,16 +5,27 @@
 #include "Hollow/Import/Mesh.h"
 #include "Hollow/Platform.h"
 
+enum PhysicsShapeType
+{
+	PST_BOX,
+	PST_SPHERE,
+	PST_PLANE
+};
+
 class PhysicsComponent : public Hollow::Component<PhysicsComponent>
 {
 public:
-	btCollisionShape* colShape;
-	btBoxShape* boxShape;
-	btDefaultMotionState* myMotionState;
-	btRigidBody* body;
+	Hollow::s_ptr<btCollisionShape> shape;
+	Hollow::s_ptr<btDefaultMotionState> myMotionState;
+	Hollow::s_ptr<btRigidBody> body;
 public:
 	PhysicsComponent() = default;
-	PhysicsComponent(const Hollow::Vector3& position, float mass_in);
+	~PhysicsComponent();
 
-	void load(const Hollow::s_ptr<Hollow::Import::Model>& model, const Hollow::Vector3& position);
+	void addBoxShape(const Hollow::Vector3& size, const Hollow::Vector3& position, float mass);
+	void addSphereShape(float radius, const Hollow::Vector3& position, float mass);
+	void addPlaneShape(const Hollow::Vector3& planeNormal, float size, const Hollow::Vector3& position, float mass);
+	void load(const Hollow::s_ptr<Hollow::Import::Model>& model, const Hollow::Vector3& position, float mass);
+private:
+	void initialize(const Hollow::Vector3& position, float mass);
 };

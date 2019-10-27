@@ -11,23 +11,23 @@
 class PhysicsSystem : public Hollow::System<PhysicsSystem>, public Hollow::CModule<PhysicsSystem>
 {
 public:
-	btDiscreteDynamicsWorld* dynamicsWorld;
-	btSequentialImpulseConstraintSolver* solver;
-	btBroadphaseInterface* overlappingPairCache;
-	btCollisionDispatcher* dispatcher;
-	btDefaultCollisionConfiguration* collisionConfiguration;
+	Hollow::s_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
+	Hollow::s_ptr<btSequentialImpulseConstraintSolver> solver;
+	Hollow::s_ptr<btBroadphaseInterface> overlappingPairCache;
+	Hollow::s_ptr<btCollisionDispatcher> dispatcher;
+	Hollow::s_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
 public:
 	PhysicsSystem()
 	{
-		collisionConfiguration = new btDefaultCollisionConfiguration();
+		collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
 		///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-		dispatcher = new btCollisionDispatcher(collisionConfiguration);
+		dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
 		///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-		overlappingPairCache = new btDbvtBroadphase();
+		overlappingPairCache = std::make_shared<btDbvtBroadphase>();
 		///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-		solver = new btSequentialImpulseConstraintSolver;
+		solver = std::make_shared<btSequentialImpulseConstraintSolver>();
 
-		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		dynamicsWorld = std::make_shared<btDiscreteDynamicsWorld>(dispatcher.get(), overlappingPairCache.get(), solver.get(), collisionConfiguration.get());
 
 		dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
 	}
