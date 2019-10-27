@@ -60,20 +60,85 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hInst2, LPWSTR pArgs, INT)
 	//ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
 	DelayedTaskManager::instance()->update();
 
-	Light* light = Hollow::EntityManager::instance()->create<Light>();
-	light->addComponent<LightComponent>();
+	//Light* light = Hollow::EntityManager::instance()->create<Light>();
+	//light->addComponent<LightComponent>();
 
 	SystemManager::instance()->addSystem(PhysicsSystem::instance());
 
+	/* Physics test */
 	{
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		// Render
 		Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
- 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-		//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
+		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
-		transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
+		transform->position = Hollow::Vector3(0.0f, -50.0f, 0.0f);
+		transform->scale = Hollow::Vector3(50.0f, 0.0f, 50.0f);
+
+		// Physics
+		PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		btBoxShape* groundShape = new btBoxShape(btVector3(50.f, 01.f, 50.f));
+		btTransform groundTransform;
+		groundTransform.setIdentity();
+		groundTransform.setOrigin(btVector3(0, -100, 0));
+		btScalar mass(0.);
+
+		btVector3 localInertia(0, 0, 0);
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+		btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, groundShape, localInertia);
+		physics->body = new btRigidBody(cInfo);
+		//body->setContactProcessingThreshold(m_defaultContactProcessingThreshold);
+
+		PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body);
 	}
+	{
+		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		// Render
+		RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
+		RenderableObject* renderableObject = new RenderableObject();
+		std::tie(renderableObject->vBuffer, renderableObject->iBuffer) = Hollow::getCube();
+		renderableObject->material = 0;
+		renderable->renderables.push_back(renderableObject);
+		
+		Hollow::Material* material = new Hollow::Material();
+		material->materialData.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+		renderable->materials[0] = material;
+		
+		// Physics
+		PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		physics->boxShape = new btBoxShape(btVector3(1.f, 1.f, 1.f));
+		
+		btScalar mass(1.0f);
+
+		btVector3 localInertia(0, 0, 0);
+		physics->boxShape->calculateLocalInertia(mass, localInertia);
+
+		btTransform startTransform;
+		startTransform.setIdentity();
+		startTransform.setOrigin(btVector3(0.0f, 100.0f, 0.0f));
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, physics->boxShape, localInertia);
+		physics->body = new btRigidBody(cInfo);
+		PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body);
+
+		TransformComponent* transform = entity->addComponent<TransformComponent>();
+		transform->position = Hollow::Vector3(0.0f, 50.0f, 0.0f);
+	}
+	/* Animation test */
+	//{
+	//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+	//	Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+	//		->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
+	//  RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+	//	AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+	//	TransformComponent* transform = entity->addComponent<TransformComponent>();
+	//	transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
+	//}
 
 	while (!window->isClosed()) {
 		core.preUpdate();

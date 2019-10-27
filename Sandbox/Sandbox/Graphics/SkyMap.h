@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Hollow/Math/Matrix4.h>
-#include <Hollow/Resources/Mesh/Mesh.h>
 #include <Hollow/Graphics/Vertex.h>
 #include <Hollow/Graphics/HardwareBufferManager.h>
 #include <Hollow/Graphics/TextureManager.h>
@@ -9,18 +8,22 @@
 #include <Hollow/Graphics/ShaderManager.h>
 #include <Hollow/Test.h>
 #include <Hollow/Common/Log.h>
+#include "Hollow/Resources/Material.h"
+
 class SkyMap
 {
 public:
 	int NumSphereVertices;
 	int NumSphereFaces;
 	Hollow::Matrix4 transform;
-
-	Hollow::Mesh* mesh;
+	Hollow::Material* material;
+	Hollow::s_ptr<Hollow::VertexBuffer> vBuffer;
+	Hollow::s_ptr<Hollow::IndexBuffer> iBuffer;
 	const std::string filename = "Sandbox/Resources/Textures/Irradiance.tga";
 	SkyMap()
 	{
 		Hollow::s_ptr<Hollow::Import::Texture> texture = Hollow::FreeImgImporter::instance()->import(filename.c_str());
+		material = new Hollow::Material();
 
 		if (!texture) {
 			HW_INFO("Cubemap texture not found, filename {}", filename.c_str());
@@ -105,8 +108,7 @@ public:
 		Hollow::s_ptr<Hollow::Texture> cubemap = Hollow::Texture::create(desc);
 		cubemap->update(data.data());
 
-		mesh = getCube();
-		mesh->models[0]->material = new Hollow::Material();
-		mesh->models[0]->material->diffuseTexture = cubemap;
+		std::tie(vBuffer, iBuffer) = Hollow::getCube();
+		material->diffuseTexture = cubemap;
 	}
 };

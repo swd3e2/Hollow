@@ -74,6 +74,7 @@ namespace Hollow {
 		{
 			IEntityContainer* container = entityContainers[entities[entityId]->getTypeId()];
 			container->destroy(entities[entityId]);
+			entities.erase(entityId);
 			ComponentManager::instance()->destroyAll(entityId);
 		}
 

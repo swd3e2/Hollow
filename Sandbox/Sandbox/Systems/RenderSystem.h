@@ -128,7 +128,8 @@ private:
 	s_ptr<Hollow::IndexBuffer>		quadIB;
 
 	Vector4 AABBplane[6];
-	Mesh* lightCube;
+	s_ptr<Hollow::VertexBuffer> lightVertexBuffer;
+	s_ptr<Hollow::IndexBuffer> lightIndexBuffer;
 	Material lightMaterial;
 	LightInfo lightInfo;
 	Matrix4 viewProjection;
@@ -143,6 +144,7 @@ private:
 
 	s_ptr<SamplerState> sampler;
 	s_ptr<SamplerState> renderTargetSampler;
+	Material* defaultMaterial;
 public:
 	RenderSystem(RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -288,8 +290,8 @@ public:
 
 			quadIB = IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
 		}
-
-		lightCube = getCube();
+			
+		std::tie(lightVertexBuffer, lightIndexBuffer) = getCube();
 
 		renderer->setViewport(0, 0, this->width, this->height);
 
@@ -354,6 +356,8 @@ public:
 			renderTargetSampler = RenderStateManager::instance()->createSamplerState(desc);
 		}
 		
+		defaultMaterial = new Material();
+		defaultMaterial->materialData.color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		renderer->setSampler(0, sampler);
 		renderer->setSampler(1, sampler);
@@ -475,12 +479,12 @@ public:
 		m_WVPConstantBuffer->update(&m_wvp);
 		renderer->setGpuBuffer(m_WVPConstantBuffer);
 
-		renderer->setTexture(4, skyMap->mesh->models[0]->material->diffuseTexture);
+		renderer->setTexture(4, skyMap->material->diffuseTexture);
 		renderer->setShaderPipeline(skyMapPipeline);
 
-		renderer->setVertexBuffer(skyMap->mesh->models[0]->vBuffer);
-		renderer->setIndexBuffer(skyMap->mesh->models[0]->iBuffer);
-		renderer->drawIndexed(skyMap->mesh->models[0]->iBuffer->mHardwareBuffer->getSize());
+		renderer->setVertexBuffer(skyMap->vBuffer);
+		renderer->setIndexBuffer(skyMap->iBuffer);
+		renderer->drawIndexed(skyMap->iBuffer->mHardwareBuffer->getSize());
 	}
 
 	void calculateAABBPlane()
@@ -574,6 +578,9 @@ public:
 						}
 						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
 						renderer->setGpuBuffer(materialConstantBuffer);
+					} else {
+						materialConstantBuffer->update(&defaultMaterial->materialData);
+						renderer->setGpuBuffer(materialConstantBuffer);
 					}
 					
 
@@ -592,9 +599,9 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				renderer->setVertexBuffer(lightCube->models[0]->vBuffer);
-				renderer->setIndexBuffer(lightCube->models[0]->iBuffer);
-				renderer->drawIndexed(lightCube->models[0]->iBuffer->mHardwareBuffer->getSize());
+				renderer->setVertexBuffer(lightVertexBuffer);
+				renderer->setIndexBuffer(lightIndexBuffer);
+				renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
 			}
 		}
 

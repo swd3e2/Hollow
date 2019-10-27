@@ -178,66 +178,76 @@ namespace Hollow {
 
 				model->meshes.push_back(mesh);
 
-				const tinygltf::Material& gltfMaterial = gltfModel.materials[primitive.material];
+				if (primitive.material != -1) {
+					const tinygltf::Material& gltfMaterial = gltfModel.materials[primitive.material];
 
-				if (model->materials.find(primitive.material) == model->materials.end()) {
-					Import::Material material;
+					if (model->materials.find(primitive.material) == model->materials.end()) {
+						Import::Material material;
 
-					material.id = primitive.material;
-					material.name = gltfMaterial.name;
+						material.id = primitive.material;
+						material.name = gltfMaterial.name;
 
-					for (auto& value : gltfMaterial.values) {
-						if (value.first == "baseColorTexture") {
-							material.diffuseTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "metallicRoughnessTexture") {
-							material.roughnesTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "metallicFactor") {
-							material.metallicFactor = value.second.number_value;
-						} else if (value.first == "roughnessFactor") {
-							material.roughnessFactor = value.second.number_value;
-						} else if (value.first == "baseColorFactor") {
-							material.baseColorFactor = Vector4(
-								value.second.number_array[0],
-								value.second.number_array[1],
-								value.second.number_array[2],
-								value.second.number_array[3]
-							);
+						for (auto& value : gltfMaterial.values) {
+							if (value.first == "baseColorTexture") {
+								material.diffuseTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "metallicRoughnessTexture") {
+								material.roughnesTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "metallicFactor") {
+								material.metallicFactor = value.second.number_value;
+							}
+							else if (value.first == "roughnessFactor") {
+								material.roughnessFactor = value.second.number_value;
+							}
+							else if (value.first == "baseColorFactor") {
+								material.baseColorFactor = Vector4(
+									value.second.number_array[0],
+									value.second.number_array[1],
+									value.second.number_array[2],
+									value.second.number_array[3]
+								);
+							}
 						}
-					}
 
-					for (auto& value : gltfMaterial.additionalValues) {
-						if (value.first == "emisiveTexture") {
-							material.emisiveTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "normalTexture") {
-							material.normalTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "occlusionTexture") {
-							material.occlusionTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "emissiveFactor") {
-							material.emissiveFactor = value.second.number_value;
+						for (auto& value : gltfMaterial.additionalValues) {
+							if (value.first == "emisiveTexture") {
+								material.emisiveTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "normalTexture") {
+								material.normalTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "occlusionTexture") {
+								material.occlusionTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "emissiveFactor") {
+								material.emissiveFactor = value.second.number_value;
+							}
 						}
-					}
 
-					for (auto& it : gltfMaterial.extensions) {
-						std::vector<std::string> keys = it.second.Keys();
-						for (std::string& key : keys) {
-							auto& value = it.second.Get(key);
-							if (value.IsObject()) {
-								std::vector<std::string> innerKeys = value.Keys();
-								for (std::string& innerKey : innerKeys) {
-									if (key == "diffuseTexture" && innerKey == "index") {
-										tinygltf::Value index = value.Get(innerKey);
-										int val = index.Get<int>();
-										material.diffuseTexture = gltfModel.images[gltfModel.textures[val].source].uri;
-									} else if (key == "specularGlossinessTexture" && innerKey == "index") {
-										tinygltf::Value index = value.Get(innerKey);
-										int val = index.Get<int>();
-										material.specularTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+						for (auto& it : gltfMaterial.extensions) {
+							std::vector<std::string> keys = it.second.Keys();
+							for (std::string& key : keys) {
+								auto& value = it.second.Get(key);
+								if (value.IsObject()) {
+									std::vector<std::string> innerKeys = value.Keys();
+									for (std::string& innerKey : innerKeys) {
+										if (key == "diffuseTexture" && innerKey == "index") {
+											tinygltf::Value index = value.Get(innerKey);
+											int val = index.Get<int>();
+											material.diffuseTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+										}
+										else if (key == "specularGlossinessTexture" && innerKey == "index") {
+											tinygltf::Value index = value.Get(innerKey);
+											int val = index.Get<int>();
+											material.specularTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+										}
 									}
 								}
 							}
 						}
+						model->materials[material.id] = material;
 					}
-					model->materials[material.id] = material;
 				}
 			}
 		}

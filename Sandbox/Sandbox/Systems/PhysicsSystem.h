@@ -6,6 +6,7 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include <Hollow/ECS/EntityManager.h>
+#include "Sandbox/Profiler.h"
 
 class PhysicsSystem : public Hollow::System<PhysicsSystem>, public Hollow::CModule<PhysicsSystem>
 {
@@ -28,16 +29,17 @@ public:
 
 		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-		dynamicsWorld->setGravity(btVector3(0, -1.1f, 0));
+		dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
 	}
 
 	virtual void Update(double dt) override
 	{
-		dynamicsWorld->stepSimulation(dt, 10);
+		Profiler::begin("PhysicsSystem update(): ");
+		dynamicsWorld->stepSimulation(dt / 1000);
 
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
-				/*TransformComponent* transform = entity.getComponent<TransformComponent>();
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
 				btTransform tr;
 				physics->body->getMotionState()->getWorldTransform(tr);
@@ -45,8 +47,9 @@ public:
 
 				transform->position.x = pos.getX();
 				transform->position.y = pos.getY();
-				transform->position.z = pos.getZ();*/
+				transform->position.z = pos.getZ();
 			}
 		}
+		Profiler::end();
 	}
 };

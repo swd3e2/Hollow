@@ -3,7 +3,6 @@
 
 PhysicsComponent::PhysicsComponent(const Hollow::Vector3& position, float mass_in)
 {
-	colShape = new btSphereShape(btScalar(1.));
 	boxShape = new btBoxShape(btVector3(10, 1, 10));
 	/// Create Dynamic Objects
 	btTransform startTransform;
@@ -31,6 +30,7 @@ PhysicsComponent::PhysicsComponent(const Hollow::Vector3& position, float mass_i
 void PhysicsComponent::load(const Hollow::s_ptr<Hollow::Import::Model>& model, const Hollow::Vector3& position)
 {
 	btTriangleMesh* tetraMesh = new btTriangleMesh();
+	
 	for (int i = 0; i < model->meshes.size(); i++) {
 		for (int j = 0; j < model->meshes[i]->indices.size() / 3; j++) {
 			const Hollow::Vertex& first	 = model->meshes[i]->vertices[model->meshes[i]->indices[j * 3]];
@@ -45,6 +45,7 @@ void PhysicsComponent::load(const Hollow::s_ptr<Hollow::Import::Model>& model, c
 			);
 		}
 	}
+
 	btBvhTriangleMeshShape* tetraShape = new btBvhTriangleMeshShape(tetraMesh, false);
 
 	btVector3 localInertia(0, 0, 0);
