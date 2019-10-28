@@ -24,6 +24,12 @@ void PhysicsComponent::addPlaneShape(const Hollow::Vector3& planeNormal, float s
 	initialize(position, mass);
 }
 
+void PhysicsComponent::addCapsuleShape(float height, float radius, const Hollow::Vector3& position, float mass)
+{
+	shape = std::make_shared<btCapsuleShape>(radius, height);
+	initialize(position, mass);
+}
+
 void PhysicsComponent::load(const Hollow::s_ptr<Hollow::Import::Model>& model, const Hollow::Vector3& position, float mass)
 {
 	btConvexHullShape* convex = new btConvexHullShape();

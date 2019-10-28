@@ -25,6 +25,7 @@ public:
 	void addBoxShape(const Hollow::Vector3& size, const Hollow::Vector3& position, float mass);
 	void addSphereShape(float radius, const Hollow::Vector3& position, float mass);
 	void addPlaneShape(const Hollow::Vector3& planeNormal, float size, const Hollow::Vector3& position, float mass);
+	void addCapsuleShape(float height, float radius, const Hollow::Vector3& position, float mass);
 	void load(const Hollow::s_ptr<Hollow::Import::Model>& model, const Hollow::Vector3& position, float mass);
 private:
 	void initialize(const Hollow::Vector3& position, float mass);

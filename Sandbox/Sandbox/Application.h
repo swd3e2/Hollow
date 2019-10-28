@@ -135,8 +135,9 @@ public:
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-			//physics->addBoxShape(Hollow::Vector3((mesh->B.x - mesh->A.x) * 100, (mesh->B.y - mesh->A.y) * 100 + 4.f, (mesh->B.z - mesh->A.z) * 100), Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
+			//physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+			//physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
+			physics->addCapsuleShape(6.0, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
@@ -144,6 +145,23 @@ public:
 			transform->rotation = Hollow::Vector3(Hollow::Math::PI / 2, 0, 0);
 
 			entity->addComponent<PlayerComponent>();
+		}
+		{
+			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+			// Render
+			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
+			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+
+			// Physics
+			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+			//physics->load(mesh, Hollow::Vector3(20.0f, 0.0f, 0.0f), 0.0f);
+			physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 0.0f, 0.0f), 20.0f);
+
+			TransformComponent* transform = entity->addComponent<TransformComponent>();
+			transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
+			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+			transform->rotation = Hollow::Vector3(Hollow::Math::PI / 2, 0, 0);
 		}
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();

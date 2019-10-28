@@ -35,7 +35,7 @@ public:
 	virtual void Update(double dt) override
 	{
 		Profiler::begin("PhysicsSystem update(): ");
-		dynamicsWorld->stepSimulation(dt / 1000);
+		dynamicsWorld->stepSimulation(dt);
 
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
