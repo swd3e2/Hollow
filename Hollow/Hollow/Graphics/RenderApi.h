@@ -26,6 +26,7 @@ namespace Hollow {
 	class RenderApi : public CModule<RenderApi>
 	{
 	protected:
+		PrimitiveTopology mTopology;
 		s_ptr<InputLayout> mCurrentLayout;
 	public:
 		/**
@@ -164,7 +165,9 @@ namespace Hollow {
 		 */
 		virtual void setBlendState(const s_ptr<BlendState>& blendState) = 0;
 
-		s_ptr<Window> createWindow();
+		//s_ptr<Window> createWindow();
+
+		virtual void setPrimitiveTopology(const PrimitiveTopology topology) = 0;
 
 		virtual RendererType getRendererType() = 0;
 	};

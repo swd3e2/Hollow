@@ -264,6 +264,25 @@ namespace Hollow {
 		}
 	}
 
+	void D3D11RenderApi::setPrimitiveTopology(const PrimitiveTopology topology)
+	{
+		if (topology == mTopology) return;
+
+		mTopology = topology;
+
+		switch (topology)
+		{
+		case PrimitiveTopology::PT_LINELIST:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+			break;
+		case PrimitiveTopology::PT_TRIANGELIST:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			break;
+		default:
+			break;
+		}
+	}
+
 	void D3D11RenderApi::drawInstanced()
 	{
 	}

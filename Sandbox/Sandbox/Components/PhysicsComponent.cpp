@@ -79,9 +79,9 @@ void PhysicsComponent::initialize(const Hollow::Vector3& position, float mass)
 	myMotionState = std::make_shared<btDefaultMotionState>(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState.get(), shape.get(), localInertia);
 	body = std::make_shared<btRigidBody>(rbInfo);
-
+	
 	body->setFriction(200.3f);
 	body->setRollingFriction(200.3f);
-
+	
 	PhysicsSystem::instance()->dynamicsWorld->addRigidBody(body.get());
 }

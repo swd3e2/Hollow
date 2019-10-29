@@ -127,6 +127,8 @@ private:
 	s_ptr<Hollow::VertexBuffer>		quadVB;
 	s_ptr<Hollow::IndexBuffer>		quadIB;
 
+	s_ptr<Hollow::VertexBuffer> lineVB;
+
 	Vector4 AABBplane[6];
 	s_ptr<Hollow::VertexBuffer> lightVertexBuffer;
 	s_ptr<Hollow::IndexBuffer> lightIndexBuffer;
@@ -181,7 +183,6 @@ public:
 			};
 
 			terrainLayout = InputLayout::create(terrainLayoutDesc);
-
 
 			std::string baseShaderPath;
 			std::string shaderExt;
@@ -273,7 +274,6 @@ public:
 			shadow.texelSize = Hollow::Vector2(1.0f / desc.width, 1.0f / desc.height);
 			shadow.bias = 0.002f;
 		}
-
 		{
 			std::vector<Hollow::Vertex> vertices;
 			vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1.0f, 0.0f));
@@ -290,7 +290,13 @@ public:
 
 			quadIB = IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
 		}
-			
+		{
+			std::vector<Hollow::Vertex> vertices;
+			vertices.push_back(Vertex(0.0f, 10.0f, 0.0f, 0.0f, 0.0f));
+			vertices.push_back(Vertex(0.0f, -10.0f, 0.0f, 0.0f, 1.0f));
+
+			lineVB = VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
+		}
 		std::tie(lightVertexBuffer, lightIndexBuffer) = getCube();
 
 		renderer->setViewport(0, 0, this->width, this->height);
@@ -335,7 +341,6 @@ public:
 			desc.cullMode = CullMode::CLM_NONE;
 			cullNone = RasterizerState::create(desc);
 		}
-
 		{
 			SAMPLER_STATE_DESC desc;
 			desc.magFilterMode = FilterMode::FM_LINEAR;
@@ -357,7 +362,7 @@ public:
 		}
 		
 		defaultMaterial = new Material();
-		defaultMaterial->materialData.color = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+		defaultMaterial->materialData.color = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
 
 		renderer->setSampler(0, sampler);
 		renderer->setSampler(1, sampler);
@@ -538,6 +543,11 @@ public:
 		renderer->setRasterizerState(cullBackWF);
 		renderer->setRenderTarget(gBuffer);
 		renderer->setShaderPipeline(gBufferPipeline);
+
+		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_LINELIST);
+		renderer->setVertexBuffer(lineVB);
+		renderer->draw(2);
+		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
 
 		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {

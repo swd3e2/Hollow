@@ -28,7 +28,7 @@ class Appliaction
 {
 public:
 	Hollow::Core core;
-	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
+	Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
 	int width = 1920;
 	int height = 1080;
 	Hollow::Window* window;
@@ -137,7 +137,7 @@ public:
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
 			//physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 			//physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
-			physics->addCapsuleShape(6.0, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
+			physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);

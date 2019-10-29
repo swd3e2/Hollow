@@ -355,5 +355,22 @@ namespace Hollow {
 				return GL_FLOAT;
 			}
 		}
+
+		static GLuint getTopology(const PrimitiveTopology topology)
+		{
+			switch (topology)
+			{
+			case PrimitiveTopology::PT_LINELIST:
+				return GL_LINES;
+			case PrimitiveTopology::PT_LINESTRIP:
+				return GL_LINE_STRIP;
+			case PrimitiveTopology::PT_TRIANGELIST:
+				return GL_TRIANGLES;
+			case PrimitiveTopology::PT_TRIANGESTRIP:
+				return GL_TRIANGLE_STRIP;
+			default:
+				return GL_TRIANGLES;
+			}
+		}
 	};
 }

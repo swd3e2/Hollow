@@ -146,4 +146,12 @@ namespace Hollow {
 		Bordered,
 		Borderless
 	};
+
+	enum PrimitiveTopology
+	{
+		PT_LINELIST,
+		PT_LINESTRIP,
+		PT_TRIANGELIST,
+		PT_TRIANGESTRIP,
+	};
 }

@@ -20,20 +20,24 @@ public:
 			if (entity.hasComponent<PlayerComponent>() && entity.hasComponent<PhysicsComponent>() && entity.hasComponent<TransformComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
-				
+				const btVector3& prevVelocity = physics->body->getLinearVelocity();
+
+				btVector3 moveVector(0.0f, 0.0f, 0.0f);
+				moveVector.setY(prevVelocity.getY());
+
+				physics->body->setLinearVelocity(btVector3(0, 0, 0.f));
+
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
-					physics->body->activate(true);
-					physics->body->translate(btVector3(0.1f, 0, 0));
+					moveVector.setX(1.0f);
 					transform->rotation.z = 0;
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
-					physics->body->activate(true);
-					physics->body->translate(btVector3(-0.1f, 0, 0));
+					moveVector.setX(-1.0f);
 					transform->rotation.z = Hollow::Math::PI;
 				}
 				
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_A)) {
-					physics->body->activate(true);
-					physics->body->translate(btVector3(0, 0, 0.1f));
+					moveVector.setZ(1.0f);
+
 					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 						transform->rotation.z += Hollow::Math::PI / 4;
 					} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
@@ -42,17 +46,14 @@ public:
 						transform->rotation.z = Hollow::Math::PI / 2;
 					}
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_D)) {
-					physics->body->activate(true);
-					physics->body->translate(btVector3(0, 0, -0.1f));
+					moveVector.setZ(-1.0f);
 				}
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_SPACE)) {
-					physics->body->activate(true);
-					physics->body->translate(btVector3(0, 0.15f, 0));
+
 				}
-				btTransform tr;
-				physics->body->getMotionState()->getWorldTransform(tr);
-				btVector3& pos = tr.getOrigin();
+				physics->body->setLinearVelocity(moveVector);
+				physics->body->activate(true);
 			}
 		}
 	}

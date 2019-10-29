@@ -284,6 +284,12 @@ namespace Hollow {
 		glBindProgramPipeline(oglPipeline->pipelineId);
 	}
 
+	void OGLRenderApi::setPrimitiveTopology(const PrimitiveTopology topology)
+	{
+		if (topology == mTopology) return;
+		mTopology = topology;
+	}
+
 	void OGLRenderApi::drawInstanced()
 	{
 
@@ -296,12 +302,14 @@ namespace Hollow {
 
 	void OGLRenderApi::draw(UINT count)
 	{
-		glDrawArrays(GL_TRIANGLES, 0, count);
+		GLuint topology = OGLHelper::getTopology(mTopology);
+		glDrawArrays(topology, 0, count);
 	}
 
 	void OGLRenderApi::drawIndexed(UINT count)
 	{
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+		GLuint topology = OGLHelper::getTopology(mTopology);
+		glDrawElements(topology, count, GL_UNSIGNED_INT, 0);
 	}
 
 	void OGLRenderApi::present()
