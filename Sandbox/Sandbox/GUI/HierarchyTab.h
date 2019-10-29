@@ -75,11 +75,6 @@ namespace GUI {
 					selectedTerrain = nullptr;
 					selectedLight = nullptr;
 				}
-				if (ImGui::Button("-")) {
-					Hollow::DelayedTaskManager::instance()->add([&]() { 
-						Hollow::EntityManager::instance()->destroy(entity.getId()); 
-					});
-				}
 				if (ImGui::BeginPopupContextItem())
 				{
 					ImGui::Text("Add component:");

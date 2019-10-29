@@ -55,7 +55,7 @@ public:
 			renderable->material = model->meshes[i]->material;
 
 			renderable->vBuffer = Hollow::VertexBuffer::create({ model->meshes[i]->vertices.data(), model->meshes[i]->vertices.size(), sizeof(Hollow::Vertex) });
-			renderable->iBuffer = Hollow::IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), Hollow::INDEX_FORMAT::UINT });
+			renderable->iBuffer = Hollow::IndexBuffer::create({ model->meshes[i]->indices.data(), model->meshes[i]->indices.size(), Hollow::IndexFormat::IFT_UINT });
 
 			renderables.push_back(renderable);
 		}
@@ -87,6 +87,8 @@ public:
 					material->diffuseTexture = Hollow::TextureManager::instance()->create(desc);
 					material->diffuseTexture->update(diffuse->data.get());
 					material->diffuseTexture->generateMipMap();
+				} else {
+					HW_ERROR("Texture file not found, {}", filepath.c_str());
 				}
 			}
 			materials[it.first] = material;

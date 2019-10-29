@@ -27,6 +27,7 @@
     <ClInclude Include="Hollow\Graphics\CommonTypes.h" />
     <ClInclude Include="Hollow\Graphics\DepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\HardwareBuffer.h" />
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PhysicsDebugDraw.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11Shader.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderPipeline.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderPipeline.h" />
@@ -252,7 +253,7 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(SolutionDir)Hollow\vendor\lib\debug;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinygltf;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDIr)Hollow\vendor\bullet\src;$(SolutionDir)Hollow\vendor\tinygltf;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
@@ -260,7 +261,7 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)Hollow\vendor\lib;$(SolutionDir)Hollow\vendor\lib\release;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDir)Hollow\vendor\tinygltf;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Hollow\vendor\assimp;$(SolutionDir)Hollow\vendor\spdlog\include;$(SolutionDIr)Hollow\vendor\bullet\src;$(SolutionDir)Hollow\vendor\tinygltf;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>

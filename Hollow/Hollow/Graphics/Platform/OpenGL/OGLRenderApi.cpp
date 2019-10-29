@@ -29,13 +29,13 @@ namespace Hollow {
 	void OGLRenderApi::setIndexBuffer(const s_ptr<IndexBuffer>& buffer)
 	{
 		s_ptr<OGLIndexBuffer> iBuffer = std::static_pointer_cast<OGLIndexBuffer>(buffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<OGLHardwareBuffer*>(iBuffer->mHardwareBuffer)->mVbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, std::static_pointer_cast<OGLHardwareBuffer>(iBuffer->mHardwareBuffer)->mVbo);
 		mCurrentIndexBuffer = iBuffer;
 	}
 
 	void OGLRenderApi::setVertexBuffer(const s_ptr<VertexBuffer>& buffer)
 	{
-		OGLHardwareBuffer* oglBuffer = static_cast<OGLHardwareBuffer*>(buffer->mHardwareBuffer);
+		OGLHardwareBuffer* oglBuffer = std::static_pointer_cast<OGLHardwareBuffer>(buffer->mHardwareBuffer).get();
 		glBindVertexBuffer(0, oglBuffer->mVbo, 0, buffer->mHardwareBuffer->getStride());
 	}
 
@@ -47,9 +47,7 @@ namespace Hollow {
 		if (texture->type == TextureType::TT_TEXTURE2D) 
 		{
 			glBindTexture(GL_TEXTURE_2D, oglTexture->textureId);
-		} 
-		else
-		{
+		} else {
 			glBindTexture(GL_TEXTURE_CUBE_MAP, oglTexture->textureId);
 		}
 	}
@@ -95,9 +93,7 @@ namespace Hollow {
 			glClearColor(color[0], color[1], color[2], color[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		} 
-		else 
-		{
+		} else {
 			glClearColor(color[0], color[1], color[2], color[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}
@@ -109,9 +105,7 @@ namespace Hollow {
 		{
 			s_ptr<OGLRenderTarget> oglRenderTarget = std::static_pointer_cast<OGLRenderTarget>(renderTarget);
 			glBindFramebuffer(GL_FRAMEBUFFER, oglRenderTarget->FBO);
-		} 
-		else 
-		{
+		} else {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
@@ -127,24 +121,19 @@ namespace Hollow {
 	{
 		const DEPTH_STENCIL_STATE_DESC& desc = std::static_pointer_cast<OGLDepthStencilState>(depthStencil)->desc;
 
-		if (desc.depthEnable) 
-		{
-			if (!depthEnabled) 
-			{
+		if (desc.depthEnable) {
+			if (!depthEnabled) {
 				depthEnabled = true;
 				glEnable(GL_DEPTH_TEST);
 			}
 			glDepthFunc(OGLHelper::getComparisonFunction(desc.depthFunc));
-		} 
-		else if (depthEnabled) 
-		{
+		} else if (depthEnabled) {
 			depthEnabled = false;
 			glDisable(GL_DEPTH_TEST);
 		}
 
 		if (desc.stencilEnable) {
-			if (!stencilEnabled)
-			{
+			if (!stencilEnabled) {
 				stencilEnabled = true;
 				glEnable(GL_STENCIL_TEST);
 			}
@@ -156,9 +145,7 @@ namespace Hollow {
 
 			glStencilFuncSeparate(GL_BACK, OGLHelper::getComparisonFunction(desc.back.stencilFunc), 0xFF, desc.stencilReadMask);
 			glStencilOpSeparate(GL_BACK, OGLHelper::getDepthStencilOperation(desc.back.failOp), OGLHelper::getDepthStencilOperation(desc.back.depthFailOp), OGLHelper::getDepthStencilOperation(desc.back.passOp));
-		} 
-		else if (stencilEnabled) 
-		{
+		} else if (stencilEnabled) {
 			glDisable(GL_STENCIL_TEST);
 			stencilEnabled = false;
 		}
@@ -178,15 +165,11 @@ namespace Hollow {
 	{
 		const RASTERIZER_STATE_DESC& desc = std::static_pointer_cast<OGLRasterizerState>(rasterizerState)->desc;
 
-		if (desc.frontCounterClockwise != frontCounterClockwise) 
-		{
+		if (desc.frontCounterClockwise != frontCounterClockwise) {
 			frontCounterClockwise = desc.frontCounterClockwise;
-			if (desc.frontCounterClockwise) 
-			{
+			if (desc.frontCounterClockwise) {
 				glFrontFace(GL_CCW);
-			}
-			else 
-			{
+			} else {
 				glFrontFace(GL_CW);
 			}
 		}
@@ -195,30 +178,25 @@ namespace Hollow {
 		switch (desc.cullMode)
 		{
 		case CullMode::CLM_BACK:
-			if (!cullEnabled)
-			{
+			if (!cullEnabled) {
 				cullEnabled = true;
 				glEnable(GL_CULL_FACE);
 			}
-			if (cullMode != CullMode::CLM_BACK)
-			{
+			if (cullMode != CullMode::CLM_BACK) {
 				glCullFace(GL_BACK);
 			}
 			break;
 		case CullMode::CLM_FRONT:
-			if (!cullEnabled)
-			{
+			if (!cullEnabled) {
 				cullEnabled = true;
 				glEnable(GL_CULL_FACE);
 			}
-			if (cullMode != CullMode::CLM_FRONT)
-			{
+			if (cullMode != CullMode::CLM_FRONT) {
 				glCullFace(GL_FRONT);
 			}
 			break;
 		case CullMode::CLM_NONE:
-			if (cullEnabled)
-			{
+			if (cullEnabled) {
 				cullEnabled = false;
 				glDisable(GL_CULL_FACE);
 			}
@@ -254,8 +232,7 @@ namespace Hollow {
 		const BLEND_STATE_DESC& desc = std::static_pointer_cast<OGLBlendState>(blendState)->desc;
 
 		for (int i = 0; i < 8; i++) {
-			if (desc.blend[i].blendEnabled) 
-			{
+			if (desc.blend[i].blendEnabled) {
 				glEnablei(GL_BLEND, i);
 
 				glBlendFuncSeparatei(
@@ -270,9 +247,7 @@ namespace Hollow {
 					OGLHelper::getBlendOperation(desc.blend[i].blendOp), 
 					OGLHelper::getBlendOperation(desc.blend[i].blendOpAlpha)
 				);
-			}
-			else
-			{
+			} else {
 				glDisablei(GL_BLEND, i);
 			}
 		}
@@ -282,6 +257,12 @@ namespace Hollow {
 	{
 		s_ptr<OGLShaderPipeline> oglPipeline = std::static_pointer_cast<OGLShaderPipeline>(shaderPipeline);
 		glBindProgramPipeline(oglPipeline->pipelineId);
+	}
+
+	void OGLRenderApi::setPrimitiveTopology(const PrimitiveTopology topology)
+	{
+		if (topology == mTopology) return;
+		mTopology = topology;
 	}
 
 	void OGLRenderApi::drawInstanced()
@@ -296,12 +277,14 @@ namespace Hollow {
 
 	void OGLRenderApi::draw(UINT count)
 	{
-		glDrawArrays(GL_TRIANGLES, 0, count);
+		GLuint topology = OGLHelper::getTopology(mTopology);
+		glDrawArrays(topology, 0, count);
 	}
 
 	void OGLRenderApi::drawIndexed(UINT count)
 	{
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+		GLuint topology = OGLHelper::getTopology(mTopology);
+		glDrawElements(topology, count, GL_UNSIGNED_INT, 0);
 	}
 
 	void OGLRenderApi::present()

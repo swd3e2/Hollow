@@ -44,12 +44,9 @@ namespace Hollow {
 			box.front = 0;
 			box.back = 1;
 
-			if (type == TextureType::TT_TEXTURE2D) 
-			{
+			if (type == TextureType::TT_TEXTURE2D) {
 				deviceContext->UpdateSubresource(m_Texture, 0, &box, data, D3D11Helper::getPicth(format, width), 1);
-			}
-			else if (type == TextureType::TT_TEXTURE_CUBE) 
-			{
+			} else if (type == TextureType::TT_TEXTURE_CUBE) {
 				unsigned char** texData = (unsigned char**)data;
 				for (int face = 0; face < 6; face++) {
 					deviceContext->UpdateSubresource(m_Texture, face * (numMips + 1), &box, texData[face] , D3D11Helper::getPicth(format, width), 0);

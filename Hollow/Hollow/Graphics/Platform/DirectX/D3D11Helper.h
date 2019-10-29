@@ -60,12 +60,12 @@ namespace Hollow {
 			}
 		}
 
-		static unsigned int getSize(INDEX_FORMAT format)
+		static unsigned int getSize(IndexFormat format)
 		{
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT:
-			case Hollow::INDEX_FORMAT::INT:
+			case Hollow::IndexFormat::IFT_INT:
+			case Hollow::IndexFormat::IFT_UINT:
 				return 4;
 			}
 		}

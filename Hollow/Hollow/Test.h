@@ -7,6 +7,8 @@
 #include "Graphics/Vertex.h"
 #include "Graphics/HardwareBufferManager.h"
 
-Hollow::Mesh* getCube();
+namespace Hollow {
+	std::pair<s_ptr<VertexBuffer>, s_ptr<IndexBuffer>> getCube();
+}
 
 #endif

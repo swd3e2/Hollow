@@ -166,15 +166,15 @@ namespace Hollow {
 	void D3D11RenderApi::setIndexBuffer(const s_ptr<IndexBuffer>& buffer)
 	{
 		s_ptr<D3D11IndexBuffer> buff = std::static_pointer_cast<D3D11IndexBuffer>(buffer);
-		context->getDeviceContext()->IASetIndexBuffer(static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->get(), DXGI_FORMAT_R32_UINT, 0);
+		context->getDeviceContext()->IASetIndexBuffer(std::static_pointer_cast<D3D11HardwareBuffer>(buff->mHardwareBuffer)->get(), DXGI_FORMAT_R32_UINT, 0);
 	}
 
 	void D3D11RenderApi::setVertexBuffer(const s_ptr<VertexBuffer>& buffer)
 	{
 		s_ptr<D3D11VertexBuffer> buff = std::static_pointer_cast<D3D11VertexBuffer>(buffer);
 		context->getDeviceContext()->IASetVertexBuffers(0, 1, 
-			static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getAddressOf(), 
-			static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getStridePtr(), 
+			std::static_pointer_cast<D3D11HardwareBuffer>(buff->mHardwareBuffer)->getAddressOf(), 
+			std::static_pointer_cast<D3D11HardwareBuffer>(buff->mHardwareBuffer)->getStridePtr(),
 			&this->offset
 		);
 	}
@@ -261,6 +261,25 @@ namespace Hollow {
 		const s_ptr<D3D11Shader>& domainShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getDomainShader());
 		if (domainShader != nullptr) {
 			context->getDeviceContext()->DSSetShader(static_cast<ID3D11DomainShader*>(domainShader->getShader()), NULL, 0);
+		}
+	}
+
+	void D3D11RenderApi::setPrimitiveTopology(const PrimitiveTopology topology)
+	{
+		if (topology == mTopology) return;
+
+		mTopology = topology;
+
+		switch (topology)
+		{
+		case PrimitiveTopology::PT_LINELIST:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+			break;
+		case PrimitiveTopology::PT_TRIANGELIST:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			break;
+		default:
+			break;
 		}
 	}
 

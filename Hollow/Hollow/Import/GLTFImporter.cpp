@@ -13,7 +13,6 @@ namespace Hollow {
 			return nullptr;
 		}
 
-
 		Import::Model* model = new Import::Model();
 
 		tinygltf::Node& modelRootNode = gltfModel.nodes[gltfModel.scenes[0].nodes[0]];
@@ -34,7 +33,7 @@ namespace Hollow {
 		}
 
 		processMeshes(model, gltfModel, binary);
-		processAnimation(model, gltfModel, binary);
+		processAnimations(model, gltfModel, binary);
 		processSkin(model, gltfModel, binary);
 
 		binary.close();
@@ -42,7 +41,7 @@ namespace Hollow {
 		fixAnimation(model, nodes);
 
 		// temp for animation
-		//prepareModel(lModel->rootNode, Matrix4::identity(), gltfModel);
+		fixModel(rootNode, rootNode->transformation, model);
 
 		return s_ptr<Import::Model>(model);
 	}
@@ -110,6 +109,12 @@ namespace Hollow {
 								mesh->vertices[i].pos.x = data[i * 3];
 								mesh->vertices[i].pos.y = data[i * 3 + 1];
 								mesh->vertices[i].pos.z = data[i * 3 + 2];
+
+								if (mesh->vertices[i].pos.x < model->A.x && mesh->vertices[i].pos.y < model->A.y && mesh->vertices[i].pos.z < model->A.z) {
+									model->A = mesh->vertices[i].pos;
+								} else if (mesh->vertices[i].pos.x > model->B.x&& mesh->vertices[i].pos.y > model->B.y&& mesh->vertices[i].pos.z > model->B.z) {
+									model->B = mesh->vertices[i].pos;
+								}
 							}
 							delete[] data;
 						} else if (attribute.first == "WEIGHTS_0") {
@@ -179,66 +184,76 @@ namespace Hollow {
 
 				model->meshes.push_back(mesh);
 
-				const tinygltf::Material& gltfMaterial = gltfModel.materials[primitive.material];
+				if (primitive.material != -1) {
+					const tinygltf::Material& gltfMaterial = gltfModel.materials[primitive.material];
 
-				if (model->materials.find(primitive.material) == model->materials.end()) {
-					Import::Material material;
+					if (model->materials.find(primitive.material) == model->materials.end()) {
+						Import::Material material;
 
-					material.id = primitive.material;
-					material.name = gltfMaterial.name;
+						material.id = primitive.material;
+						material.name = gltfMaterial.name;
 
-					for (auto& value : gltfMaterial.values) {
-						if (value.first == "baseColorTexture") {
-							material.diffuseTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "metallicRoughnessTexture") {
-							material.roughnesTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "metallicFactor") {
-							material.metallicFactor = value.second.number_value;
-						} else if (value.first == "roughnessFactor") {
-							material.roughnessFactor = value.second.number_value;
-						} else if (value.first == "baseColorFactor") {
-							material.baseColorFactor = Vector4(
-								value.second.number_array[0],
-								value.second.number_array[1],
-								value.second.number_array[2],
-								value.second.number_array[3]
-							);
+						for (auto& value : gltfMaterial.values) {
+							if (value.first == "baseColorTexture") {
+								material.diffuseTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "metallicRoughnessTexture") {
+								material.roughnesTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "metallicFactor") {
+								material.metallicFactor = value.second.number_value;
+							}
+							else if (value.first == "roughnessFactor") {
+								material.roughnessFactor = value.second.number_value;
+							}
+							else if (value.first == "baseColorFactor") {
+								material.baseColorFactor = Vector4(
+									value.second.number_array[0],
+									value.second.number_array[1],
+									value.second.number_array[2],
+									value.second.number_array[3]
+								);
+							}
 						}
-					}
 
-					for (auto& value : gltfMaterial.additionalValues) {
-						if (value.first == "emisiveTexture") {
-							material.emisiveTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "normalTexture") {
-							material.normalTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "occlusionTexture") {
-							material.occlusionTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-						} else if (value.first == "emissiveFactor") {
-							material.emissiveFactor = value.second.number_value;
+						for (auto& value : gltfMaterial.additionalValues) {
+							if (value.first == "emisiveTexture") {
+								material.emisiveTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "normalTexture") {
+								material.normalTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "occlusionTexture") {
+								material.occlusionTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+							}
+							else if (value.first == "emissiveFactor") {
+								material.emissiveFactor = value.second.number_value;
+							}
 						}
-					}
 
-					for (auto& it : gltfMaterial.extensions) {
-						std::vector<std::string> keys = it.second.Keys();
-						for (std::string& key : keys) {
-							auto& value = it.second.Get(key);
-							if (value.IsObject()) {
-								std::vector<std::string> innerKeys = value.Keys();
-								for (std::string& innerKey : innerKeys) {
-									if (key == "diffuseTexture" && innerKey == "index") {
-										tinygltf::Value index = value.Get(innerKey);
-										int val = index.Get<int>();
-										material.diffuseTexture = gltfModel.images[gltfModel.textures[val].source].uri;
-									} else if (key == "specularGlossinessTexture" && innerKey == "index") {
-										tinygltf::Value index = value.Get(innerKey);
-										int val = index.Get<int>();
-										material.specularTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+						for (auto& it : gltfMaterial.extensions) {
+							std::vector<std::string> keys = it.second.Keys();
+							for (std::string& key : keys) {
+								auto& value = it.second.Get(key);
+								if (value.IsObject()) {
+									std::vector<std::string> innerKeys = value.Keys();
+									for (std::string& innerKey : innerKeys) {
+										if (key == "diffuseTexture" && innerKey == "index") {
+											tinygltf::Value index = value.Get(innerKey);
+											int val = index.Get<int>();
+											material.diffuseTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+										}
+										else if (key == "specularGlossinessTexture" && innerKey == "index") {
+											tinygltf::Value index = value.Get(innerKey);
+											int val = index.Get<int>();
+											material.specularTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+										}
 									}
 								}
 							}
 						}
+						model->materials[material.id] = material;
 					}
-					model->materials[material.id] = material;
 				}
 			}
 		}
@@ -291,7 +306,7 @@ namespace Hollow {
 	/**
 	 * Loads keyframes for animation
 	 */
-	void GLTFImporter::processAnimation(Import::Model* model, tinygltf::Model& gltfModel, std::ifstream& binary)
+	void GLTFImporter::processAnimations(Import::Model* model, tinygltf::Model& gltfModel, std::ifstream& binary)
 	{
 		for (auto& animation : gltfModel.animations) {
 			Import::Animation* mAnimation = new Import::Animation();
@@ -389,6 +404,7 @@ namespace Hollow {
 			Node* childNode = new Node();
 			childNode->name = childModelNode.name.size() ? childModelNode.name : ("Node " + std::to_string(nodeCounter++));
 			childNode->id = childId;
+			childNode->mesh = childModelNode.mesh;
 
 			node->childrens.push_back(childNode);
 			nodes[childNode->id] = childNode;
@@ -427,11 +443,11 @@ namespace Hollow {
 		return folderPath;
 	}
 
-	void GLTFImporter::prepareModel(Node* node, const Matrix4& parentTransform, const s_ptr<Import::Model>& model)
+	void GLTFImporter::fixModel(Node* node, const Matrix4& parentTransform, Import::Model* model)
 	{
 		Matrix4 transform = parentTransform;
 		
-		if (node->mesh != -1 && !node->skinned) {
+		if (node->mesh != -1) {
 			for (auto& it : model->meshes[node->mesh]->vertices) {
 				it.pos = it.pos * transform;
 				it.normal = it.normal * transform;
@@ -440,7 +456,7 @@ namespace Hollow {
 		}
 
 		for (auto& it : node->childrens) {
-			prepareModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
+			fixModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
 		}
 	}
 }

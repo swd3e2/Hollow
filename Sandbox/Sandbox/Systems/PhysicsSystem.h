@@ -6,38 +6,40 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include <Hollow/ECS/EntityManager.h>
+#include "Sandbox/Profiler.h"
 
 class PhysicsSystem : public Hollow::System<PhysicsSystem>, public Hollow::CModule<PhysicsSystem>
 {
 public:
-	btDiscreteDynamicsWorld* dynamicsWorld;
-	btSequentialImpulseConstraintSolver* solver;
-	btBroadphaseInterface* overlappingPairCache;
-	btCollisionDispatcher* dispatcher;
-	btDefaultCollisionConfiguration* collisionConfiguration;
+	Hollow::s_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
+	Hollow::s_ptr<btSequentialImpulseConstraintSolver> solver;
+	Hollow::s_ptr<btBroadphaseInterface> overlappingPairCache;
+	Hollow::s_ptr<btCollisionDispatcher> dispatcher;
+	Hollow::s_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
 public:
 	PhysicsSystem()
 	{
-		collisionConfiguration = new btDefaultCollisionConfiguration();
+		collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
 		///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-		dispatcher = new btCollisionDispatcher(collisionConfiguration);
+		dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
 		///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-		overlappingPairCache = new btDbvtBroadphase();
+		overlappingPairCache = std::make_shared<btDbvtBroadphase>();
 		///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-		solver = new btSequentialImpulseConstraintSolver;
+		solver = std::make_shared<btSequentialImpulseConstraintSolver>();
 
-		dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		dynamicsWorld = std::make_shared<btDiscreteDynamicsWorld>(dispatcher.get(), overlappingPairCache.get(), solver.get(), collisionConfiguration.get());
 
-		dynamicsWorld->setGravity(btVector3(0, -1.1f, 0));
+		dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
 	}
 
 	virtual void Update(double dt) override
 	{
-		dynamicsWorld->stepSimulation(dt, 10);
+		Profiler::begin("PhysicsSystem update(): ");
+		dynamicsWorld->stepSimulation(dt);
 
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
-				/*TransformComponent* transform = entity.getComponent<TransformComponent>();
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
 				btTransform tr;
 				physics->body->getMotionState()->getWorldTransform(tr);
@@ -45,8 +47,9 @@ public:
 
 				transform->position.x = pos.getX();
 				transform->position.y = pos.getY();
-				transform->position.z = pos.getZ();*/
+				transform->position.z = pos.getZ();
 			}
 		}
+		Profiler::end();
 	}
 };

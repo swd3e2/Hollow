@@ -53,23 +53,23 @@ namespace Hollow {
 			}
 		}
 
-		static unsigned int getSize(const INDEX_FORMAT format)
+		static unsigned int getSize(const IndexFormat format)
 		{
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT:
-			case Hollow::INDEX_FORMAT::INT:
+			case Hollow::IndexFormat::IFT_UINT:
+			case Hollow::IndexFormat::IFT_INT:
 				return 4;
 			}
 		}
 
-		static GLuint getFormat(const INDEX_FORMAT format)
+		static GLuint getFormat(const IndexFormat format)
 		{
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT: 
+			case Hollow::IndexFormat::IFT_UINT:
 				return GL_UNSIGNED_INT;
-			case Hollow::INDEX_FORMAT::INT: 
+			case Hollow::IndexFormat::IFT_INT:
 				return GL_INT;
 			default: 
 				return GL_UNSIGNED_INT;
@@ -353,6 +353,23 @@ namespace Hollow {
 			case TextureFormat::TF_RGB32:
 			case TextureFormat::TF_RGBA32:
 				return GL_FLOAT;
+			}
+		}
+
+		static GLuint getTopology(const PrimitiveTopology topology)
+		{
+			switch (topology)
+			{
+			case PrimitiveTopology::PT_LINELIST:
+				return GL_LINES;
+			case PrimitiveTopology::PT_LINESTRIP:
+				return GL_LINE_STRIP;
+			case PrimitiveTopology::PT_TRIANGELIST:
+				return GL_TRIANGLES;
+			case PrimitiveTopology::PT_TRIANGESTRIP:
+				return GL_TRIANGLE_STRIP;
+			default:
+				return GL_TRIANGLES;
 			}
 		}
 	};

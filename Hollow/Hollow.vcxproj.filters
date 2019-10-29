@@ -450,6 +450,9 @@
     <ClInclude Include="Hollow\Resources\MeshManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PhysicsDebugDraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Timer.cpp">

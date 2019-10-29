@@ -62,7 +62,7 @@ namespace Hollow {
 		virtual void setRasterizerState(const s_ptr<RasterizerState>& rasterizerState) override;
 		virtual void setBlendState(const s_ptr<BlendState>& blendState) override;
 		virtual void setShaderPipeline(const s_ptr<ShaderPipeline>& shaderPipeline) override;
-
+		virtual void setPrimitiveTopology(const PrimitiveTopology topology) override;
 		virtual void drawInstanced() override;
 		virtual void drawIndexedInstanced() override;
 
