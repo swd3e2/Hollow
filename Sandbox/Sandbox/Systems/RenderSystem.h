@@ -545,10 +545,22 @@ public:
 		renderer->setShaderPipeline(gBufferPipeline);
 
 		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_LINELIST);
+		defaultMaterial->materialData.color.x = 1.0f;
+		defaultMaterial->materialData.color.y = 0.0f;
+		defaultMaterial->materialData.color.z = 1.0f;
+		materialConstantBuffer->update(&defaultMaterial->materialData);
+		defaultMaterial->materialData.color.x = 0.0f;
+		defaultMaterial->materialData.color.y = 1.0f;
+		defaultMaterial->materialData.color.z = 0.0f;
+
+		perModelData.transform = Matrix4::identity();
+		perModel->update(&perModelData);
+		renderer->setGpuBuffer(perModel);
+
+		renderer->setGpuBuffer(materialConstantBuffer);
 		renderer->setVertexBuffer(lineVB);
 		renderer->draw(2);
 		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
-
 		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();

@@ -19,6 +19,18 @@ cbuffer ConstantBuffer : register(b2)
 	bool hasAnimation;
 };
 
+cbuffer ConstantBuffer : register(b4)
+{
+	float4 base_color;
+	float metallicFactor;
+	float roughnessFactor;
+	float emmisiveFactor;
+	float pad;
+	bool hasDiffuseTexture;
+	bool hasNormalMap;
+	bool hasSpecularMap;
+};
+
 Texture2D ambient_map		: TEXTUTRE: register(t0);
 
 SamplerState Sampler : register(s1);
@@ -26,10 +38,12 @@ SamplerState Sampler : register(s1);
 PixelOutDeffered main(PixelShaderInput input) : SV_TARGET
 {
 	PixelOutDeffered output;
-	output.diffuse = ambient_map.Sample(Sampler, input.texCoord);
-	//if (output.diffuse.a < 0.91f) {
-	//	discard;
-	//}
+	if (hasDiffuseTexture) {
+		output.diffuse = ambient_map.Sample(Sampler, input.texCoord);
+	} else {
+		output.diffuse = base_color;
+	}
+
 	output.normal = float4(input.normal, 1.0f);
 	output.position = input.hPos;
 

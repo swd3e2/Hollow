@@ -28,7 +28,7 @@ class Appliaction
 {
 public:
 	Hollow::Core core;
-	Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
 	int width = 1920;
 	int height = 1080;
 	Hollow::Window* window;
