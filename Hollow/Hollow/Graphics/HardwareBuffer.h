@@ -3,12 +3,6 @@
 #include "Hollow/Platform.h"
 
 namespace Hollow {
-	enum class INDEX_FORMAT
-	{
-		UINT,
-		INT
-	};
-
 	struct VERTEX_BUFFER_DESC
 	{
 		void* data;
@@ -23,12 +17,12 @@ namespace Hollow {
 
 	struct INDEX_BUFFER_DESC
 	{
-		void* data;
-		INDEX_FORMAT format;
+		void* data = nullptr;
+		IndexFormat format;
 		UINT32 size;
 
 		INDEX_BUFFER_DESC() = default;
-		INDEX_BUFFER_DESC(void* data, size_t size, INDEX_FORMAT format) :
+		INDEX_BUFFER_DESC(void* data, size_t size, IndexFormat format) :
 			data(data), size(size), format(format)
 		{}
 	};
@@ -36,12 +30,14 @@ namespace Hollow {
 	class HardwareBuffer
 	{
 	protected:
-		UINT32 stride;
-		UINT32 size;
+		UINT32 stride = 0;
+		UINT32 size = 0;
+		bool isDynamic = false;
 	public:
 		HardwareBuffer(UINT32 size, UINT32 stride ) : size(size), stride(stride) {}
 		virtual ~HardwareBuffer() {}
 
+		bool isDynamic() const { return isDynamic; }
 		inline UINT32 getSize() const { return size; }
 		inline UINT32 getStride() const { return stride; }
 		inline UINT32* getStridePtr() { return &stride; }

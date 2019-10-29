@@ -53,23 +53,23 @@ namespace Hollow {
 			}
 		}
 
-		static unsigned int getSize(const INDEX_FORMAT format)
+		static unsigned int getSize(const IndexFormat format)
 		{
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT:
-			case Hollow::INDEX_FORMAT::INT:
+			case Hollow::IndexFormat::UINT:
+			case Hollow::IndexFormat::INT:
 				return 4;
 			}
 		}
 
-		static GLuint getFormat(const INDEX_FORMAT format)
+		static GLuint getFormat(const IndexFormat format)
 		{
 			switch (format)
 			{
-			case Hollow::INDEX_FORMAT::UINT: 
+			case Hollow::IndexFormat::UINT:
 				return GL_UNSIGNED_INT;
-			case Hollow::INDEX_FORMAT::INT: 
+			case Hollow::IndexFormat::INT:
 				return GL_INT;
 			default: 
 				return GL_UNSIGNED_INT;

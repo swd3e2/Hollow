@@ -154,4 +154,10 @@ namespace Hollow {
 		PT_TRIANGELIST,
 		PT_TRIANGESTRIP,
 	};
+
+	enum IndexFormat
+	{
+		UINT,
+		INT
+	};
 }

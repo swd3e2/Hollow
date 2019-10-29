@@ -288,7 +288,7 @@ public:
 				2, 1, 3
 			};
 
-			quadIB = IndexBuffer::create({ indices, 6, Hollow::INDEX_FORMAT::UINT });
+			quadIB = IndexBuffer::create({ indices, 6, Hollow::IndexFormat::UINT });
 		}
 		{
 			std::vector<Hollow::Vertex> vertices;
