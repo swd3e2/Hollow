@@ -16,6 +16,11 @@ namespace Hollow {
 		bufferDesc.MiscFlags = 0;
 		bufferDesc.StructureByteStride = 0;
 		
+		if (desc.isDynamic) {
+			bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+			bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
+		}
+
 		D3D11_SUBRESOURCE_DATA bufferData;
 		bufferData.pSysMem = desc.data;
 		bufferData.SysMemPitch = 0;
@@ -42,6 +47,11 @@ namespace Hollow {
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;
 		bufferDesc.StructureByteStride = 0;
+
+		if (desc.isDynamic) {
+			bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+			bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
+		}
 
 		D3D11_SUBRESOURCE_DATA bufferData;
 		bufferData.pSysMem = desc.data;

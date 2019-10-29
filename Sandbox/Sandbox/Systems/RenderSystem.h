@@ -79,6 +79,7 @@ public:
 	double shadowTime;
 	double pickerTime;
 	double lightTime;
+	s_ptr<Hollow::VertexBuffer> lineVB;
 private:
 	RenderApi* renderer;
 private:
@@ -127,7 +128,6 @@ private:
 	s_ptr<Hollow::VertexBuffer>		quadVB;
 	s_ptr<Hollow::IndexBuffer>		quadIB;
 
-	s_ptr<Hollow::VertexBuffer> lineVB;
 
 	Vector4 AABBplane[6];
 	s_ptr<Hollow::VertexBuffer> lightVertexBuffer;
@@ -295,7 +295,13 @@ public:
 			vertices.push_back(Vertex(0.0f, 10.0f, 0.0f, 0.0f, 0.0f));
 			vertices.push_back(Vertex(0.0f, -10.0f, 0.0f, 0.0f, 1.0f));
 
-			lineVB = VertexBuffer::create({ vertices.data(), vertices.size(), sizeof(Vertex) });
+			Hollow::VERTEX_BUFFER_DESC desc;
+			desc.data = vertices.data();
+			desc.size = vertices.size();
+			desc.stride = sizeof(Vertex);
+			desc.isDynamic = true;
+
+			lineVB = VertexBuffer::create(desc);
 		}
 		std::tie(lightVertexBuffer, lightIndexBuffer) = getCube();
 

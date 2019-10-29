@@ -6,12 +6,18 @@ namespace Hollow {
 		OGLVertexBuffer* buffer = new OGLVertexBuffer();
 		buffer->mHardwareBuffer = std::make_shared<OGLHardwareBuffer>(desc.size, desc.stride);
 		OGLHardwareBuffer* hwBuffer = std::static_pointer_cast<OGLHardwareBuffer>(buffer->mHardwareBuffer).get();
+		hwBuffer->mIsDynamic = desc.isDynamic;
 
 		glGenVertexArrays(1, &hwBuffer->mVao);
 		glBindVertexArray(hwBuffer->mVao);
 
+		GLuint flags = 0;
+		if (desc.isDynamic) {
+			flags |= GL_DYNAMIC_STORAGE_BIT;
+		}
+
 		glCreateBuffers(1, &hwBuffer->mVbo);
-		glNamedBufferStorage(hwBuffer->mVbo, desc.size * desc.stride, desc.data, 0);
+		glNamedBufferStorage(hwBuffer->mVbo, desc.size * desc.stride, desc.data, flags);
 
 		glBindVertexArray(0);
 
@@ -25,8 +31,13 @@ namespace Hollow {
 		OGLHardwareBuffer* hwBuffer = std::static_pointer_cast<OGLHardwareBuffer>(buffer->mHardwareBuffer).get();
 		hwBuffer->format = OGLHelper::getFormat(desc.format);
 
+		GLuint flags = 0;
+		if (desc.isDynamic) {
+			flags |= GL_DYNAMIC_STORAGE_BIT;
+		}
+
 		glCreateBuffers(1, &hwBuffer->mVbo);
-		glNamedBufferStorage(hwBuffer->mVbo, desc.size * OGLHelper::getSize(desc.format), desc.data, 0);
+		glNamedBufferStorage(hwBuffer->mVbo, desc.size * OGLHelper::getSize(desc.format), desc.data, flags);
 
 		return s_ptr<IndexBuffer>(buffer);
 	}

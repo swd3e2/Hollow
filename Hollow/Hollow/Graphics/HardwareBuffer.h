@@ -6,9 +6,10 @@
 namespace Hollow {
 	struct VERTEX_BUFFER_DESC
 	{
-		void* data;
-		UINT32 stride;
-		UINT32 size;
+		void* data = 0;
+		UINT32 stride = 0;
+		UINT32 size = 0;
+		bool isDynamic = false;
 
 		VERTEX_BUFFER_DESC() = default;
 		VERTEX_BUFFER_DESC(void* data, size_t size, UINT32 stride) :
@@ -19,8 +20,9 @@ namespace Hollow {
 	struct INDEX_BUFFER_DESC
 	{
 		void* data = nullptr;
-		IndexFormat format;
-		UINT32 size;
+		IndexFormat format = IndexFormat::IFT_UINT;
+		UINT32 size = 0;
+		bool isDynamic = false;
 
 		INDEX_BUFFER_DESC() = default;
 		INDEX_BUFFER_DESC(void* data, size_t size, IndexFormat format) :
@@ -33,7 +35,7 @@ namespace Hollow {
 	protected:
 		UINT32 stride = 0;
 		UINT32 size = 0;
-		bool isDynamic = false;
+		bool mIsDynamic = false;
 	public:
 		HardwareBuffer(UINT32 size, UINT32 stride ) : size(size), stride(stride) {}
 		virtual ~HardwareBuffer() {}

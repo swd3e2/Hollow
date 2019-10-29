@@ -33,6 +33,15 @@ namespace GUI {
 			physMemUsed = pmc.WorkingSetSize;
 
 			ImGui::Begin("Renderer", NULL);
+
+			if (ImGui::Button("somebutton")) {
+				std::vector<Hollow::Vertex> vertices;
+				vertices.push_back(Vertex(0.0f, 100.0f, 0.0f, 0.0f, 0.0f));
+				vertices.push_back(Vertex(0.0f, -100.0f, 0.0f, 0.0f, 1.0f));
+
+				renderSystem->lineVB->update(vertices.data(), sizeof(Hollow::Vertex) * 2);
+			}
+
 			ImGui::Text(("Physical memory total: " + std::to_string(totalPhysMem / (1024 * 1024))).c_str());
 			ImGui::Text(("Physical memory usage: " + std::to_string(physMemUsed / (1024 * 1024))).c_str());
 

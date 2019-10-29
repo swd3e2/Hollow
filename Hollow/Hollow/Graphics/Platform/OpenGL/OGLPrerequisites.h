@@ -15,4 +15,5 @@
 
 namespace Hollow {
 	class OGLRenderApi;
+	class OGLHardwareBufferManager;
 }

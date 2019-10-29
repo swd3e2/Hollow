@@ -2,6 +2,8 @@
 
 #include "D3D11Prerequisites.h"
 #include "Hollow/Graphics/HardwareBuffer.h"
+#include "D3D11RenderApi.h"
+#include "D3D11Context.h"
 
 namespace Hollow
 {
@@ -18,7 +20,14 @@ namespace Hollow
 
 		virtual void update(void* data, const int size) override
 		{
+			D3D11RenderApi* r = static_cast<D3D11RenderApi*>(RenderApi::instance());
+			ID3D11Device* device = r->getContext().getDevice();
+			ID3D11DeviceContext* deviceContext = r->getContext().getDeviceContext();
 
+			D3D11_MAPPED_SUBRESOURCE mappedResource;
+			deviceContext->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			CopyMemory(mappedResource.pData, data, size);
+			deviceContext->Unmap(m_Buffer, 0);
 		}
 
 		ID3D11Buffer* get() const { return m_Buffer; }
