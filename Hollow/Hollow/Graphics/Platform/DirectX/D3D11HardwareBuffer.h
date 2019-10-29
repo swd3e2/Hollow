@@ -16,6 +16,11 @@ namespace Hollow
 
 		virtual ~D3D11HardwareBuffer() { SAFE_RELEASE(m_Buffer); }
 
+		virtual void update(void* data, const int size) override
+		{
+
+		}
+
 		ID3D11Buffer* get() const { return m_Buffer; }
 		ID3D11Buffer* const * getAddressOf() const { return &m_Buffer; }
 	};

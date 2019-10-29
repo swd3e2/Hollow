@@ -64,8 +64,8 @@ namespace Hollow {
 		{
 			switch (format)
 			{
-			case Hollow::IndexFormat::UINT:
-			case Hollow::IndexFormat::INT:
+			case Hollow::IndexFormat::IFT_INT:
+			case Hollow::IndexFormat::IFT_UINT:
 				return 4;
 			}
 		}

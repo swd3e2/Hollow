@@ -41,7 +41,7 @@ namespace Hollow {
 
 		return std::make_pair<s_ptr<VertexBuffer>, s_ptr<IndexBuffer>>(
 			Hollow::VertexBuffer::create({ cube_vertices, 8, sizeof(Hollow::Vertex) }), 
-			Hollow::HardwareBufferManager::instance()->create({ cube_elements , 36, Hollow::IndexFormat::UINT })
+			Hollow::HardwareBufferManager::instance()->create({ cube_elements , 36, Hollow::IndexFormat::IFT_UINT })
 		);
 	}
 }

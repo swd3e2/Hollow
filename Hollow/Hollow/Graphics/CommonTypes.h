@@ -155,9 +155,9 @@ namespace Hollow {
 		PT_TRIANGESTRIP,
 	};
 
-	enum IndexFormat
+	enum class IndexFormat
 	{
-		UINT,
-		INT
+		IFT_UINT,
+		IFT_INT
 	};
 }

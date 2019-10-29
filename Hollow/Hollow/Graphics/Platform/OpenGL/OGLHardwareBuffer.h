@@ -15,6 +15,12 @@ namespace Hollow {
 		GLuint format;
 	public:
 		OGLHardwareBuffer(size_t size, size_t stride) : HardwareBuffer(size, stride) {}
+
+		virtual void update(void* data, const int size) override
+		{
+
+		}
+
 		virtual ~OGLHardwareBuffer()
 		{
 			glDeleteBuffers(1, &mVbo);

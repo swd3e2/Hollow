@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hollow/Platform.h"
+#include "CommonTypes.h"
 
 namespace Hollow {
 	struct VERTEX_BUFFER_DESC
@@ -37,7 +38,7 @@ namespace Hollow {
 		HardwareBuffer(UINT32 size, UINT32 stride ) : size(size), stride(stride) {}
 		virtual ~HardwareBuffer() {}
 
-		bool isDynamic() const { return isDynamic; }
+		virtual void update(void* data, const int size) = 0;
 		inline UINT32 getSize() const { return size; }
 		inline UINT32 getStride() const { return stride; }
 		inline UINT32* getStridePtr() { return &stride; }
@@ -46,18 +47,24 @@ namespace Hollow {
 	class IndexBuffer
 	{
 	public:
-		HardwareBuffer* mHardwareBuffer;
+		s_ptr<HardwareBuffer> mHardwareBuffer;
 	public:
+		void update(void* data, const int size)
+		{
+			mHardwareBuffer->update(data, size);
+		}
 		static s_ptr<IndexBuffer> create(const INDEX_BUFFER_DESC& desc);
-		virtual ~IndexBuffer() { delete mHardwareBuffer; }
 	};
 
 	class VertexBuffer
 	{
 	public:
-		HardwareBuffer* mHardwareBuffer;
+		s_ptr<HardwareBuffer> mHardwareBuffer;
 	public:
+		void update(void* data, const int size)
+		{
+			mHardwareBuffer->update(data, size);
+		}
 		static s_ptr<VertexBuffer> create(const VERTEX_BUFFER_DESC& desc);
-		virtual ~VertexBuffer() { delete mHardwareBuffer; }
 	};
 }

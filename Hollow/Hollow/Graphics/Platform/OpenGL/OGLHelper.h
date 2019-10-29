@@ -57,8 +57,8 @@ namespace Hollow {
 		{
 			switch (format)
 			{
-			case Hollow::IndexFormat::UINT:
-			case Hollow::IndexFormat::INT:
+			case Hollow::IndexFormat::IFT_UINT:
+			case Hollow::IndexFormat::IFT_INT:
 				return 4;
 			}
 		}
@@ -67,9 +67,9 @@ namespace Hollow {
 		{
 			switch (format)
 			{
-			case Hollow::IndexFormat::UINT:
+			case Hollow::IndexFormat::IFT_UINT:
 				return GL_UNSIGNED_INT;
-			case Hollow::IndexFormat::INT:
+			case Hollow::IndexFormat::IFT_INT:
 				return GL_INT;
 			default: 
 				return GL_UNSIGNED_INT;

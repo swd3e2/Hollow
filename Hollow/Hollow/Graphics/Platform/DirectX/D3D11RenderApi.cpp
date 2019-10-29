@@ -166,15 +166,15 @@ namespace Hollow {
 	void D3D11RenderApi::setIndexBuffer(const s_ptr<IndexBuffer>& buffer)
 	{
 		s_ptr<D3D11IndexBuffer> buff = std::static_pointer_cast<D3D11IndexBuffer>(buffer);
-		context->getDeviceContext()->IASetIndexBuffer(static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->get(), DXGI_FORMAT_R32_UINT, 0);
+		context->getDeviceContext()->IASetIndexBuffer(std::static_pointer_cast<D3D11HardwareBuffer>(buff->mHardwareBuffer)->get(), DXGI_FORMAT_R32_UINT, 0);
 	}
 
 	void D3D11RenderApi::setVertexBuffer(const s_ptr<VertexBuffer>& buffer)
 	{
 		s_ptr<D3D11VertexBuffer> buff = std::static_pointer_cast<D3D11VertexBuffer>(buffer);
 		context->getDeviceContext()->IASetVertexBuffers(0, 1, 
-			static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getAddressOf(), 
-			static_cast<D3D11HardwareBuffer*>(buff->mHardwareBuffer)->getStridePtr(), 
+			std::static_pointer_cast<D3D11HardwareBuffer>(buff->mHardwareBuffer)->getAddressOf(), 
+			std::static_pointer_cast<D3D11HardwareBuffer>(buff->mHardwareBuffer)->getStridePtr(),
 			&this->offset
 		);
 	}
