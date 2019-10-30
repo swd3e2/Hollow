@@ -10,6 +10,7 @@
 #include "EventDelegate.h"
 #include <vector>
 #include "Hollow/Core/CModule.h"
+#include <mutex>
 
 namespace Hollow {
 	class EventSystem : public CModule<EventSystem>
@@ -17,6 +18,7 @@ namespace Hollow {
 	private:
 		std::vector<IEventDelegate*>  eventListeners;
 		std::vector<IEvent*> events;
+		std::mutex addMutex;
 	public:
 		template<class T>
 		void addEventListener(IEventListener* listener, void (T::* func)(IEvent*), eventId id)
@@ -34,11 +36,14 @@ namespace Hollow {
 		 */
 		void addEvent(IEvent* event)
 		{
+			addMutex.lock();
 			events.push_back(event);
+			addMutex.unlock();
 		}
 
 		void dispatch()
 		{
+			addMutex.lock();
 			for (auto& ev : events) {
 				for (auto& it : eventListeners) {
 					if (it != nullptr)
@@ -49,6 +54,7 @@ namespace Hollow {
 				delete ev;
 			}
 			events.clear();
+			addMutex.unlock();
 		}
 	};
 }

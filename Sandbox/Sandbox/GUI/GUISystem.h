@@ -12,8 +12,6 @@
 #include "Hollow/Core/DelayedTaskManager.h"
 #include "Hollow/Graphics/Platform/DirectX/D3D11Context.h"
 
-using namespace Hollow;
-
 enum DrawTypes {
 	Debug = 0,
 	Default = 1
@@ -33,7 +31,7 @@ public:
 	GUI::HierarchyTab hierarchyTab;
 	GUI::RendererTab rendererTab;
 
-	GUISystem(Window* window, RenderApi* renderer)
+	GUISystem(Hollow::Window* window, Hollow::RenderApi* renderer)
 	{
 		Hollow::EventSystem::instance()->addEventListener(this, &GUISystem::onChangePickedMesh, ChangeSelectedEntity::getStaticEventId());
 
@@ -47,11 +45,11 @@ public:
 		ImFont* pFont = io.Fonts->AddFontFromFileTTF("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Roboto-Medium.ttf", 16.0f);
 
 		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-			ImGui_ImplWin32_Init(static_cast<D3D11Win32Window*>(window)->getHWND());
-			D3D11Context& context = static_cast<D3D11RenderApi*>(renderer)->getContext();
+			ImGui_ImplWin32_Init(static_cast<Hollow::D3D11Win32Window*>(window)->getHWND());
+			Hollow::D3D11Context& context = static_cast<Hollow::D3D11RenderApi*>(renderer)->getContext();
 			ImGui_ImplDX11_Init(context.getDevice(), context.getDeviceContext());
 		} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-			result = ImGui_ImplWin32_Init(static_cast<OGLWin32Window*>(window)->getHWND());
+			result = ImGui_ImplWin32_Init(static_cast<Hollow::OGLWin32Window*>(window)->getHWND());
 			const char* glsl_version = "#version 460";
 			result = ImGui_ImplOpenGL3_Init(glsl_version);
 		}
@@ -126,7 +124,7 @@ public:
 				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Exit")) {
-				Window::instance()->setIsClosed(true);
+				Hollow::Window::instance()->setIsClosed(true);
 			}
 			ImGui::EndMenuBar();
 		}

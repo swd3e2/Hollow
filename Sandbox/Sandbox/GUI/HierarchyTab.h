@@ -12,8 +12,6 @@
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/PhysicsComponent.h"
 
-using namespace Hollow;
-
 namespace GUI {
 	class HierarchyTab
 	{
@@ -22,7 +20,7 @@ namespace GUI {
 		Terrain* selectedTerrain;
 		Light* selectedLight;
 		RenderableObject* selectedRenderable;
-		Material* selectedMaterial;
+		Hollow::Material* selectedMaterial;
 		std::string filename;
 		bool openEntityCreationPopup = false;
 		char buffer[100];
@@ -44,17 +42,17 @@ namespace GUI {
 
 			if (ImGui::BeginPopupModal("Entity creation")) {
 				if (ImGui::Button("GameObject")) {
-					EntityManager::instance()->create<GameObject>();
+					Hollow::EntityManager::instance()->create<GameObject>();
 					ImGui::CloseCurrentPopup();
 					openEntityCreationPopup = false;
 				}
 				if (ImGui::Button("Terrain")) {
-					EntityManager::instance()->create<Terrain>();
+					Hollow::EntityManager::instance()->create<Terrain>();
 					ImGui::CloseCurrentPopup();
 					openEntityCreationPopup = false;
 				}
 				if (ImGui::Button("Light")) {
-					EntityManager::instance()->create<Light>();
+					Hollow::EntityManager::instance()->create<Light>();
 					ImGui::CloseCurrentPopup();
 					openEntityCreationPopup = false;
 				}
@@ -69,7 +67,7 @@ namespace GUI {
 
 			ImGui::BulletText("GameObjects");
 			ImGui::Indent();
-			for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+			for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 				if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(counter++)).c_str())) {
 					selectedGameObject = &entity;
 					selectedTerrain = nullptr;
@@ -105,7 +103,7 @@ namespace GUI {
 			counter = 0;
 			ImGui::BulletText("Terrains");
 			ImGui::Indent();
-			for (auto& terrain : EntityManager::instance()->container<Terrain>()) {
+			for (auto& terrain : Hollow::EntityManager::instance()->container<Terrain>()) {
 				if (ImGui::Selectable(("Terrain " + std::to_string(counter++)).c_str())) {
 					selectedGameObject = nullptr;
 					selectedTerrain = &terrain;
@@ -129,7 +127,7 @@ namespace GUI {
 			counter = 0;
 			ImGui::BulletText("Lights");
 			ImGui::Indent();
-			for (auto& light : EntityManager::instance()->container<Light>()) {
+			for (auto& light : Hollow::EntityManager::instance()->container<Light>()) {
 				if (ImGui::Selectable(("Light " + std::to_string(counter++)).c_str())) {
 					selectedGameObject = nullptr;
 					selectedTerrain = nullptr;
@@ -268,9 +266,9 @@ namespace GUI {
 				ImGui::Text("Diffuse texture");
 				if (selectedMaterial->diffuseTexture != nullptr) {
 					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
+						ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(selectedMaterial->diffuseTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
+						ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(selectedMaterial->diffuseTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();
 				}
@@ -288,10 +286,10 @@ namespace GUI {
 				ImGui::Text("Normal texture");
 				if (selectedMaterial->normalTexture != nullptr) {
 					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
+						ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					}
 					else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
+						ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
 					}
 
 					ImGui::SameLine();
@@ -308,10 +306,10 @@ namespace GUI {
 				ImGui::Text("Specular texture");
 				if (selectedMaterial->specularTexture != nullptr) {
 					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-						ImGui::Image(std::static_pointer_cast<D3D11Texture>(selectedMaterial->specularTexture)->m_TextureShaderResource, ImVec2(100, 100));
+						ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(selectedMaterial->specularTexture)->m_TextureShaderResource, ImVec2(100, 100));
 					}
 					else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-						ImGui::Image((void*)std::static_pointer_cast<OGLTexture>(selectedMaterial->specularTexture)->textureId, ImVec2(100, 100));
+						ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(selectedMaterial->specularTexture)->textureId, ImVec2(100, 100));
 					}
 					ImGui::SameLine();
 				}

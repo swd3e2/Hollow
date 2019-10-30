@@ -13,7 +13,6 @@
 #include "Hollow/Common/Log.h"
 
 using namespace DirectX;
-using namespace Hollow;
 
 struct SimpleFieldVertex
 {
@@ -36,12 +35,12 @@ private:
 
 	std::vector<SimpleFieldVertex> field;
 public:
-	Camera* camera;
+	Hollow::Camera* camera;
 	TransformComponent* posComponent;
 	MoveComponent * moveComponent;
 	SelectComponent* selectComponent;
 public:
-	MoveSystem(Camera* camera = nullptr) :
+	MoveSystem(Hollow::Camera* camera = nullptr) :
 		camera(camera)
 	{
 		field.push_back({ XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(-FIELD_SIZE, 0, FIELD_SIZE, 0), XMFLOAT4(FIELD_SIZE, 0, FIELD_SIZE, 0) });

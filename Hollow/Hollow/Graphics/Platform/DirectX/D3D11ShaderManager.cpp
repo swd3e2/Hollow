@@ -45,6 +45,13 @@ namespace Hollow {
 
 	HRESULT D3D11ShaderManager::compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob)
 	{
+		std::string shaderCode;
+		if (desc.content.size()) {
+			shaderCode = desc.content;
+		} else {
+			shaderCode = FileSystem::getFileContent(desc.filename);
+		}
+
 		ID3DBlob* shaderBlob = nullptr;
 		ID3DBlob* errorBlob = nullptr;
 
@@ -53,7 +60,7 @@ namespace Hollow {
 			{ nullptr, nullptr }
 		};
 
-		HRESULT hr = D3DCompile(desc.content.data(), desc.content.size(), NULL, defines, NULL, 
+		HRESULT hr = D3DCompile(shaderCode.c_str(), shaderCode.size(), NULL, defines, NULL,
 			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0, &shaderBlob, &errorBlob);
 

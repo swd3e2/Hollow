@@ -6,8 +6,6 @@
 #include "Sandbox/Components/TransformComponent.h"
 #include "Sandbox/Components/CollisionComponent.h"
 
-using namespace Hollow;
-
 class CollisionSystem : public System<CollisionSystem>
 {
 private:

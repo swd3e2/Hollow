@@ -12,9 +12,10 @@ namespace Hollow {
 		ShaderType type;
 		std::string content;
 		std::string entryPoint;
+		std::string filename;
 
-		SHADER_DESC(ShaderType type, const std::string& content, const std::string& entryPoint) :
-			type(type), content(content), entryPoint(entryPoint)
+		SHADER_DESC(ShaderType type, const std::string& filename, const std::string& entryPoint) :
+			type(type), filename(filename), entryPoint(entryPoint)
 		{}
 	};
 

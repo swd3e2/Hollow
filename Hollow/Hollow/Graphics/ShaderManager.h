@@ -7,6 +7,7 @@
 #include "Hollow/Common/Log.h"
 #include "Shader.h"
 #include "ShaderPipeline.h"
+#include "Hollow/Common/FileSystem.h"
 
 namespace Hollow {
 	class ShaderManager : public CModule<ShaderManager>

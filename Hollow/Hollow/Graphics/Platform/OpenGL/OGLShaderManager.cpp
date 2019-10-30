@@ -4,12 +4,19 @@ namespace Hollow {
 	s_ptr<Shader> OGLShaderManager::create(const SHADER_DESC& desc)
 	{
 		OGLShader* shader = new OGLShader();
-		const char* shaderCode = desc.content.c_str();
+
+		std::string shaderCode;
+		if (desc.content.size()) {
+			shaderCode = desc.content;
+		} else {
+			shaderCode = FileSystem::getFileContent(desc.filename);
+		}
+		const char* charShaderCode = shaderCode.c_str();
 
 		switch (desc.type)
 		{
 		case ShaderType::ST_VERTEX: {
-			shader->shaderId = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &shaderCode);
+			shader->shaderId = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &charShaderCode);
 			getError(shader->shaderId);
 		} break;
 		case ShaderType::ST_PIXEL: {
@@ -17,7 +24,7 @@ namespace Hollow {
 			int size = 0;
 			std::unordered_map<std::string, int> textures;
 
-			const char* entrance = strstr(shaderCode, "uniform sampler2D");
+			const char* entrance = strstr(charShaderCode, "uniform sampler2D");
 			while (entrance != nullptr)
 			{
 				entrance += strlen("uniform sampler2D") + 1; // skip "uniform sampler2D" and space
@@ -39,7 +46,7 @@ namespace Hollow {
 				entrance = strstr(entrance, "uniform sampler2D");
 			}
 
-			entrance = strstr(shaderCode, "uniform samplerCube");
+			entrance = strstr(charShaderCode, "uniform samplerCube");
 			while (entrance != nullptr)
 			{
 				entrance += strlen("uniform samplerCube") + 1; // skip "uniform samplerCube" and space
@@ -63,7 +70,7 @@ namespace Hollow {
 				entrance = strstr(entrance, "uniform samplerCube");
 			}
 
-			shader->shaderId = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &shaderCode);
+			shader->shaderId = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &charShaderCode);
 
 			if (!getError(shader->shaderId)) {
 				for (auto& it : textures) {
@@ -92,20 +99,6 @@ namespace Hollow {
 			pipeline->pixelShader = desc.pixelShader;
 			int pixelShader = std::static_pointer_cast<OGLShader>(desc.pixelShader)->shaderId;
 			glUseProgramStages(pipeline->pipelineId, GL_FRAGMENT_SHADER_BIT, pixelShader);
-
-			/*glActiveShaderProgram(pipeline->pipelineId, pixelShader);
-
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex0"), 0);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex1"), 1);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex2"), 2);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex3"), 3);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex4"), 4);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex5"), 5);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex6"), 6);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex7"), 7);
-			glProgramUniform1i(pixelShader, glGetUniformLocation(pixelShader, "tex8"), 8);
-
-			glActiveShaderProgram(pipeline->pipelineId, 0);*/
 		}
 
 		if (desc.geometryShader != nullptr)
