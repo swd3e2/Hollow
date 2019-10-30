@@ -12,10 +12,8 @@ namespace Hollow {
 	public:
 		inline static std::wstring toWideString(const char* string)
 		{
-			std::wstring result;
-			
 			size_t size = strlen(string) + 1;
-			result.reserve(size);
+			std::wstring result(size, 0);
 
 			size_t outSize;
 			mbstowcs_s(&outSize, result.data(), size, string, size - 1);
@@ -25,9 +23,14 @@ namespace Hollow {
 
 		inline static std::string toString(wchar_t* string)
 		{
-			std::string result;
-			size_t size = wcslen(string) + 1;
-			result.reserve(size);
+			size_t size = (wcslen(string) / 2);
+			return toString(string, size);
+		}
+
+		inline static std::string toString(wchar_t* string, int size)
+		{
+			size += 1;
+			std::string result(size, 0);
 
 			size_t outSize;
 			wcstombs_s(&outSize, result.data(), size, string, size - 1);
