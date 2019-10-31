@@ -37,6 +37,7 @@
     <ClInclude Include="Sandbox\Entities\Terrain.h" />
     <ClInclude Include="Sandbox\Events.h" />
     <ClInclude Include="Sandbox\Events\FileChangeEvent.h" />
+    <ClInclude Include="Sandbox\FileSystemNotifier.h" />
     <ClInclude Include="Sandbox\Graphics\Shadow.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
     <ClInclude Include="Sandbox\GUI\GUISystem.h" />

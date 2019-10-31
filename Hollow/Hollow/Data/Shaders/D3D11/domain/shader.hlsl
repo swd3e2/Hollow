@@ -3,7 +3,7 @@ struct DomainOut
 	float4 pos     : SV_POSITION;
 	float2 texCoord      : TEXCOORD;
 };
-
+s
 struct PatchTess
 {
 	float EdgeTess[3] : SV_TessFactor;
@@ -22,7 +22,7 @@ cbuffer ConstantBuffer : register(b0)
 	float gMaxTessDistance;
 	float gMinTessDistance;
 	float gMinTessFactor;
-	float gMaxTessFactor;
+	float gMaxTessFactor;s
 }
 
 cbuffer ConstantBuffer : register(b1)

@@ -10,28 +10,28 @@
 class ShaderManager : public Hollow::IEventListener
 {
 public:
-	std::unordered_map<std::string, Hollow::s_ptr<Hollow::Shader>> vertexShaders;
-	std::unordered_map<std::string, Hollow::s_ptr<Hollow::Shader>> pixelShaders;
+	std::string baseShaderFolder;
+	std::unordered_map<std::string, Hollow::s_ptr<Hollow::Shader>> shaders;
 public:
 	ShaderManager()
 	{
-		Hollow::EventSystem::instance()->addEventListener(this, &ShaderManager::update, FileChangeEvent::getStaticEventId());
+		baseShaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders";
+		Hollow::EventSystem::instance()->addEventListener(this, &ShaderManager::update, FileChangeEvent::staticGetId());
 	}
 
 	void update(Hollow::IEvent* event) 
 	{
 		FileChangeEvent* changeEvent = static_cast<FileChangeEvent*>(event);
+		//Hollow::ShaderManager::instance()->reload();
 		HW_INFO("file has changed {}", changeEvent->filename.c_str());
 	}
 
 	Hollow::s_ptr<Hollow::Shader> create(const Hollow::SHADER_DESC& desc)
 	{
 		Hollow::s_ptr<Hollow::Shader> shader = Hollow::Shader::create(desc);
-
-		if (desc.type == Hollow::ShaderType::ST_VERTEX) {
-			vertexShaders[desc.filename] = shader;
-		} else if (desc.type == Hollow::ShaderType::ST_PIXEL) {
-			pixelShaders[desc.filename] = shader;
+		if (desc.filename.size() > 0) {
+			shaders[desc.filename] = shader;
 		}
+		return shader;
 	}
 };

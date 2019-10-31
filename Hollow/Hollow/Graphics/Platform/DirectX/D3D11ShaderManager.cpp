@@ -12,6 +12,8 @@ namespace Hollow {
 	s_ptr<Shader> D3D11ShaderManager::create(const SHADER_DESC& desc)
 	{
 		D3D11Shader* shader = new D3D11Shader();
+		shader->entryPoint = desc.entryPoint;
+		shader->filepath = desc.filename.size() > 0 ? desc.filename : "";
 		ID3DBlob* shaderBlob = nullptr;
 
 		if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
@@ -26,9 +28,23 @@ namespace Hollow {
 		return s_ptr<Shader>(shader);
 	}
 
-	void D3D11ShaderManager::reload(const s_ptr<Shader>& shader, const std::string& path)
+	void D3D11ShaderManager::reload(const s_ptr<Shader>& shader, std::string shaderContent)
 	{
+		SHADER_DESC desc;
+		desc.content = shaderContent.size() > 0 ? shaderContent : Hollow::FileSystem::getFileContent(shader->filepath);
+		desc.entryPoint = shader->entryPoint;
+		desc.type = shader->type;
 
+		ID3DBlob* shaderBlob = nullptr;
+
+		if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
+			if (FAILED(createShader(desc, shaderBlob, &std::static_pointer_cast<D3D11Shader>(shader)->m_Shader))) {
+				HW_ERROR("Failed to create shader");
+			}
+			shaderBlob->Release();
+		} else {
+			HW_ERROR("Failed to compile shader");
+		}
 	}
 
 	s_ptr<ShaderPipeline> D3D11ShaderManager::create(const SHADER_PIPELINE_DESC& desc)

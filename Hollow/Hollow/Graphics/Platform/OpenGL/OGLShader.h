@@ -11,8 +11,8 @@ namespace Hollow {
 	class OGLShader : public Shader
 	{
 	public:
-		int shaderId;
-		int prevShaderId;
+		GLuint shaderId;
+		GLuint prevShaderId;
 	public:
 		~OGLShader()
 		{

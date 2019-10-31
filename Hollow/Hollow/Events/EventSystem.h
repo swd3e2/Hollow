@@ -16,19 +16,14 @@ namespace Hollow {
 	class EventSystem : public CModule<EventSystem>
 	{
 	private:
-		std::vector<IEventDelegate*>  eventListeners;
+		std::unordered_map<int, std::vector<IEventDelegate*>> eventListeners;
 		std::vector<IEvent*> events;
 		std::mutex addMutex;
 	public:
 		template<class T>
 		void addEventListener(IEventListener* listener, void (T::* func)(IEvent*), eventId id)
 		{
-			eventListeners.push_back((IEventDelegate*)new EventDelegate<T>(listener, func, id));
-		}
-
-		void addEventListener(IEventDelegate* delegate)
-		{
-			eventListeners.push_back(delegate);
+			eventListeners[id].push_back(new EventDelegate<T>(listener, func, id));
 		}
 
 		/*
@@ -45,11 +40,11 @@ namespace Hollow {
 		{
 			addMutex.lock();
 			for (auto& ev : events) {
-				for (auto& it : eventListeners) {
-					if (it != nullptr)
-						if (ev->getEventId() == it->getSubscribedEventId()) {
-							it->invoke(ev);
-						}
+				const int eventId = ev->getId();
+				if (eventListeners.find(eventId) != eventListeners.end()) {
+					for (auto& it : eventListeners[eventId]) {
+						it->invoke(ev);
+					}
 				}
 				delete ev;
 			}

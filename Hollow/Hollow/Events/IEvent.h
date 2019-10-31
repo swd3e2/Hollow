@@ -9,7 +9,7 @@ namespace Hollow {
 	class IEvent
 	{
 	public:
-		virtual eventId getEventId() = 0;
+		virtual eventId getId() = 0;
 	};
 }
 

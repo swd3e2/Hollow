@@ -26,6 +26,7 @@
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/AnimationComponent.h"
 #include "Sandbox/Profiler.h"
+#include "Sandbox/ShaderManager.h"
 
 struct WVP
 {
@@ -145,6 +146,8 @@ private:
 	Hollow::s_ptr<Hollow::SamplerState> sampler;
 	Hollow::s_ptr<Hollow::SamplerState> renderTargetSampler;
 	Hollow::Material* defaultMaterial;
+
+	ShaderManager shaderManager;
 public:
 	RenderSystem(Hollow::RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -193,50 +196,50 @@ public:
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/gbuffer" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/gbuffer" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/gbuffer" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/gbuffer" + shaderExt, "main" });
 
 				gBufferPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/depth" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/depth" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/depth" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/depth" + shaderExt, "main" });
 
 				depthPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/light" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/light" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/light" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/light" + shaderExt, "main" });
 
 				lightPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/SkyMap" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/SkyMap" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/SkyMap" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/SkyMap" + shaderExt, "main" });
 
 				skyMapPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/terrain" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/terrain" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/terrain" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/terrain" + shaderExt, "main" });
 
 				terrainPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/picker" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/picker" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/picker" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/picker" + shaderExt, "main" });
 
 				pickerPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 			{
 				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
-				pipelineDesc.vertexShader = Hollow::Shader::create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/flatColor" + shaderExt, "main" });
-				pipelineDesc.pixelShader = Hollow::Shader::create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/flatColor" + shaderExt, "main" });
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/flatColor" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/flatColor" + shaderExt, "main" });
 
 				flatColor = Hollow::ShaderPipeline::create(pipelineDesc);
 			}

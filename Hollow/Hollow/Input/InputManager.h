@@ -47,9 +47,9 @@ namespace Hollow {
 				MouseButton[i] = false;
 			}
 
-			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonReleased, ButtonReleasedEvent::getStaticEventId()));
-			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onButtonPressed, ButtonPressedEvent::getStaticEventId()));
-			EventSystem::instance()->addEventListener(new EventDelegate<InputManager>(this, &InputManager::onMouseMove, MouseMoveEvent::getStaticEventId()));
+			EventSystem::instance()->addEventListener(this, &InputManager::onButtonReleased, ButtonReleasedEvent::staticGetId());
+			EventSystem::instance()->addEventListener(this, &InputManager::onButtonPressed, ButtonPressedEvent::staticGetId());
+			EventSystem::instance()->addEventListener(this, &InputManager::onMouseMove, MouseMoveEvent::staticGetId());
 		}
 
 		void onMouseMove(IEvent* ev)

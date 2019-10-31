@@ -21,7 +21,7 @@ namespace Hollow {
 
 		virtual s_ptr<Shader> create(const SHADER_DESC& desc) override;
 		virtual s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc) override;
-		virtual void reload(const s_ptr<Shader>& shader, const std::string& path = "") override;
+		virtual void reload(const s_ptr<Shader>& shader, std::string shaderContent = "") override;
 	private:
 		HRESULT compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob);
 		HRESULT createShader(const SHADER_DESC& desc, ID3DBlob* blob, ID3D11DeviceChild** shader);

@@ -33,7 +33,7 @@ public:
 
 	GUISystem(Hollow::Window* window, Hollow::RenderApi* renderer)
 	{
-		Hollow::EventSystem::instance()->addEventListener(this, &GUISystem::onChangePickedMesh, ChangeSelectedEntity::getStaticEventId());
+		Hollow::EventSystem::instance()->addEventListener(this, &GUISystem::onChangePickedMesh, ChangeSelectedEntity::staticGetId());
 
 		bool result = true;
 		// Setup Dear ImGui context
