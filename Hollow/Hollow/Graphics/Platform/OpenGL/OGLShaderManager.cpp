@@ -82,42 +82,21 @@ namespace Hollow {
 		return s_ptr<Shader>(shader);
 	}
 
+	void OGLShaderManager::reload(const s_ptr<Shader>& shader, const std::string& path)
+	{
+
+	}
+
 	s_ptr<ShaderPipeline> Hollow::OGLShaderManager::create(const SHADER_PIPELINE_DESC& desc)
 	{
 		OGLShaderPipeline* pipeline = new OGLShaderPipeline();
 		glGenProgramPipelines(1, &pipeline->pipelineId);
 
-		if (desc.vertexShader != nullptr)
-		{
-			pipeline->vertexShader = desc.vertexShader;
-			glUseProgramStages(pipeline->pipelineId, GL_VERTEX_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.vertexShader)->shaderId);
-			getError(pipeline->pipelineId);
-		}
-
-		if (desc.pixelShader != nullptr)
-		{
-			pipeline->pixelShader = desc.pixelShader;
-			int pixelShader = std::static_pointer_cast<OGLShader>(desc.pixelShader)->shaderId;
-			glUseProgramStages(pipeline->pipelineId, GL_FRAGMENT_SHADER_BIT, pixelShader);
-		}
-
-		if (desc.geometryShader != nullptr)
-		{
-			pipeline->geometryShader = desc.geometryShader;
-			glUseProgramStages(pipeline->pipelineId, GL_GEOMETRY_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.geometryShader)->shaderId);
-		}
-
-		if (desc.hullShader != nullptr)
-		{
-			pipeline->hullShader = desc.hullShader;
-			glUseProgramStages(pipeline->pipelineId, GL_TESS_CONTROL_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.hullShader)->shaderId);
-		}
-
-		if (desc.domainShader != nullptr)
-		{
-			pipeline->domainShader = desc.domainShader;
-			glUseProgramStages(pipeline->pipelineId, GL_TESS_EVALUATION_SHADER_BIT, std::static_pointer_cast<OGLShader>(desc.domainShader)->shaderId);
-		}
+		pipeline->setVertexShader(desc.vertexShader);
+		pipeline->setPixelShader(desc.pixelShader);
+		pipeline->setGeometryShader(desc.geometryShader);
+		pipeline->setHullShader(desc.hullShader);
+		pipeline->setDomainShader(desc.domainShader);
 
 		return s_ptr<ShaderPipeline>(pipeline);
 	}

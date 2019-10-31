@@ -15,7 +15,7 @@ public:
 public:
 	ShaderManager()
 	{
-		Hollow::EventSystem::instance()->addEventListener(this, &update, FileChangeEvent::getStaticEventId());
+		Hollow::EventSystem::instance()->addEventListener(this, &ShaderManager::update, FileChangeEvent::getStaticEventId());
 	}
 
 	void update(Hollow::IEvent* event) 

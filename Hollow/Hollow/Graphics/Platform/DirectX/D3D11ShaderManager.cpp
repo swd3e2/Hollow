@@ -14,33 +14,34 @@ namespace Hollow {
 		D3D11Shader* shader = new D3D11Shader();
 		ID3DBlob* shaderBlob = nullptr;
 
-		if (!FAILED(compileShaderInternal(desc, &shaderBlob))) 
-		{
-			if (FAILED(createShader(desc, shaderBlob, &shader->m_Shader)))
-			{
+		if (!FAILED(compileShaderInternal(desc, &shaderBlob))) {
+			if (FAILED(createShader(desc, shaderBlob, &shader->m_Shader))) {
 				HW_ERROR("Failed to create shader");
 			}
 			shaderBlob->Release();
-		}
-		else 
-		{
+		} else {
 			HW_ERROR("Failed to compile shader");
 		}
 
 		return s_ptr<Shader>(shader);
 	}
 
+	void D3D11ShaderManager::reload(const s_ptr<Shader>& shader, const std::string& path)
+	{
+
+	}
+
 	s_ptr<ShaderPipeline> D3D11ShaderManager::create(const SHADER_PIPELINE_DESC& desc)
 	{
-		D3D11ShaderPipeline* shader = new D3D11ShaderPipeline();
+		D3D11ShaderPipeline* pipeline = new D3D11ShaderPipeline();
 
-		shader->vertexShader = desc.vertexShader;
-		shader->pixelShader = desc.pixelShader;
-		shader->geometryShader = desc.geometryShader;
-		shader->hullShader = desc.hullShader;
-		shader->domainShader = desc.domainShader;
+		pipeline->setVertexShader(desc.vertexShader);
+		pipeline->setPixelShader(desc.pixelShader);
+		pipeline->setGeometryShader(desc.geometryShader);
+		pipeline->setHullShader(desc.hullShader);
+		pipeline->setDomainShader(desc.domainShader);
 
-		return s_ptr<ShaderPipeline>(shader);
+		return s_ptr<ShaderPipeline>(pipeline);
 	}
 
 	HRESULT D3D11ShaderManager::compileShaderInternal(const SHADER_DESC& desc, ID3DBlob** blob)

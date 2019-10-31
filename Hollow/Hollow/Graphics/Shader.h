@@ -7,6 +7,8 @@
 #include "Hollow/Platform.h"
 
 namespace Hollow {
+	class ShaderPipeline;
+
 	struct SHADER_DESC
 	{
 		ShaderType type;
@@ -24,6 +26,7 @@ namespace Hollow {
 	public:
 		ShaderType type;
 		std::string shaderContent;
+		ShaderPipeline* parent; // @todo: do we need smart ptr here?
 	public:
 		static s_ptr<Shader> create(const SHADER_DESC& desc);
 		virtual void release() = 0;
