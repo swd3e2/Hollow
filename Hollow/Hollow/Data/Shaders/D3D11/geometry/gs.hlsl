@@ -17,7 +17,7 @@ struct VertexShaderOutput
 };
 
 [maxvertexcount(3)]
-void main(trianglsse VertexShaderOutput input[3], inout TriangleStream<GSOutput> output)
+void main(triangle VertexShaderOutput input[3], inout TriangleStream<GSOutput> output)
 {
 	for (uint i = 0; i < 3; i++)
 	{

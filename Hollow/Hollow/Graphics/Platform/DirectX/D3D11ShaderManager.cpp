@@ -13,6 +13,7 @@ namespace Hollow {
 	{
 		D3D11Shader* shader = new D3D11Shader();
 		shader->entryPoint = desc.entryPoint;
+		shader->type = desc.type;
 		shader->filepath = desc.filename.size() > 0 ? desc.filename : "";
 		ID3DBlob* shaderBlob = nullptr;
 

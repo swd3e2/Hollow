@@ -8,16 +8,18 @@
 #include "IEventListener.h"
 #include <unordered_map>
 #include "EventDelegate.h"
-#include <vector>
+#include <list>
 #include "Hollow/Core/CModule.h"
 #include <mutex>
+#include <queue>
 
 namespace Hollow {
 	class EventSystem : public CModule<EventSystem>
 	{
 	private:
 		std::unordered_map<int, std::vector<IEventDelegate*>> eventListeners;
-		std::vector<IEvent*> events;
+		std::list<IEvent*> events;
+		std::vector<IEvent*> eventsToRemove;
 		std::mutex addMutex;
 	public:
 		template<class T>
@@ -29,26 +31,36 @@ namespace Hollow {
 		/*
 		 * todo: make event creation with move semantic
 		 */
-		void addEvent(IEvent* event)
+		void addEvent(IEvent* event, double time = 0)
 		{
+			event->time = time;
 			addMutex.lock();
 			events.push_back(event);
 			addMutex.unlock();
 		}
 
-		void dispatch()
+		void dispatch(double dt)
 		{
 			addMutex.lock();
-			for (auto& ev : events) {
-				const int eventId = ev->getId();
-				if (eventListeners.find(eventId) != eventListeners.end()) {
-					for (auto& it : eventListeners[eventId]) {
-						it->invoke(ev);
+			for (auto& event : events) {
+				if (event->time <= 0) {
+					const int eventId = event->getId();
+					if (eventListeners.find(eventId) != eventListeners.end()) {
+						for (auto& it : eventListeners[eventId]) {
+							it->invoke(event);
+						}
 					}
+					eventsToRemove.push_back(event);
+				} else {
+					event->time -= dt / 1000.0;
 				}
-				delete ev;
 			}
-			events.clear();
+
+			for (auto& event : eventsToRemove) {
+				events.remove(event);
+				delete event;
+			}
+			eventsToRemove.clear();
 			addMutex.unlock();
 		}
 	};

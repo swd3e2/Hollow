@@ -15,15 +15,18 @@ public:
 public:
 	ShaderManager()
 	{
-		baseShaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders";
+		baseShaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
 		Hollow::EventSystem::instance()->addEventListener(this, &ShaderManager::update, FileChangeEvent::staticGetId());
 	}
 
 	void update(Hollow::IEvent* event) 
 	{
 		FileChangeEvent* changeEvent = static_cast<FileChangeEvent*>(event);
-		//Hollow::ShaderManager::instance()->reload();
-		HW_INFO("file has changed {}", changeEvent->filename.c_str());
+
+		std::string shaderFilePath = baseShaderFolder + changeEvent->filename;
+		if (shaders.find(shaderFilePath.c_str()) != shaders.end()) {
+			Hollow::ShaderManager::instance()->reload(shaders[shaderFilePath.c_str()]);
+		}
 	}
 
 	Hollow::s_ptr<Hollow::Shader> create(const Hollow::SHADER_DESC& desc)

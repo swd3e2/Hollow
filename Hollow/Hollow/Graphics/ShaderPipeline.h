@@ -25,6 +25,18 @@ namespace Hollow {
 	public:
 		static s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc);
 
+		void setShader(const s_ptr<Shader>& shader)
+		{
+			switch (shader->type)
+			{
+			case ShaderType::ST_VERTEX:		setVertexShader(shader);
+			case ShaderType::ST_PIXEL:		setPixelShader(shader);
+			case ShaderType::ST_GEOMERTY:	setGeometryShader(shader);
+			case ShaderType::ST_HULL:		setHullShader(shader);
+			case ShaderType::ST_DOMAIN:		setDomainShader(shader);
+			}
+		}
+
 		virtual void setVertexShader(const s_ptr<Shader>& shader) = 0;
 		virtual void setPixelShader(const s_ptr<Shader>& shader) = 0;
 		virtual void setGeometryShader(const s_ptr<Shader>& shader) = 0;

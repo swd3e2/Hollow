@@ -36,7 +36,7 @@ namespace Hollow {
 		m_Timer.restart();
 
 		SystemManager::instance()->preUpdateSystems(dt);
-		EventSystem::instance()->dispatch();
+		EventSystem::instance()->dispatch(dt);
 	}
 
 	void Core::update()

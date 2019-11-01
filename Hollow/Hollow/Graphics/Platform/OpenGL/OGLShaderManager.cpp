@@ -4,6 +4,10 @@ namespace Hollow {
 	s_ptr<Shader> OGLShaderManager::create(const SHADER_DESC& desc)
 	{
 		OGLShader* shader = new OGLShader();
+		shader->entryPoint = desc.entryPoint;
+		shader->type = desc.type;
+		shader->filepath = desc.filename.size() > 0 ? desc.filename : "";
+
 		compileInternal(shader->shaderId, desc);
 
 		return s_ptr<Shader>(shader);
@@ -11,7 +15,19 @@ namespace Hollow {
 
 	void OGLShaderManager::reload(const s_ptr<Shader>& shader, std::string shaderContent)
 	{
+		SHADER_DESC desc;
+		desc.content = shaderContent.size() > 0 ? shaderContent : Hollow::FileSystem::getFileContent(shader->filepath);
+		desc.entryPoint = shader->entryPoint;
+		desc.type = shader->type;
 
+		GLuint tempShaderId = -1;
+
+		compileInternal(tempShaderId, desc);
+		if (!getError(tempShaderId)) {
+			s_ptr<OGLShader> oglShader = std::static_pointer_cast<OGLShader>(shader);
+			oglShader->shaderId = tempShaderId;
+			oglShader->parent->setShader(oglShader);
+		}
 	}
 
 	s_ptr<ShaderPipeline> OGLShaderManager::create(const SHADER_PIPELINE_DESC& desc)

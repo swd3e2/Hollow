@@ -79,7 +79,8 @@ public:
 						PFILE_NOTIFY_INFORMATION pNotify = PFILE_NOTIFY_INFORMATION(lpBuffer + seek);
 						seek += pNotify->NextEntryOffset;
 
-						sendNotify(pNotify);
+						if (pNotify->Action == FILE_ACTION_RENAMED_NEW_NAME || pNotify->Action == FILE_ACTION_MODIFIED)
+							sendNotify(pNotify);
 
 						if (pNotify->NextEntryOffset == 0 || changedFiles.size() > 0)
 							break;
@@ -92,8 +93,7 @@ public:
 			}
 
 			for (auto& it : changedFiles) {
-				HW_INFO("{}", it.c_str());
-				Hollow::EventSystem::instance()->addEvent(new FileChangeEvent(it));
+				Hollow::EventSystem::instance()->addEvent(new FileChangeEvent(it), 1);
 			}
 		}
 
