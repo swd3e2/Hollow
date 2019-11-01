@@ -36,6 +36,8 @@
     <ClInclude Include="Sandbox\Entities\Light.h" />
     <ClInclude Include="Sandbox\Entities\Terrain.h" />
     <ClInclude Include="Sandbox\Events.h" />
+    <ClInclude Include="Sandbox\Events\FileChangeEvent.h" />
+    <ClInclude Include="Sandbox\FileSystemNotifier.h" />
     <ClInclude Include="Sandbox\Graphics\Shadow.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
     <ClInclude Include="Sandbox\GUI\GUISystem.h" />
@@ -43,6 +45,7 @@
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
     <ClInclude Include="Sandbox\Profiler.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
+    <ClInclude Include="Sandbox\ShaderManager.h" />
     <ClInclude Include="Sandbox\Systems\AnimationSystem.h" />
     <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
@@ -50,6 +53,7 @@
     <ClInclude Include="Sandbox\Systems\PlayerSystem.h" />
     <ClInclude Include="Sandbox\Systems\RenderSystem.h" />
     <ClInclude Include="Sandbox\Systems\MoveSystem.h" />
+    <ClInclude Include="Sandbox\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

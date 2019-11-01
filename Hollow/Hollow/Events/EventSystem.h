@@ -8,47 +8,60 @@
 #include "IEventListener.h"
 #include <unordered_map>
 #include "EventDelegate.h"
-#include <vector>
+#include <list>
 #include "Hollow/Core/CModule.h"
+#include <mutex>
+#include <queue>
 
 namespace Hollow {
 	class EventSystem : public CModule<EventSystem>
 	{
 	private:
-		std::vector<IEventDelegate*>  eventListeners;
-		std::vector<IEvent*> events;
+		std::unordered_map<int, std::vector<IEventDelegate*>> eventListeners;
+		std::list<IEvent*> events;
+		std::vector<IEvent*> eventsToRemove;
+		std::mutex addMutex;
 	public:
 		template<class T>
 		void addEventListener(IEventListener* listener, void (T::* func)(IEvent*), eventId id)
 		{
-			eventListeners.push_back((IEventDelegate*)new EventDelegate<T>(listener, func, id));
-		}
-
-		void addEventListener(IEventDelegate* delegate)
-		{
-			eventListeners.push_back(delegate);
+			eventListeners[id].push_back(new EventDelegate<T>(listener, func, id));
 		}
 
 		/*
 		 * todo: make event creation with move semantic
 		 */
-		void addEvent(IEvent* event)
+		void addEvent(IEvent* event, double time = 0)
 		{
+			event->time = time;
+			addMutex.lock();
 			events.push_back(event);
+			addMutex.unlock();
 		}
 
-		void dispatch()
+		void dispatch(double dt)
 		{
-			for (auto& ev : events) {
-				for (auto& it : eventListeners) {
-					if (it != nullptr)
-						if (ev->getEventId() == it->getSubscribedEventId()) {
-							it->invoke(ev);
+			addMutex.lock();
+			for (auto& event : events) {
+				if (event->time <= 0) {
+					const int eventId = event->getId();
+					if (eventListeners.find(eventId) != eventListeners.end()) {
+						for (auto& it : eventListeners[eventId]) {
+							it->invoke(event);
 						}
+					}
+					eventsToRemove.push_back(event);
+				} else {
+					event->time -= dt / 1000.0;
 				}
-				delete ev;
 			}
-			events.clear();
+
+			for (auto& event : eventsToRemove) {
+				events.remove(event);
+				delete event;
+			}
+			eventsToRemove.clear();
+			addMutex.unlock();
 		}
 	};
 }

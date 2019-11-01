@@ -13,17 +13,14 @@ namespace Hollow {
 	private:
 		static const eventId id;
 	public:
-		Event()
-		{}
+		Event() = default;
 
-		virtual eventId getEventId() override { return id; }
-
-		static eventId getStaticEventId() { return id; }
+		virtual eventId getId() override { return id; }
+		static eventId staticGetId() { return id; }
 	};
 
 	template<class T>
 	const eventId Event<T>::id = typeid(T).hash_code();
 }
-
 
 #endif

@@ -464,9 +464,6 @@
     <ClCompile Include="Hollow\Resources\Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Events\EventSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Hollow\Math\Matrix3.h">
       <Filter>Source Files</Filter>
     </ClCompile>

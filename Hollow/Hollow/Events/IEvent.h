@@ -8,8 +8,11 @@ namespace Hollow {
 
 	class IEvent
 	{
+	private:
+		friend class EventSystem;
+		double time;
 	public:
-		virtual eventId getEventId() = 0;
+		virtual eventId getId() = 0;
 	};
 }
 

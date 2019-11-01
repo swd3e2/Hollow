@@ -5,14 +5,15 @@
 
 #include "Hollow/Core/CModule.h"
 #include "Hollow/Common/Log.h"
-#include "Shader.h"
 #include "ShaderPipeline.h"
+#include "Hollow/Common/FileSystem.h"
 
 namespace Hollow {
 	class ShaderManager : public CModule<ShaderManager>
 	{
 	public:
 		virtual s_ptr<Shader> create(const SHADER_DESC& desc) = 0;
+		virtual void reload(const s_ptr<Shader>& shader, std::string shaderContent = "") = 0;
 		virtual s_ptr<ShaderPipeline> create(const SHADER_PIPELINE_DESC& desc) = 0;
 	};
 }

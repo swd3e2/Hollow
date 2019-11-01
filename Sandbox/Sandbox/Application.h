@@ -23,12 +23,16 @@
 #include "Profiler.h"
 #include "Components/PlayerComponent.h"
 #include "Systems/PlayerSystem.h"
+#include <Hollow/Events/EventSystem.h>
+#include "Sandbox/Events/FileChangeEvent.h"
+#include "ShaderManager.h"
+#include "FileSystemNotifier.h"
 
 class Appliaction
 {
 public:
 	Hollow::Core core;
-	Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
 	int width = 1920;
 	int height = 1080;
 	Hollow::Window* window;
@@ -40,11 +44,13 @@ public:
 	GUISystem* gui;
 	RenderSystem* renderPass;
 	PlayerSystem* playerSystem;
+	FileSystemNotifier fNotifier;
 public:
-	Appliaction()
+	Appliaction() :
+		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
 	{
-		window = WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
-		renderer = RenderApiManager::create(rendererType, width, height);
+		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
+		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
 		gui = new GUISystem(window, renderer);
 
 		ProjectSettings::startUp<ProjectSettings>();
@@ -59,18 +65,23 @@ public:
 		animationSystem = new AnimationSystem();
 		playerSystem = new PlayerSystem();
 
-		SystemManager::instance()->addSystem(renderPass);
-		SystemManager::instance()->addSystem(animationSystem);
-		SystemManager::instance()->addSystem(PhysicsSystem::instance());
-		SystemManager::instance()->addSystem(playerSystem);
+		Hollow::SystemManager::instance()->addSystem(renderPass);
+		Hollow::SystemManager::instance()->addSystem(animationSystem);
+		Hollow::SystemManager::instance()->addSystem(PhysicsSystem::instance());
+		Hollow::SystemManager::instance()->addSystem(playerSystem);
 
 		gui->rendererTab.renderSystem = renderPass;
 
 		//ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
-		DelayedTaskManager::instance()->update();
+		Hollow::DelayedTaskManager::instance()->update();
 
 		//Light* light = Hollow::EntityManager::instance()->create<Light>();
 		//light->addComponent<LightComponent>();
+
+
+		Hollow::TaskManager::instance()->add([&]() {
+			fNotifier.run();
+		});
 
 		init();
 	}
@@ -174,7 +185,7 @@ public:
 			renderable->renderables.push_back(renderableObject);
 
 			Hollow::Material* material = new Hollow::Material();
-			material->materialData.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+			material->materialData.color = Hollow::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 			renderable->materials[0] = material;
 
 			// Physics

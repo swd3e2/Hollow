@@ -161,7 +161,6 @@
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Log.cpp" />
     <ClCompile Include="Hollow\Core.cpp" />
-    <ClCompile Include="Hollow\Events\EventSystem.cpp" />
     <ClCompile Include="Hollow\Graphics\DepthStencil.cpp" />
     <ClCompile Include="Hollow\Graphics\GPUBuffer.cpp" />
     <ClCompile Include="Hollow\Graphics\HardwareBuffer.cpp" />

@@ -9,8 +9,6 @@
 #include <utility>
 #include "Sandbox/Profiler.h"
 
-using namespace Hollow;
-
 class AnimationSystem : public Hollow::System<AnimationSystem>
 {
 public:
@@ -19,7 +17,7 @@ public:
 	virtual void Update(double dt) override
 	{
 		Profiler::begin("Animation System: update()");
-		for (auto& entity : EntityManager::instance()->container<GameObject>()) {
+		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<AnimationComponent>()) {
 				AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
 
@@ -32,7 +30,7 @@ public:
 					animate(
 						animationComponent->currentAnimationTime, 
 						animationComponent->rootNode, 
-						Matrix4::identity(), 
+						Hollow::Matrix4::identity(),
 						animationComponent->animations[animationComponent->currentAnimation], 
 						animationComponent->nodeInfo
 					);
@@ -44,9 +42,9 @@ public:
 
 	virtual void PostUpdate(double dt) override {}
 
-	void animate(double time, Node* node, const Matrix4& parentTransform, Animation* animation, Hollow::Matrix4* container)
+	void animate(double time, Node* node, const Hollow::Matrix4& parentTransform, Animation* animation, Hollow::Matrix4* container)
 	{
-		Hollow::Matrix4 nodeTransformation = Matrix4::identity();
+		Hollow::Matrix4 nodeTransformation = Hollow::Matrix4::identity();
 
 		if (animation->data.find(node->id) != animation->data.end()) {
 			AnimationNodeData* data = animation->data[node->id];
@@ -75,7 +73,7 @@ public:
 				? interpolateRotation(closestRotation, nextClosestRotation, time)
 				: closestRotation.second;
 
-			nodeTransformation = Matrix4::transpose(Matrix4::transpose(rotation.toMatrix4()) * Matrix4::translation(translation));
+			nodeTransformation = Hollow::Matrix4::transpose(Hollow::Matrix4::transpose(rotation.toMatrix4()) * Hollow::Matrix4::translation(translation));
 		}
 
 		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;

@@ -21,7 +21,7 @@ cbuffer ConstantBuffer : register(b2)
 	bool hasAnimation;
 };
 
-Texture2D ambient_map		: TEXTUTRE: register(t0);
+Texture2D ambient_map : TEXTUTRE: register(t0);
 
 SamplerState Sampler : register(s1);
 

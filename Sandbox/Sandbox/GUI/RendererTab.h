@@ -8,8 +8,6 @@
 #include "Sandbox/Profiler.h"
 
 
-using namespace Hollow;
-
 namespace GUI {
 	class RendererTab
 	{
@@ -36,8 +34,8 @@ namespace GUI {
 
 			if (ImGui::Button("somebutton")) {
 				std::vector<Hollow::Vertex> vertices;
-				vertices.push_back(Vertex(0.0f, 100.0f, 0.0f, 0.0f, 0.0f));
-				vertices.push_back(Vertex(0.0f, -100.0f, 0.0f, 0.0f, 1.0f));
+				vertices.push_back(Hollow::Vertex(0.0f, 100.0f, 0.0f, 0.0f, 0.0f));
+				vertices.push_back(Hollow::Vertex(0.0f, -100.0f, 0.0f, 0.0f, 1.0f));
 
 				renderSystem->lineVB->update(vertices.data(), sizeof(Hollow::Vertex) * 2);
 			}
@@ -106,31 +104,31 @@ namespace GUI {
 			ImGui::Begin("Scene");
 			if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 				if (ImGui::CollapsingHeader("G buffer")) {
-					ImGui::Image(std::static_pointer_cast<D3D11RenderTarget>(renderSystem->gBuffer)->getDepthStencilResource(), ImVec2(200, 200));
-					ImGui::Image(std::static_pointer_cast<D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[0], ImVec2(200, 200));
-					ImGui::Image(std::static_pointer_cast<D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[1], ImVec2(200, 200));
-					ImGui::Image(std::static_pointer_cast<D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[2], ImVec2(200, 200));
+					ImGui::Image(std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->gBuffer)->getDepthStencilResource(), ImVec2(200, 200));
+					ImGui::Image(std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[0], ImVec2(200, 200));
+					ImGui::Image(std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[1], ImVec2(200, 200));
+					ImGui::Image(std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->gBuffer)->getShaderResourceView()[2], ImVec2(200, 200));
 				}
 				if (ImGui::CollapsingHeader("Shadow map")) {
-					ImGui::Image((void*)std::static_pointer_cast<D3D11RenderTarget>(renderSystem->shadow.renderTarget)->getShaderResourceView()[0], ImVec2(200, 200));
-					ImGui::Image((void*)std::static_pointer_cast<D3D11RenderTarget>(renderSystem->shadow.renderTarget)->getDepthStencilResource(), ImVec2(200, 200));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->shadow.renderTarget)->getShaderResourceView()[0], ImVec2(200, 200));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->shadow.renderTarget)->getDepthStencilResource(), ImVec2(200, 200));
 				}
 				if (ImGui::CollapsingHeader("Picker map")) {
-					ImGui::Image((void*)std::static_pointer_cast<D3D11RenderTarget>(renderSystem->picker)->getShaderResourceView()[0], ImVec2(200, 200));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::D3D11RenderTarget>(renderSystem->picker)->getShaderResourceView()[0], ImVec2(200, 200));
 				}
 			} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 				if (ImGui::CollapsingHeader("G buffer")) {
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->gBuffer)->depth, ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->gBuffer)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->gBuffer)->texture[1], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->gBuffer)->texture[2], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->gBuffer)->depth, ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->gBuffer)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->gBuffer)->texture[1], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->gBuffer)->texture[2], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 				}
 				if (ImGui::CollapsingHeader("Shadow map")) {
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->shadow.renderTarget)->texture[0], ImVec2(200, 200));
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->shadow.renderTarget)->depth, ImVec2(200, 200));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->shadow.renderTarget)->texture[0], ImVec2(200, 200));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->shadow.renderTarget)->depth, ImVec2(200, 200));
 				}
 				if (ImGui::CollapsingHeader("Picker map")) {
-					ImGui::Image((void*)std::static_pointer_cast<OGLRenderTarget>(renderSystem->picker)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLRenderTarget>(renderSystem->picker)->texture[0], ImVec2(200, 200), ImVec2(0, 1), ImVec2(1, 0));
 				}
 			}
 			ImGui::End();
