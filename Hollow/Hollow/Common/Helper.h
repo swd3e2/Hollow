@@ -64,6 +64,14 @@ namespace Hollow {
 
 			return result;
 		}
+
+		template<typename T>
+		inline static void swap(T& first, T& second)
+		{
+			T temp = first;
+			first = second;
+			second = temp;
+		}
 	};
 }
 

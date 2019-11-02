@@ -9,35 +9,31 @@
 #define NUM_BONES_PER_VEREX 4
 
 namespace Hollow {
-	struct VertexBoneData
-	{
-		int joints[NUM_BONES_PER_VEREX] {};
-		float weights[NUM_BONES_PER_VEREX] {};
-	};
+	
 
 	struct Vertex
 	{
-	public:
-		Vertex() = default;
-
-		Vertex(float px, float py, float pz, float tv, float tu, float nx, float ny, float nz)
-			: pos(px, py, pz), texCoord(tv, tu), normal(nx, ny, nz), tangent(0.0f, 0.0f, 0.0f), bitangent(0.0f, 0.0f, 0.0f)
+		Vertex(float px = 0.0f, float py = 0.0f, float pz = 0.0f, 
+			float tv = 0.0f, float tu = 0.0f, 
+			float nx = 0.0f, float ny = 0.0f, float nz = 0.0f)
+			: pos(px, py, pz), 
+			texCoord(tv, tu), 
+			normal(nx, ny, nz), 
+			tangent(0.0f, 0.0f, 0.0f), 
+			bitangent(0.0f, 0.0f, 0.0f)
 		{}
 
-		Vertex(float px, float py, float pz) :
-			Vertex(px, py, pz, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
-		{}
-
-		Vertex(float px, float py, float pz, float tv, float tu)
-			: Vertex(px, py, pz, tv, tu, 0.0f, 0.0f, 0.0f)
-		{}
-	public:
 		Vector3 pos;
 		Vector2 texCoord;
 		Vector3 normal;
 		Vector3 tangent;
 		Vector3 bitangent;
-		VertexBoneData boneData;
+
+		struct VertexBoneData
+		{
+			int joints[NUM_BONES_PER_VEREX]{};
+			float weights[NUM_BONES_PER_VEREX]{};
+		} boneData;
 	};
 }
 

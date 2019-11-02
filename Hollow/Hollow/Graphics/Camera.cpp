@@ -4,7 +4,7 @@ namespace Hollow {
 	Camera::Camera(bool mainCamera) :
 		m_IsMainCamera(mainCamera)
 	{
-		m_Position = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+		m_Position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Rotation = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 		mainCamera = mainCamera;
 		updateViewMatrix();

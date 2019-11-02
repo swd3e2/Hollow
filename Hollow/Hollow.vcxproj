@@ -27,7 +27,6 @@
     <ClInclude Include="Hollow\Graphics\CommonTypes.h" />
     <ClInclude Include="Hollow\Graphics\DepthStencil.h" />
     <ClInclude Include="Hollow\Graphics\HardwareBuffer.h" />
-    <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11PhysicsDebugDraw.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11Shader.h" />
     <ClInclude Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderPipeline.h" />
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLShaderPipeline.h" />

@@ -27,14 +27,12 @@
 #include "Sandbox/Events/FileChangeEvent.h"
 #include "ShaderManager.h"
 #include "FileSystemNotifier.h"
+#include "Sandbox/PhysicsDebugDraw.h"
 
 class Appliaction
 {
 public:
 	Hollow::Core core;
-	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
-	int width = 1920;
-	int height = 1080;
 	Hollow::Window* window;
 	Hollow::RenderApi* renderer;
 	Hollow::Camera camera;
@@ -45,6 +43,10 @@ public:
 	RenderSystem* renderPass;
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
+
+	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
+	const int width = 1920;
+	const int height = 1080;
 public:
 	Appliaction() :
 		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
@@ -78,10 +80,11 @@ public:
 		//Light* light = Hollow::EntityManager::instance()->create<Light>();
 		//light->addComponent<LightComponent>();
 
-
 		Hollow::TaskManager::instance()->add([&]() {
 			fNotifier.run();
 		});
+
+		PhysicsSystem::instance()->dynamicsWorld->setDebugDrawer(new PhysicsDebugDraw(renderer));
 
 		init();
 	}
@@ -196,16 +199,16 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = position;
 		}
-		/* Animation test */
-		//{
-		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		//	Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-		//		->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
-		//  RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-		//	AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
-		//	transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-		//}
+		 /** Animation test */
+		/*{
+			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
+		  RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+			TransformComponent* transform = entity->addComponent<TransformComponent>();
+			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
+		}*/
 	}
 
 	void update()

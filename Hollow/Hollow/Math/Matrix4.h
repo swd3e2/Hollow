@@ -6,58 +6,24 @@
 #include <cmath>
 #include "Math.h"
 #include "Vector4.h"
-#include "xmmintrin.h"
+#include "Quaternion.h"
+#include "immintrin.h"
 
 namespace Hollow {
-	class Matrix4
+	class alignas (sizeof(__m256)) Matrix4
 	{
 	public:
-		union
-		{
-			float m[16];
-			float md[4][4];
-
-			struct
-			{
-				float m11;
-				float m12;
-				float m13;
-				float m14;
-				float m21;
-				float m22;
-				float m23;
-				float m24;
-				float m31;
-				float m32;
-				float m33;
-				float m34;
-				float m41;
-				float m42;
-				float m43;
-				float m44;
-			} mm;
-
-			struct
-			{
-				Vector4 v1;
-				Vector4 v2;
-				Vector4 v3;
-				Vector4 v4;
-			} v;
-		};
+		Vector4 r[4];
 	public:
-		Matrix4();
+		Matrix4() = default;
 		Matrix4(float _a1, float _a2, float _a3, float _a4,
 				float _b1, float _b2, float _b3, float _b4,
 				float _c1, float _c2, float _c3, float _c4,
 				float _d1, float _d2, float _d3, float _d4);
 		Matrix4(const Matrix4& other);
-		Matrix4(Matrix4&& other);
 		Matrix4(const float* other, int size);
-		Matrix4(const double* other, int size);
 
 		Matrix4& operator=(const Matrix4& other);
-		Matrix4& operator=(Matrix4&& other);
 
 		static Matrix4 identity();
 
@@ -72,6 +38,7 @@ namespace Hollow {
 
 		static Matrix4 rotation(const Vector4& vec);
 		static Matrix4 rotation(float x, float y, float z);
+		static Matrix4 rotation(const Quaternion& quat);
 
 		static Matrix4 rotationX(float x);
 		static Matrix4 rotationY(float y);
@@ -83,10 +50,14 @@ namespace Hollow {
 		static Matrix4 orthographic(float right, float left, float top, float bottom, float near, float far);
 		static Matrix4 lookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector);
 
-		void setTranslation(const Vector4& vecPos);
-		Vector4 getTranslation() const;
-
 		static Matrix4 inverse(const Matrix4& mat);
+	private:
+		inline void swap(float& first, float& second)
+		{
+			float temp = first;
+			first = second;
+			second = temp;
+		}
 	};
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat);

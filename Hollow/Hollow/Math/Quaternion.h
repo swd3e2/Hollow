@@ -109,33 +109,6 @@ namespace Hollow {
 			pOut.w = sclp * pStart.w + sclq * end.w;
 		}
 
-		Matrix4 toMatrix4()
-		{
-			Matrix4 matrix;
-
-			const float n = 1.0f / sqrt(x * x + y * y + z * z + w * w);
-			x *= n;
-			y *= n;
-			z *= n;
-			w *= n;
-
-			matrix.md[0][0] = 1 - 2 * (y * y) - 2 * (z * z);
-			matrix.md[0][1] = 2 * x * y - 2 * z * w;
-			matrix.md[0][2] = 2 * x * z + 2 * y * w;
-
-			matrix.md[1][0] = 2 * x * y + 2 * z * w;
-			matrix.md[1][1] = 1 - 2 * (x * x) - 2 * (z * z);
-			matrix.md[1][2] = 2 * y * z - 2 * x * w;
-
-			matrix.md[2][0] = 2 * x * z - 2 * y * w;
-			matrix.md[2][1] = 2 * y * z + 2 * x * w;
-			matrix.md[2][2] = 1 - 2 * (x * x) - 2 * (y * y);
-
-			matrix.md[3][3] = 1.0f;
-
-			return matrix;
-		}
-
 		inline Quaternion& Normalize()
 		{
 			// compute the magnitude and divide through it

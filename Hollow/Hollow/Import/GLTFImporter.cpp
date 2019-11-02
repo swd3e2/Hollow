@@ -41,7 +41,7 @@ namespace Hollow {
 		fixAnimation(model, nodes);
 
 		// temp for animation
-		fixModel(rootNode, rootNode->transformation, model);
+		//fixModel(rootNode, rootNode->transformation, model);
 
 		return s_ptr<Import::Model>(model);
 	}
@@ -374,7 +374,10 @@ namespace Hollow {
 	void GLTFImporter::processHierarchy(Node* node, const tinygltf::Node& modelNode, const tinygltf::Model& gltfModel, std::unordered_map<int, Node*>& nodes)
 	{
 		if (modelNode.matrix.data()) {
-			node->transformation = Matrix4(modelNode.matrix.data(), 16).transpose();
+			node->transformation = Matrix4(modelNode.matrix[0],  modelNode.matrix[1],  modelNode.matrix[2],  modelNode.matrix[3],
+										   modelNode.matrix[4],  modelNode.matrix[5],  modelNode.matrix[6],  modelNode.matrix[7],
+										   modelNode.matrix[8],  modelNode.matrix[9],  modelNode.matrix[10], modelNode.matrix[11],
+										   modelNode.matrix[12], modelNode.matrix[13], modelNode.matrix[14], modelNode.matrix[15]).transpose();
 		} else {
 			Matrix4 rotation = Matrix4::identity();
 			Matrix4 scale = Matrix4::identity();
@@ -387,7 +390,7 @@ namespace Hollow {
 
 			if (modelNode.rotation.size() > 0) {
 				node->rotation = Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]);
-				rotation = node->rotation.toMatrix4();
+				rotation = Matrix4::rotation(node->rotation);
 			}
 
 			if (modelNode.scale.size() > 0) {
@@ -395,7 +398,7 @@ namespace Hollow {
 				scale = Matrix4::scaling(node->scale);
 			}
 
-			node->transformation = (scale * rotation * translation).transpose();
+			node->transformation = scale * rotation * translation;
 		}
 
 		for (int childId : modelNode.children) {

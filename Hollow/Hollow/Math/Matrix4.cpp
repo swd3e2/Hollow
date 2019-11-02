@@ -3,82 +3,40 @@
 #define USE_SIMD 1
 
 namespace Hollow {
-	Matrix4::Matrix4()
+	Matrix4::Matrix4(float _a1, float _a2, float _a3, float _a4, 
+					 float _b1, float _b2, float _b3, float _b4, 
+					 float _c1, float _c2, float _c3, float _c4,
+					 float _d1, float _d2, float _d3, float _d4)
 	{
-		for (int i = 0; i < 16; i++)
-			m[i] = 0;
-	}
-
-	Matrix4::Matrix4(float _a1, float _a2, float _a3, float _a4, float _b1, float _b2, float _b3, float _b4, float _c1, float _c2, float _c3, float _c4, float _d1, float _d2, float _d3, float _d4)
-	{
-		v.v1 = Vector4(_a1, _a2, _a3, _a4);
-		v.v2 = Vector4(_b1, _b2, _b3, _b4);
-		v.v3 = Vector4(_c1, _c2, _c3, _c4);
-		v.v4 = Vector4(_d1, _d2, _d3, _d4);
+		r[0] = Vector4(_a1, _a2, _a3, _a4);
+		r[1] = Vector4(_b1, _b2, _b3, _b4);
+		r[2] = Vector4(_c1, _c2, _c3, _c4);
+		r[3] = Vector4(_d1, _d2, _d3, _d4);
 	}
 
 	Matrix4::Matrix4(const Matrix4& other)
 	{
-		for (int i = 0; i < 16; i++)
-			m[i] = other.m[i];
-	}
-
-	Matrix4::Matrix4(Matrix4&& other)
-	{
-		for (int i = 0; i < 16; i++)
-			m[i] = other.m[i];
+		r[0] = other.r[0];
+		r[1] = other.r[1];
+		r[2] = other.r[2];
+		r[3] = other.r[3];
 	}
 
 	Matrix4::Matrix4(const float* other, int size)
 	{
-		Matrix4 identity = Matrix4::identity();
-
 		switch (size)
 		{
 		case 16:
-			for (int i = 0; i < size; i++) m[i] = other[i];
-			break;
+			r[0] = Vector4(other[0],  other[1],  other[2],  other[3]);
+			r[1] = Vector4(other[4],  other[5],  other[6],  other[7]);
+			r[2] = Vector4(other[8],  other[9],  other[10], other[11]);
+			r[3] = Vector4(other[12], other[13], other[14], other[15]);
 		case 9:
 		{
-			for (int i = 0; i < 16; i++)
-				m[i] = 0;
-			m[15] = 1.0f;
-			int counter = 0;
-			for (int i = 0; i < 3; i++)
-			{
-				for (int j = 0; j < 3; j++)
-				{
-					md[i][j] = other[counter++];
-				}
-			}
-		} break;
-		default:
-			break;
-		}
-	}
-
-	Matrix4::Matrix4(const double* other, int size)
-	{
-		Matrix4 identity = Matrix4::identity();
-
-		switch (size)
-		{
-		case 16:
-			for (int i = 0; i < size; i++) m[i] = (float)other[i];
-			break;
-		case 9:
-		{
-			for (int i = 0; i < 16; i++)
-				m[i] = 0;
-			m[15] = 1.0f;
-			int counter = 0;
-			for (int i = 0; i < 3; i++)
-			{
-				for (int j = 0; j < 3; j++)
-				{
-					md[i][j] = (float)other[counter++];
-				}
-			}
+			r[0] = Vector4(other[0], other[1], other[2], 0);
+			r[1] = Vector4(other[3], other[4], other[5], 0);
+			r[2] = Vector4(other[6], other[7], other[8], 0);
+			r[3] = Vector4(0, 0, 0, 0);
 		} break;
 		default:
 			break;
@@ -87,61 +45,51 @@ namespace Hollow {
 
 	Matrix4& Matrix4::operator=(const Matrix4& other)
 	{
-		for (int i = 0; i < 16; i++)
-			m[i] = other.m[i];
-		return *this;
-	}
-
-	Matrix4& Matrix4::operator=(Matrix4&& other)
-	{
-		for (int i = 0; i < 16; i++)
-			m[i] = other.m[i];
+		r[0] = other.r[0];
+		r[1] = other.r[1];
+		r[2] = other.r[2];
+		r[3] = other.r[3];
 		return *this;
 	}
 
 	Matrix4 Matrix4::identity()
 	{
-		Matrix4 matrix;
-
-		matrix.md[0][0] = 1.0f;
-		matrix.md[1][1] = 1.0f;
-		matrix.md[2][2] = 1.0f;
-		matrix.md[3][3] = 1.0f;
-
-		return matrix;
+		return Matrix4(1.0f, 0.0f, 0.0f, 0.0f,
+					   0.0f, 1.0f, 0.0f, 0.0f,
+					   0.0f, 0.0f, 1.0f, 0.0f,
+					   0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	Matrix4 Matrix4::translation(float x, float y, float z)
 	{
-		Matrix4 matrix = identity();
-
-		matrix.md[3][0] = x;
-		matrix.md[3][1] = y;
-		matrix.md[3][2] = z;
-
-		return matrix;
+		return Matrix4(1.0f, 0.0f, 0.0f, x,
+					   0.0f, 1.0f, 0.0f, y,
+					   0.0f, 0.0f, 1.0f, z,
+					   0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	Matrix4 Matrix4::translation(const Vector4& vec)
 	{
-		return translation(vec.x, vec.y, vec.z);
+		return Matrix4(1.0f, 0.0f, 0.0f, vec.x,
+					   0.0f, 1.0f, 0.0f, vec.y,
+					   0.0f, 0.0f, 1.0f, vec.z,
+					   0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	Matrix4 Matrix4::scaling(float x, float y, float z)
 	{
-		Matrix4 matrix;
-
-		matrix.md[0][0] = x;
-		matrix.md[1][1] = y;
-		matrix.md[2][2] = z;
-		matrix.md[3][3] = 1.0f;
-
-		return matrix;
+		return Matrix4(x,    0.0f, 0.0f, 0.0f,
+			           0.0f, y,    0.0f, 0.0f,
+			           0.0f, 0.0f, z,    0.0f,
+			           0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
 	Matrix4 Matrix4::scaling(const Vector4& vec)
 	{
-		return scaling(vec.x, vec.y, vec.z);
+		return Matrix4(vec.x, 0.0f,  0.0f,  0.0f,
+			           0.0f,  vec.y, 0.0f,  0.0f,
+			           0.0f,  0.0f,  vec.z, 0.0f,
+			           0.0f,  0.0f,  0.0f,  1.0f);
 	}
 
 	Matrix4 Matrix4::rotation(const Vector4& vec)
@@ -151,175 +99,158 @@ namespace Hollow {
 
 	Matrix4 Matrix4::rotation(float x, float y, float z)
 	{
-		Matrix4 M = rotationX(x);
-		Matrix4 M1 = rotationY(y);
-		Matrix4 M2 = rotationZ(z);
+		return rotationX(x) * rotationY(y) * rotationZ(z);
+	}
 
-		return M * M2 * M1;
+	Matrix4 Matrix4::rotation(const Quaternion& quat)
+	{
+		const float n = 1.0f / sqrt(quat.x * quat.x + quat.y * quat.y + quat.z * quat.z + quat.w * quat.w);
+		float x = quat.x * n;
+		float y = quat.y * n;
+		float z = quat.z * n;
+		float w = quat.w * n;
+
+		return Matrix4(1 - 2 * (y * y) - 2 * (z * z),	2 * x * y - 2 * z * w,			2 * x * z + 2 * y * w,			0.0f,
+					   2 * x * y + 2 * z * w,			1 - 2 * (x * x) - 2 * (z * z),	2 * y * z - 2 * x * w,			0.0f,
+					   2 * x * z - 2 * y * w,			2 * y * z + 2 * x * w,			1 - 2 * (x * x) - 2 * (y * y),	0.0f,
+					   0.0f,							0.0f,							0.0f,							1.0f);
 	}
 
 	Matrix4 Matrix4::rotationX(float x)
 	{
-		Matrix4 matrix = identity();
-
-		matrix.md[1][1] = cosf(x);
-		matrix.md[1][2] = -sinf(x);
-		matrix.md[2][1] = sinf(x);
-		matrix.md[2][2] = cosf(x);
-
-		return matrix;
+		return Matrix4(1.0f, 0.0f,	  0.0f,		0.0f,
+			           0.0f, cosf(x), -sinf(x), 0.0f,
+			           0.0f, sinf(x), cosf(x),	0.0f,
+			           0.0f, 0.0f,    0.0f,		1.0f);
 	}
 
 	Matrix4 Matrix4::rotationY(float y)
 	{
-		Matrix4 matrix = identity();
-
-		matrix.md[0][0] = cosf(y);
-		matrix.md[0][2] = sinf(y);
-		matrix.md[2][0] = -sinf(y);
-		matrix.md[2][2] = cosf(y);
-
-		return matrix;
+		return Matrix4(cosf(y),  0.0f, sinf(y), 0.0f,
+			           0.0f,	 1.0f, 0.0f,	0.0f,
+			           -sinf(y), 0.0f, cosf(y), 0.0f,
+			           0.0f,     0.0f, 0.0f,	1.0f);
 	}
 
 	Matrix4 Matrix4::rotationZ(float z)
 	{
-		Matrix4 matrix = identity();
-
-		matrix.md[0][0] = cosf(z);
-		matrix.md[0][1] = -sinf(z);
-		matrix.md[1][0] = sinf(z);
-		matrix.md[1][1] = cosf(z);
-
-		return matrix;
+		return Matrix4(cosf(z), -sinf(z), 0.0f, 0.0f,
+					   sinf(z), cosf(z),  0.0f, 0.0f,
+					   0.0f,	0.0f,	  1.0f, 0.0f,
+					   0.0f,	0.0f,     0.0f, 1.0f);
 	}
 
 	Matrix4& Matrix4::transpose()
 	{
-		float temp;
-
-		temp = md[0][1];
-		md[0][1] = md[1][0];
-		md[1][0] = temp;
-
-		temp = md[0][2];
-		md[0][2] = md[2][0];
-		md[2][0] = temp;
-
-		temp = md[0][3];
-		md[0][3] = md[3][0];
-		md[3][0] = temp;
-
-		temp = md[1][2];
-		md[1][2] = md[2][1];
-		md[2][1] = temp;
-
-		temp = md[1][3];
-		md[1][3] = md[3][1];
-		md[3][1] = temp;
-
-		temp = md[2][3];
-		md[2][3] = md[3][2];
-		md[3][2] = temp;
+		swap(r[0].y, r[1].x);
+		swap(r[0].z, r[2].x);
+		swap(r[0].w, r[3].x);
+		swap(r[1].z, r[2].y);
+		swap(r[1].w, r[3].y);
+		swap(r[2].w, r[3].z);
 
 		return *this;
 	}
 
 	Matrix4 Matrix4::transpose(const Matrix4& matrix)
 	{
-		Matrix4 result;
-
-		result.md[0][0] = matrix.md[0][0];
-		result.md[0][1] = matrix.md[1][0];
-		result.md[0][2] = matrix.md[2][0];
-		result.md[0][3] = matrix.md[3][0];
-
-		result.md[1][0] = matrix.md[0][1];
-		result.md[1][1] = matrix.md[1][1];
-		result.md[1][2] = matrix.md[2][1];
-		result.md[1][3] = matrix.md[3][1];
-
-		result.md[2][0] = matrix.md[0][2];
-		result.md[2][1] = matrix.md[1][2];
-		result.md[2][2] = matrix.md[2][2];
-		result.md[2][3] = matrix.md[3][2];
-
-		result.md[3][0] = matrix.md[0][3];
-		result.md[3][1] = matrix.md[1][3];
-		result.md[3][2] = matrix.md[2][3];
-		result.md[3][3] = matrix.md[3][3];
-
-		return result;
+		return Matrix4(matrix.r[0].x, matrix.r[1].x, matrix.r[2].x, matrix.r[3].x,
+					   matrix.r[0].y, matrix.r[1].y, matrix.r[2].y, matrix.r[3].y,
+				       matrix.r[0].z, matrix.r[1].z, matrix.r[2].z, matrix.r[3].z,
+					   matrix.r[0].w, matrix.r[1].w, matrix.r[2].w, matrix.r[3].w);
 	}
 
 	Matrix4 Matrix4::operator*(const Matrix4& other) const
 	{
-		Matrix4 matrix;
+		Matrix4 result;
 
-#ifdef USE_SIMD
+#ifndef USE_SIMD
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				matrix.md[i][j] = (md[i][0] * other.md[0][j]) + (md[i][1] * other.md[1][j]) + (md[i][2] * other.md[2][j]) + (md[i][3] * other.md[3][j]);
 			}
 		}
 #else
-		const __m128 BCx = _mm_load_ps((float*)&v.v1);
-		const __m128 BCy = _mm_load_ps((float*)&v.v2);
-		const __m128 BCz = _mm_load_ps((float*)&v.v3);
-		const __m128 BCw = _mm_load_ps((float*)&v.v4);
+		__m128 vW = *r[0];
+		__m128 vX = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(0, 0, 0, 0));
+		__m128 vY = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(1, 1, 1, 1));
+		__m128 vZ = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(2, 2, 2, 2));
+		vW = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(3, 3, 3, 3));
 
-		float* leftRowPointer = (float*)&other.v.v1;
-		float* resultRowPointer = (float*)&matrix.v.v1;
+		vX = _mm_mul_ps(vX, *other.r[0]);
+		vY = _mm_mul_ps(vY, *other.r[1]);
+		vZ = _mm_mul_ps(vZ, *other.r[2]);
+		vW = _mm_mul_ps(vW, *other.r[3]);
+		vX = _mm_add_ps(vX, vZ);
+		vY = _mm_add_ps(vY, vW);
+		vX = _mm_add_ps(vX, vY);
+		result.r[0] = vX;
 
-		for (unsigned int i = 0; i < 4; ++i, leftRowPointer += 4, resultRowPointer += 4) {
-			__m128 ARx = _mm_set1_ps(leftRowPointer[0]);
-			__m128 ARy = _mm_set1_ps(leftRowPointer[1]);
-			__m128 ARz = _mm_set1_ps(leftRowPointer[2]);
-			__m128 ARw = _mm_set1_ps(leftRowPointer[3]);
-			
-			__m128 X = _mm_mul_ps(ARx, BCx);
-			__m128 Y = _mm_mul_ps(ARy, BCy);
-			__m128 Z = _mm_mul_ps(ARz, BCz);
-			__m128 W = _mm_mul_ps(ARw, BCw);
+		vW = *r[1];
+		vX = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(0, 0, 0, 0));
+		vY = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(1, 1, 1, 1));
+		vZ = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(2, 2, 2, 2));
+		vW = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(3, 3, 3, 3));
 
-			__m128 R = _mm_add_ps(X, _mm_add_ps(Y, _mm_add_ps(Z, W)));
-			_mm_store_ps(resultRowPointer, R);
-		}
+		vX = _mm_mul_ps(vX, *other.r[0]);
+		vY = _mm_mul_ps(vY, *other.r[1]);
+		vZ = _mm_mul_ps(vZ, *other.r[2]);
+		vW = _mm_mul_ps(vW, *other.r[3]);
+		vX = _mm_add_ps(vX, vZ);
+		vY = _mm_add_ps(vY, vW);
+		vX = _mm_add_ps(vX, vY);
+		result.r[1] = vX;
+
+		vW = *r[2];
+		vX = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(0, 0, 0, 0));
+		vY = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(1, 1, 1, 1));
+		vZ = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(2, 2, 2, 2));
+		vW = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(3, 3, 3, 3));
+
+		vX = _mm_mul_ps(vX, *other.r[0]);
+		vY = _mm_mul_ps(vY, *other.r[1]);
+		vZ = _mm_mul_ps(vZ, *other.r[2]);
+		vW = _mm_mul_ps(vW, *other.r[3]);
+		vX = _mm_add_ps(vX, vZ);
+		vY = _mm_add_ps(vY, vW);
+		vX = _mm_add_ps(vX, vY);
+		result.r[2] = vX;
+
+		vW = *r[3];
+		vX = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(0, 0, 0, 0));
+		vY = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(1, 1, 1, 1));
+		vZ = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(2, 2, 2, 2));
+		vW = _mm_shuffle_ps(vW, vW, _MM_SHUFFLE(3, 3, 3, 3));
+
+		vX = _mm_mul_ps(vX, *other.r[0]);
+		vY = _mm_mul_ps(vY, *other.r[1]);
+		vZ = _mm_mul_ps(vZ, *other.r[2]);
+		vW = _mm_mul_ps(vW, *other.r[3]);
+		vX = _mm_add_ps(vX, vZ);
+		vY = _mm_add_ps(vY, vW);
+		vX = _mm_add_ps(vX, vY);
+		result.r[3] = vX;
 #endif
 
-		return matrix;
+		return result;
 	}
 
 	Matrix4 Matrix4::projection(float fov, float aspect, float n, float f)
 	{
-		Matrix4 projection;
-
 		float temp = Math::cotan(fov / 2);
 
-		projection.md[0][0] = temp / aspect;
-		projection.md[1][1] = temp;
-		projection.md[2][2] = (f + n) / (f - n);
-		projection.md[3][2] = 1.0f;
-		projection.md[2][3] = -((f * n) / (f - n));
-		projection.md[3][3] = 0;
-
-		return projection;
+		return Matrix4(temp / aspect, 0.0f, 0.0f,              0.0f,
+					   0.0f,		 temp,  0.0f,              0.0f,
+					   0.0f,		 0.0f,  (f + n) / (f - n), -((f * n) / (f - n)),
+					   0.0f,		 0.0f,  1.0f,			   0.0f);
 	}
 
 	Matrix4 Matrix4::orthographic(float right, float left, float top, float bottom, float near, float far)
 	{
-		Matrix4 ortho;
-
-		ortho.md[0][0] = 2 / (right - left);
-		ortho.md[1][1] = 2 / (top - bottom);
-		ortho.md[2][2] = -2 / (far - near);
-
-		ortho.md[0][3] = - ((right + left) / (right - left));
-		ortho.md[1][3] = -((top + bottom) / (top - bottom));
-		ortho.md[2][3] = -((far + near) / (far - near));
-		ortho.md[3][3] = 1.0f;
-
-		return ortho;
+		return Matrix4(2 / (right - left),	0.0f,				0.0f,				-((right + left) / (right - left)),
+					   0.0f,				2 / (top - bottom), 0.0f,				-((top + bottom) / (top - bottom)),
+					   0.0f,				0.0f,				-2 / (far - near),	-((far + near) / (far - near)),
+					   0.0f,				0.0f,				0.0f,				1.0f);
 	}
 
 	Matrix4 Matrix4::lookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector)
@@ -328,51 +259,19 @@ namespace Hollow {
 		Vector4 right = Vector4::normalize(Vector4::cross(upVector, forward));
 		Vector4 up = Vector4::normalize(Vector4::cross(forward, right));
 
-		Matrix4 camToWorld;
-
 		Vector4 negativePosition = Vector4::negate(eyePosition);
 
-		camToWorld.md[0][0] = right.x;
-		camToWorld.md[0][1] = right.y;
-		camToWorld.md[0][2] = right.z;
-		camToWorld.md[0][3] = Vector4::dot(right, negativePosition);
-
-		camToWorld.md[1][0] = up.x;
-		camToWorld.md[1][1] = up.y;
-		camToWorld.md[1][2] = up.z;
-		camToWorld.md[1][3] = Vector4::dot(up, negativePosition);
-
-		camToWorld.md[2][0] = forward.x;
-		camToWorld.md[2][1] = forward.y;
-		camToWorld.md[2][2] = forward.z;
-		camToWorld.md[2][3] = Vector4::dot(forward, negativePosition);
-
-		camToWorld.md[3][0] = 0.0f;
-		camToWorld.md[3][1] = 0.0f;
-		camToWorld.md[3][2] = 0.0f;
-		camToWorld.md[3][3] = 1.0f;
-
-		return camToWorld;
-	}
-
-
-	void Matrix4::setTranslation(const Vector4& vecPos)
-	{
-		md[3][0] = vecPos.x;
-		md[3][1] = vecPos.y;
-		md[3][2] = vecPos.z;
-	}
-
-	Vector4 Matrix4::getTranslation() const
-	{
-		return Vector4(md[3][0], md[3][1], md[3][2], 0.0f);
+		return Matrix4(right.x,		right.y,	right.z,	Vector4::dot(right, negativePosition),
+					   up.x,		up.y,		up.z,		Vector4::dot(up, negativePosition),
+					   forward.x,	forward.y,	forward.z,	Vector4::dot(forward, negativePosition),
+					   0.0f,		0.0f,		0.0f,		1.0f);
 	}
 
 	Matrix4 Matrix4::inverse(const Matrix4& mat)
 	{
 		float temp[16];
 
-		temp[0] = mat.m[5] * mat.m[10] * mat.m[15] -
+		/*temp[0] = mat.m[5] * mat.m[10] * mat.m[15] -
 			mat.m[5] * mat.m[11] * mat.m[14] -
 			mat.m[9] * mat.m[6] * mat.m[15] +
 			mat.m[9] * mat.m[7] * mat.m[14] +
@@ -490,17 +389,17 @@ namespace Hollow {
 		Matrix4 tempM;
 
 		for (int i = 0; i < 4 * 4; i++)
-			tempM.m[i] = temp[i] * determinant;
+			tempM.m[i] = temp[i] * determinant;*/
 
-		return tempM;
+		return Matrix4();
 	}
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat)
 	{
-		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0] + vec.w * mat.md[3][0];
-		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1] + vec.w * mat.md[3][1];
-		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2] + vec.w * mat.md[3][2];
-		float w = vec.x * mat.md[0][3] + vec.y * mat.md[1][3] + vec.z * mat.md[2][3] + vec.w * mat.md[3][3];
+		float x = vec.x * mat.r[0].x + vec.y * mat.r[1].x + vec.z * mat.r[2].x + vec.w * mat.r[3].x;
+		float y = vec.x * mat.r[0].y + vec.y * mat.r[1].y + vec.z * mat.r[2].y + vec.w * mat.r[3].y;
+		float z = vec.x * mat.r[0].z + vec.y * mat.r[1].z + vec.z * mat.r[2].z + vec.w * mat.r[3].z;
+		float w = vec.x * mat.r[0].w + vec.y * mat.r[1].w + vec.z * mat.r[2].w + vec.w * mat.r[3].w;
 
 		return Vector4(x, y, z, w);
 	}
@@ -512,9 +411,9 @@ namespace Hollow {
 
 	Vector3 operator*(const Vector3& vec, const Matrix4& mat)
 	{
-		float x = vec.x * mat.md[0][0] + vec.y * mat.md[1][0] + vec.z * mat.md[2][0] + mat.md[3][0];
-		float y = vec.x * mat.md[0][1] + vec.y * mat.md[1][1] + vec.z * mat.md[2][1] + mat.md[3][1];
-		float z = vec.x * mat.md[0][2] + vec.y * mat.md[1][2] + vec.z * mat.md[2][2] + mat.md[3][2];
+		float x = vec.x * mat.r[0].x + vec.y * mat.r[1].x + vec.z * mat.r[2].x;
+		float y = vec.x * mat.r[0].y + vec.y * mat.r[1].y + vec.z * mat.r[2].y;
+		float z = vec.x * mat.r[0].z + vec.y * mat.r[1].z + vec.z * mat.r[2].z;
 
 		return Vector3(x, y, z);
 	}

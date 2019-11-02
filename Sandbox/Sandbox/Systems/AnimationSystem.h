@@ -27,13 +27,17 @@ public:
 						animationComponent->currentAnimationTime = 0.0;
 					}
 
-					animate(
-						animationComponent->currentAnimationTime, 
-						animationComponent->rootNode, 
-						Hollow::Matrix4::identity(),
-						animationComponent->animations[animationComponent->currentAnimation], 
-						animationComponent->nodeInfo
-					);
+					if (animationComponent->currentFrame >= animationComponent->frameRate) {
+						animate(
+							animationComponent->currentAnimationTime,
+							animationComponent->rootNode,
+							Hollow::Matrix4::identity(),
+							animationComponent->animations[animationComponent->currentAnimation],
+							animationComponent->nodeInfo
+						);
+						animationComponent->currentFrame = 0.0f;
+					}
+					animationComponent->currentFrame += dt / 1000.0;
 				}
 			}
 		}
@@ -73,7 +77,7 @@ public:
 				? interpolateRotation(closestRotation, nextClosestRotation, time)
 				: closestRotation.second;
 
-			nodeTransformation = Hollow::Matrix4::transpose(Hollow::Matrix4::transpose(rotation.toMatrix4()) * Hollow::Matrix4::translation(translation));
+			nodeTransformation = Hollow::Matrix4::translation(translation) * Hollow::Matrix4::rotation(rotation);
 		}
 
 		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
