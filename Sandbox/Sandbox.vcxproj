@@ -43,6 +43,7 @@
     <ClInclude Include="Sandbox\GUI\GUISystem.h" />
     <ClInclude Include="Sandbox\GUI\HierarchyTab.h" />
     <ClInclude Include="Sandbox\GUI\RendererTab.h" />
+    <ClInclude Include="Sandbox\PhysicsDebugDraw.h" />
     <ClInclude Include="Sandbox\Profiler.h" />
     <ClInclude Include="Sandbox\ProjectSettings.h" />
     <ClInclude Include="Sandbox\ShaderManager.h" />

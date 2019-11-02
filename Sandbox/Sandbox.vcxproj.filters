@@ -39,6 +39,7 @@
     <ClInclude Include="Sandbox\TextureManager.h" />
     <ClInclude Include="Sandbox\Events\FileChangeEvent.h" />
     <ClInclude Include="Sandbox\FileSystemNotifier.h" />
+    <ClInclude Include="Sandbox\PhysicsDebugDraw.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

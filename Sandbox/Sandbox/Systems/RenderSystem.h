@@ -27,6 +27,7 @@
 #include "Sandbox/Components/AnimationComponent.h"
 #include "Sandbox/Profiler.h"
 #include "Sandbox/ShaderManager.h"
+#include "Sandbox/Systems/PhysicsSystem.h"
 
 struct WVP
 {
@@ -83,7 +84,7 @@ private:
 	Hollow::RenderApi* renderer;
 private:
 	Hollow::Timer timer;
-	WVP						m_wvp;
+	WVP m_wvp;
 
 	Hollow::s_ptr<Hollow::InputLayout> defaultLayout;
 	Hollow::s_ptr<Hollow::InputLayout> terrainLayout;
@@ -505,24 +506,27 @@ public:
 		renderer->setRenderTarget(gBuffer);
 		renderer->setShaderPipeline(gBufferPipeline);
 
-		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_LINELIST);
-		defaultMaterial->materialData.color.x = 1.0f;
-		defaultMaterial->materialData.color.y = 0.0f;
-		defaultMaterial->materialData.color.z = 1.0f;
-		materialConstantBuffer->update(&defaultMaterial->materialData);
-		defaultMaterial->materialData.color.x = 0.0f;
-		defaultMaterial->materialData.color.y = 1.0f;
-		defaultMaterial->materialData.color.z = 0.0f;
+		// Physics debug draw
+		{
+			renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_LINELIST);
+			defaultMaterial->materialData.color.x = 1.0f;
+			defaultMaterial->materialData.color.y = 0.0f;
+			defaultMaterial->materialData.color.z = 1.0f;
+			defaultMaterial->materialData.color.w = 1.0f;
+			materialConstantBuffer->update(&defaultMaterial->materialData);
+			defaultMaterial->materialData.color.x = 0.0f;
+			defaultMaterial->materialData.color.y = 1.0f;
+			defaultMaterial->materialData.color.z = 0.0f;
+			renderer->setGpuBuffer(materialConstantBuffer);
 
-		perModelData.transform = Hollow::Matrix4::identity();
-		perModel->update(&perModelData);
-		renderer->setGpuBuffer(perModel);
+			perModelData.transform = Hollow::Matrix4::identity();
+			perModel->update(&perModelData);
+			renderer->setGpuBuffer(perModel);
 
-		renderer->setGpuBuffer(materialConstantBuffer);
-		renderer->setVertexBuffer(lineVB);
-		renderer->draw(2);
-		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
+			PhysicsSystem::instance()->dynamicsWorld->debugDrawWorld();
 
+			renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
+		}
 
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
