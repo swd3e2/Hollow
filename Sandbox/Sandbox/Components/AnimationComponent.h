@@ -35,6 +35,8 @@ public:
 	int currentAnimation = 0;
 	Hollow::Matrix4* nodeInfo;
 	int numNodes;
+	double frameRate = 1.0 / 60.0;
+	double currentFrame = 1.0 / 30.0;
 public:
 	AnimationComponent(const Hollow::s_ptr<Hollow::Import::Model>& mesh)
 	{

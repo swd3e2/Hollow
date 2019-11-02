@@ -5,9 +5,10 @@
 
 #include <utility>
 #include "Vector3.h"
+#include "immintrin.h"
 
 namespace Hollow {
-	class Vector4
+	class alignas(sizeof(__m128)) Vector4
 	{
 	public:
 		float x;
@@ -39,6 +40,21 @@ namespace Hollow {
 
 		Vector4 operator-(const Vector4& other) const;
 		void operator-=(const Vector4& other);
+		
+		operator __m128*() const
+		{
+			return (__m128*)this;
+		}
+		
+		Vector4& operator=(const __m128& other)
+		{
+			x = other.m128_f32[0];
+			y = other.m128_f32[1];
+			z = other.m128_f32[2];
+			w = other.m128_f32[3];
+
+			return *this;
+		}
 
 		static Vector4 normalize(const Vector4& vector);
 		static Vector4 negate(const Vector4& vector);

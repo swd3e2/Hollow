@@ -27,14 +27,22 @@
 #include "Sandbox/Events/FileChangeEvent.h"
 #include "ShaderManager.h"
 #include "FileSystemNotifier.h"
+#include "DirectXMath.h"
+
+std::ostream& operator<<(std::ostream& os, const Hollow::Matrix4& matrix)
+{
+	os << matrix.r[0].x << " " << matrix.r[0].y << " " << matrix.r[0].z << " " << matrix.r[0].w << std::endl
+		<< matrix.r[1].x << " " << matrix.r[1].y << " " << matrix.r[1].z << " " << matrix.r[1].w << std::endl
+		<< matrix.r[2].x << " " << matrix.r[2].y << " " << matrix.r[2].z << " " << matrix.r[2].w << std::endl
+		<< matrix.r[3].x << " " << matrix.r[3].y << " " << matrix.r[3].z << " " << matrix.r[3].w << std::endl;
+	return os;
+}
 
 class Appliaction
 {
 public:
+	DirectX::XMMATRIX mat;
 	Hollow::Core core;
-	Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
-	int width = 1920;
-	int height = 1080;
 	Hollow::Window* window;
 	Hollow::RenderApi* renderer;
 	Hollow::Camera camera;
@@ -45,10 +53,31 @@ public:
 	RenderSystem* renderPass;
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
+
+	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
+	const int width = 1920;
+	const int height = 1080;
 public:
 	Appliaction() :
 		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
 	{
+		Hollow::Matrix4 first(
+			1, 2, 1, 0,
+			2, 3, 2, 1,
+			0, 2, 3, 0,
+			5, 0, 2, 4
+		);
+
+		Hollow::Matrix4 second(
+			1, 2, 0, 3,
+			2, 1, 2, 6,
+			4, 5, 3, 1,
+			3, 5, 4, 9
+		);
+
+		std::cout << (first * second);
+		std::cout << (Hollow::Matrix4::rotation(Hollow::Quaternion(1,3,2,1)));
+
 		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
 		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
 		gui = new GUISystem(window, renderer);
@@ -196,16 +225,16 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = position;
 		}
-		/* Animation test */
-		//{
-		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-		//	Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-		//		->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
-		//  RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-		//	AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
-		//	transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-		//}
+		 /** Animation test */
+		{
+			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
+		  RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+			TransformComponent* transform = entity->addComponent<TransformComponent>();
+			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
+		}
 	}
 
 	void update()
