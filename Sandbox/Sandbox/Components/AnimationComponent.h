@@ -10,13 +10,16 @@ struct Node
 	std::string name;
 	std::vector<Node*> childs;
 	Hollow::Matrix4 localTransform;
+	double currentRotationIndex = 0;
+	double currentTranslationIndex = 0;
+	double currentScaleIndex = 0;
 };
 
 struct AnimationNodeData
 {
-	std::map<double, Hollow::Quaternion> rotations;
-	std::map<double, Hollow::Vector3> positions;
-	std::map<double, Hollow::Vector3> scale;
+	std::vector<std::pair<double, Hollow::Quaternion>> rotations;
+	std::vector<std::pair<double, Hollow::Vector3>> positions;
+	std::vector<std::pair<double, Hollow::Vector3>> scale;
 };
 
 struct Animation
@@ -55,13 +58,13 @@ public:
 				AnimationNodeData* nodeData = new AnimationNodeData();
 
 				for (auto& it : animationData.second->positions) {
-					nodeData->positions[it.first] = it.second;
+					nodeData->positions.push_back(std::make_pair(it. first, it.second));
 				}
 				for (auto& it : animationData.second->rotations) {
-					nodeData->rotations[it.first] = it.second;
+					nodeData->rotations.push_back(std::make_pair(it. first, it.second));
 				}
 				for (auto& it : animationData.second->scale) {
-					nodeData->scale[it.first] = it.second;
+					nodeData->scale.push_back(std::make_pair(it. first, it.second));
 				}
 
 				animation->data[animationData.first] = nodeData;
