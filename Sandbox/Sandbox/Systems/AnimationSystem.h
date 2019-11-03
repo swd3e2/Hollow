@@ -27,7 +27,7 @@ public:
 						animationComponent->currentAnimationTime = 0.0;
 					}
 
-					if (animationComponent->currentFrame >= animationComponent->frameRate) {
+					//if (animationComponent->currentFrame >= animationComponent->frameRate) {
 						animate(
 							animationComponent->currentAnimationTime,
 							animationComponent->rootNode,
@@ -35,9 +35,9 @@ public:
 							animationComponent->animations[animationComponent->currentAnimation],
 							animationComponent->nodeInfo
 						);
-						animationComponent->currentFrame = 0.0f;
-					}
-					animationComponent->currentFrame += dt / 1000.0;
+						//animationComponent->currentFrame = 0.0f;
+					//}
+					//animationComponent->currentFrame += dt / 1000.0;
 				}
 			}
 		}
@@ -77,14 +77,22 @@ public:
 				? interpolateRotation(closestRotation, nextClosestRotation, time)
 				: closestRotation.second;
 
-			nodeTransformation = Hollow::Matrix4::translation(translation) * Hollow::Matrix4::rotation(rotation);
+			//nodeTransformation = Hollow::Matrix4::rotation(rotation);
+			///*nodeTransformation.r[3].x = translation.x;
+			//nodeTransformation.r[3].y = translation.y;
+			//nodeTransformation.r[3].w = translation.z;*/
+			//nodeTransformation.r[0].w = translation.x;
+			//nodeTransformation.r[1].w = translation.y;
+			//nodeTransformation.r[2].w = translation.z;
+
+			//nodeTransformation = Hollow::Matrix4::translation(translation) * Hollow::Matrix4::rotation(rotation);
 		}
 
 		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
 
 		// If id of node is -1 means that node isn't used by any vertex so we can skip it
 		if (node->id != -1) {
-			container[node->id] = globalTransformation * node->localTransform;
+			container[node->id] = globalTransformation* node->localTransform;
 		}
 
 		for (auto& it : node->childs) {
@@ -211,8 +219,8 @@ public:
 		assert(factor >= 0.0f && factor <= 1.0f);
 
 		Hollow::Quaternion out;
-		Hollow::Quaternion::Interpolate(out, prev.second, next.second, factor);
-		out = out.Normalize();
+		Hollow::Quaternion::interpolate(out, prev.second, next.second, factor);
+		out.normalize();
 
 		return out;
 	}

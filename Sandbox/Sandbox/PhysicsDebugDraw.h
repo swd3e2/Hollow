@@ -38,7 +38,6 @@ public:
 			Hollow::Vertex(from.getX(), from.getY(), from.getZ()),
 			Hollow::Vertex(to.getX(),	to.getY(),	 to.getZ())
 		};
-		//HW_INFO("FROM {} {} {} TO {} {} {}", from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ());
 		lineVB->update(vertices, sizeof(Hollow::Vertex) * 2);
 		renderer->setVertexBuffer(lineVB);
 		renderer->draw(2);

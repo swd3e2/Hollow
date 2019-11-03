@@ -28,6 +28,7 @@
 #include "ShaderManager.h"
 #include "FileSystemNotifier.h"
 #include "Sandbox/PhysicsDebugDraw.h"
+#include "Sandbox/Systems/CameraSystem.h"
 
 class Appliaction
 {
@@ -43,7 +44,7 @@ public:
 	RenderSystem* renderPass;
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
-
+	CameraSystem* cameraSystem;
 	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
 	const int width = 1920;
 	const int height = 1080;
@@ -156,7 +157,6 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
 			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
-			transform->rotation = Hollow::Vector3(Hollow::Math::PI / 2, 0, 0);
 
 			entity->addComponent<PlayerComponent>();
 		}
@@ -175,7 +175,6 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
 			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
-			transform->rotation = Hollow::Vector3(Hollow::Math::PI / 2, 0, 0);
 		}
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
@@ -200,7 +199,7 @@ public:
 			transform->position = position;
 		}
 		 /** Animation test */
-		/*{
+		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
 				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
@@ -208,7 +207,7 @@ public:
 			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-		}*/
+		}
 	}
 
 	void update()
