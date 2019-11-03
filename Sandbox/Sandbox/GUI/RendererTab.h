@@ -40,8 +40,8 @@ namespace GUI {
 				renderSystem->lineVB->update(vertices.data(), sizeof(Hollow::Vertex) * 2);
 			}
 
-			ImGui::Text(("Physical memory total: " + std::to_string(totalPhysMem / (1024 * 1024))).c_str());
-			ImGui::Text(("Physical memory usage: " + std::to_string(physMemUsed / (1024 * 1024))).c_str());
+			ImGui::Text(("Physical memory total (Kb): " + std::to_string(totalPhysMem / (1024))).c_str());
+			ImGui::Text(("Physical memory usage (Kb): " + std::to_string(physMemUsed / (1024))).c_str());
 
 			ImGui::Text("Main camera speed");
 

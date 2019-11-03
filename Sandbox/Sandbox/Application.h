@@ -92,112 +92,112 @@ public:
 
 	void init()
 	{
-		Hollow::s_ptr<Hollow::Import::Model> planeMesh = Hollow::MeshManager::instance()
-			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
-		/* Physics test */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			physics->addPlaneShape(Hollow::Vector3(0.0f, 1.0f, 0.0f), 0, Hollow::Vector3(0.0f, -50.0f, 0.0f), 0);
-		}
-		/* PLANE 1 */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
-			
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			Hollow::Vector3 position = Hollow::Vector3(0.0f, -25.0f, 0.0f);
+		//Hollow::s_ptr<Hollow::Import::Model> planeMesh = Hollow::MeshManager::instance()
+		//	->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
+		///* Physics test */
+		//{
+		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//	PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		//	physics->addPlaneShape(Hollow::Vector3(0.0f, 1.0f, 0.0f), 0, Hollow::Vector3(0.0f, -50.0f, 0.0f), 0);
+		//}
+		///* PLANE 1 */
+		//{
+		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//	// Render
+		//	RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
+		//	
+		//	// Physics
+		//	PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		//	Hollow::Vector3 position = Hollow::Vector3(0.0f, -25.0f, 0.0f);
 
-			physics->addBoxShape(Hollow::Vector3(25.0f, 0.001f, 25.0f), position, 0.0f);
+		//	physics->addBoxShape(Hollow::Vector3(25.0f, 0.001f, 25.0f), position, 0.0f);
 
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = position;
-			transform->scale = Hollow::Vector3(25.0f, 0.0f, 25.0f);
-		}
-		/* PLANE 2 */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
+		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
+		//	transform->position = position;
+		//	transform->scale = Hollow::Vector3(25.0f, 0.0f, 25.0f);
+		//}
+		///* PLANE 2 */
+		//{
+		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//	// Render
+		//	RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
 
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			Hollow::Vector3 position = Hollow::Vector3(60.0f, -25.0f, 0.0f);
-			physics->addBoxShape(Hollow::Vector3(25.0f, 0.001f, 25.0f), position, 0.0f);
+		//	// Physics
+		//	PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		//	Hollow::Vector3 position = Hollow::Vector3(60.0f, -25.0f, 0.0f);
+		//	physics->addBoxShape(Hollow::Vector3(25.0f, 0.001f, 25.0f), position, 0.0f);
 
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = position;
-			transform->scale = Hollow::Vector3(25.0f, 0.0f, 25.0f);
-		}
-		/* FOX */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
+		//	transform->position = position;
+		//	transform->scale = Hollow::Vector3(25.0f, 0.0f, 25.0f);
+		//}
+		///* FOX */
+		//{
+		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//	// Render
+		//	Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+		//		->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
+		//	RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 
-			/*RenderableObject* renderableObject = new RenderableObject();
-			std::tie(renderableObject->vBuffer, renderableObject->iBuffer) = Hollow::getCube();
-			renderableObject->material = 0;
-			renderable->renderables.push_back(renderableObject);
+		//	/*RenderableObject* renderableObject = new RenderableObject();
+		//	std::tie(renderableObject->vBuffer, renderableObject->iBuffer) = Hollow::getCube();
+		//	renderableObject->material = 0;
+		//	renderable->renderables.push_back(renderableObject);
 
-			Hollow::Material* material = new Hollow::Material();
-			material->materialData.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-			renderable->materials[0] = material;*/
+		//	Hollow::Material* material = new Hollow::Material();
+		//	material->materialData.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+		//	renderable->materials[0] = material;*/
 
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			//physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-			//physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
-			physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
+		//	// Physics
+		//	PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		//	//physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+		//	//physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
+		//	physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 20.0f);
 
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
+		//	transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
+		//	transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
 
-			entity->addComponent<PlayerComponent>();
-		}
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+		//	entity->addComponent<PlayerComponent>();
+		//}
+		//{
+		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//	// Render
+		//	Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+		//		->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
+		//	RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			//physics->load(mesh, Hollow::Vector3(20.0f, 0.0f, 0.0f), 0.0f);
-			physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 0.0f, 0.0f), 20.0f);
+		//	// Physics
+		//	PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		//	//physics->load(mesh, Hollow::Vector3(20.0f, 0.0f, 0.0f), 0.0f);
+		//	physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 0.0f, 0.0f), 20.0f);
 
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
-		}
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
+		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
+		//	transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
+		//	transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+		//}
+		//{
+		//	GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		//	// Render
+		//	RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
 
-			RenderableObject* renderableObject = new RenderableObject();
-			std::tie(renderableObject->vBuffer, renderableObject->iBuffer) = Hollow::getCube();
-			renderableObject->material = 0;
-			renderable->renderables.push_back(renderableObject);
+		//	RenderableObject* renderableObject = new RenderableObject();
+		//	std::tie(renderableObject->vBuffer, renderableObject->iBuffer) = Hollow::getCube();
+		//	renderableObject->material = 0;
+		//	renderable->renderables.push_back(renderableObject);
 
-			Hollow::Material* material = new Hollow::Material();
-			material->materialData.color = Hollow::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-			renderable->materials[0] = material;
+		//	Hollow::Material* material = new Hollow::Material();
+		//	material->materialData.color = Hollow::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+		//	renderable->materials[0] = material;
 
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			Hollow::Vector3 position = Hollow::Vector3(3.0f, 25.0f, 0.0f);
-			physics->addBoxShape(Hollow::Vector3(1.f, 1.f, 1.f), position, 1.0f);
+		//	// Physics
+		//	PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
+		//	Hollow::Vector3 position = Hollow::Vector3(3.0f, 25.0f, 0.0f);
+		//	physics->addBoxShape(Hollow::Vector3(1.f, 1.f, 1.f), position, 1.0f);
 
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = position;
-		}
+		//	TransformComponent* transform = entity->addComponent<TransformComponent>();
+		//	transform->position = position;
+		//}
 		 /** Animation test */
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();

@@ -31,15 +31,22 @@ struct Animation
 class AnimationComponent : public Hollow::Component<AnimationComponent>
 {
 public:
+	/* List of nodes */
 	std::unordered_map<int, Node*> nodes;
+	/* List of animations */
 	std::vector<Animation*> animations;
+	/* Root animation node */
 	Node* rootNode;
+	/* Current animation time */
 	double currentAnimationTime = 0.0;
+	/* Selected animation index */
 	int currentAnimation = 0;
-	Hollow::Matrix4* nodeInfo;
-	int numNodes;
+	/* List of joint trs matrices*/
+	std::vector<Hollow::Matrix4> nodeInfo;
+	/* Animation frame rate*/
 	double frameRate = 1.0 / 60.0;
-	double currentFrame = 1.0 / 30.0;
+	/* Current frame time */
+	double currentFrame = 0.0;
 public:
 	AnimationComponent(const Hollow::s_ptr<Hollow::Import::Model>& mesh)
 	{
@@ -72,8 +79,14 @@ public:
 			animations.push_back(animation);
 		}
 
-		numNodes = nodes.size();
-		nodeInfo = new Hollow::Matrix4[200];
+		nodeInfo.resize(100);
+	}
+
+	void resetAllNodeTRSIndices()
+	{
+		for (auto& it : nodes) {
+			it.second->currentRotationIndex = it.second->currentScaleIndex = it.second->currentTranslationIndex = 0;
+		}
 	}
 private:
 	void parseNodes(Node* parentNode, Hollow::Import::AnimationNode* node)

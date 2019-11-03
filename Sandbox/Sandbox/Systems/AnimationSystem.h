@@ -25,9 +25,10 @@ public:
 				if (animationComponent->animations.size() > 0) {
 					if (animationComponent->currentAnimationTime > animationComponent->animations[animationComponent->currentAnimation]->duration) {
 						animationComponent->currentAnimationTime = 0.0;
+						animationComponent->resetAllNodeTRSIndices();
 					}
 
-					//if (animationComponent->currentFrame >= animationComponent->frameRate) {
+					if (animationComponent->currentFrame >= animationComponent->frameRate) {
 						animate(
 							animationComponent->currentAnimationTime,
 							animationComponent->rootNode,
@@ -35,9 +36,9 @@ public:
 							animationComponent->animations[animationComponent->currentAnimation],
 							animationComponent->nodeInfo
 						);
-						//animationComponent->currentFrame = 0.0f;
-					//}
-					//animationComponent->currentFrame += dt / 1000.0;
+						animationComponent->currentFrame = 0.0f;
+					}
+					animationComponent->currentFrame += dt / 1000.0;
 				}
 			}
 		}
@@ -46,7 +47,7 @@ public:
 
 	virtual void PostUpdate(double dt) override {}
 
-	void animate(double time, Node* node, const Hollow::Matrix4& parentTransform, Animation* animation, Hollow::Matrix4* container)
+	void animate(double time, Node* node, const Hollow::Matrix4& parentTransform, Animation* animation, std::vector<Hollow::Matrix4>& container)
 	{
 		Hollow::Matrix4 nodeTransformation = Hollow::Matrix4::identity();
 
@@ -77,14 +78,9 @@ public:
 				: closestRotation.second;
 
 			nodeTransformation = Hollow::Matrix4::rotation(rotation);
-			/*nodeTransformation.r[3].x = translation.x;
-			nodeTransformation.r[3].y = translation.y;
-			nodeTransformation.r[3].w = translation.z;*/
 			nodeTransformation.r[0].w = translation.x;
 			nodeTransformation.r[1].w = translation.y;
 			nodeTransformation.r[2].w = translation.z;
-
-			//nodeTransformation = Hollow::Matrix4::translation(translation) * Hollow::Matrix4::rotation(rotation);
 		}
 			
 		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;

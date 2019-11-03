@@ -3,7 +3,7 @@
 #include "D3D11Context.h"
 
 namespace Hollow {
-	void D3D11GPUBuffer::update(void* data)
+	void D3D11GPUBuffer::update(void* data, unsigned int size)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 
@@ -11,12 +11,11 @@ namespace Hollow {
 		D3D11Context& context = r->getContext();
 
 		HRESULT hr = context.getDeviceContext()->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		if (FAILED(hr))
-		{
-			//HW_ERROR("ConstantBuffer: cant update buffer.");
+		if (FAILED(hr)) {
+			HW_ERROR("ConstantBuffer: cant update buffer.");
 		}
 
-		CopyMemory(mappedResource.pData, data, size);
+		CopyMemory(mappedResource.pData, data, size == 0 ? this->getSize() : size);
 		context.getDeviceContext()->Unmap(m_Buffer, 0);
 	}
 }

@@ -536,7 +536,7 @@ public:
 				if (entity.hasComponent<AnimationComponent>()) {
 					perModelData.hasAnimation = true;
 					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
-					boneInfo->update(animation->nodeInfo);
+					boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
 					renderer->setGpuBuffer(boneInfo);
 				} else {
 					perModelData.hasAnimation = false;
