@@ -50,12 +50,12 @@ public:
 
 	virtual void PostUpdate(double dt) override {}
 
-	void animate(double time, Node* node, const Hollow::Matrix4& parentTransform, Animation* animation, std::vector<Hollow::Matrix4>& container)
+	void animate(double time, const Hollow::s_ptr<Node>& node, const Hollow::Matrix4& parentTransform, const Hollow::s_ptr<Animation>& animation, std::vector<Hollow::Matrix4>& container)
 	{
 		Hollow::Matrix4 nodeTransformation = Hollow::Matrix4::identity();
 
 		if (animation->data.find(node->id) != animation->data.end()) {
-			AnimationNodeData* data = animation->data[node->id];
+			const Hollow::s_ptr<AnimationNodeData>& data = animation->data[node->id];
 
 			std::pair<double, Hollow::Vector3> closestScale;
 			std::pair<double, Hollow::Vector3> closestTranslation;
@@ -91,8 +91,6 @@ public:
 		// If id of node is -1 means that node isn't used by any vertex so we can skip it
 		if (node->jointId != -1) {
 			container[node->jointId] = globalTransformation * node->localTransform;
-		} else {
-			if (0) {}
 		}
 
 		for (auto& it : node->childs) {
@@ -108,7 +106,7 @@ public:
 		std::pair<double, Hollow::Vector3>, 
 		std::pair<double, Hollow::Vector3>, 
 		std::pair<double, Hollow::Quaternion>
-	> getClosest(double time, AnimationNodeData* data, Node* node)
+	> getClosest(const double time, const Hollow::s_ptr<AnimationNodeData>& data, const Hollow::s_ptr<Node>& node)
 	{
 		// Set all to zero so if we not found keyframe at 0 we could return at least something
 		std::pair<double, Hollow::Vector3> scale;

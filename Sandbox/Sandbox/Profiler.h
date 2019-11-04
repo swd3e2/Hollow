@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "Hollow/Common/Log.h"
 #include "Hollow/Common/Timer.h"
+#include "psapi.h"
 
 class Profiler
 {
@@ -12,6 +13,10 @@ private:
 	std::unordered_map<std::string, double> values;
 	bool isProfilerActive = false;
 	std::string currentProfilingName;
+
+	MEMORYSTATUSEX memInfo;
+	DWORDLONG physMemUsed;
+	DWORDLONG totalPhysMem;
 
 	static Profiler* _instance;
 public:
@@ -47,4 +52,11 @@ public:
 	}
 
 	static inline const std::unordered_map<std::string, double>& getValues() { return _instance->values; }
+
+	static inline int getMemoryUsage()
+	{
+		PROCESS_MEMORY_COUNTERS pmc;
+		GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
+		return pmc.WorkingSetSize;
+	}
 };

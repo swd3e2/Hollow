@@ -35,7 +35,7 @@ namespace Hollow {
 			if (!scene) 
 				return model;
 
-			std::unordered_map<std::string, Import::AnimationNode*> animationNodes;
+			std::unordered_map<std::string, s_ptr<Import::AnimationNode>> animationNodes;
 			
 			if (scene->mNumAnimations > 0) {
 				processAnimations(animationNodes, model, scene);
@@ -49,14 +49,14 @@ namespace Hollow {
 		}
 		private:
 		// Mesh data
-		void processMeshes(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
+		void processMeshes(std::unordered_map<std::string, s_ptr<Import::AnimationNode>>& animationNodes, const s_ptr<Import::Model>& data, const aiScene* scene)
 		{
 			if (scene->mNumMeshes > 0) {
 				aiNode* temp;
 
 				for (int i = 0; i < scene->mNumMeshes; i++) {
 					aiMesh* aMesh = scene->mMeshes[i];
-					Import::Mesh* mesh = new Import::Mesh();
+					s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
 					mesh->name = aMesh->mName.C_Str();
 					mesh->material = aMesh->mMaterialIndex;
 
@@ -147,7 +147,7 @@ namespace Hollow {
 								continue;
 							}
 
-							Import::AnimationNode* node = animationNodes[aibone->mName.C_Str()];
+							const s_ptr<Import::AnimationNode>& node = animationNodes[aibone->mName.C_Str()];
 
 							for (int k = 0; k < aibone->mNumWeights; k++) {
 								int vertexId = aibone->mWeights[k].mVertexId;
@@ -169,7 +169,7 @@ namespace Hollow {
 			}
 		}
 
-		void processAnimations(std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, s_ptr<Import::Model>& data, const aiScene* scene)
+		void processAnimations(std::unordered_map<std::string, s_ptr<Import::AnimationNode>>& animationNodes, s_ptr<Import::Model>& data, const aiScene* scene)
 		{
 			// Create assimp node map 
 			std::unordered_map<std::string, aiNode*> assimpNodes;
@@ -202,7 +202,7 @@ namespace Hollow {
 
 
 			aiBone* rootBone = assimpBones[rootNode->mName.C_Str()];
-			data->rootNode = new Import::AnimationNode();
+			data->rootNode = std::make_shared<Import::AnimationNode>();
 			data->rootNode->id = animationNodeNextId++;
 			data->rootNode->name = rootNode->mName.C_Str();
 
@@ -218,7 +218,7 @@ namespace Hollow {
 
 			for (int i = 0; i < scene->mNumAnimations; i++) {
 				aiAnimation* assimpAnimation = scene->mAnimations[i];
-				Import::Animation* animation = new Import::Animation();
+				s_ptr<Import::Animation> animation = std::make_shared<Import::Animation>();
 				animation->duration = assimpAnimation->mDuration;
 
 				for (int j = 0; j < assimpAnimation->mNumChannels; j++) {
@@ -229,14 +229,15 @@ namespace Hollow {
 						continue;
 					}
 
-					Import::AnimationNode* node = animationNodes[assimpChannel->mNodeName.C_Str()];
+					const s_ptr<Import::AnimationNode>& node = animationNodes[assimpChannel->mNodeName.C_Str()];
 					assimpBoneNodes[assimpChannel->mNodeName.C_Str()] = assimpNodes[assimpChannel->mNodeName.C_Str()];
-					Import::AnimationNodeData* animationData = nullptr;
+					s_ptr<Import::AnimationNodeData> animationData;
 
 					if (animation->data.find(node->id) != animation->data.end()) {
 						animationData = animation->data[node->id];
 					} else {
-						animation->data[node->id] = animationData = new Import::AnimationNodeData;
+						animationData = std::make_shared<Import::AnimationNodeData>();
+						animation->data[node->id] = animationData;
 					}
 
 					for (int k = 0; k < assimpChannel->mNumPositionKeys; k++) {
@@ -268,13 +269,13 @@ namespace Hollow {
 			}
 		}
 
-		void createAnimationNodes(std::unordered_map<std::string, aiNode*>& assimpBoneNodes, std::unordered_map<std::string, aiBone*>& assimpBones, std::unordered_map<std::string, Import::AnimationNode*>& animationNodes, const aiNode* node, Import::AnimationNode* parentNode)
+		void createAnimationNodes(std::unordered_map<std::string, aiNode*>& assimpBoneNodes, std::unordered_map<std::string, aiBone*>& assimpBones, std::unordered_map<std::string, s_ptr<Import::AnimationNode>>& animationNodes, const aiNode* node, s_ptr<Import::AnimationNode> parentNode)
 		{
 			for (int i = 0; i < node->mNumChildren; i++) {
 				if (!hasChildBone(assimpBoneNodes, node->mChildren[i]))
 					continue;
 
-				Import::AnimationNode* animNode = new Import::AnimationNode();
+				s_ptr<Import::AnimationNode> animNode = std::make_shared<Import::AnimationNode>();
 				animNode->name = node->mChildren[i]->mName.C_Str();
 
 				// If no vertex uses that bone we dont need it's id

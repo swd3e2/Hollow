@@ -23,8 +23,8 @@ public:
 class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
-	std::vector<RenderableObject*> renderables;
-	std::unordered_map<unsigned int, Hollow::Material*> materials;
+	std::vector<Hollow::s_ptr<RenderableObject>> renderables;
+	std::unordered_map<unsigned int, Hollow::s_ptr<Hollow::Material>> materials;
 	Hollow::Vector3 A, B; // A - left near down, B - right far up
 	std::string filename;
 public:
@@ -35,22 +35,14 @@ public:
 		load(model);
 	}
 
-	virtual ~RenderableComponent()
-	{
-		for (auto& it : renderables) {
-			delete it;
-		}
-		for (auto& it : materials) {
-			delete it.second;
-		}
-		materials.clear();
-	}
-
 	void load(const Hollow::s_ptr<Hollow::Import::Model>& model)
 	{
-		if (model == nullptr) { return; }
+		if (model == nullptr) { 
+			return; 
+		}
+
 		for (int i = 0; i < model->meshes.size(); i++) {
-			RenderableObject* renderable = new RenderableObject();
+			Hollow::s_ptr<RenderableObject> renderable = std::make_shared<RenderableObject>();
 			renderable->id = i;
 			renderable->material = model->meshes[i]->material;
 
@@ -61,7 +53,7 @@ public:
 		}
 
 		for (auto& it : model->materials) {
-			Hollow::Material* material = new Hollow::Material;
+			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
 			material->name = it.second.name;
 			material->materialData.color = it.second.baseColorFactor;
 

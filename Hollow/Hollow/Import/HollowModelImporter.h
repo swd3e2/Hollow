@@ -31,7 +31,7 @@ namespace Hollow {
 			std::ifstream file(folder + binFilename, std::ios::binary);
 
 			for (int i = 0; i < j["Meshes"].size(); i++) {
-				Import::Mesh* mesh = new Import::Mesh();
+				s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
 				mesh->material = j["Meshes"][i]["material"].get<int>();
 
 				file.seekg(j["Meshes"][i]["vertices_offset"].get<size_t>(), std::fstream::beg);

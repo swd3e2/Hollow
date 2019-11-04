@@ -555,7 +555,7 @@ public:
 
 				for (auto& object : renderable->renderables)  {
 					if (renderable->materials.find(object->material) != renderable->materials.end()) {
-						Hollow::Material* material = renderable->materials[object->material];
+						const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
 						if (material->diffuseTexture != nullptr) {
 							renderer->setTexture(0, material->diffuseTexture);
 						} else {

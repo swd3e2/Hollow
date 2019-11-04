@@ -9,7 +9,7 @@ struct Node
 	int id;
 	int jointId;
 	std::string name;
-	std::vector<Node*> childs;
+	std::vector<Hollow::s_ptr<Node>> childs;
 	Hollow::Matrix4 localTransform;
 	double currentRotationIndex = 0;
 	double currentTranslationIndex = 0;
@@ -25,7 +25,7 @@ struct AnimationNodeData
 
 struct Animation
 {
-	std::map<int, AnimationNodeData*> data;
+	std::map<int, Hollow::s_ptr<AnimationNodeData>> data;
 	std::string name;
 	double duration = 0.0;
 };
@@ -34,11 +34,11 @@ class AnimationComponent : public Hollow::Component<AnimationComponent>
 {
 public:
 	/* List of nodes */
-	std::unordered_map<int, Node*> nodes;
+	std::unordered_map<int, Hollow::s_ptr<Node>> nodes;
 	/* List of animations */
-	std::vector<Animation*> animations;
+	std::vector<Hollow::s_ptr<Animation>> animations;
 	/* Root animation node */
-	Node* rootNode;
+	Hollow::s_ptr<Node> rootNode;
 	/* Current animation time */
 	double currentAnimationTime = 0.0;
 	/* Selected animation index */
@@ -56,7 +56,11 @@ public:
 public:
 	AnimationComponent(const Hollow::s_ptr<Hollow::Import::Model>& mesh)
 	{
-		rootNode = new Node();
+		if (mesh == nullptr || mesh->rootNode == nullptr) {
+			return;
+		}
+
+		rootNode = std::make_shared<Node>();
 		rootNode->id = mesh->rootNode->id;
 		rootNode->jointId = mesh->rootNode->jointId;
 		rootNode->name = mesh->rootNode->name;
@@ -65,12 +69,12 @@ public:
 		parseNodes(rootNode, mesh->rootNode);
 
 		for (auto& importAnimation : mesh->animations) {
-			Animation* animation = new Animation();
+			Hollow::s_ptr<Animation> animation = std::make_shared<Animation>();
 			animation->duration = importAnimation->duration;
 			animation->name = importAnimation->name;
 
 			for (auto& animationData : importAnimation->data) {
-				AnimationNodeData* nodeData = new AnimationNodeData();
+				Hollow::s_ptr<AnimationNodeData> nodeData = std::make_shared<AnimationNodeData>();
 
 				for (auto& it : animationData.second->positions) {
 					nodeData->positions.push_back(std::make_pair(it. first, it.second));
@@ -87,8 +91,7 @@ public:
 			animations.push_back(animation);
 		}
 
-		//nodeInfo.resize(nodes.size() + 1);
-		nodeInfo.resize(100);
+		nodeInfo.resize(nodes.size() + 1);
 	}
 
 	void pause()
@@ -124,10 +127,10 @@ public:
 		}
 	}
 private:
-	void parseNodes(Node* parentNode, Hollow::Import::AnimationNode* node)
+	void parseNodes(const Hollow::s_ptr<Node>& parentNode, Hollow::s_ptr<Hollow::Import::AnimationNode>& node)
 	{
 		for (auto& it : node->childrens) {
-			Node* childNode = new Node();
+			Hollow::s_ptr<Node> childNode = std::make_shared<Node>();
 			childNode->id = it->id;
 			childNode->jointId = it->jointId;
 			childNode->localTransform = it->localTransform;

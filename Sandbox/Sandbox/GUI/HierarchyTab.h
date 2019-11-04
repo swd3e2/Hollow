@@ -214,11 +214,11 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<RenderableComponent>()) {
 					if (ImGui::CollapsingHeader("Renderable component")) {
 						RenderableComponent* renderableComponent = selectedGameObject->getComponent<RenderableComponent>();
-						std::vector<RenderableObject*>& renderables = renderableComponent->renderables;
+						std::vector<Hollow::s_ptr<RenderableObject>>& renderables = renderableComponent->renderables;
 						for (auto& it : renderables) {
 							if (ImGui::Selectable(std::string("Mesh " + std::to_string(it->id)).c_str())) {
-								selectedRenderable = it;
-								selectedMaterial = renderableComponent->materials[it->material];
+								selectedRenderable = it.get();
+								selectedMaterial = renderableComponent->materials[it->material].get();
 							}
 						}
 						if (ImGui::Button("Load from file")) {
@@ -357,7 +357,7 @@ namespace GUI {
 		}
 
 		private:
-			void drawAnimationHierarchy(Node* node)
+			void drawAnimationHierarchy(Hollow::s_ptr<Node>& node)
 			{
 				for (auto& it : node->childs) {
 					if (ImGui::TreeNode(it->name.c_str())) {
