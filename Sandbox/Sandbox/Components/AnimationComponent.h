@@ -7,6 +7,7 @@
 struct Node 
 {
 	int id;
+	int jointId;
 	std::string name;
 	std::vector<Node*> childs;
 	Hollow::Matrix4 localTransform;
@@ -25,6 +26,7 @@ struct AnimationNodeData
 struct Animation
 {
 	std::map<int, AnimationNodeData*> data;
+	std::string name;
 	double duration = 0.0;
 };
 
@@ -47,11 +49,16 @@ public:
 	double frameRate = 1.0 / 60.0;
 	/* Current frame time */
 	double currentFrame = 0.0;
+	/*  */
+	bool shouldPlay = true;
+	/*  */
+	bool stoped = false;
 public:
 	AnimationComponent(const Hollow::s_ptr<Hollow::Import::Model>& mesh)
 	{
 		rootNode = new Node();
 		rootNode->id = mesh->rootNode->id;
+		rootNode->jointId = mesh->rootNode->jointId;
 		rootNode->name = mesh->rootNode->name;
 		rootNode->localTransform = mesh->rootNode->localTransform;
 
@@ -60,6 +67,7 @@ public:
 		for (auto& importAnimation : mesh->animations) {
 			Animation* animation = new Animation();
 			animation->duration = importAnimation->duration;
+			animation->name = importAnimation->name;
 
 			for (auto& animationData : importAnimation->data) {
 				AnimationNodeData* nodeData = new AnimationNodeData();
@@ -79,7 +87,33 @@ public:
 			animations.push_back(animation);
 		}
 
-		nodeInfo.resize(100);
+		nodeInfo.resize(nodes.size() + 1);
+	}
+
+	void pause()
+	{
+		shouldPlay = false;
+	}
+
+	void restart()
+	{
+		stop();
+		play();
+	}
+
+	void play()
+	{
+		shouldPlay = true;
+		stoped = false;
+	}
+
+	void stop()
+	{
+		currentFrame = 0.0;
+		currentAnimationTime = 0.0;
+		resetAllNodeTRSIndices();
+		shouldPlay = false;
+		stoped = true;
 	}
 
 	void resetAllNodeTRSIndices()
@@ -94,6 +128,7 @@ private:
 		for (auto& it : node->childrens) {
 			Node* childNode = new Node();
 			childNode->id = it->id;
+			childNode->jointId = it->jointId;
 			childNode->localTransform = it->localTransform;
 			childNode->name = it->name;
 

@@ -41,7 +41,8 @@ namespace Hollow {
 		{
 			std::vector<Mesh*> meshes;
 			Vector3 A, B; // A - left near down, B - right far up
-			std::unordered_map<unsigned int, Material> materials;
+			std::unordered_map<int, Material> materials;
+			std::unordered_map<int, AnimationNode*> nodes;
 			std::vector<Animation*> animations;
 			AnimationNode* rootNode = nullptr;
 

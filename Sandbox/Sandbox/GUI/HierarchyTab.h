@@ -252,6 +252,37 @@ namespace GUI {
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}
+				if (selectedGameObject->hasComponent<AnimationComponent>()) {
+					if (ImGui::CollapsingHeader("Animation component")) {
+						AnimationComponent* animation = selectedGameObject->getComponent<AnimationComponent>();
+
+						if (ImGui::BeginCombo("Animation", animation->animations[animation->currentAnimation]->name.c_str())) {
+							for (int n = 0; n < animation->animations.size(); n++) {
+								bool is_selected = (animation->animations[animation->currentAnimation] == animation->animations[n]);
+								if (ImGui::Selectable(animation->animations[n]->name.c_str(), is_selected))
+									animation->currentAnimation = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+							}
+							ImGui::EndCombo();
+						}
+						if (ImGui::Button("Play")) {
+							animation->play();
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Pause")) {
+							animation->pause();
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Stop")) {
+							animation->stop();
+						}
+						if (ImGui::TreeNode(animation->rootNode->name.c_str())) {
+							drawAnimationHierarchy(animation->rootNode);
+							ImGui::TreePop();
+						}
+					}
+				}
 			}
 			ImGui::End();
 
@@ -324,5 +355,23 @@ namespace GUI {
 			}
 			ImGui::End();
 		}
+
+		private:
+			void drawAnimationHierarchy(Node* node)
+			{
+				for (auto& it : node->childs) {
+					if (ImGui::TreeNode(it->name.c_str())) {
+						if (ImGui::TreeNode(("Local transform###" + it->name).c_str())) {
+							ImGui::InputFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0]);
+							ImGui::InputFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1]);
+							ImGui::InputFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2]);
+							ImGui::InputFloat4(("###" + it->name + "4").c_str(), (float*)&it->localTransform.r[3]);
+							ImGui::TreePop();
+						}
+						drawAnimationHierarchy(it);
+						ImGui::TreePop();
+					}
+				}
+			}
 	};
 }

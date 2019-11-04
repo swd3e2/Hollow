@@ -19,26 +19,29 @@ public:
 		Profiler::begin("Animation System: update()");
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<AnimationComponent>()) {
-				AnimationComponent* animationComponent = entity.getComponent<AnimationComponent>();
+				AnimationComponent* animation = entity.getComponent<AnimationComponent>();
 
-				animationComponent->currentAnimationTime += dt / 1000.0;
-				if (animationComponent->animations.size() > 0) {
-					if (animationComponent->currentAnimationTime > animationComponent->animations[animationComponent->currentAnimation]->duration) {
-						animationComponent->currentAnimationTime = 0.0;
-						animationComponent->resetAllNodeTRSIndices();
+				if (animation->shouldPlay) {
+					animation->currentAnimationTime += dt / 1000.0;
+				}
+
+				if (animation->animations.size() > 0) {
+					if (animation->currentAnimationTime > animation->animations[animation->currentAnimation]->duration) {
+						animation->currentAnimationTime = 0.0;
+						animation->resetAllNodeTRSIndices();
 					}
 
-					if (animationComponent->currentFrame >= animationComponent->frameRate) {
+					if (animation->currentFrame >= animation->frameRate) {
 						animate(
-							animationComponent->currentAnimationTime,
-							animationComponent->rootNode,
+							animation->currentAnimationTime,
+							animation->rootNode,
 							Hollow::Matrix4::identity(),
-							animationComponent->animations[animationComponent->currentAnimation],
-							animationComponent->nodeInfo
+							animation->animations[animation->currentAnimation],
+							animation->nodeInfo
 						);
-						animationComponent->currentFrame = 0.0f;
+						animation->currentFrame = 0.0f;
 					}
-					animationComponent->currentFrame += dt / 1000.0;
+					animation->currentFrame += dt / 1000.0;
 				}
 			}
 		}
@@ -51,8 +54,8 @@ public:
 	{
 		Hollow::Matrix4 nodeTransformation = Hollow::Matrix4::identity();
 
-		if (animation->data.find(node->id) != animation->data.end()) {
-			AnimationNodeData* data = animation->data[node->id];
+		if (animation->data.find(node->jointId) != animation->data.end()) {
+			AnimationNodeData* data = animation->data[node->jointId];
 
 			std::pair<double, Hollow::Vector3> closestScale;
 			std::pair<double, Hollow::Vector3> closestTranslation;
@@ -86,8 +89,8 @@ public:
 		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
 
 		// If id of node is -1 means that node isn't used by any vertex so we can skip it
-		if (node->id != -1) {
-			container[node->id] = globalTransformation* node->localTransform;
+		if (node->jointId != -1) {
+			container[node->jointId] = globalTransformation* node->localTransform;
 		}
 
 		for (auto& it : node->childs) {

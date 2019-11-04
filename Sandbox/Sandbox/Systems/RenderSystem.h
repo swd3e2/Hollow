@@ -534,10 +534,13 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
 				if (entity.hasComponent<AnimationComponent>()) {
-					perModelData.hasAnimation = true;
 					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
-					boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
-					renderer->setGpuBuffer(boneInfo);
+					perModelData.hasAnimation = !animation->stoped;
+					if (!animation->stoped) {
+						AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+						boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
+						renderer->setGpuBuffer(boneInfo);
+					}
 				} else {
 					perModelData.hasAnimation = false;
 				}

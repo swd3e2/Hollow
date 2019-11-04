@@ -21,6 +21,7 @@ namespace Hollow {
 		struct AnimationNode
 		{
 			int id;
+			int jointId;
 			std::string name;
 			Matrix4 localTransform;
 			std::vector<AnimationNode*> childrens;
@@ -30,6 +31,7 @@ namespace Hollow {
 		{
 			std::map<int, AnimationNodeData*> data;
 			double duration = 0.0;
+			std::string name;
 
 			~Animation()
 			{
