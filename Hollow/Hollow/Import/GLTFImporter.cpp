@@ -29,6 +29,7 @@ namespace Hollow {
 
 		if (!binary.is_open()) {
 			HW_ERROR("GTLF bin file not found, {}", binaryFilePath.c_str());
+			delete model;
 			return nullptr;
 		}
 

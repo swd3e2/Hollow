@@ -28,14 +28,13 @@ public:
 		solver = std::make_shared<btSequentialImpulseConstraintSolver>();
 
 		dynamicsWorld = std::make_shared<btDiscreteDynamicsWorld>(dispatcher.get(), overlappingPairCache.get(), solver.get(), collisionConfiguration.get());
-
 		dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
 	}
 
 	virtual void Update(double dt) override
 	{
 		Profiler::begin("PhysicsSystem update(): ");
-		dynamicsWorld->stepSimulation(dt);
+		dynamicsWorld->stepSimulation(dt / 1000.0);
 
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
@@ -43,11 +42,14 @@ public:
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
 				btTransform tr;
 				physics->body->getMotionState()->getWorldTransform(tr);
-				btVector3& pos = tr.getOrigin();
+				btVector3& pos = tr.getOrigin(); 
+				btQuaternion rot = physics->body->getCenterOfMassTransform().getRotation();
 
 				transform->position.x = pos.getX();
 				transform->position.y = pos.getY();
 				transform->position.z = pos.getZ();
+
+				rot.getEulerZYX(transform->rotation.x, transform->rotation.y, transform->rotation.z);
 			}
 		}
 		Profiler::end();

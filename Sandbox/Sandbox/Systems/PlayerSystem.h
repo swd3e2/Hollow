@@ -28,29 +28,36 @@ public:
 				physics->body->setLinearVelocity(btVector3(0, 0, 0.f));
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
-					moveVector.setX(1.0f);
-					transform->rotation.z = 0;
+					moveVector.setX(10.0f);
+					//transform->rotation.y = 0;
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
-					moveVector.setX(-1.0f);
-					transform->rotation.z = Hollow::Math::PI;
+					moveVector.setX(-10.0f);
+					//transform->rotation.y = Hollow::Math::PI;
 				}
 				
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_A)) {
-					moveVector.setZ(1.0f);
+					moveVector.setZ(10.0f);
 
-					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
-						transform->rotation.z += Hollow::Math::PI / 4;
+					/*if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
+						transform->rotation.y -= Hollow::Math::PI / 4;
 					} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
-						transform->rotation.z -= Hollow::Math::PI / 4;
+						transform->rotation.y += Hollow::Math::PI / 4;
 					} else {
-						transform->rotation.z = Hollow::Math::PI / 2;
-					}
+						transform->rotation.y = -Hollow::Math::PI / 2;
+					}*/
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_D)) {
-					moveVector.setZ(-1.0f);
+					moveVector.setZ(-10.0f);
+					/*if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
+						transform->rotation.y += Hollow::Math::PI / 4;
+					} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
+						transform->rotation.y -= Hollow::Math::PI / 4;
+					} else {
+						transform->rotation.y = Hollow::Math::PI / 2;
+					}*/
 				}
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_SPACE)) {
-
+					moveVector.setY(20.0f);
 				}
 				physics->body->setLinearVelocity(moveVector);
 				physics->body->activate(true);

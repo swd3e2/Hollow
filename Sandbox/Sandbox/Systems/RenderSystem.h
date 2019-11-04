@@ -455,13 +455,15 @@ public:
 
 		lightTime = timer.getMilisecondsElapsed();;
 
-		if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_CONTROL)
-			&& Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_LEFT)
+		
+		if (Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_LEFT) &&
+			Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_CONTROL)
 		) {
 			Hollow::Vector4 selectedColor = picker->readPixel(Hollow::InputManager::mcx, Hollow::InputManager::mcy);
 			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
 		}
+
 		Profiler::end();
 	}
 
