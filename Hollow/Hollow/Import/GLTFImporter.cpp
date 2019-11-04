@@ -52,12 +52,16 @@ namespace Hollow {
 			for (auto& channel : animation->data) {
 				const Node* node = nullptr;
 
-				int nodeId = getNodeByJoint(channel.first, gltfModel);
+				if (nodes.find(channel.first) != nodes.end()) {
+					node = nodes[channel.first];
+				}
+
+				/*int nodeId = getNodeByJoint(channel.first, gltfModel);
 				if (nodeId != -1) {
 					if (nodes.find(nodeId) != nodes.end()) {
 						node = nodes[nodeId];
 					}
-				}
+				}*/
 				
 				if (channel.second->positions.size() == 0) {
 					channel.second->positions[0.0] = node != nullptr ? node->translation : Vector3();
@@ -68,7 +72,7 @@ namespace Hollow {
 				}
 
 				if (channel.second->scale.size() == 0) {
-					channel.second->scale[0.0] = node != nullptr ? node->scale : Vector3(1.0f, 1.0f, 1.0f);
+					channel.second->scale[0.0] = node != nullptr ? node->scale : Vector3();
 				}
 			}
 		}
@@ -147,20 +151,16 @@ namespace Hollow {
 							unsigned short* data = new unsigned short[accessor.count * 4];
 							binary.read((char*)data, sizeof(unsigned short) * accessor.count * 4);
 
-							int skin = getSkinByMesh(1, gltfModel.nodes[0], gltfModel);
+							for (int i = 0; i < accessor.count; i++) {
+								/*mesh->vertices[i].boneData.joints[0] = gltfModel.skins[0].joints[data[i * 4 + 0]];
+								mesh->vertices[i].boneData.joints[1] = gltfModel.skins[0].joints[data[i * 4 + 1]];
+								mesh->vertices[i].boneData.joints[2] = gltfModel.skins[0].joints[data[i * 4 + 2]];
+								mesh->vertices[i].boneData.joints[3] = gltfModel.skins[0].joints[data[i * 4 + 3]]; */
 
-							if (skin >= 0) {
-								for (int i = 0; i < accessor.count; i++) {
-									/*mesh->vertices[i].boneData.joints[0] = gltfModel.skins[skin].joints[data[i * 4]];
-									mesh->vertices[i].boneData.joints[1] = gltfModel.skins[skin].joints[data[i * 4 + 1]];
-									mesh->vertices[i].boneData.joints[2] = gltfModel.skins[skin].joints[data[i * 4 + 2]];
-									mesh->vertices[i].boneData.joints[3] = gltfModel.skins[skin].joints[data[i * 4 + 3]];*/
-
-									mesh->vertices[i].boneData.joints[0] = data[i * 4];
-									mesh->vertices[i].boneData.joints[1] = data[i * 4 + 1];
-									mesh->vertices[i].boneData.joints[2] = data[i * 4 + 2];
-									mesh->vertices[i].boneData.joints[3] = data[i * 4 + 3];
-								}
+								mesh->vertices[i].boneData.joints[0] = data[i * 4 + 0];
+								mesh->vertices[i].boneData.joints[1] = data[i * 4 + 1];
+								mesh->vertices[i].boneData.joints[2] = data[i * 4 + 2];
+								mesh->vertices[i].boneData.joints[3] = data[i * 4 + 3];
 							}
 							
 							delete[] data;
@@ -349,12 +349,18 @@ namespace Hollow {
 
 				Import::AnimationNodeData* data;
 
-				int jointId = getJointByNode(channel.target_node, gltfModel);
+				if (mAnimation->data.find(channel.target_node) != mAnimation->data.end()) {
+					data = mAnimation->data[channel.target_node];
+				} else {
+					mAnimation->data[channel.target_node] = data = new Import::AnimationNodeData();
+				}
+
+				/*int jointId = getJointByNode(channel.target_node, gltfModel);
 				if (mAnimation->data.find(jointId) != mAnimation->data.end()) {
 					data = mAnimation->data[jointId];
 				} else {
 					mAnimation->data[jointId] = data = new Import::AnimationNodeData();
-				}
+				}*/
 
 				if (channel.target_path == "rotation") {
 					for (int i = 0; i < timeAccessor.count; i++) {

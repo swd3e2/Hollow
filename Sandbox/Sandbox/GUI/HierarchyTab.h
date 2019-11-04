@@ -362,10 +362,10 @@ namespace GUI {
 				for (auto& it : node->childs) {
 					if (ImGui::TreeNode(it->name.c_str())) {
 						if (ImGui::TreeNode(("Local transform###" + it->name).c_str())) {
-							ImGui::InputFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0]);
-							ImGui::InputFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1]);
-							ImGui::InputFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2]);
-							ImGui::InputFloat4(("###" + it->name + "4").c_str(), (float*)&it->localTransform.r[3]);
+							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "4").c_str(), (float*)&it->localTransform.r[3], 0.01f, -10000.0f, 10000.0f);
 							ImGui::TreePop();
 						}
 						drawAnimationHierarchy(it);

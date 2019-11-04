@@ -87,7 +87,8 @@ public:
 			animations.push_back(animation);
 		}
 
-		nodeInfo.resize(nodes.size() + 1);
+		//nodeInfo.resize(nodes.size() + 1);
+		nodeInfo.resize(100);
 	}
 
 	void pause()

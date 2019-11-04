@@ -3,7 +3,7 @@
 namespace Hollow {
 	s_ptr<InputLayout> OGLInputLayoutManager::create(const INPUT_LAYOUT_DESC& desc)
 	{
-		s_ptr<OGLInputLayout> layout = std::make_shared<OGLInputLayout>();
+		OGLInputLayout* layout = new OGLInputLayout();
 		layout->layout = desc.layout;
 		layout->size = desc.stride;
 
@@ -22,6 +22,6 @@ namespace Hollow {
 			glVertexArrayAttribBinding(layout->vao, i, 0);
 		}
 
-		return std::static_pointer_cast<InputLayout>(layout);
+		return s_ptr<InputLayout>(layout);
 	}
 }

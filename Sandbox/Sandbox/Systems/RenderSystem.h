@@ -340,7 +340,7 @@ public:
 		}
 		{
 			Hollow::RASTERIZER_STATE_DESC desc;
-			desc.cullMode = Hollow::CullMode::CLM_BACK;
+			desc.cullMode = Hollow::CullMode::CLM_NONE;
 			desc.fillMode = Hollow::FillMode::FM_SOLID;
 			cullBackWF = Hollow::RasterizerState::create(desc);
 		}

@@ -54,8 +54,8 @@ public:
 	{
 		Hollow::Matrix4 nodeTransformation = Hollow::Matrix4::identity();
 
-		if (animation->data.find(node->jointId) != animation->data.end()) {
-			AnimationNodeData* data = animation->data[node->jointId];
+		if (animation->data.find(node->id) != animation->data.end()) {
+			AnimationNodeData* data = animation->data[node->id];
 
 			std::pair<double, Hollow::Vector3> closestScale;
 			std::pair<double, Hollow::Vector3> closestTranslation;
@@ -90,7 +90,9 @@ public:
 
 		// If id of node is -1 means that node isn't used by any vertex so we can skip it
 		if (node->jointId != -1) {
-			container[node->jointId] = globalTransformation* node->localTransform;
+			container[node->jointId] = globalTransformation * node->localTransform;
+		} else {
+			if (0) {}
 		}
 
 		for (auto& it : node->childs) {
