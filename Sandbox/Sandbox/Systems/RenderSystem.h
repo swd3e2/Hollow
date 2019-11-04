@@ -340,7 +340,7 @@ public:
 		}
 		{
 			Hollow::RASTERIZER_STATE_DESC desc;
-			desc.cullMode = Hollow::CullMode::CLM_BACK;
+			desc.cullMode = Hollow::CullMode::CLM_NONE;
 			desc.fillMode = Hollow::FillMode::FM_SOLID;
 			cullBackWF = Hollow::RasterizerState::create(desc);
 		}
@@ -455,13 +455,15 @@ public:
 
 		lightTime = timer.getMilisecondsElapsed();;
 
-		if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_CONTROL)
-			&& Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_LEFT)
+		
+		if (Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_LEFT) &&
+			Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_CONTROL)
 		) {
 			Hollow::Vector4 selectedColor = picker->readPixel(Hollow::InputManager::mcx, Hollow::InputManager::mcy);
 			pickedID = selectedColor.x + selectedColor.y * 256 + selectedColor.z * 256 * 256;
 			Hollow::EventSystem::instance()->addEvent(new ChangeSelectedEntity(pickedID));
 		}
+
 		Profiler::end();
 	}
 
@@ -534,10 +536,13 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
 				if (entity.hasComponent<AnimationComponent>()) {
-					perModelData.hasAnimation = true;
 					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
-					boneInfo->update(animation->nodeInfo);
-					renderer->setGpuBuffer(boneInfo);
+					perModelData.hasAnimation = !animation->stoped;
+					if (!animation->stoped) {
+						AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+						boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
+						renderer->setGpuBuffer(boneInfo);
+					}
 				} else {
 					perModelData.hasAnimation = false;
 				}
@@ -552,7 +557,7 @@ public:
 
 				for (auto& object : renderable->renderables)  {
 					if (renderable->materials.find(object->material) != renderable->materials.end()) {
-						Hollow::Material* material = renderable->materials[object->material];
+						const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
 						if (material->diffuseTexture != nullptr) {
 							renderer->setTexture(0, material->diffuseTexture);
 						} else {

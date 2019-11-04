@@ -28,7 +28,7 @@ namespace Hollow {
 		if (FreeImage_FIFSupportsReading(fif))
 			dib = FreeImage_Load(fif, filename);
 		//if the image failed to load, return failure
-		if (!dib) {
+		if (dib == nullptr) {
 			HW_ERROR("Texture manager: failed to load image, file {}", filename);
 			return nullptr;
 		}
@@ -58,7 +58,6 @@ namespace Hollow {
 
 		FreeImage_Unload(dib);
 
-		//if this somehow one of these failed (they shouldn't), return failure
 		if ((texture->width == 0) || (texture->height == 0)) {
 			HW_ERROR("Texture manager: file loaded with erorrs, can't get height and width, file {}", filename);
 			return nullptr;

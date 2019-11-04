@@ -22,7 +22,7 @@ namespace Hollow {
 		// Ultra-mega-over slow too, even for 1 pixel, 
 		// because the framebuffer is on the GPU.
 		unsigned char data[4];
-		glReadPixels(x, 1080 - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glReadPixels(x, getHeight() - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, drawFboId);
 
 		return Vector4(data[0], data[1], data[2], data[3]);

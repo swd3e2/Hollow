@@ -56,10 +56,7 @@ void PhysicsComponent::load(const Hollow::s_ptr<Hollow::Import::Model>& model, c
 	trans.setIdentity();
 	trans.setOrigin(btVector3(position.x, position.y, position.z));
 	myMotionState = std::make_shared<btDefaultMotionState>(trans);
-
 	body = std::make_shared<btRigidBody>(mass, myMotionState.get(), shape.get(), localInertia);
-
-	PhysicsSystem::instance()->dynamicsWorld->addRigidBody(body.get());
 }
 
 void PhysicsComponent::initialize(const Hollow::Vector3& position, float mass)
@@ -79,9 +76,4 @@ void PhysicsComponent::initialize(const Hollow::Vector3& position, float mass)
 	myMotionState = std::make_shared<btDefaultMotionState>(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState.get(), shape.get(), localInertia);
 	body = std::make_shared<btRigidBody>(rbInfo);
-	
-	body->setFriction(200.3f);
-	body->setRollingFriction(200.3f);
-	
-	PhysicsSystem::instance()->dynamicsWorld->addRigidBody(body.get());
 }

@@ -8,20 +8,20 @@
 namespace Hollow {
 	class GPUBuffer
 	{
-	protected:
-		unsigned int location;
-		unsigned int size;
+	private:
+		unsigned int mLocation;
+		unsigned int mSize;
 	public:
 		GPUBuffer(UINT32 location, UINT32 size) :
-			location(location), size(size)
+			mLocation(location), mSize(size)
 		{}
 
 		static s_ptr<GPUBuffer> create(UINT32 location, UINT32 size);
 		
-		unsigned int getSize() const { return size; }
-		unsigned int getLocation() const { return location; }
+		unsigned int getSize() const { return mSize; }
+		unsigned int getLocation() const { return mLocation; }
 
-		virtual void update(void* data) = 0;
+		virtual void update(void* data, unsigned int = 0) = 0;
 	};
 }
 

@@ -1,12 +1,14 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
+#include "Hollow/Platform.h"
 #include "Hollow/Math/Vector4.h"
 #include "Hollow/Graphics/Vertex.h"
+#include "Animation.h"
+
+#include <unordered_map>
 #include <limits>
 #include <vector>
-#include "Animation.h"
+#include <string>
 
 namespace Hollow {
 	namespace Import {
@@ -39,30 +41,14 @@ namespace Hollow {
 
 		struct Model
 		{
-			std::vector<Mesh*> meshes;
-			Vector3 A, B; // A - left near down, B - right far up
-			std::unordered_map<unsigned int, Material> materials;
-			std::vector<Animation*> animations;
-			AnimationNode* rootNode = nullptr;
-
-			Model()
-			{
-				A = Vector3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-				B = Vector3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
-			}
-
-			~Model()
-			{
-				for (auto& it : meshes) {
-					delete it;
-				}
-				for (auto& it : animations) {
-					delete it;
-				}
-				if (rootNode != nullptr) {
-					delete rootNode;
-				}
-			}
+			std::vector<s_ptr<Mesh>> meshes;
+			std::unordered_map<int, Material> materials;
+			std::unordered_map<int, s_ptr<AnimationNode>> nodes;
+			std::vector<s_ptr<Animation>> animations;
+			s_ptr<AnimationNode> rootNode;
+			// A - left near down, B - right far up
+			Vector3 A = Vector3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+			Vector3 B = Vector3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 		};
 	}
 }

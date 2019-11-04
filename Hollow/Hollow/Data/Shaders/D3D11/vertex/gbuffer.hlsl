@@ -41,22 +41,23 @@ PixelShaderOutput main(VertexShaderInput input)
 	PixelShaderOutput output;
 
 	output.position = float4(input.pos, 1.0f);
-
+	output.normal = input.normal;
+	
 	if (hasAnimation) {
 		matrix BoneTransform = boneInfo[input.boneId[0]] * input.weight[0];
-		BoneTransform += boneInfo[input.boneId[1]] * input.weight[1];
-		BoneTransform += boneInfo[input.boneId[2]] * input.weight[2];
-		BoneTransform += boneInfo[input.boneId[3]] * input.weight[3];
+		BoneTransform       += boneInfo[input.boneId[1]] * input.weight[1];
+		BoneTransform       += boneInfo[input.boneId[2]] * input.weight[2];
+		BoneTransform       += boneInfo[input.boneId[3]] * input.weight[3];
 
 		output.position = mul(output.position, BoneTransform);
-	}
+        output.normal = mul(output.normal, BoneTransform);
+    }
 
-	output.position = mul(output.position, transform);
-	output.hPos = output.position;
-
-	output.position = mul(output.position, WVP);
-	output.normal	= normalize(mul(input.normal, transform)) + 1.0f * 0.5f;
+	output.normal = normalize(mul(input.normal, transform)) + 1.0f * 0.5f;
 	output.texCoord = input.texCoord;
+    output.hPos = mul(output.position, transform);
+
+    output.position = mul(output.hPos, WVP);
 
 	return output;
 }

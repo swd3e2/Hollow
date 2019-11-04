@@ -214,11 +214,11 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<RenderableComponent>()) {
 					if (ImGui::CollapsingHeader("Renderable component")) {
 						RenderableComponent* renderableComponent = selectedGameObject->getComponent<RenderableComponent>();
-						std::vector<RenderableObject*>& renderables = renderableComponent->renderables;
+						std::vector<Hollow::s_ptr<RenderableObject>>& renderables = renderableComponent->renderables;
 						for (auto& it : renderables) {
 							if (ImGui::Selectable(std::string("Mesh " + std::to_string(it->id)).c_str())) {
-								selectedRenderable = it;
-								selectedMaterial = renderableComponent->materials[it->material];
+								selectedRenderable = it.get();
+								selectedMaterial = renderableComponent->materials[it->material].get();
 							}
 						}
 						if (ImGui::Button("Load from file")) {
@@ -250,6 +250,37 @@ namespace GUI {
 						}
 						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
+					}
+				}
+				if (selectedGameObject->hasComponent<AnimationComponent>()) {
+					if (ImGui::CollapsingHeader("Animation component")) {
+						AnimationComponent* animation = selectedGameObject->getComponent<AnimationComponent>();
+
+						if (ImGui::BeginCombo("Animation", animation->animations[animation->currentAnimation]->name.c_str())) {
+							for (int n = 0; n < animation->animations.size(); n++) {
+								bool is_selected = (animation->animations[animation->currentAnimation] == animation->animations[n]);
+								if (ImGui::Selectable(animation->animations[n]->name.c_str(), is_selected))
+									animation->currentAnimation = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+							}
+							ImGui::EndCombo();
+						}
+						if (ImGui::Button("Play")) {
+							animation->play();
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Pause")) {
+							animation->pause();
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Stop")) {
+							animation->stop();
+						}
+						if (ImGui::TreeNode(animation->rootNode->name.c_str())) {
+							drawAnimationHierarchy(animation->rootNode);
+							ImGui::TreePop();
+						}
 					}
 				}
 			}
@@ -324,5 +355,23 @@ namespace GUI {
 			}
 			ImGui::End();
 		}
+
+		private:
+			void drawAnimationHierarchy(Hollow::s_ptr<Node>& node)
+			{
+				for (auto& it : node->childs) {
+					if (ImGui::TreeNode(it->name.c_str())) {
+						if (ImGui::TreeNode(("Local transform###" + it->name).c_str())) {
+							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "4").c_str(), (float*)&it->localTransform.r[3], 0.01f, -10000.0f, 10000.0f);
+							ImGui::TreePop();
+						}
+						drawAnimationHierarchy(it);
+						ImGui::TreePop();
+					}
+				}
+			}
 	};
 }

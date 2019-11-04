@@ -13,8 +13,6 @@
 class SkyMap
 {
 public:
-	int NumSphereVertices;
-	int NumSphereFaces;
 	Hollow::Matrix4 transform;
 	Hollow::Material* material;
 	Hollow::s_ptr<Hollow::VertexBuffer> vBuffer;
@@ -31,9 +29,9 @@ public:
 
 		int xOffset = texture->width / 4;
 		int yOffset = texture->height / 3;
-		std::array<unsigned char*, 6> data;
+		std::array<std::vector<unsigned char>, 6> data;
 		for (int i = 0; i < data.size(); i++) {
-			data[i] = new unsigned char[xOffset * yOffset * 4];
+			data[i].resize(xOffset * yOffset * 4);
 		}
 
 		unsigned char* textureData = (unsigned char*)texture->data.get();
@@ -106,7 +104,9 @@ public:
 		desc.type = Hollow::TextureType::TT_TEXTURE_CUBE;
 
 		Hollow::s_ptr<Hollow::Texture> cubemap = Hollow::Texture::create(desc);
-		cubemap->update(data.data());
+
+		unsigned char* ptrData[] = { data[0].data(), data[1].data(), data[2].data(), data[3].data(), data[4].data(), data[5].data() };
+		cubemap->update(ptrData);
 
 		std::tie(vBuffer, iBuffer) = Hollow::getCube();
 		material->diffuseTexture = cubemap;

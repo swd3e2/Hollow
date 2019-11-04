@@ -3,6 +3,7 @@
 #ifndef HW_ANIMATION_H
 #define HW_ANIMATION_H
 
+#include "Hollow/Platform.h"
 #include "Hollow/Math/Matrix4.h"
 #include "Hollow/Math/Quaternion.h"
 #include <map>
@@ -21,22 +22,17 @@ namespace Hollow {
 		struct AnimationNode
 		{
 			int id;
+			int jointId;
 			std::string name;
 			Matrix4 localTransform;
-			std::vector<AnimationNode*> childrens;
+			std::vector<s_ptr<AnimationNode>> childrens;
 		};
 
 		struct Animation
 		{
-			std::map<int, AnimationNodeData*> data;
+			std::map<int, s_ptr<AnimationNodeData>> data;
 			double duration = 0.0;
-
-			~Animation()
-			{
-				for (auto& it : data) {
-					delete it.second;
-				}
-			}
+			std::string name;
 		};
 	}
 }

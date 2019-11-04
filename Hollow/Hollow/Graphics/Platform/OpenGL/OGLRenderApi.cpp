@@ -203,27 +203,22 @@ namespace Hollow {
 			break;
 		}
 
-		if (desc.cullMode != CullMode::CLM_NONE)
+		switch (desc.fillMode)
 		{
-			switch (desc.fillMode)
-			{
-			case FillMode::FM_SOLID:
-				if (fillMode != FillMode::FM_SOLID) {
-					fillMode = FillMode::FM_SOLID;
+		case FillMode::FM_SOLID:
+			if (fillMode != FillMode::FM_SOLID) {
+				fillMode = FillMode::FM_SOLID;
 
-					glPolygonMode(GL_FRONT, GL_FILL);
-					glPolygonMode(GL_BACK, GL_FILL);
-				}
-				break;
-			case FillMode::FM_WIREFRAME:
-				if (fillMode != FillMode::FM_WIREFRAME) {
-					fillMode = FillMode::FM_WIREFRAME;
-
-					glPolygonMode(GL_FRONT, GL_LINE);
-					glPolygonMode(GL_BACK, GL_LINE);
-				}
-				break;
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
+			break;
+		case FillMode::FM_WIREFRAME:
+			if (fillMode != FillMode::FM_WIREFRAME) {
+				fillMode = FillMode::FM_WIREFRAME;
+
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			break;
 		}
 	}
 
