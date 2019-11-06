@@ -148,10 +148,13 @@ public:
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+			physics->applyRotation = false;
+			//physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 			//physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-			//physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 1.0f);
+			physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 1.0f);
 			physics->body->setContactProcessingThreshold(0.01);
+			physics->body->setAngularFactor(btVector3(0.0f, 0.0f, 0.0f));
+
 			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
@@ -203,7 +206,7 @@ public:
 			transform->position = position;
 		}
 		/** Animation test */
-		/*{
+		{
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
 				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
@@ -211,7 +214,7 @@ public:
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
-		}*/
+		}
 	}
 
 	void update()

@@ -68,11 +68,25 @@ namespace GUI {
 			ImGui::BulletText("GameObjects");
 			ImGui::Indent();
 			for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
-				if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(counter++)).c_str())) {
+				size_t entityId = entity.getId();
+				ImGui::PushID(entityId);
+				if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(entity.getId())).c_str())) {
 					selectedGameObject = &entity;
 					selectedTerrain = nullptr;
 					selectedLight = nullptr;
 				}
+				
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+					ImGui::SetDragDropPayload("Entity", &entityId, sizeof(size_t));        // Set payload to carry the index of our item (could be anything)
+					ImGui::EndDragDropSource();
+				}
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
+						HW_INFO("{}", *reinterpret_cast<size_t*>(payload->Data));
+					}
+					ImGui::EndDragDropTarget();
+				}
+				ImGui::PopID();
 				if (ImGui::BeginPopupContextItem())
 				{
 					ImGui::Text("Add component:");
@@ -94,30 +108,6 @@ namespace GUI {
 					}
 					if (ImGui::Button("Delete")) {
 						Hollow::DelayedTaskManager::instance()->add([&entity]() { Hollow::EntityManager::instance()->destroy(entity.getId()); });
-						ImGui::CloseCurrentPopup();
-					}
-					ImGui::EndPopup();
-				}
-			}
-			ImGui::Unindent();
-			counter = 0;
-			ImGui::BulletText("Terrains");
-			ImGui::Indent();
-			for (auto& terrain : Hollow::EntityManager::instance()->container<Terrain>()) {
-				if (ImGui::Selectable(("Terrain " + std::to_string(counter++)).c_str())) {
-					selectedGameObject = nullptr;
-					selectedTerrain = &terrain;
-					selectedLight = nullptr;
-				}
-				if (ImGui::BeginPopupContextItem())
-				{
-					ImGui::Text("Add component:");
-					if (ImGui::Button("Transform")) {
-						terrain.addComponent<TransformComponent>();
-						ImGui::CloseCurrentPopup();
-					}
-					if (ImGui::Button("TerrainData")) {
-						terrain.addComponent<TerrainData>();
 						ImGui::CloseCurrentPopup();
 					}
 					ImGui::EndPopup();

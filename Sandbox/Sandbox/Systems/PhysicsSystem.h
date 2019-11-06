@@ -49,7 +49,9 @@ public:
 				transform->position.y = pos.getY();
 				transform->position.z = pos.getZ();
 
-				rot.getEulerZYX(transform->rotation.x, transform->rotation.y, transform->rotation.z);
+				if (physics->applyRotation) {
+					rot.getEulerZYX(transform->rotation.x, transform->rotation.y, transform->rotation.z);
+				}
 			}
 		}
 		Profiler::end();
