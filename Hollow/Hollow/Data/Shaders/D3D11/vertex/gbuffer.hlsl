@@ -53,7 +53,7 @@ PixelShaderOutput main(VertexShaderInput input)
         output.normal = mul(output.normal, BoneTransform);
     }
 
-	output.normal = normalize(mul(input.normal, transform)) + 1.0f * 0.5f;
+    output.normal = normalize(mul(output.normal, transform)) + 1.0f * 0.5f;
 	output.texCoord = input.texCoord;
     output.hPos = mul(output.position, transform);
 

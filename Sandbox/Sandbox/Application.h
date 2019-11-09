@@ -54,14 +54,14 @@ public:
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
 	CameraSystem* cameraSystem;
-	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
-	const int width = 2560;
-	const int height = 1440;
+	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	const int width = 1920;
+	const int height = 1080;
 public:
 	Appliaction() :
 		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
 	{
-		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Borderless);
+		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
 		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
 		gui = new GUISystem(window, renderer);
 
@@ -178,7 +178,7 @@ public:
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
@@ -191,7 +191,7 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
 			transform->rotation = Hollow::Vector3(-Hollow::Math::HALF_PI, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+			transform->scale = Hollow::Vector3(0.1f, 0.1f, 0.1f);
 		}
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();

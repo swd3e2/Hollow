@@ -72,5 +72,5 @@ float4 main(PixelShaderOutput input) : SV_TARGET
 		//diffuse += float4(lights[i].color, 1.0f); // CalcPointLight(lights[i], normal, position);
 	}
 
-	return diffuse;
+    return diffuse;
 }

@@ -29,11 +29,11 @@ namespace Hollow {
 		{
 			switch (shader->type)
 			{
-			case ShaderType::ST_VERTEX:		setVertexShader(shader);
-			case ShaderType::ST_PIXEL:		setPixelShader(shader);
-			case ShaderType::ST_GEOMERTY:	setGeometryShader(shader);
-			case ShaderType::ST_HULL:		setHullShader(shader);
-			case ShaderType::ST_DOMAIN:		setDomainShader(shader);
+			case ShaderType::ST_VERTEX:		setVertexShader(shader);	break;
+			case ShaderType::ST_PIXEL:		setPixelShader(shader);		break;
+			case ShaderType::ST_GEOMERTY:	setGeometryShader(shader);	break;
+			case ShaderType::ST_HULL:		setHullShader(shader);		break;
+			case ShaderType::ST_DOMAIN:		setDomainShader(shader);	break;
 			}
 		}
 

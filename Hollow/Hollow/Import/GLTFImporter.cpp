@@ -17,12 +17,13 @@ namespace Hollow {
 
 		tinygltf::Node& modelRootNode = gltfModel.nodes[gltfModel.scenes[0].nodes[0]];
 		std::unordered_map<int, s_ptr<Node>> nodes;
+		std::vector<int> meshesToLoad;
 		s_ptr<Node> rootNode = std::make_shared<Node>();
 		rootNode->name = modelRootNode.name;
 		rootNode->id = 0;
 		nodes[0] = rootNode;
 
-		processHierarchy(rootNode, modelRootNode, gltfModel, nodes);
+		processHierarchy(rootNode, modelRootNode, gltfModel, nodes, meshesToLoad);
 
 		std::string binaryFilePath = getBinaryFileFolder(filename) + gltfModel.buffers[0].uri;
 		std::ifstream binary(binaryFilePath, std::fstream::in | std::fstream::binary);
@@ -34,7 +35,7 @@ namespace Hollow {
 		}
 
 		processSkin(model, gltfModel, binary);
-		processMeshes(model, gltfModel, binary);
+		processMeshes(model, gltfModel, binary, meshesToLoad);
 		processAnimations(model, gltfModel, binary);
 
 		binary.close();
@@ -45,10 +46,12 @@ namespace Hollow {
 		return s_ptr<Import::Model>(model);
 	}
 
-	void GLTFImporter::processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary)
+	void GLTFImporter::processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary, std::vector<int>& meshesToLoad)
 	{
 		for (int i = 0; i < gltfModel.meshes.size(); i++) {
 			const tinygltf::Mesh& gltfMesh = gltfModel.meshes[i];
+
+			if (std::find(meshesToLoad.begin(), meshesToLoad.end(), i) == meshesToLoad.end()) continue;
 
 			for (auto& primitive : gltfMesh.primitives) {
 				s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
@@ -276,6 +279,8 @@ namespace Hollow {
 
 			if (modelAnimationNode.rotation.size() > 0) {
 				animationNode->rotation = Quaternion(modelAnimationNode.rotation[0], modelAnimationNode.rotation[1], modelAnimationNode.rotation[2], modelAnimationNode.rotation[3]);
+			} else {
+				animationNode->rotation = Quaternion();
 			}
 
 			if (modelAnimationNode.scale.size() > 0) {
@@ -358,9 +363,12 @@ namespace Hollow {
 	/**
 	 * Creates hierarchy of nodes and get's their transformations
 	 */
-	void GLTFImporter::processHierarchy(s_ptr<Node>& node, const tinygltf::Node& modelNode, const tinygltf::Model& gltfModel, std::unordered_map<int, s_ptr<Node>>& nodes)
+	void GLTFImporter::processHierarchy(s_ptr<Node>& node, const tinygltf::Node& modelNode, const tinygltf::Model& gltfModel, std::unordered_map<int, s_ptr<Node>>& nodes, std::vector<int>& meshesToLoad)
 	{
 		node->transformation = getTransformMatrix(modelNode);
+		if (modelNode.mesh >= 0) {
+			meshesToLoad.push_back(modelNode.mesh);
+		}
 
 		for (int childId : modelNode.children) {
 			const tinygltf::Node& childModelNode = gltfModel.nodes[childId];
@@ -371,10 +379,12 @@ namespace Hollow {
 			childNode->jointId = getJointByNode(childId, gltfModel);
 			childNode->mesh = childModelNode.mesh;
 
+			
+
 			node->childrens.push_back(childNode);
 			nodes[childNode->id] = childNode;
 
-			processHierarchy(childNode, childModelNode, gltfModel, nodes);
+			processHierarchy(childNode, childModelNode, gltfModel, nodes, meshesToLoad);
 		}
 	}
 
@@ -468,13 +478,13 @@ namespace Hollow {
 	{
 		Matrix4 transform = parentTransform;
 		
-		if (node->mesh != -1) {
+		/*if (node->mesh != -1) {
 			for (auto& it : model->meshes[node->mesh]->vertices) {
 				it.pos = it.pos * transform;
 				it.normal = it.normal * transform;
 				Vector3::normalize(it.normal);
 			}
-		}
+		}*/
 
 		for (auto& it : node->childrens) {
 			fixModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
