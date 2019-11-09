@@ -279,7 +279,7 @@ namespace GUI {
 
 			ImGui::Begin("Material properties");
 			if (selectedMaterial != nullptr) {
-				ImGui::DragFloat4("Base color", (float*)& selectedMaterial->materialData.color, 0.001f, 0.0f, 1.0f);
+				ImGui::ColorEdit4("Base color", (float*)& selectedMaterial->materialData.color);
 				ImGui::DragFloat("Metallic", &selectedMaterial->materialData.metallicFactor, 0.001f, 0.0f, 1.0f);
 				ImGui::DragFloat("Emissive", &selectedMaterial->materialData.emissiveFactor, 0.001f, 0.0f, 1.0f);
 				ImGui::DragFloat("Roughness", &selectedMaterial->materialData.roughnessFactor, 0.001f, 0.0f, 1.0f);
@@ -351,7 +351,16 @@ namespace GUI {
 			{
 				for (auto& it : node->childs) {
 					if (ImGui::TreeNode(it->name.c_str())) {
-						if (ImGui::TreeNode(("Local transform###" + it->name).c_str())) {
+						if (ImGui::TreeNode(("Node info###" + it->name).c_str())) {
+							ImGui::Text("Node transforms");
+							ImGui::DragFloat3(("Translation###T" + it->name).c_str(), (float*)&it->translation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat3(("Scale###S" + it->name).c_str(), (float*)&it->scale, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("Rotation###R" + it->name).c_str(), (float*)&it->rotation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::Text("Current transforms");
+							ImGui::DragFloat3(("Translation###CT" + it->name).c_str(), (float*)&it->currentTranslation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat3(("Scale###CS" + it->name).c_str(), (float*)&it->currentScale, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("Rotation###CR" + it->name).c_str(), (float*)&it->currentRotation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::Text("Inverse bind matrix");
 							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0], 0.01f, -10000.0f, 10000.0f);
 							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1], 0.01f, -10000.0f, 10000.0f);
 							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2], 0.01f, -10000.0f, 10000.0f);

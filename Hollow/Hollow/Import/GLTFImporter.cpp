@@ -39,37 +39,10 @@ namespace Hollow {
 
 		binary.close();
 
-		fixAnimation(model, gltfModel, nodes);
-
 		// temp for animation
-		//fixModel(rootNode, rootNode->transformation, model);
+		fixModel(rootNode, rootNode->transformation, model);
 
 		return s_ptr<Import::Model>(model);
-	}
-
-	void GLTFImporter::fixAnimation(Import::Model* model, const tinygltf::Model& gltfModel, std::unordered_map<int, s_ptr<Node>>& nodes)
-	{
-		for (auto& animation : model->animations) {
-			for (auto& channel : animation->data) {
-				s_ptr<Node> node;
-
-				if (nodes.find(channel.first) != nodes.end()) {
-					node = nodes[channel.first];
-				}
-				
-				if (channel.second->positions.size() == 0) {
-					channel.second->positions[0.0] = node != nullptr ? node->translation : Vector3();
-				}
-
-				if (channel.second->rotations.size() == 0) {
-					channel.second->rotations[0.0] = node != nullptr ? node->rotation : Quaternion();
-				}
-
-				if (channel.second->scale.size() == 0) {
-					channel.second->scale[0.0] = node != nullptr ? node->scale : Vector3();
-				}
-			}
-		}
 	}
 
 	void GLTFImporter::processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary)
@@ -266,6 +239,7 @@ namespace Hollow {
 			model->rootNode->id = gltfModel.skins[0].skeleton;
 			model->rootNode->jointId = getJointByNode(gltfModel.skins[0].skeleton, gltfModel);
 			model->rootNode->name = gltfModel.nodes[gltfModel.skins[0].skeleton].name;
+			model->rootNode->localTransform2 = getTransformMatrix(gltfModel.nodes[gltfModel.skins[0].skeleton]);
 			model->nodes[model->rootNode->id] = model->rootNode;
 
 			const tinygltf::Accessor& accessor = gltfModel.accessors[gltfModel.skins[0].inverseBindMatrices];
@@ -294,6 +268,21 @@ namespace Hollow {
 			animationNode->id = childId;
 			animationNode->jointId = getJointByNode(childId, gltfModel);
 			animationNode->name = modelAnimationNode.name;
+			animationNode->localTransform2 = getTransformMatrix(modelAnimationNode);
+			
+			if (modelAnimationNode.translation.size() > 0) {
+				animationNode->translation = Vector3(modelAnimationNode.translation[0], modelAnimationNode.translation[1], modelAnimationNode.translation[2]);
+			}
+
+			if (modelAnimationNode.rotation.size() > 0) {
+				animationNode->rotation = Quaternion(modelAnimationNode.rotation[0], modelAnimationNode.rotation[1], modelAnimationNode.rotation[2], modelAnimationNode.rotation[3]);
+			}
+
+			if (modelAnimationNode.scale.size() > 0) {
+				animationNode->scale = Vector3(modelAnimationNode.scale[0], modelAnimationNode.scale[1], modelAnimationNode.scale[2]);
+			}
+
+			animationNode->localTransform = Matrix4::identity();
 
 			node->childrens.push_back(animationNode);
 			nodes[animationNode->id] = animationNode;
@@ -371,33 +360,7 @@ namespace Hollow {
 	 */
 	void GLTFImporter::processHierarchy(s_ptr<Node>& node, const tinygltf::Node& modelNode, const tinygltf::Model& gltfModel, std::unordered_map<int, s_ptr<Node>>& nodes)
 	{
-		if (modelNode.matrix.data()) {
-			node->transformation = Matrix4(modelNode.matrix[0],  modelNode.matrix[1],  modelNode.matrix[2],  modelNode.matrix[3],
-										   modelNode.matrix[4],  modelNode.matrix[5],  modelNode.matrix[6],  modelNode.matrix[7],
-										   modelNode.matrix[8],  modelNode.matrix[9],  modelNode.matrix[10], modelNode.matrix[11],
-										   modelNode.matrix[12], modelNode.matrix[13], modelNode.matrix[14], modelNode.matrix[15]).transpose();
-		} else {
-			Matrix4 rotation = Matrix4::identity();
-			Matrix4 scale = Matrix4::identity();
-			Matrix4 translation = Matrix4::identity();
-
-			if (modelNode.translation.size() > 0) {
-				node->translation = Vector3(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]);
-				translation = Matrix4::translation(node->translation);
-			}
-
-			if (modelNode.rotation.size() > 0) {
-				node->rotation = Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]);
-				rotation = Matrix4::rotation(node->rotation);
-			}
-
-			if (modelNode.scale.size() > 0) {
-				node->scale = Vector3(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]);
-				scale = Matrix4::scaling(node->scale);
-			}
-
-			node->transformation = scale * rotation * translation;
-		}
+		node->transformation = getTransformMatrix(modelNode);
 
 		for (int childId : modelNode.children) {
 			const tinygltf::Node& childModelNode = gltfModel.nodes[childId];
@@ -467,6 +430,38 @@ namespace Hollow {
 		}
 
 		return -1;
+	}
+
+	Matrix4 GLTFImporter::getTransformMatrix(const tinygltf::Node& modelNode)
+	{
+		Matrix4 transform = Matrix4::identity();
+
+		if (modelNode.matrix.data()) {
+			transform = Matrix4(modelNode.matrix[0],  modelNode.matrix[1],  modelNode.matrix[2],  modelNode.matrix[3],
+								modelNode.matrix[4],  modelNode.matrix[5],  modelNode.matrix[6],  modelNode.matrix[7],
+								modelNode.matrix[8],  modelNode.matrix[9],  modelNode.matrix[10], modelNode.matrix[11],
+								modelNode.matrix[12], modelNode.matrix[13], modelNode.matrix[14], modelNode.matrix[15]).transpose();
+		} else {
+			Matrix4 rotation = Matrix4::identity();
+			Matrix4 scale = Matrix4::identity();
+			Matrix4 translation = Matrix4::identity();
+
+			if (modelNode.translation.size() > 0) {
+				translation = Matrix4::translation(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]);
+			}
+
+			if (modelNode.rotation.size() > 0) {
+				rotation = Matrix4::rotation(Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]));
+			}
+
+			if (modelNode.scale.size() > 0) {
+				scale = Matrix4::scaling(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]);
+			}
+
+			transform = scale * rotation * translation;
+		}
+
+		return transform;
 	}
 
 	void GLTFImporter::fixModel(const s_ptr<Node>& node, const Matrix4& parentTransform, Import::Model* model)

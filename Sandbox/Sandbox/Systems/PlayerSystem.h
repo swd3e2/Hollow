@@ -29,31 +29,31 @@ public:
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 					moveVector.setX(10.0f);
-					//transform->rotation.y = 0;
+					transform->rotation.y = 0;
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
 					moveVector.setX(-10.0f);
-					//transform->rotation.y = Hollow::Math::PI;
+					transform->rotation.y = Hollow::Math::PI;
 				}
 				
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_A)) {
 					moveVector.setZ(10.0f);
 
-					/*if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
+					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 						transform->rotation.y -= Hollow::Math::PI / 4;
 					} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
 						transform->rotation.y += Hollow::Math::PI / 4;
 					} else {
 						transform->rotation.y = -Hollow::Math::PI / 2;
-					}*/
+					}
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_D)) {
 					moveVector.setZ(-10.0f);
-					/*if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
+					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 						transform->rotation.y += Hollow::Math::PI / 4;
 					} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
 						transform->rotation.y -= Hollow::Math::PI / 4;
 					} else {
 						transform->rotation.y = Hollow::Math::PI / 2;
-					}*/
+					}
 				}
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_SPACE)) {

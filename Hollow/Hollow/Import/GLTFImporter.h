@@ -45,11 +45,11 @@ namespace Hollow {
 		void processAnimations(Import::Model* lModel, tinygltf::Model& model, std::ifstream& file);
 		void processAnimationNode(s_ptr<Import::AnimationNode> node, const tinygltf::Node& modelNode, std::unordered_map<int, s_ptr<Import::AnimationNode>>& nodes, const tinygltf::Model& gltfModel);
 		void processSkin(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary);
-		void fixAnimation(Import::Model* model, const tinygltf::Model& gltfModel, std::unordered_map<int, s_ptr<Node>>& nodes);
 		void processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary);
 		int getSkinByMesh(int mesh, const tinygltf::Node& node, const tinygltf::Model& model);
 		std::string getBinaryFileFolder(std::string gltfFilePath);
 		int getJointByNode(int nodeId, const tinygltf::Model& gltfModel);
 		int getNodeByJoint(int jointId, const tinygltf::Model& gltfModel);
+		Matrix4 getTransformMatrix(const tinygltf::Node& modelNode);
 	};
 }

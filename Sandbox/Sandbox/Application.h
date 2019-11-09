@@ -30,6 +30,15 @@
 #include "Sandbox/PhysicsDebugDraw.h"
 #include "Sandbox/Systems/CameraSystem.h"
 
+std::ostream& operator<<(std::ostream& os, const Hollow::Matrix4& matrix)
+{
+	os  << matrix.r[0].x << " " << matrix.r[0].y << " " << matrix.r[0].z << " " << matrix.r[0].w << std::endl
+		<< matrix.r[1].x << " " << matrix.r[1].y << " " << matrix.r[1].z << " " << matrix.r[1].w << std::endl
+		<< matrix.r[2].x << " " << matrix.r[2].y << " " << matrix.r[2].z << " " << matrix.r[2].w << std::endl
+		<< matrix.r[3].x << " " << matrix.r[3].y << " " << matrix.r[3].z << " " << matrix.r[3].w << std::endl;
+	return os;
+}
+
 class Appliaction
 {
 public:
@@ -142,9 +151,10 @@ public:
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
-			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			/*Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");*/
+			//RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
@@ -160,7 +170,7 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
 			transform->rotation = Hollow::Vector3(-Hollow::Math::HALF_PI, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+			transform->scale = Hollow::Vector3(0.1f, 0.1f, 0.1f);
 
 			entity->addComponent<PlayerComponent>();
 		}
@@ -170,6 +180,7 @@ public:
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
 				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
@@ -206,7 +217,7 @@ public:
 			transform->position = position;
 		}
 		/** Animation test */
-		{
+		/*{
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
 				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
@@ -214,7 +225,7 @@ public:
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
-		}
+		}*/
 	}
 
 	void update()

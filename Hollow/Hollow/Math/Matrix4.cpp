@@ -26,11 +26,12 @@ namespace Hollow {
 	{
 		switch (size)
 		{
-		case 16:
-			r[0] = Vector4(other[0],  other[1],  other[2],  other[3]);
-			r[1] = Vector4(other[4],  other[5],  other[6],  other[7]);
-			r[2] = Vector4(other[8],  other[9],  other[10], other[11]);
+		case 16: {
+			r[0] = Vector4(other[0], other[1], other[2], other[3]);
+			r[1] = Vector4(other[4], other[5], other[6], other[7]);
+			r[2] = Vector4(other[8], other[9], other[10], other[11]);
 			r[3] = Vector4(other[12], other[13], other[14], other[15]);
+		} break;
 		case 9:
 		{
 			r[0] = Vector4(other[0], other[1], other[2], 0);
@@ -94,7 +95,7 @@ namespace Hollow {
 
 	Matrix4 Matrix4::rotation(const Vector4& vec)
 	{
-		return rotation(vec.x, vec.y, vec.z);
+		return rotationX(vec.x) * rotationY(vec.y) * rotationZ(vec.z);
 	}
 
 	Matrix4 Matrix4::rotation(float x, float y, float z)
@@ -138,6 +139,14 @@ namespace Hollow {
 					   sinf(z), cosf(z),  0.0f, 0.0f,
 					   0.0f,	0.0f,	  1.0f, 0.0f,
 					   0.0f,	0.0f,     0.0f, 1.0f);
+	}
+
+	bool Matrix4::isZero(const Matrix4& mat)
+	{
+		return mat.r[0].x == 0.0f && mat.r[1].x == 0.0f && mat.r[2].x == 0.0f && mat.r[3].x == 0.0f &&
+			   mat.r[0].y == 0.0f && mat.r[1].y == 0.0f && mat.r[2].y == 0.0f && mat.r[3].y == 0.0f &&
+			   mat.r[0].z == 0.0f && mat.r[1].z == 0.0f && mat.r[2].z == 0.0f && mat.r[3].z == 0.0f &&
+			   mat.r[0].w == 0.0f && mat.r[1].w == 0.0f && mat.r[2].w == 0.0f && mat.r[3].w == 0.0f;
 	}
 
 	Matrix4& Matrix4::transpose()
@@ -271,127 +280,126 @@ namespace Hollow {
 	{
 		float temp[16];
 
-		/*temp[0] = mat.m[5] * mat.m[10] * mat.m[15] -
-			mat.m[5] * mat.m[11] * mat.m[14] -
-			mat.m[9] * mat.m[6] * mat.m[15] +
-			mat.m[9] * mat.m[7] * mat.m[14] +
-			mat.m[13] * mat.m[6] * mat.m[11] -
-			mat.m[13] * mat.m[7] * mat.m[10];
+		temp[0] = mat.r[1].y * mat.r[2].z * mat.r[3].w -
+			mat.r[1].y * mat.r[2].w * mat.r[3].z -
+			mat.r[2].y * mat.r[1].z * mat.r[3].w +
+			mat.r[2].y * mat.r[1].w * mat.r[3].z +
+			mat.r[3].y * mat.r[1].z * mat.r[2].w -
+			mat.r[3].y * mat.r[1].w * mat.r[2].z;
 
-		temp[4] = -mat.m[4] * mat.m[10] * mat.m[15] +
-			mat.m[4] * mat.m[11] * mat.m[14] +
-			mat.m[8] * mat.m[6] * mat.m[15] -
-			mat.m[8] * mat.m[7] * mat.m[14] -
-			mat.m[12] * mat.m[6] * mat.m[11] +
-			mat.m[12] * mat.m[7] * mat.m[10];
+		temp[4] = -mat.r[1].x * mat.r[2].z * mat.r[3].w +
+			mat.r[1].x * mat.r[2].w * mat.r[3].z +
+			mat.r[2].x * mat.r[1].z * mat.r[3].w -
+			mat.r[2].x * mat.r[1].w * mat.r[3].z -
+			mat.r[3].x * mat.r[1].z * mat.r[2].w +
+			mat.r[3].x * mat.r[1].w * mat.r[2].z;
 
-		temp[8] = mat.m[4] * mat.m[9] * mat.m[15] -
-			mat.m[4] * mat.m[11] * mat.m[13] -
-			mat.m[8] * mat.m[5] * mat.m[15] +
-			mat.m[8] * mat.m[7] * mat.m[13] +
-			mat.m[12] * mat.m[5] * mat.m[11] -
-			mat.m[12] * mat.m[7] * mat.m[9];
+		temp[8] = mat.r[1].x * mat.r[2].y * mat.r[3].w -
+			mat.r[1].x * mat.r[2].w * mat.r[3].y -
+			mat.r[2].x * mat.r[1].y * mat.r[3].w +
+			mat.r[2].x * mat.r[1].w * mat.r[3].y +
+			mat.r[3].x * mat.r[1].y * mat.r[2].w -
+			mat.r[3].x * mat.r[1].w * mat.r[2].y;
 
-		temp[12] = -mat.m[4] * mat.m[9] * mat.m[14] +
-			mat.m[4] * mat.m[10] * mat.m[13] +
-			mat.m[8] * mat.m[5] * mat.m[14] -
-			mat.m[8] * mat.m[6] * mat.m[13] -
-			mat.m[12] * mat.m[5] * mat.m[10] +
-			mat.m[12] * mat.m[6] * mat.m[9];
+		temp[12] = -mat.r[1].x * mat.r[2].y * mat.r[3].z +
+			mat.r[1].x * mat.r[2].z * mat.r[3].y +
+			mat.r[2].x * mat.r[1].y * mat.r[3].z -
+			mat.r[2].x * mat.r[1].z * mat.r[3].y -
+			mat.r[3].x * mat.r[1].y * mat.r[2].z +
+			mat.r[3].x * mat.r[1].z * mat.r[2].y;
 
-		temp[1] = -mat.m[1] * mat.m[10] * mat.m[15] +
-			mat.m[1] * mat.m[11] * mat.m[14] +
-			mat.m[9] * mat.m[2] * mat.m[15] -
-			mat.m[9] * mat.m[3] * mat.m[14] -
-			mat.m[13] * mat.m[2] * mat.m[11] +
-			mat.m[13] * mat.m[3] * mat.m[10];
+		temp[1] = -mat.r[0].y * mat.r[2].z * mat.r[3].w +
+			mat.r[0].y * mat.r[2].w * mat.r[3].z +
+			mat.r[2].y * mat.r[0].z * mat.r[3].w -
+			mat.r[2].y * mat.r[0].w * mat.r[3].z -
+			mat.r[3].y * mat.r[0].z * mat.r[2].w +
+			mat.r[3].y * mat.r[0].w * mat.r[2].z;
 
-		temp[5] = mat.m[0] * mat.m[10] * mat.m[15] -
-			mat.m[0] * mat.m[11] * mat.m[14] -
-			mat.m[8] * mat.m[2] * mat.m[15] +
-			mat.m[8] * mat.m[3] * mat.m[14] +
-			mat.m[12] * mat.m[2] * mat.m[11] -
-			mat.m[12] * mat.m[3] * mat.m[10];
+		temp[5] = mat.r[0].x * mat.r[2].z * mat.r[3].w -
+			mat.r[0].x * mat.r[2].w * mat.r[3].z -
+			mat.r[2].x * mat.r[0].z * mat.r[3].w +
+			mat.r[2].x * mat.r[0].w * mat.r[3].z +
+			mat.r[3].x * mat.r[0].z * mat.r[2].w -
+			mat.r[3].x * mat.r[0].w * mat.r[2].z;
 
-		temp[9] = -mat.m[0] * mat.m[9] * mat.m[15] +
-			mat.m[0] * mat.m[11] * mat.m[13] +
-			mat.m[8] * mat.m[1] * mat.m[15] -
-			mat.m[8] * mat.m[3] * mat.m[13] -
-			mat.m[12] * mat.m[1] * mat.m[11] +
-			mat.m[12] * mat.m[3] * mat.m[9];
+		temp[9] = -mat.r[0].x * mat.r[2].y * mat.r[3].w +
+			mat.r[0].x * mat.r[2].w * mat.r[3].y +
+			mat.r[2].x * mat.r[0].y * mat.r[3].w -
+			mat.r[2].x * mat.r[0].w * mat.r[3].y -
+			mat.r[3].x * mat.r[0].y * mat.r[2].w +
+			mat.r[3].x * mat.r[0].w * mat.r[2].y;
 
-		temp[13] = mat.m[0] * mat.m[9] * mat.m[14] -
-			mat.m[0] * mat.m[10] * mat.m[13] -
-			mat.m[8] * mat.m[1] * mat.m[14] +
-			mat.m[8] * mat.m[2] * mat.m[13] +
-			mat.m[12] * mat.m[1] * mat.m[10] -
-			mat.m[12] * mat.m[2] * mat.m[9];
+		temp[13] = mat.r[0].x * mat.r[2].y * mat.r[3].z -
+			mat.r[0].x * mat.r[2].z * mat.r[3].y -
+			mat.r[2].x * mat.r[0].y * mat.r[3].z +
+			mat.r[2].x * mat.r[0].z * mat.r[3].y +
+			mat.r[3].x * mat.r[0].y * mat.r[2].z -
+			mat.r[3].x * mat.r[0].z * mat.r[2].y;
 
-		temp[2] = mat.m[1] * mat.m[6] * mat.m[15] -
-			mat.m[1] * mat.m[7] * mat.m[14] -
-			mat.m[5] * mat.m[2] * mat.m[15] +
-			mat.m[5] * mat.m[3] * mat.m[14] +
-			mat.m[13] * mat.m[2] * mat.m[7] -
-			mat.m[13] * mat.m[3] * mat.m[6];
+		temp[2] = mat.r[0].y * mat.r[1].z * mat.r[3].w -
+			mat.r[0].y * mat.r[1].w * mat.r[3].z -
+			mat.r[1].y * mat.r[0].z * mat.r[3].w +
+			mat.r[1].y * mat.r[0].w * mat.r[3].z +
+			mat.r[3].y * mat.r[0].z * mat.r[1].w -
+			mat.r[3].y * mat.r[0].w * mat.r[1].z;
 
-		temp[6] = -mat.m[0] * mat.m[6] * mat.m[15] +
-			mat.m[0] * mat.m[7] * mat.m[14] +
-			mat.m[4] * mat.m[2] * mat.m[15] -
-			mat.m[4] * mat.m[3] * mat.m[14] -
-			mat.m[12] * mat.m[2] * mat.m[7] +
-			mat.m[12] * mat.m[3] * mat.m[6];
+		temp[6] = -mat.r[0].x * mat.r[1].z * mat.r[3].w +
+			mat.r[0].x * mat.r[1].w * mat.r[3].z +
+			mat.r[1].x * mat.r[0].z * mat.r[3].w -
+			mat.r[1].x * mat.r[0].w * mat.r[3].z -
+			mat.r[3].x * mat.r[0].z * mat.r[1].w +
+			mat.r[3].x * mat.r[0].w * mat.r[1].z;
 
-		temp[10] = mat.m[0] * mat.m[5] * mat.m[15] -
-			mat.m[0] * mat.m[7] * mat.m[13] -
-			mat.m[4] * mat.m[1] * mat.m[15] +
-			mat.m[4] * mat.m[3] * mat.m[13] +
-			mat.m[12] * mat.m[1] * mat.m[7] -
-			mat.m[12] * mat.m[3] * mat.m[5];
+		temp[10] = mat.r[0].x * mat.r[1].y * mat.r[3].w -
+			mat.r[0].x * mat.r[1].w * mat.r[3].y -
+			mat.r[1].x * mat.r[0].y * mat.r[3].w +
+			mat.r[1].x * mat.r[0].w * mat.r[3].y +
+			mat.r[3].x * mat.r[0].y * mat.r[1].w -
+			mat.r[3].x * mat.r[0].w * mat.r[1].y;
 
-		temp[14] = -mat.m[0] * mat.m[5] * mat.m[14] +
-			mat.m[0] * mat.m[6] * mat.m[13] +
-			mat.m[4] * mat.m[1] * mat.m[14] -
-			mat.m[4] * mat.m[2] * mat.m[13] -
-			mat.m[12] * mat.m[1] * mat.m[6] +
-			mat.m[12] * mat.m[2] * mat.m[5];
+		temp[14] = -mat.r[0].x * mat.r[1].y * mat.r[3].z +
+			mat.r[0].x * mat.r[1].z * mat.r[3].y +
+			mat.r[1].x * mat.r[0].y * mat.r[3].z -
+			mat.r[1].x * mat.r[0].z * mat.r[3].y -
+			mat.r[3].x * mat.r[0].y * mat.r[1].z +
+			mat.r[3].x * mat.r[0].z * mat.r[1].y;
 
-		temp[3] = -mat.m[1] * mat.m[6] * mat.m[11] +
-			mat.m[1] * mat.m[7] * mat.m[10] +
-			mat.m[5] * mat.m[2] * mat.m[11] -
-			mat.m[5] * mat.m[3] * mat.m[10] -
-			mat.m[9] * mat.m[2] * mat.m[7] +
-			mat.m[9] * mat.m[3] * mat.m[6];
+		temp[3] = -mat.r[0].y * mat.r[1].z * mat.r[2].w +
+			mat.r[0].y * mat.r[1].w * mat.r[2].z +
+			mat.r[1].y * mat.r[0].z * mat.r[2].w -
+			mat.r[1].y * mat.r[0].w * mat.r[2].z -
+			mat.r[2].y * mat.r[0].z * mat.r[1].w +
+			mat.r[2].y * mat.r[0].w * mat.r[1].z;
 
-		temp[7] = mat.m[0] * mat.m[6] * mat.m[11] -
-			mat.m[0] * mat.m[7] * mat.m[10] -
-			mat.m[4] * mat.m[2] * mat.m[11] +
-			mat.m[4] * mat.m[3] * mat.m[10] +
-			mat.m[8] * mat.m[2] * mat.m[7] -
-			mat.m[8] * mat.m[3] * mat.m[6];
+		temp[7] = mat.r[0].x * mat.r[1].z * mat.r[2].w -
+			mat.r[0].x * mat.r[1].w * mat.r[2].z -
+			mat.r[1].x * mat.r[0].z * mat.r[2].w +
+			mat.r[1].x * mat.r[0].w * mat.r[2].z +
+			mat.r[2].x * mat.r[0].z * mat.r[1].w -
+			mat.r[2].x * mat.r[0].w * mat.r[1].z;
 
-		temp[11] = -mat.m[0] * mat.m[5] * mat.m[11] +
-			mat.m[0] * mat.m[7] * mat.m[9] +
-			mat.m[4] * mat.m[1] * mat.m[11] -
-			mat.m[4] * mat.m[3] * mat.m[9] -
-			mat.m[8] * mat.m[1] * mat.m[7] +
-			mat.m[8] * mat.m[3] * mat.m[5];
+		temp[11] = -mat.r[0].x * mat.r[1].y * mat.r[2].w +
+			mat.r[0].x * mat.r[1].w * mat.r[2].y +
+			mat.r[1].x * mat.r[0].y * mat.r[2].w -
+			mat.r[1].x * mat.r[0].w * mat.r[2].y -
+			mat.r[2].x * mat.r[0].y * mat.r[1].w +
+			mat.r[2].x * mat.r[0].w * mat.r[1].y;
 
-		temp[15] = mat.m[0] * mat.m[5] * mat.m[10] -
-			mat.m[0] * mat.m[6] * mat.m[9] -
-			mat.m[4] * mat.m[1] * mat.m[10] +
-			mat.m[4] * mat.m[2] * mat.m[9] +
-			mat.m[8] * mat.m[1] * mat.m[6] -
-			mat.m[8] * mat.m[2] * mat.m[5];
+		temp[15] = mat.r[0].x * mat.r[1].y * mat.r[2].z -
+			mat.r[0].x * mat.r[1].z * mat.r[2].y -
+			mat.r[1].x * mat.r[0].y * mat.r[2].z +
+			mat.r[1].x * mat.r[0].z * mat.r[2].y +
+			mat.r[2].x * mat.r[0].y * mat.r[1].z -
+			mat.r[2].x * mat.r[0].z * mat.r[1].y;
 
-		float determinant = mat.m[0] * temp[0] + mat.m[1] * temp[4] + mat.m[2] * temp[8] + mat.m[3] * temp[12];
+		float determinant = mat.r[0].x * temp[0] + mat.r[0].y * temp[4] + mat.r[0].z * temp[8] + mat.r[0].w * temp[12];
 		determinant = 1.0f / determinant;
 
-		Matrix4 tempM;
+		for (int i = 0; i < 4 * 4; i++) {
+			temp[i] *= determinant;
+		}
 
-		for (int i = 0; i < 4 * 4; i++)
-			tempM.m[i] = temp[i] * determinant;*/
-
-		return Matrix4();
+		return Matrix4(temp, 16);
 	}
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat)

@@ -10,7 +10,18 @@ struct Node
 	int jointId;
 	std::string name;
 	std::vector<Hollow::s_ptr<Node>> childs;
+	Hollow::s_ptr<Node> parent;
 	Hollow::Matrix4 localTransform;
+	Hollow::Matrix4 localTransform2;
+	Hollow::Matrix4 inverseGlobalTransform;
+	Hollow::Quaternion rotation;
+	Hollow::Vector3 translation;
+	Hollow::Vector3 scale;
+
+	Hollow::Quaternion currentRotation;
+	Hollow::Vector3 currentTranslation;
+	Hollow::Vector3 currentScale;
+
 	double currentRotationIndex = 0;
 	double currentTranslationIndex = 0;
 	double currentScaleIndex = 0;
@@ -65,6 +76,11 @@ public:
 		rootNode->jointId = mesh->rootNode->jointId;
 		rootNode->name = mesh->rootNode->name;
 		rootNode->localTransform = mesh->rootNode->localTransform;
+		rootNode->localTransform2 = mesh->rootNode->localTransform2;
+
+		rootNode->rotation = mesh->rootNode->rotation;
+		rootNode->translation = mesh->rootNode->translation;
+		rootNode->scale = mesh->rootNode->scale;
 
 		parseNodes(rootNode, mesh->rootNode);
 
@@ -134,7 +150,15 @@ private:
 			childNode->id = it->id;
 			childNode->jointId = it->jointId;
 			childNode->localTransform = it->localTransform;
+			childNode->localTransform2 = it->localTransform2;
+			childNode->inverseGlobalTransform = it->inverseGlobalTransform;
 			childNode->name = it->name;
+
+			childNode->rotation = it->rotation;
+			childNode->translation = it->translation;
+			childNode->scale = it->scale;
+
+			childNode->parent = parentNode;
 
 			parentNode->childs.push_back(childNode);
 			nodes[childNode->id] = childNode;
