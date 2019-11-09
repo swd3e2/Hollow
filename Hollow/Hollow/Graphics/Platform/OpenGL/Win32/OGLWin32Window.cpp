@@ -9,9 +9,9 @@ MessageCallback(GLenum source,
 	const GLchar* message,
 	const void* userParam)
 {
-	if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
+	//if (severity != GL_DEBUG_SEVERITY_NOTIFICATION) {
 		HW_ERROR("GL CALLBACK:: {} type = 0x{}x, severity = 0x{}x, message = {}", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
-	}
+	//}
 }
 
 namespace Hollow {
@@ -52,8 +52,7 @@ namespace Hollow {
 		wglMakeCurrent(hdc, tempContext);
 
 		GLenum error;
-		if (error = glewInit())
-		{
+		if (error = glewInit()) {
 			HW_ERROR("{}", glewGetErrorString(error));
 		}
 

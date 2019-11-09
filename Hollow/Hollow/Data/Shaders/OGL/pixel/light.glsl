@@ -124,7 +124,7 @@ void main()
 		}
 	}
 
-	diffuse += clamp(dot(normal, vec3(1.0f, 0.0f, 0.0f)) * vec4(0.0f, 0.5f, 0.0f, 1.0f), 0.0f, 1.0f);
+	//diffuse += clamp(dot(normal, vec3(1.0f, 0.0f, 0.0f)) * vec4(0.0f, 0.5f, 0.0f, 1.0f), 0.0f, 1.0f);
 
 	FragColor = diffuse;
 }

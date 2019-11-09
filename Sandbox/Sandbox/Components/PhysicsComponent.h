@@ -18,6 +18,7 @@ public:
 	Hollow::s_ptr<btCollisionShape> shape;
 	Hollow::s_ptr<btDefaultMotionState> myMotionState;
 	Hollow::s_ptr<btRigidBody> body;
+	bool applyRotation = true;
 public:
 	PhysicsComponent() = default;
 	~PhysicsComponent();

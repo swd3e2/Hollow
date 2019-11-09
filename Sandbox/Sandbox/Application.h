@@ -30,6 +30,15 @@
 #include "Sandbox/PhysicsDebugDraw.h"
 #include "Sandbox/Systems/CameraSystem.h"
 
+std::ostream& operator<<(std::ostream& os, const Hollow::Matrix4& matrix)
+{
+	os  << matrix.r[0].x << " " << matrix.r[0].y << " " << matrix.r[0].z << " " << matrix.r[0].w << std::endl
+		<< matrix.r[1].x << " " << matrix.r[1].y << " " << matrix.r[1].z << " " << matrix.r[1].w << std::endl
+		<< matrix.r[2].x << " " << matrix.r[2].y << " " << matrix.r[2].z << " " << matrix.r[2].w << std::endl
+		<< matrix.r[3].x << " " << matrix.r[3].y << " " << matrix.r[3].z << " " << matrix.r[3].w << std::endl;
+	return os;
+}
+
 class Appliaction
 {
 public:
@@ -45,14 +54,14 @@ public:
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
 	CameraSystem* cameraSystem;
-	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
-	const int width = 2560;
-	const int height = 1440;
+	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	const int width = 1920;
+	const int height = 1080;
 public:
 	Appliaction() :
 		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
 	{
-		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Borderless);
+		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
 		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
 		gui = new GUISystem(window, renderer);
 
@@ -142,22 +151,26 @@ public:
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
-			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			/*Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");*/
+			//RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
-			physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
+			physics->applyRotation = false;
+			//physics->load(mesh, Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
 			//physics->addBoxShape(Hollow::Vector3(2.4f, 6.4f, 2.2f), Hollow::Vector3(0.0f, 0.0f, 0.0f), 1.0f);
-			//physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 1.0f);
+			physics->addCapsuleShape(5.7, 2.5f, Hollow::Vector3(0.0f, 00.0f, 0.0f), 1.0f);
 			physics->body->setContactProcessingThreshold(0.01);
+			physics->body->setAngularFactor(btVector3(0.0f, 0.0f, 0.0f));
+
 			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
 			transform->rotation = Hollow::Vector3(-Hollow::Math::HALF_PI, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+			transform->scale = Hollow::Vector3(0.1f, 0.1f, 0.1f);
 
 			entity->addComponent<PlayerComponent>();
 		}
@@ -165,8 +178,9 @@ public:
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
+			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>();
@@ -177,7 +191,7 @@ public:
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
 			transform->rotation = Hollow::Vector3(-Hollow::Math::HALF_PI, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+			transform->scale = Hollow::Vector3(0.1f, 0.1f, 0.1f);
 		}
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();

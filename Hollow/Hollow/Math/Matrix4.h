@@ -44,6 +44,8 @@ namespace Hollow {
 		static Matrix4 rotationY(float y);
 		static Matrix4 rotationZ(float z);
 
+		static bool isZero(const Matrix4& mat);
+
 		Matrix4 operator*(const Matrix4& other) const;
 
 		static Matrix4 projection(float fov, float aspect, float n, float f);

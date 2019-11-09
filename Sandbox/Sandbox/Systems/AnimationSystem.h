@@ -52,7 +52,7 @@ public:
 
 	void animate(double time, const Hollow::s_ptr<Node>& node, const Hollow::Matrix4& parentTransform, const Hollow::s_ptr<Animation>& animation, std::vector<Hollow::Matrix4>& container)
 	{
-		Hollow::Matrix4 nodeTransformation = Hollow::Matrix4::identity();
+		Hollow::Matrix4 localTransform = Hollow::Matrix4::identity();
 
 		if (animation->data.find(node->id) != animation->data.end()) {
 			const Hollow::s_ptr<AnimationNodeData>& data = animation->data[node->id];
@@ -71,30 +71,40 @@ public:
 			Hollow::Vector3 scaling = closestScale.first < nextClosestScale.first
 				? interpolateScaling(closestScale, nextClosestScale, time)
 				: closestScale.second;
+			node->currentScale = scaling;
 
 			Hollow::Vector3 translation = closestTranslation.first < nextClosestTranslation.first
 				? interpolatePosition(closestTranslation, nextClosestTranslation, time)
 				: closestTranslation.second;
+			node->currentTranslation = translation;
 
 			Hollow::Quaternion rotation = closestRotation.first < nextClosestRotation.first
 				? interpolateRotation(closestRotation, nextClosestRotation, time)
 				: closestRotation.second;
+			node->currentRotation = rotation;
 
-			nodeTransformation = Hollow::Matrix4::rotation(rotation);
-			nodeTransformation.r[0].w = translation.x;
-			nodeTransformation.r[1].w = translation.y;
-			nodeTransformation.r[2].w = translation.z;
+			localTransform = Hollow::Matrix4::rotation(rotation);
+			localTransform.r[0].w = translation.x;
+			localTransform.r[1].w = translation.y;
+			localTransform.r[2].w = translation.z;
+		} else if (node->jointId != -1 && node->parent != nullptr) {
+			localTransform = Hollow::Matrix4::rotation(node->rotation);
+			localTransform.r[0].w = node->translation.x;
+			localTransform.r[1].w = node->translation.y;
+			localTransform.r[2].w = node->translation.z;
 		}
 			
-		Hollow::Matrix4 globalTransformation = parentTransform * nodeTransformation;
+		Hollow::Matrix4 worldTransform = parentTransform * localTransform;
 
 		// If id of node is -1 means that node isn't used by any vertex so we can skip it
 		if (node->jointId != -1) {
-			container[node->jointId] = globalTransformation * node->localTransform;
+			//Hollow::Matrix4 inverseParentWorldTransform = Hollow::Matrix4::inverse(parentTransform);
+			const Hollow::Matrix4 inverseBindMatrix = node->localTransform;
+			container[node->jointId] = worldTransform * inverseBindMatrix;
 		}
 
 		for (auto& it : node->childs) {
-			animate(time, it, globalTransformation, animation, container);
+			animate(time, it, worldTransform, animation, container);
 		}
 	}
 
@@ -115,21 +125,24 @@ public:
 		scale.first = 0.0f;
 		if (data->scale.size() > 0) {
 			scale = std::make_pair(data->scale.begin()->first, data->scale.begin()->second);
+		} else {
+			//translation = std::make_pair(0.0f, node->translation);
 		}
 		std::pair<double, Hollow::Vector3> translation;
 		std::pair<double, Hollow::Vector3> nextTranslation;
-		translation.first = 0.0f;
 		if (data->positions.size() > 0) {
 			translation = std::make_pair(data->positions.begin()->first, data->positions.begin()->second);
+		} else {
+			translation = std::make_pair(0.0f, node->translation);
 		}
 		std::pair<double, Hollow::Quaternion> rotation;
 		std::pair<double, Hollow::Quaternion> nextRotation;
-		rotation.first = 0.0f;
 		if (data->rotations.size() > 0) {
 			rotation = std::make_pair(data->rotations.begin()->first, data->rotations.begin()->second);
+		} else {
+			rotation = std::make_pair(0.0f, node->rotation);
 		}
 
-		/** @todo: start find from prev index */
 		for (int i = node->currentScaleIndex; i < data->scale.size(); i++) {
 			std::pair<double, Hollow::Vector3>& scale = data->scale[i];
 

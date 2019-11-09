@@ -68,11 +68,25 @@ namespace GUI {
 			ImGui::BulletText("GameObjects");
 			ImGui::Indent();
 			for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
-				if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(counter++)).c_str())) {
+				size_t entityId = entity.getId();
+				ImGui::PushID(entityId);
+				if (ImGui::Selectable(entity.name.size() ? entity.name.c_str() : ("Entity " + std::to_string(entity.getId())).c_str())) {
 					selectedGameObject = &entity;
 					selectedTerrain = nullptr;
 					selectedLight = nullptr;
 				}
+				
+				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+					ImGui::SetDragDropPayload("Entity", &entityId, sizeof(size_t));        // Set payload to carry the index of our item (could be anything)
+					ImGui::EndDragDropSource();
+				}
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
+						HW_INFO("{}", *reinterpret_cast<size_t*>(payload->Data));
+					}
+					ImGui::EndDragDropTarget();
+				}
+				ImGui::PopID();
 				if (ImGui::BeginPopupContextItem())
 				{
 					ImGui::Text("Add component:");
@@ -94,30 +108,6 @@ namespace GUI {
 					}
 					if (ImGui::Button("Delete")) {
 						Hollow::DelayedTaskManager::instance()->add([&entity]() { Hollow::EntityManager::instance()->destroy(entity.getId()); });
-						ImGui::CloseCurrentPopup();
-					}
-					ImGui::EndPopup();
-				}
-			}
-			ImGui::Unindent();
-			counter = 0;
-			ImGui::BulletText("Terrains");
-			ImGui::Indent();
-			for (auto& terrain : Hollow::EntityManager::instance()->container<Terrain>()) {
-				if (ImGui::Selectable(("Terrain " + std::to_string(counter++)).c_str())) {
-					selectedGameObject = nullptr;
-					selectedTerrain = &terrain;
-					selectedLight = nullptr;
-				}
-				if (ImGui::BeginPopupContextItem())
-				{
-					ImGui::Text("Add component:");
-					if (ImGui::Button("Transform")) {
-						terrain.addComponent<TransformComponent>();
-						ImGui::CloseCurrentPopup();
-					}
-					if (ImGui::Button("TerrainData")) {
-						terrain.addComponent<TerrainData>();
 						ImGui::CloseCurrentPopup();
 					}
 					ImGui::EndPopup();
@@ -289,7 +279,7 @@ namespace GUI {
 
 			ImGui::Begin("Material properties");
 			if (selectedMaterial != nullptr) {
-				ImGui::DragFloat4("Base color", (float*)& selectedMaterial->materialData.color, 0.001f, 0.0f, 1.0f);
+				ImGui::ColorEdit4("Base color", (float*)& selectedMaterial->materialData.color);
 				ImGui::DragFloat("Metallic", &selectedMaterial->materialData.metallicFactor, 0.001f, 0.0f, 1.0f);
 				ImGui::DragFloat("Emissive", &selectedMaterial->materialData.emissiveFactor, 0.001f, 0.0f, 1.0f);
 				ImGui::DragFloat("Roughness", &selectedMaterial->materialData.roughnessFactor, 0.001f, 0.0f, 1.0f);
@@ -361,7 +351,16 @@ namespace GUI {
 			{
 				for (auto& it : node->childs) {
 					if (ImGui::TreeNode(it->name.c_str())) {
-						if (ImGui::TreeNode(("Local transform###" + it->name).c_str())) {
+						if (ImGui::TreeNode(("Node info###" + it->name).c_str())) {
+							ImGui::Text("Node transforms");
+							ImGui::DragFloat3(("Translation###T" + it->name).c_str(), (float*)&it->translation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat3(("Scale###S" + it->name).c_str(), (float*)&it->scale, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("Rotation###R" + it->name).c_str(), (float*)&it->rotation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::Text("Current transforms");
+							ImGui::DragFloat3(("Translation###CT" + it->name).c_str(), (float*)&it->currentTranslation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat3(("Scale###CS" + it->name).c_str(), (float*)&it->currentScale, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("Rotation###CR" + it->name).c_str(), (float*)&it->currentRotation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::Text("Inverse bind matrix");
 							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0], 0.01f, -10000.0f, 10000.0f);
 							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1], 0.01f, -10000.0f, 10000.0f);
 							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2], 0.01f, -10000.0f, 10000.0f);

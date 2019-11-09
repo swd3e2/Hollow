@@ -41,9 +41,10 @@ void main()
 		color = base_color;
 	}
 
-	if (color.a < 0.55) {
+	if (color.a < 0.25) {
 		discard;
 	}
+
 	diffuse = color;
 	normal = vec4(fs_in.normal, 1.0f);
 	position = fs_in.position;
