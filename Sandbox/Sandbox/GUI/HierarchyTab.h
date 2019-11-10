@@ -148,7 +148,7 @@ namespace GUI {
 						LightComponent* lightComponent = selectedLight->getComponent<LightComponent>();
 						ImGui::DragFloat3("Position", (float*)& lightComponent->lightData.position, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Direction", (float*)& lightComponent->lightData.direction, 0.1f, -10000.0f, 10000.0f);
-						ImGui::ColorEdit3("Color", (float*)& lightComponent->lightData.color);
+						ImGui::ColorEdit4("Color", (float*)& lightComponent->lightData.color);
 						ImGui::DragFloat("Constant", &lightComponent->lightData.constant, 0.01f);
 						ImGui::DragFloat("Linear", &lightComponent->lightData.linear, 0.01f);
 						ImGui::DragFloat("Quadratic", &lightComponent->lightData.quadratic, 0.01f);
@@ -205,12 +205,22 @@ namespace GUI {
 					if (ImGui::CollapsingHeader("Renderable component")) {
 						RenderableComponent* renderableComponent = selectedGameObject->getComponent<RenderableComponent>();
 						std::vector<Hollow::s_ptr<RenderableObject>>& renderables = renderableComponent->renderables;
+						ImGui::Text("Meshed");
 						for (auto& it : renderables) {
 							if (ImGui::Selectable(std::string("Mesh " + std::to_string(it->id)).c_str())) {
 								selectedRenderable = it.get();
 								selectedMaterial = renderableComponent->materials[it->material].get();
 							}
 						}
+						ImGui::Text("Nodes");
+						if (renderableComponent->rootNode != nullptr) {
+							if (ImGui::TreeNode(renderableComponent->rootNode->name.c_str())) {
+								drawNodeHierarchy(renderableComponent->rootNode.get());
+								ImGui::TreePop();
+							}
+						}
+						
+						
 						if (ImGui::Button("Load from file")) {
 							filename = Hollow::FileSystem::openFile("");
 							if (filename.size()) {
@@ -267,8 +277,8 @@ namespace GUI {
 						if (ImGui::Button("Stop")) {
 							animation->stop();
 						}
-						if (ImGui::TreeNode(animation->rootNode->name.c_str())) {
-							drawAnimationHierarchy(animation->rootNode);
+						if (ImGui::TreeNode(animation->rootJoint->name.c_str())) {
+							drawAnimationHierarchy(animation->rootJoint);
 							ImGui::TreePop();
 						}
 					}
@@ -347,7 +357,32 @@ namespace GUI {
 		}
 
 		private:
-			void drawAnimationHierarchy(Hollow::s_ptr<Node>& node)
+			void drawNodeHierarchy(RenderableComponent::Node* node)
+			{
+				for (auto& it : node->childs) {
+					if (ImGui::TreeNode(it->name.c_str())) {
+						if (ImGui::TreeNode(("Node info###" + it->name).c_str())) {
+							ImGui::Text("Mesh"); 
+							ImGui::SameLine(); 
+							ImGui::Text(std::to_string(it->renderableId).c_str());
+							ImGui::Text("Node transforms");
+							ImGui::DragFloat3(("Translation###NT" + it->name).c_str(), (float*)&it->translation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat3(("Scale###NS" + it->name).c_str(), (float*)&it->scale, 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("Rotation###NR" + it->name).c_str(), (float*)&it->rotation, 0.01f, -10000.0f, 10000.0f);
+							ImGui::Text("World transform matrix");
+							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->worldTransform.r[0], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->worldTransform.r[1], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->worldTransform.r[2], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "4").c_str(), (float*)&it->worldTransform.r[3], 0.01f, -10000.0f, 10000.0f);
+							ImGui::TreePop();
+						}
+						drawNodeHierarchy(it);
+						ImGui::TreePop();
+					}
+				}
+			}
+
+			void drawAnimationHierarchy(Hollow::s_ptr<Joint>& node)
 			{
 				for (auto& it : node->childs) {
 					if (ImGui::TreeNode(it->name.c_str())) {
@@ -361,10 +396,10 @@ namespace GUI {
 							ImGui::DragFloat3(("Scale###CS" + it->name).c_str(), (float*)&it->currentScale, 0.01f, -10000.0f, 10000.0f);
 							ImGui::DragFloat4(("Rotation###CR" + it->name).c_str(), (float*)&it->currentRotation, 0.01f, -10000.0f, 10000.0f);
 							ImGui::Text("Inverse bind matrix");
-							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->localTransform.r[0], 0.01f, -10000.0f, 10000.0f);
-							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->localTransform.r[1], 0.01f, -10000.0f, 10000.0f);
-							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->localTransform.r[2], 0.01f, -10000.0f, 10000.0f);
-							ImGui::DragFloat4(("###" + it->name + "4").c_str(), (float*)&it->localTransform.r[3], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "1").c_str(), (float*)&it->inverseBindMatrix.r[0], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "2").c_str(), (float*)&it->inverseBindMatrix.r[1], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "3").c_str(), (float*)&it->inverseBindMatrix.r[2], 0.01f, -10000.0f, 10000.0f);
+							ImGui::DragFloat4(("###" + it->name + "4").c_str(), (float*)&it->inverseBindMatrix.r[3], 0.01f, -10000.0f, 10000.0f);
 							ImGui::TreePop();
 						}
 						drawAnimationHierarchy(it);

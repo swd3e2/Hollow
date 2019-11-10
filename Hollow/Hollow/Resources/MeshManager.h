@@ -4,7 +4,6 @@
 #define HW_MESH_MANAGER_H
 
 #include "Hollow/Core/CModule.h"
-#include "Hollow/Import/AssimpImporter.h"
 #include "Hollow/Import/GLTFImporter.h"
 #include "Hollow/Import/HollowModelImporter.h"
 #include "Hollow/Platform.h"
@@ -13,7 +12,6 @@ namespace Hollow {
 	class MeshManager : public CModule<MeshManager>
 	{
 	private:
-		AssimpImporter assimpImporter;
 		GLTFImporter gltfImporter;
 		HollowModelImporter hwImporter;
 	public:
@@ -29,8 +27,6 @@ namespace Hollow {
 				model = gltfImporter.import(filename);
 			} else if (strcmp(filename + strlen(filename) - 5, ".json") == 0) {
 				model = hwImporter.import(filename);
-			} else {
-				model = assimpImporter.import(filename);
 			}
 
 			return model;

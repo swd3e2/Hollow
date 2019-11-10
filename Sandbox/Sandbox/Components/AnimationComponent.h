@@ -4,16 +4,15 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Import/Mesh.h"
 
-struct Node 
+struct Joint
 {
 	int id;
 	int jointId;
 	std::string name;
-	std::vector<Hollow::s_ptr<Node>> childs;
-	Hollow::s_ptr<Node> parent;
+	std::vector<Hollow::s_ptr<Joint>> childs;
+	Hollow::s_ptr<Joint> parent;
+	Hollow::Matrix4 inverseBindMatrix;
 	Hollow::Matrix4 localTransform;
-	Hollow::Matrix4 localTransform2;
-	Hollow::Matrix4 inverseGlobalTransform;
 	Hollow::Quaternion rotation;
 	Hollow::Vector3 translation;
 	Hollow::Vector3 scale;
@@ -45,11 +44,11 @@ class AnimationComponent : public Hollow::Component<AnimationComponent>
 {
 public:
 	/* List of nodes */
-	std::unordered_map<int, Hollow::s_ptr<Node>> nodes;
+	std::unordered_map<int, Hollow::s_ptr<Joint>> nodes;
 	/* List of animations */
 	std::vector<Hollow::s_ptr<Animation>> animations;
 	/* Root animation node */
-	Hollow::s_ptr<Node> rootNode;
+	Hollow::s_ptr<Joint> rootJoint;
 	/* Current animation time */
 	double currentAnimationTime = 0.0;
 	/* Selected animation index */
@@ -71,18 +70,18 @@ public:
 			return;
 		}
 
-		rootNode = std::make_shared<Node>();
-		rootNode->id = mesh->rootNode->id;
-		rootNode->jointId = mesh->rootNode->jointId;
-		rootNode->name = mesh->rootNode->name;
-		rootNode->localTransform = mesh->rootNode->localTransform;
-		rootNode->localTransform2 = mesh->rootNode->localTransform2;
+		rootJoint = std::make_shared<Joint>();
+		rootJoint->id = mesh->rootJoint->id;
+		rootJoint->jointId = mesh->rootJoint->jointId;
+		rootJoint->name = mesh->rootJoint->name;
+		rootJoint->localTransform = mesh->rootJoint->localTransform;
+		rootJoint->inverseBindMatrix = mesh->rootJoint->inverseBindMatrix;
 
-		rootNode->rotation = mesh->rootNode->rotation;
-		rootNode->translation = mesh->rootNode->translation;
-		rootNode->scale = mesh->rootNode->scale;
+		rootJoint->rotation = mesh->rootJoint->rotation;
+		rootJoint->translation = mesh->rootJoint->translation;
+		rootJoint->scale = mesh->rootJoint->scale;
 
-		parseNodes(rootNode, mesh->rootNode);
+		parseNodes(rootJoint, mesh->rootJoint.get());
 
 		for (auto& importAnimation : mesh->animations) {
 			Hollow::s_ptr<Animation> animation = std::make_shared<Animation>();
@@ -143,15 +142,14 @@ public:
 		}
 	}
 private:
-	void parseNodes(const Hollow::s_ptr<Node>& parentNode, Hollow::s_ptr<Hollow::Import::AnimationNode>& node)
+	void parseNodes(const Hollow::s_ptr<Joint>& parentNode, Hollow::Import::Joint* joint)
 	{
-		for (auto& it : node->childrens) {
-			Hollow::s_ptr<Node> childNode = std::make_shared<Node>();
+		for (auto& it : joint->childs) {
+			Hollow::s_ptr<Joint> childNode = std::make_shared<Joint>();
 			childNode->id = it->id;
 			childNode->jointId = it->jointId;
 			childNode->localTransform = it->localTransform;
-			childNode->localTransform2 = it->localTransform2;
-			childNode->inverseGlobalTransform = it->inverseGlobalTransform;
+			childNode->inverseBindMatrix = it->inverseBindMatrix;
 			childNode->name = it->name;
 
 			childNode->rotation = it->rotation;

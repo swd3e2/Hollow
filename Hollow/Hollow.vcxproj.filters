@@ -369,12 +369,6 @@
     <ClInclude Include="Hollow\Graphics\Platform\OpenGL\OGLRenderStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Import\Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Import\AssimpImporter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Import\FreeImgImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>

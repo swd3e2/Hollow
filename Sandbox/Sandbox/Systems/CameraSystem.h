@@ -22,7 +22,9 @@ public:
 	{}
 
 	virtual void Update(double dt) override
-	{}
+	{
+	
+	}
 
 	virtual void PostUpdate(double dt) override
 	{}

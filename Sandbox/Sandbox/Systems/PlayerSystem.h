@@ -57,7 +57,7 @@ public:
 				}
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_SPACE)) {
-					moveVector.setY(20.0f);
+					moveVector.setY(10.0f);
 				}
 				physics->body->setLinearVelocity(moveVector);
 				physics->body->activate(true);
