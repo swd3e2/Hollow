@@ -68,11 +68,14 @@ public:
 
 		animationSystem = new AnimationSystem();
 		playerSystem = new PlayerSystem();
+		cameraSystem = new CameraSystem();
+		cameraSystem->setCamera(&camera);
 
 		Hollow::SystemManager::instance()->addSystem(renderPass);
 		Hollow::SystemManager::instance()->addSystem(animationSystem);
 		Hollow::SystemManager::instance()->addSystem(PhysicsSystem::instance());
 		Hollow::SystemManager::instance()->addSystem(playerSystem);
+		Hollow::SystemManager::instance()->addSystem(cameraSystem);
 
 		gui->rendererTab.renderSystem = renderPass;
 
@@ -214,7 +217,6 @@ public:
 			core.preUpdate();
 
 			window->processMessage();
-			camera.update(core.dt);
 			core.update();
 
 			gui->update(core.dt);

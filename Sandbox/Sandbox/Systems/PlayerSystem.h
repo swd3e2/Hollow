@@ -7,9 +7,12 @@
 #include "Sandbox/Components/PhysicsComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include "Sandbox/Components/TransformComponent.h"
+#include "Sandbox/Components/AnimationComponent.h"
 
 class PlayerSystem : public Hollow::System<PlayerSystem>
 {
+private:
+	bool updated = false;
 public:
 	virtual void PreUpdate(double dt) override
 	{}
@@ -20,6 +23,10 @@ public:
 			if (entity.hasComponent<PlayerComponent>() && entity.hasComponent<PhysicsComponent>() && entity.hasComponent<TransformComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
+				AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+
+				updated = false;
+
 				const btVector3& prevVelocity = physics->body->getLinearVelocity();
 
 				btVector3 moveVector(0.0f, 0.0f, 0.0f);
@@ -28,14 +35,17 @@ public:
 				physics->body->setLinearVelocity(btVector3(0, 0, 0.f));
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
+					updated = true;
 					moveVector.setX(10.0f);
 					transform->rotation.y = 0;
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
+					updated = true;
 					moveVector.setX(-10.0f);
 					transform->rotation.y = Hollow::Math::PI;
 				}
 				
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_A)) {
+					updated = true;
 					moveVector.setZ(10.0f);
 
 					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
@@ -46,6 +56,7 @@ public:
 						transform->rotation.y = -Hollow::Math::PI / 2;
 					}
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_D)) {
+					updated = true;
 					moveVector.setZ(-10.0f);
 					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 						transform->rotation.y += Hollow::Math::PI / 4;
@@ -61,6 +72,12 @@ public:
 				}
 				physics->body->setLinearVelocity(moveVector);
 				physics->body->activate(true);
+
+				if (!updated) {
+					animation->pause();
+				} else {
+					animation->play();
+				}
 			}
 		}
 	}

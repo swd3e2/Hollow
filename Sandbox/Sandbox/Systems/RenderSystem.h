@@ -270,7 +270,7 @@ public:
 			desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 
 			shadow.renderTarget = Hollow::RenderTarget::create(desc);
-			shadow.shadowCamera = new Hollow::Camera(false);
+			shadow.shadowCamera = new Hollow::Camera();
 			shadow.shadowCamera->setOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
 			shadow.texelSize = Hollow::Vector2(1.0f / desc.width, 1.0f / desc.height);
 			shadow.bias = 0.002f;
@@ -396,7 +396,6 @@ public:
 
 		culled = 0;
 		renderer->setInputLayout(defaultLayout);
-		shadow.shadowCamera->update(dt);
 
 		updateWVP(this->m_Camera);
 		// GBuffer pass

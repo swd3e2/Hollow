@@ -48,7 +48,7 @@ namespace GUI {
 
 			ImGui::Text(std::to_string(dt).c_str());
 			ImGui::Text(std::to_string(renderSystem->culled).c_str());
-			ImGui::DragFloat("##Maincameraspeed", &renderSystem->m_Camera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
+			//ImGui::DragFloat("##Maincameraspeed", &renderSystem->m_Camera->cameraMoveSpeed, 0.001f, 0.0f, 100.0f);
 
 			if (ImGui::CollapsingHeader("Shadow orthographic projection settings")) {
 				ImGui::Text("Right");
@@ -72,15 +72,6 @@ namespace GUI {
 				renderSystem->shadow.shadowCamera->setOrthoValues(r, l, t, b, n, f);
 			}
 
-			if (ImGui::Button("Toggle camera")) {
-				if (renderSystem->m_Camera->m_IsMainCamera) {
-					renderSystem->m_Camera->m_IsMainCamera = false;
-					renderSystem->shadow.shadowCamera->m_IsMainCamera = true;
-				} else {
-					renderSystem->m_Camera->m_IsMainCamera = true;
-					renderSystem->shadow.shadowCamera->m_IsMainCamera = false;
-				}
-			}
 			for (auto& it : Profiler::getValues()) {
 				ImGui::Text((it.first + ": " + std::to_string(it.second)).c_str());
 			}

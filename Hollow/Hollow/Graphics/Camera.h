@@ -14,7 +14,7 @@ namespace Hollow {
 	class Camera
 	{
 	public:
-		Camera(bool mainCamera = true);
+		Camera();
 
 		void setProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ);
 		void setOrthoValues(float left, float right, float up, float down, float near, float far);
@@ -27,10 +27,8 @@ namespace Hollow {
 
 		Vector3 getPositionVec3() const { return Vector3(m_Position.x, m_Position.y, m_Position.z); }
 		Vector3 getRotationVec3() const { return Vector3(m_Rotation.x, m_Rotation.y, m_Rotation.z); }
-
-		void update(double dt);
+		void updateViewMatrix();
 	public:
-		bool m_IsMainCamera;
 		Vector4 m_Position;
 		Vector4 m_Rotation;
 		Vector4 m_CamTarget;
@@ -40,12 +38,6 @@ namespace Hollow {
 		Vector4 forwardVec;
 		Vector4 rightVec;
 		Vector4 upVec;
-
-		float bias = 0.000001f;
-		float cameraMoveSpeed = 0.024f;
-		float cameraMouseMoveSpeed = 0.2f;
-	public:
-		void updateViewMatrix();
 	};
 }
 
