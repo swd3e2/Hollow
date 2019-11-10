@@ -12,6 +12,11 @@ cbuffer ConstantBuffer : register(b2)
 	bool hasAnimation;
 };
 
+cbuffer ConstantBuffer : register(b3)
+{
+    matrix worldTransform;
+};
+
 cbuffer ConstantBuffer : register(b6)
 {
 	matrix boneInfo[200];
@@ -51,11 +56,16 @@ PixelShaderOutput main(VertexShaderInput input)
 
 		output.position = mul(output.position, BoneTransform);
         output.normal = mul(output.normal, BoneTransform);
+    } else {
+        output.position = mul(output.position, worldTransform);
     }
 
     output.normal = normalize(mul(output.normal, transform)) + 1.0f * 0.5f;
 	output.texCoord = input.texCoord;
-    output.hPos = mul(output.position, transform);
+
+    output.position = mul(output.position, transform);
+    output.hPos = output.position;
+    //output.hPos = mul(output.position, worldTransform);
 
     output.position = mul(output.hPos, WVP);
 

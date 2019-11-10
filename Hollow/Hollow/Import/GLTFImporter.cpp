@@ -15,16 +15,6 @@ namespace Hollow {
 
 		Import::Model* model = new Import::Model();
 
-		tinygltf::Node& modelRootNode = gltfModel.nodes[gltfModel.scenes[0].nodes[0]];
-		std::unordered_map<int, s_ptr<Node>> nodes;
-		std::vector<int> meshesToLoad;
-		s_ptr<Node> rootNode = std::make_shared<Node>();
-		rootNode->name = modelRootNode.name;
-		rootNode->id = 0;
-		nodes[0] = rootNode;
-
-		processHierarchy(rootNode, modelRootNode, gltfModel, nodes, meshesToLoad);
-
 		std::string binaryFilePath = getBinaryFileFolder(filename) + gltfModel.buffers[0].uri;
 		std::ifstream binary(binaryFilePath, std::fstream::in | std::fstream::binary);
 
@@ -34,14 +24,18 @@ namespace Hollow {
 			return nullptr;
 		}
 
+		tinygltf::Node& modelRootNode = gltfModel.nodes[gltfModel.scenes[0].nodes[0]];
+		std::vector<int> meshesToLoad;
+		model->rootNode = std::make_shared<Import::Node>();
+		model->rootNode->id = 0;
+		model->rootNode->jointId = -1;
+
+		processHierarchy(model->rootNode, modelRootNode, model, gltfModel, meshesToLoad);
 		processSkin(model, gltfModel, binary);
 		processMeshes(model, gltfModel, binary, meshesToLoad);
 		processAnimations(model, gltfModel, binary);
 
 		binary.close();
-
-		// temp for animation
-		fixModel(rootNode, rootNode->transformation, model);
 
 		return s_ptr<Import::Model>(model);
 	}
@@ -236,14 +230,13 @@ namespace Hollow {
 	void GLTFImporter::processSkin(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary)
 	{
 		if (gltfModel.skins.size() > 0) {
+			model->skinned = true;
+
 			const tinygltf::Node& rootNode = gltfModel.nodes[gltfModel.skins[0].skeleton];
 			
-			model->rootNode = std::make_shared<Import::AnimationNode>();
-			model->rootNode->id = gltfModel.skins[0].skeleton;
-			model->rootNode->jointId = getJointByNode(gltfModel.skins[0].skeleton, gltfModel);
-			model->rootNode->name = gltfModel.nodes[gltfModel.skins[0].skeleton].name;
-			model->rootNode->localTransform2 = getTransformMatrix(gltfModel.nodes[gltfModel.skins[0].skeleton]);
-			model->nodes[model->rootNode->id] = model->rootNode;
+			model->rootJoint = std::make_shared<Import::Joint>();
+			model->rootJoint->id = gltfModel.skins[0].skeleton;
+			model->rootJoint->jointId = getJointByNode(gltfModel.skins[0].skeleton, gltfModel);
 
 			const tinygltf::Accessor& accessor = gltfModel.accessors[gltfModel.skins[0].inverseBindMatrices];
 			const tinygltf::BufferView& bufferView = gltfModel.bufferViews[accessor.bufferView];
@@ -252,46 +245,29 @@ namespace Hollow {
 			Matrix4* matrixData = new Matrix4[gltfModel.skins[0].joints.size()];
 			binary.read((char*)matrixData, sizeof(Matrix4) * accessor.count);
 
-			processAnimationNode(model->rootNode, rootNode, model->nodes, gltfModel);
+			processAnimationNode(model->rootJoint, rootNode, model->joints, gltfModel);
 
 			for (int i = 0; i < gltfModel.skins[0].joints.size(); i++) {
-				model->nodes[gltfModel.skins[0].joints[i]]->localTransform = Matrix4::transpose(matrixData[i]);
+				model->joints[gltfModel.skins[0].joints[i]]->inverseBindMatrix = matrixData[i].transpose();
 			}
 
 			delete[] matrixData;
 		}
 	}
 
-	void GLTFImporter::processAnimationNode(s_ptr<Import::AnimationNode> node, const tinygltf::Node& modelNode, std::unordered_map<int, s_ptr<Import::AnimationNode>>& nodes, const tinygltf::Model& gltfModel)
+	void GLTFImporter::processAnimationNode(s_ptr<Import::Joint>& joint, const tinygltf::Node& modelNode, std::unordered_map<int, s_ptr<Import::Joint>>& joints, const tinygltf::Model& gltfModel)
 	{
+		joint->name = modelNode.name;
+		getTransformMatrix(modelNode, joint);
+		joints[joint->id] = joint;
+
 		for (int childId : modelNode.children) {
-			const tinygltf::Node& modelAnimationNode = gltfModel.nodes[childId];
+			s_ptr<Import::Joint> childJoint = std::make_shared<Import::Joint>();
+			childJoint->id = childId;
+			childJoint->jointId = getJointByNode(childId, gltfModel);
 
-			s_ptr<Import::AnimationNode> animationNode = std::make_shared<Import::AnimationNode>();
-			animationNode->id = childId;
-			animationNode->jointId = getJointByNode(childId, gltfModel);
-			animationNode->name = modelAnimationNode.name;
-			animationNode->localTransform2 = getTransformMatrix(modelAnimationNode);
-			
-			if (modelAnimationNode.translation.size() > 0) {
-				animationNode->translation = Vector3(modelAnimationNode.translation[0], modelAnimationNode.translation[1], modelAnimationNode.translation[2]);
-			}
-
-			if (modelAnimationNode.rotation.size() > 0) {
-				animationNode->rotation = Quaternion(modelAnimationNode.rotation[0], modelAnimationNode.rotation[1], modelAnimationNode.rotation[2], modelAnimationNode.rotation[3]);
-			} else {
-				animationNode->rotation = Quaternion();
-			}
-
-			if (modelAnimationNode.scale.size() > 0) {
-				animationNode->scale = Vector3(modelAnimationNode.scale[0], modelAnimationNode.scale[1], modelAnimationNode.scale[2]);
-			}
-
-			animationNode->localTransform = Matrix4::identity();
-
-			node->childrens.push_back(animationNode);
-			nodes[animationNode->id] = animationNode;
-			processAnimationNode(animationNode, modelAnimationNode, nodes, gltfModel);
+			joint->childs.push_back(childJoint.get());
+			processAnimationNode(childJoint, gltfModel.nodes[childId], joints, gltfModel);
 		}
 	}
 
@@ -303,7 +279,7 @@ namespace Hollow {
 		for (auto& animation : gltfModel.animations) {
 			s_ptr<Import::Animation> mAnimation = std::make_shared<Import::Animation>();
 			mAnimation->name = animation.name;
-
+			
 			for (tinygltf::AnimationChannel& channel : animation.channels) {
 				tinygltf::AnimationSampler& sampler = animation.samplers[channel.sampler];
 				tinygltf::Accessor& timeAccessor = gltfModel.accessors[sampler.input];
@@ -330,12 +306,12 @@ namespace Hollow {
 					binary.read((char*)valueData, sizeof(float) * valueAccessor.count * 3);
 				}
 
-				s_ptr<Import::AnimationNodeData> data;
-
+				s_ptr<Import::AnimationData> data;
+				
 				if (mAnimation->data.find(channel.target_node) != mAnimation->data.end()) {
 					data = mAnimation->data[channel.target_node];
 				} else {
-					data = std::make_shared<Import::AnimationNodeData>();
+					data = std::make_shared<Import::AnimationData>();
 					mAnimation->data[channel.target_node] = data;
 				}
 
@@ -363,28 +339,25 @@ namespace Hollow {
 	/**
 	 * Creates hierarchy of nodes and get's their transformations
 	 */
-	void GLTFImporter::processHierarchy(s_ptr<Node>& node, const tinygltf::Node& modelNode, const tinygltf::Model& gltfModel, std::unordered_map<int, s_ptr<Node>>& nodes, std::vector<int>& meshesToLoad)
+	void GLTFImporter::processHierarchy(s_ptr<Import::Node>& node, const tinygltf::Node& modelNode, Import::Model* model, const tinygltf::Model& gltfModel, std::vector<int>& meshesToLoad)
 	{
-		node->transformation = getTransformMatrix(modelNode);
+		node->name = modelNode.name.size() ? modelNode.name : ("Node " + std::to_string(nodeCounter++));
+		node->meshId = modelNode.mesh;
+		getTransformMatrix(modelNode, node);
+
 		if (modelNode.mesh >= 0) {
 			meshesToLoad.push_back(modelNode.mesh);
 		}
 
 		for (int childId : modelNode.children) {
-			const tinygltf::Node& childModelNode = gltfModel.nodes[childId];
-
-			s_ptr<Node> childNode = std::make_shared<Node>();
-			childNode->name = childModelNode.name.size() ? childModelNode.name : ("Node " + std::to_string(nodeCounter++));
+			s_ptr<Import::Node> childNode = std::make_shared<Import::Node>();
 			childNode->id = childId;
 			childNode->jointId = getJointByNode(childId, gltfModel);
-			childNode->mesh = childModelNode.mesh;
 
-			
+			node->childs.push_back(childNode.get());
+			model->nodes[childId] = childNode;
 
-			node->childrens.push_back(childNode);
-			nodes[childNode->id] = childNode;
-
-			processHierarchy(childNode, childModelNode, gltfModel, nodes, meshesToLoad);
+			processHierarchy(childNode, gltfModel.nodes[childId], model, gltfModel, meshesToLoad);
 		}
 	}
 
@@ -421,6 +394,10 @@ namespace Hollow {
 
 	int GLTFImporter::getJointByNode(int nodeId, const tinygltf::Model& gltfModel)
 	{
+		if (gltfModel.skins.size() == 0) {
+			return -1;
+		}
+
 		const std::vector<int>& joints = gltfModel.skins[0].joints;
 
 		int lastJointId = 0;
@@ -442,7 +419,7 @@ namespace Hollow {
 		return -1;
 	}
 
-	Matrix4 GLTFImporter::getTransformMatrix(const tinygltf::Node& modelNode)
+	void GLTFImporter::getTransformMatrix(const tinygltf::Node& modelNode, const s_ptr<Import::BaseNode>& node)
 	{
 		Matrix4 transform = Matrix4::identity();
 
@@ -457,37 +434,41 @@ namespace Hollow {
 			Matrix4 translation = Matrix4::identity();
 
 			if (modelNode.translation.size() > 0) {
-				translation = Matrix4::translation(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]);
+				node->translation = Vector3(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]);
+				translation = Matrix4::translation(node->translation);
 			}
 
 			if (modelNode.rotation.size() > 0) {
-				rotation = Matrix4::rotation(Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]));
+				node->rotation = Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]);
+				rotation = Matrix4::rotation(node->rotation);
 			}
 
 			if (modelNode.scale.size() > 0) {
-				scale = Matrix4::scaling(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]);
+				node->scale = Vector3(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]);
+				scale = Matrix4::scaling(node->scale);
 			}
 
-			transform = scale * rotation * translation;
+			transform = translation * rotation * scale;
 		}
 
-		return transform;
+		node->transform =  transform;
 	}
 
-	void GLTFImporter::fixModel(const s_ptr<Node>& node, const Matrix4& parentTransform, Import::Model* model)
+	bool GLTFImporter::hasMesh(const tinygltf::Node& node, const tinygltf::Model& model)
 	{
-		Matrix4 transform = parentTransform;
-		
-		/*if (node->mesh != -1) {
-			for (auto& it : model->meshes[node->mesh]->vertices) {
-				it.pos = it.pos * transform;
-				it.normal = it.normal * transform;
-				Vector3::normalize(it.normal);
-			}
-		}*/
-
-		for (auto& it : node->childrens) {
-			fixModel(it, Matrix4::transpose(node->transformation) * parentTransform, model);
+		if (node.mesh >= 0) {
+			return true;
 		}
+
+		if (node.children.size() == 0) {
+			return false;
+		}
+
+		for (auto& child : node.children) {
+			if (hasMesh(model.nodes[child], model)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

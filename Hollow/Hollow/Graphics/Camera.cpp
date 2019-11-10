@@ -1,12 +1,10 @@
 #include "Camera.h"
 
 namespace Hollow {
-	Camera::Camera(bool mainCamera) :
-		m_IsMainCamera(mainCamera)
+	Camera::Camera()
 	{
 		m_Position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Rotation = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-		mainCamera = mainCamera;
 		updateViewMatrix();
 	}
 
@@ -19,52 +17,6 @@ namespace Hollow {
 	void Camera::setOrthoValues(float right, float left, float top, float bottom, float nearZ, float farZ)
 	{
 		m_ProjectionMatrix = Matrix4::orthographic(right, left, top, bottom, nearZ, farZ);
-	}
-
-	void Camera::update(double dt)
-	{
-		if (m_IsMainCamera) {
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_UP) == true) {
-				m_Position += forwardVec * dt * cameraMoveSpeed;
-				updateViewMatrix();
-			} else if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_DOWN) == true) {
-				m_Position -= forwardVec * dt * cameraMoveSpeed;
-				updateViewMatrix();
-			}
-
-			if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_LEFT) == true) {
-				m_Position -= rightVec * dt * cameraMoveSpeed;
-				updateViewMatrix();
-			} else if (InputManager::GetKeyboardKeyIsPressed(eKeyCodes::KEY_RIGHT) == true) {
-				m_Position += rightVec * dt * cameraMoveSpeed;
-				updateViewMatrix();
-			}
-
-			if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_RIGHT)) {
-				m_Rotation.x -= InputManager::my * 0.00045 * dt;
-				if (m_Rotation.x > Math::HALF_PI - bias) {
-					m_Rotation.x = Math::HALF_PI - bias;
-				} else if (m_Rotation.x < -Math::HALF_PI + bias) {
-					m_Rotation.x = -Math::HALF_PI + bias;
-				}
-				m_Rotation.y -= InputManager::mx * 0.00045 * dt;
-				updateViewMatrix();
-			}
-			
-			if (InputManager::GetMouseButtonIsPressed(eMouseKeyCodes::MOUSE_MIDDLE)) {
-				if (InputManager::lastY < 0) {
-					m_Position -= upVec * dt * cameraMouseMoveSpeed;
-				} else if (InputManager::lastY > 0) {
-					m_Position += upVec * dt * cameraMouseMoveSpeed;
-				}
-				if (InputManager::lastX > 0) {
-					m_Position -= rightVec * dt * cameraMouseMoveSpeed;
-				} else if (InputManager::lastX < 0) {
-					m_Position += rightVec * dt * cameraMouseMoveSpeed;
-				}
-				updateViewMatrix();
-			}
-		}
 	}
 
 	void Camera::updateViewMatrix()

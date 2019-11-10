@@ -46,8 +46,7 @@ struct PerModel
 
 struct PerMesh
 {
-	Hollow::Vector3 color;
-	int selected;
+	Hollow::Matrix4 worldTransform;
 };
 
 struct ShadowStruct
@@ -271,7 +270,7 @@ public:
 			desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 
 			shadow.renderTarget = Hollow::RenderTarget::create(desc);
-			shadow.shadowCamera = new Hollow::Camera(false);
+			shadow.shadowCamera = new Hollow::Camera();
 			shadow.shadowCamera->setOrthoValues(-1000, 1000, -1000, 1000, -1000, 2000);
 			shadow.texelSize = Hollow::Vector2(1.0f / desc.width, 1.0f / desc.height);
 			shadow.bias = 0.002f;
@@ -397,7 +396,6 @@ public:
 
 		culled = 0;
 		renderer->setInputLayout(defaultLayout);
-		shadow.shadowCamera->update(dt);
 
 		updateWVP(this->m_Camera);
 		// GBuffer pass
@@ -521,6 +519,9 @@ public:
 			defaultMaterial->materialData.color.z = 0.0f;
 			renderer->setGpuBuffer(materialConstantBuffer);
 
+			perMeshData.worldTransform = Hollow::Matrix4::identity();
+			perMesh->update(&perMeshData);
+			renderer->setGpuBuffer(perMesh);
 			perModelData.transform = Hollow::Matrix4::identity();
 			perModel->update(&perModelData);
 			renderer->setGpuBuffer(perModel);
@@ -535,11 +536,10 @@ public:
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 
-				if (entity.hasComponent<AnimationComponent>()) {
+				if (renderable->skinned && entity.hasComponent<AnimationComponent>()) {
 					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
 					perModelData.hasAnimation = !animation->stoped;
-					if (!animation->stoped) {
-						AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+					if (!animation->stoped && animation->nodeInfo.size() > 0) {
 						boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
 						renderer->setGpuBuffer(boneInfo);
 					}
@@ -555,25 +555,29 @@ public:
 				perModel->update(&perModelData);
 				renderer->setGpuBuffer(perModel);
 
-				for (auto& object : renderable->renderables)  {
-					if (renderable->materials.find(object->material) != renderable->materials.end()) {
-						const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
-						if (material->diffuseTexture != nullptr) {
-							renderer->setTexture(0, material->diffuseTexture);
+				if (false) {
+					for (auto& object : renderable->renderables) {
+						if (renderable->materials.find(object->material) != renderable->materials.end()) {
+							const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
+							if (material->diffuseTexture != nullptr) {
+								renderer->setTexture(0, material->diffuseTexture);
+							} else {
+								renderer->unsetTexture(0);
+							}
+							materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
+							renderer->setGpuBuffer(materialConstantBuffer);
 						} else {
-							renderer->unsetTexture(0);
+							materialConstantBuffer->update(&defaultMaterial->materialData);
+							renderer->setGpuBuffer(materialConstantBuffer);
 						}
-						materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
-						renderer->setGpuBuffer(materialConstantBuffer);
-					} else {
-						materialConstantBuffer->update(&defaultMaterial->materialData);
-						renderer->setGpuBuffer(materialConstantBuffer);
-					}
-					
 
-					renderer->setVertexBuffer(object->vBuffer);
-					renderer->setIndexBuffer(object->iBuffer);
-					renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
+
+						renderer->setVertexBuffer(object->vBuffer);
+						renderer->setIndexBuffer(object->iBuffer);
+						renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
+					}
+				} else if (renderable->rootNode != nullptr) {
+					drawNodeHierarchy(renderable->rootNode.get(), renderable);
 				}
 			}
 		}
@@ -614,6 +618,38 @@ public:
 		}
 		renderer->setInputLayout(defaultLayout);
 		renderer->setRasterizerState(cullBack);
+	}
+
+	void drawNodeHierarchy(RenderableComponent::Node* node, RenderableComponent* renderable)
+	{
+		if (node->renderableId != -1 && node->renderableId < renderable->renderables.size()) {
+			const Hollow::s_ptr<RenderableObject>& renderableObject = renderable->renderables[node->renderableId];
+
+			if (renderable->materials.find(renderableObject->material) != renderable->materials.end()) {
+				const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[renderableObject->material];
+				if (material->diffuseTexture != nullptr) {
+					renderer->setTexture(0, material->diffuseTexture);
+				} else {
+					renderer->unsetTexture(0);
+				}
+				materialConstantBuffer->update(&renderable->materials[renderableObject->material]->materialData);
+				renderer->setGpuBuffer(materialConstantBuffer);
+			} else {
+				materialConstantBuffer->update(&defaultMaterial->materialData);
+				renderer->setGpuBuffer(materialConstantBuffer);
+			}
+			perMeshData.worldTransform = node->worldTransform;
+			perMesh->update(&perMeshData);
+			renderer->setGpuBuffer(perMesh);
+
+			renderer->setVertexBuffer(renderableObject->vBuffer);
+			renderer->setIndexBuffer(renderableObject->iBuffer);
+			renderer->drawIndexed(renderableObject->iBuffer->mHardwareBuffer->getSize());
+		}
+
+		for (auto& it : node->childs) {
+			drawNodeHierarchy(it, renderable);
+		}
 	}
 
 	void shadowPass()
