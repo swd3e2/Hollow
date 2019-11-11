@@ -43,6 +43,7 @@ struct Animation
 class AnimationComponent : public Hollow::Component<AnimationComponent>
 {
 public:
+	float blendingFactor = 1.0f;
 	/* List of nodes */
 	std::unordered_map<int, Hollow::s_ptr<Joint>> nodes;
 	/* List of animations */

@@ -69,23 +69,8 @@ namespace Hollow {
 			return *this;
 		}
 
-		static inline void interpolate(Quaternion& pOut, const Quaternion& pStart, const Quaternion& pEnd, float pFactor)
+		static inline Quaternion interpolate(const Quaternion& pStart, const Quaternion& pEnd, float pFactor)
 		{
-			/*
-			float a = 1.0 - t, b = t, d = pStart.x * pEnd.x + pStart.y * pEnd.y + pStart.z * pEnd.z + pStart.w * pEnd.w, c = fabsf(d);
-			if (c < 0.999) {
-				c = acosf(c);
-				b = 1 / sinf(c);
-				a = sinf(a * c) * b;
-				b *= sinf(t * c);
-				if (d < 0) b = -b;
-			}
-			
-			pOut.x = a * pStart.x + b * pEnd.x;
-			pOut.y = a * pStart.y + b * pEnd.y;
-			pOut.z = a * pStart.z + b * pEnd.z;
-			pOut.w = a * pStart.w + b * pEnd.w;
-			*/
 			// calc cosine theta
 			float cosom = pStart.x * pEnd.x + pStart.y * pEnd.y + pStart.z * pEnd.z + pStart.w * pEnd.w;
 
@@ -118,18 +103,29 @@ namespace Hollow {
 				sclq = pFactor;
 			}
 
-			pOut.x = sclp * pStart.x + sclq * end.x;
-			pOut.y = sclp * pStart.y + sclq * end.y;
-			pOut.z = sclp * pStart.z + sclq * end.z;
-			pOut.w = sclp * pStart.w + sclq * end.w;
+			return Quaternion(
+				sclp * pStart.x + sclq * end.x,
+				sclp * pStart.y + sclq * end.y,
+				sclp * pStart.z + sclq * end.z,
+				sclp * pStart.w + sclq * end.w
+			);
+		}
+
+		Quaternion& operator*(const float value)
+		{
+			x *= value;
+			y *= value;
+			z *= value;
+			w *= value;
+
+			return *this;
 		}
 
 		inline Quaternion& normalize()
 		{
 			// compute the magnitude and divide through it
 			const float mag = std::sqrt(x * x + y * y + z * z + w * w);
-			if (mag)
-			{
+			if (mag) {
 				const float invMag = static_cast<float>(1.0) / mag;
 				x *= invMag;
 				y *= invMag;

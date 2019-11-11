@@ -70,11 +70,12 @@ public:
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_SPACE)) {
 					moveVector.setY(10.0f);
 				}
+
 				physics->body->setLinearVelocity(moveVector);
 				physics->body->activate(true);
 
 				if (!updated) {
-					animation->pause();
+					//animation->pause();
 				} else {
 					animation->play();
 				}

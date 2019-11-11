@@ -255,7 +255,8 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<AnimationComponent>()) {
 					if (ImGui::CollapsingHeader("Animation component")) {
 						AnimationComponent* animation = selectedGameObject->getComponent<AnimationComponent>();
-
+						
+						ImGui::DragFloat("Blending factor", &animation->blendingFactor, 0.001f, 0.0f, 1.0f);
 						if (ImGui::BeginCombo("Animation", animation->animations[animation->currentAnimation]->name.c_str())) {
 							for (int n = 0; n < animation->animations.size(); n++) {
 								bool is_selected = (animation->animations[animation->currentAnimation] == animation->animations[n]);

@@ -106,4 +106,10 @@ namespace Hollow {
 	{
 		return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 	}
+
+	Vector3 Vector3::interpolate(const Vector3& from, const Vector3& to, const float factor)
+	{
+		Hollow::Vector3 delta = to - from;
+		return from + (delta * factor);
+	}
 }
