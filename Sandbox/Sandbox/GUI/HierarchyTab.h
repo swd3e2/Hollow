@@ -26,6 +26,22 @@ namespace GUI {
 		char buffer[100];
 		const char* lightTypeComboItems[4] = { "Ambient", "Diffuse", "Point", "Spot" };
 		const char* currentLightType = nullptr;
+
+		Hollow::Vector3 boxShapeSize;
+		float capsuleShapeRadius = 0.0f;
+		float capsuleShapeHeight = 0.0f;
+
+		float sphereShapeRadius = 0.0f;
+
+		Hollow::Vector3 planeShapeNormal;
+		float planeSize = 0.0f;
+
+		float mass = 0.0f;
+		Hollow::Vector3 position;
+		Hollow::Vector3 angularFactor;
+		int selectedShapeType;
+		int tempShapeType = 0;
+		const char* shapeTypesSelectables[5] = { "Box", "Sphere", "Plane", "Capsule", "AABB (not working)" };
 	public:
 		HierarchyTab() = default;
 
@@ -74,6 +90,12 @@ namespace GUI {
 					selectedGameObject = &entity;
 					selectedTerrain = nullptr;
 					selectedLight = nullptr;
+					if (selectedGameObject->hasComponent<PhysicsComponent>()) {
+						PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+						tempShapeType = physics->type;
+					} else {
+						tempShapeType = 0;
+					}
 				}
 				
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
@@ -236,22 +258,70 @@ namespace GUI {
 						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f)) {
 							if (selectedGameObject->hasComponent<PhysicsComponent>()) {
 								PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
-
-								btTransform origin;
-								physics->body->getMotionState()->getWorldTransform(origin);
-								btVector3& originVec = origin.getOrigin();
-								physics->body->activate(true);
-								physics->body->translate(btVector3(
-									component->position.x - originVec.getX(),
-									component->position.y - originVec.getY(),
-									component->position.z - originVec.getZ()
-								));
+								physics->setPosition(component->position);
 							}
 						}
 						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
 					}
 				}
+				if (selectedGameObject->hasComponent<PhysicsComponent>()) {
+					if (ImGui::CollapsingHeader("Physics component")) {
+						PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+						ImGui::Checkbox("Apply rotation", &physics->applyRotation);
+
+						if (ImGui::BeginCombo("Animation", shapeTypesSelectables[tempShapeType])) {
+							for (int n = 0; n < 5; n++) {
+								bool is_selected = (tempShapeType == n);
+								if (ImGui::Selectable(shapeTypesSelectables[n], is_selected))
+									tempShapeType = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+							}
+							ImGui::EndCombo();
+						}
+						ImGui::DragFloat3("Shape origin position", (float*)&position, 0.1f);
+						ImGui::DragFloat3("Shape angular factor", (float*)&angularFactor, 0.1f);
+						ImGui::DragFloat("Shape mass (0 means static object)", &mass, 0.1f);
+
+						if (tempShapeType == PhysicsShapeType::PST_BOX) {
+							ImGui::DragFloat3("Box size", (float*)&boxShapeSize, 0.1f);
+						} else if (tempShapeType == PhysicsShapeType::PST_CAPSULE) {
+							ImGui::DragFloat("Capsule height", &capsuleShapeHeight, 0.1f);
+							ImGui::DragFloat("Capsule radius", &capsuleShapeRadius, 0.1f);
+						} else if (tempShapeType == PhysicsShapeType::PST_SPHERE) {
+							ImGui::DragFloat("Sphere radius", &sphereShapeRadius, 0.1f);
+						}
+
+						if (ImGui::Button("Add body")) {
+							physics->setPosition(position);
+							physics->setMass(mass);
+							switch (tempShapeType)
+							{
+								case PhysicsShapeType::PST_BOX:
+									physics->addBoxShape(boxShapeSize);
+									break;
+								case PhysicsShapeType::PST_SPHERE:
+									physics->addSphereShape(sphereShapeRadius);
+									break;
+								case PhysicsShapeType::PST_PLANE:
+									physics->addPlaneShape(planeShapeNormal, planeSize);
+									break;
+								case PhysicsShapeType::PST_CAPSULE:
+									physics->addCapsuleShape(capsuleShapeHeight, capsuleShapeRadius);
+									break;
+								case PhysicsShapeType::PST_AABB:
+									break;
+								default:
+								break;
+							}
+							physics->init();
+							physics->body->setAngularFactor(btVector3(angularFactor.x, angularFactor.y, angularFactor.z));
+							PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
+						}
+					}
+				}
+				
 				if (selectedGameObject->hasComponent<AnimationComponent>()) {
 					if (ImGui::CollapsingHeader("Animation component")) {
 						AnimationComponent* animation = selectedGameObject->getComponent<AnimationComponent>();

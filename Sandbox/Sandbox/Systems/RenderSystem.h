@@ -638,6 +638,7 @@ public:
 				materialConstantBuffer->update(&defaultMaterial->materialData);
 				renderer->setGpuBuffer(materialConstantBuffer);
 			}
+
 			perMeshData.worldTransform = node->worldTransform;
 			perMesh->update(&perMeshData);
 			renderer->setGpuBuffer(perMesh);

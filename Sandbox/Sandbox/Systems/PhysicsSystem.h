@@ -40,6 +40,7 @@ public:
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
+				
 				btTransform tr;
 				physics->body->getMotionState()->getWorldTransform(tr);
 				btVector3& pos = tr.getOrigin(); 

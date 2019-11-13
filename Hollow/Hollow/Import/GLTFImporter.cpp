@@ -82,10 +82,24 @@ namespace Hollow {
 								mesh->vertices[i].pos.y = data[i * 3 + 1];
 								mesh->vertices[i].pos.z = data[i * 3 + 2];
 
-								if (mesh->vertices[i].pos.x < model->A.x && mesh->vertices[i].pos.y < model->A.y && mesh->vertices[i].pos.z < model->A.z) {
-									model->A = mesh->vertices[i].pos;
-								} else if (mesh->vertices[i].pos.x > model->B.x&& mesh->vertices[i].pos.y > model->B.y&& mesh->vertices[i].pos.z > model->B.z) {
-									model->B = mesh->vertices[i].pos;
+								if (mesh->vertices[i].pos.x < model->A.x) {
+									model->A.x = mesh->vertices[i].pos.x;
+								}
+								if (mesh->vertices[i].pos.y < model->A.y) {
+									model->A.y = mesh->vertices[i].pos.y;
+								}
+								if (mesh->vertices[i].pos.z < model->A.z) {
+									model->A.z = mesh->vertices[i].pos.z;
+								}
+
+								if (mesh->vertices[i].pos.x > model->B.x) {
+									model->B.x = mesh->vertices[i].pos.x;
+								}
+								if (mesh->vertices[i].pos.y > model->B.y) {
+									model->B.y = mesh->vertices[i].pos.y;
+								}
+								if (mesh->vertices[i].pos.z > model->B.z) {
+									model->B.z = mesh->vertices[i].pos.z;
 								}
 							}
 							delete[] data;
