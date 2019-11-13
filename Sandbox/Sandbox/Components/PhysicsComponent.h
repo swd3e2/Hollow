@@ -23,7 +23,7 @@ public:
 	PhysicsShapeType type;
 	Hollow::Vector3 originPosition;
 	bool applyRotation = true;
-	bool isDynamic;
+	bool isDynamic = false;
 	float mass = 0.0f;
 public:
 	PhysicsComponent(const Hollow::Vector3& position = Hollow::Vector3(), float mass = 0.0f);

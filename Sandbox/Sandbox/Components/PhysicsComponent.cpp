@@ -4,6 +4,7 @@
 PhysicsComponent::PhysicsComponent(const Hollow::Vector3& position, float mass) :
 	originPosition(position), mass(mass)
 {
+	isDynamic = (mass != 0.f);
 }
 
 PhysicsComponent::~PhysicsComponent()
@@ -67,8 +68,6 @@ void PhysicsComponent::init()
 {
 	btTransform startTransform;
 	startTransform.setIdentity();
-
-	bool isDynamic = (mass != 0.f);
 
 	btVector3 localInertia(0, 0, 0);
 	if (isDynamic)
