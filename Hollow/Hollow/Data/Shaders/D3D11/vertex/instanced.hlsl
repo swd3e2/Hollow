@@ -22,6 +22,11 @@ cbuffer ConstantBuffer : register(b6)
     matrix boneInfo[200];
 };
 
+cbuffer ConstantBuffer : register(b7)
+{
+	matrix instanceMatrix[50];
+};
+
 struct PixelShaderOutput
 {
     float4 hPos : HPOS;
@@ -41,7 +46,7 @@ struct VertexShaderInput
     float4 weight : WEIGHT;
 };
 
-PixelShaderOutput main(VertexShaderInput input)
+PixelShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID)
 {
     PixelShaderOutput output;
 
@@ -66,7 +71,7 @@ PixelShaderOutput main(VertexShaderInput input)
     output.normal = normalize(mul(output.normal, transform)) + 1.0f * 0.5f;
     output.texCoord = input.texCoord;
 
-    output.position = mul(output.position, transform);
+    output.position = mul(output.position, transform + instanceMatrix[instanceID]);
     output.hPos = output.position;
     //output.hPos = mul(output.position, worldTransform);
 

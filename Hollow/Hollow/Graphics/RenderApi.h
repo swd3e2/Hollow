@@ -89,12 +89,12 @@ namespace Hollow {
 		/**
 		 * Draw instanced
 		 */
-		virtual void drawInstanced() = 0;
+		virtual void drawInstanced(UINT count, UINT instanceCount) = 0;
 
 		/**
 		 * Draw indexed instanced
 		 */
-		virtual void drawIndexedInstanced() = 0;
+		virtual void drawIndexedInstanced(UINT count, UINT instanceCount) = 0;
 
 		/**
 		 * Sets viewport

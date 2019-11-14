@@ -28,6 +28,7 @@
 #include "Sandbox/Profiler.h"
 #include "Sandbox/ShaderManager.h"
 #include "Sandbox/Systems/PhysicsSystem.h"
+#include <array>
 
 struct WVP
 {
@@ -96,6 +97,7 @@ private:
 	Hollow::s_ptr<Hollow::GPUBuffer> materialConstantBuffer;
 	Hollow::s_ptr<Hollow::GPUBuffer> lightInfoBuffer;
 	Hollow::s_ptr<Hollow::GPUBuffer> boneInfo;
+	Hollow::s_ptr<Hollow::GPUBuffer> instanceData;
 
 	Hollow::s_ptr<Hollow::GPUBuffer> perModel;
 	Hollow::s_ptr<Hollow::GPUBuffer> perMesh;
@@ -110,6 +112,7 @@ private:
 	Hollow::s_ptr<Hollow::ShaderPipeline> terrainPipeline;
 	Hollow::s_ptr<Hollow::ShaderPipeline> pickerPipeline;
 	Hollow::s_ptr<Hollow::ShaderPipeline> flatColor;
+	Hollow::s_ptr<Hollow::ShaderPipeline> instanced;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -148,6 +151,8 @@ private:
 	Hollow::Material* defaultMaterial;
 
 	ShaderManager shaderManager;
+
+	std::array<Hollow::Matrix4, 50> instanceGpuData;
 public:
 	RenderSystem(Hollow::RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -161,7 +166,9 @@ public:
 			materialConstantBuffer		= Hollow::GPUBuffer::create(4, sizeof(Hollow::MaterialData));
 			lightInfoBuffer				= Hollow::GPUBuffer::create(5, sizeof(LightInfo));
 			boneInfo					= Hollow::GPUBuffer::create(6, sizeof(Hollow::Matrix4) * 200);
+			instanceData				= Hollow::GPUBuffer::create(7, sizeof(Hollow::Matrix4) * 50);
 		}
+
 		// Shaders
 		{
 			Hollow::INPUT_LAYOUT_DESC layoutDesc = {
@@ -242,6 +249,13 @@ public:
 				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/flatColor" + shaderExt, "main" });
 
 				flatColor = Hollow::ShaderPipeline::create(pipelineDesc);
+			}
+			{
+				Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+				pipelineDesc.vertexShader = shaderManager.create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/instanced" + shaderExt, "main" });
+				pipelineDesc.pixelShader = shaderManager.create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/instanced" + shaderExt, "main" });
+
+				instanced = Hollow::ShaderPipeline::create(pipelineDesc);
 			}
 		}
 
@@ -377,6 +391,12 @@ public:
 		for (int i = 0; i < 10; i++) {
 			renderer->setTextureSampler(i, sampler);
 		}
+
+		for (int i = 0; i < 50; i++) {
+			instanceGpuData[i] = Hollow::Matrix4::translation(((i + 1) % 10) * 100, 0, ((i + 1) / 10) * 100);
+		}
+		instanceData->update(instanceGpuData.data());
+		renderer->setGpuBuffer(instanceData);
 
 		timer.start();
 	}
@@ -577,7 +597,7 @@ public:
 						renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 					}
 				} else if (renderable->rootNode != nullptr) {
-					drawNodeHierarchy(renderable->rootNode.get(), renderable);
+					//drawNodeHierarchy(renderable->rootNode.get(), renderable);
 				}
 			}
 		}
@@ -593,6 +613,55 @@ public:
 				renderer->setVertexBuffer(lightVertexBuffer);
 				renderer->setIndexBuffer(lightIndexBuffer);
 				renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
+			}
+		}
+
+		// Instanced drawing test
+
+		renderer->setShaderPipeline(instanced);
+		{
+			GameObject* entity = (GameObject*)Hollow::EntityManager::instance()->get(3);
+			RenderableComponent* renderable = entity->getComponent<RenderableComponent>();
+			TransformComponent* transform = entity->getComponent<TransformComponent>();
+
+			if (renderable->skinned && entity->hasComponent<AnimationComponent>()) {
+				AnimationComponent* animation = entity->getComponent<AnimationComponent>();
+				perModelData.hasAnimation = !animation->stoped;
+				if (!animation->stoped && animation->nodeInfo.size() > 0) {
+					boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
+					renderer->setGpuBuffer(boneInfo);
+				}
+			}
+			else {
+				perModelData.hasAnimation = false;
+			}
+
+			Hollow::Matrix4 trs = Hollow::Matrix4::translation(transform->position)
+				* Hollow::Matrix4::rotation(Hollow::Quaternion(transform->rotation))
+				* Hollow::Matrix4::scaling(transform->scale);
+
+			perModelData.transform = trs;
+			perModel->update(&perModelData);
+			renderer->setGpuBuffer(perModel);
+
+			for (auto& object : renderable->renderables) {
+				if (renderable->materials.find(object->material) != renderable->materials.end()) {
+					const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
+					if (material->diffuseTexture != nullptr) {
+						renderer->setTexture(0, material->diffuseTexture);
+					} else {
+						renderer->unsetTexture(0);
+					}
+					materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
+					renderer->setGpuBuffer(materialConstantBuffer);
+				} else {
+					materialConstantBuffer->update(&defaultMaterial->materialData);
+					renderer->setGpuBuffer(materialConstantBuffer);
+				}
+
+				renderer->setVertexBuffer(object->vBuffer);
+				renderer->setIndexBuffer(object->iBuffer);
+				renderer->drawIndexedInstanced(object->iBuffer->mHardwareBuffer->getSize(), 10);
 			}
 		}
 

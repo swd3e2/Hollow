@@ -63,8 +63,8 @@ namespace Hollow {
 		virtual void setBlendState(const s_ptr<BlendState>& blendState) override;
 		virtual void setShaderPipeline(const s_ptr<ShaderPipeline>& shaderPipeline) override;
 		virtual void setPrimitiveTopology(const PrimitiveTopology topology) override;
-		virtual void drawInstanced() override;
-		virtual void drawIndexedInstanced() override;
+		virtual void drawInstanced(UINT count, UINT instanceCount) override;
+		virtual void drawIndexedInstanced(UINT count, UINT instanceCount) override;
 
 		virtual RendererType getRendererType() override { return RendererType::OpenGL; }
 	};

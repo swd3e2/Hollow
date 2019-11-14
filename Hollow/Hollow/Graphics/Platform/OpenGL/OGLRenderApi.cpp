@@ -260,14 +260,16 @@ namespace Hollow {
 		mTopology = topology;
 	}
 
-	void OGLRenderApi::drawInstanced()
+	void OGLRenderApi::drawInstanced(UINT count, UINT instanceCount)
 	{
-
+		GLuint topology = OGLHelper::getTopology(mTopology);
+		glDrawArraysInstanced(topology, 0, count, instanceCount);
 	}
 
-	void OGLRenderApi::drawIndexedInstanced()
+	void OGLRenderApi::drawIndexedInstanced(UINT count, UINT instanceCount)
 	{
-
+		GLuint topology = OGLHelper::getTopology(mTopology);
+		glDrawElementsInstanced(topology, count, GL_UNSIGNED_INT, 0, instanceCount);
 	}
 
 	void OGLRenderApi::draw(UINT count)

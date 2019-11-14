@@ -283,12 +283,14 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::drawInstanced()
+	void D3D11RenderApi::drawInstanced(UINT count, UINT instanceCount)
 	{
+		context->getDeviceContext()->DrawInstanced(count, instanceCount, 0, 0);
 	}
 
-	void D3D11RenderApi::drawIndexedInstanced()
+	void D3D11RenderApi::drawIndexedInstanced(UINT count, UINT instanceCount)
 	{
+		context->getDeviceContext()->DrawIndexedInstanced(count, instanceCount, 0, 0, 0);
 	}
 
 	void D3D11RenderApi::setInputLayout(const s_ptr<InputLayout>& layout)
