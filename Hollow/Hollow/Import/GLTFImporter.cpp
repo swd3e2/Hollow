@@ -398,12 +398,9 @@ namespace Hollow {
 
 	std::string GLTFImporter::getBinaryFileFolder(std::string gltfFilePath)
 	{
-		std::string folderPath;
-		folderPath = Helper::trimToLastLineEntry(gltfFilePath.c_str(), '/');
-		if (!folderPath.size()) {
-			folderPath = Helper::trimToLastLineEntry(gltfFilePath.c_str(), '\\');
-		}
-		return folderPath;
+		std::replace(gltfFilePath.begin(), gltfFilePath.end(), '\\', '/');
+		gltfFilePath = Helper::trimToLastLineEntry(gltfFilePath.c_str(), '/');
+		return gltfFilePath;
 	}
 
 	int GLTFImporter::getJointByNode(int nodeId, const tinygltf::Model& gltfModel)

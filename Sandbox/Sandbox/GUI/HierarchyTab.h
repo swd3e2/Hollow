@@ -255,14 +255,17 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<TransformComponent>()) {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();
-						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f)) {
-							if (selectedGameObject->hasComponent<PhysicsComponent>()) {
-								PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+						PhysicsComponent* physics = nullptr; 
+						if (selectedGameObject->getComponent<PhysicsComponent>()) {
+							physics = selectedGameObject->getComponent<PhysicsComponent>();
+						}
+						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f)) {
+							if (physics != nullptr) {
 								physics->setPosition(component->position);
 							}
 						}
-						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f);
+						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f);
 					}
 				}
 				if (selectedGameObject->hasComponent<PhysicsComponent>()) {
@@ -378,10 +381,11 @@ namespace GUI {
 				if (ImGui::Button("Change##diffuse_texture")) {
 					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
-						//TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
+						Hollow::DelayedTaskManager::instance()->add([&]() {
+							TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
+						});
 						selectedMaterial->materialData.hasDiffuseTexture = true;
-						//selectedMaterial->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile("2.png");
-						//selectedMaterial->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(filename, false);
+						selectedMaterial->diffuseTexture = TextureManager::instance()->create2DTextureFromFile(filename, 2);
 					}
 				}
 
@@ -422,6 +426,18 @@ namespace GUI {
 						/*TextureManager::instance()->remove(selectedMaterial->specularTexture);
 						selectedMaterial->specularTexture = TextureManager::instance()->createTextureFromFile(filename, false);*/
 					}
+				}
+			}
+			ImGui::End();
+			ImGui::Begin("Textures");
+			int imgCounter = 0;
+			for (auto& it : TextureManager::instance()->textureList) {
+				if (++imgCounter % 3 != 0) ImGui::SameLine();
+
+				if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+					ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(it.second)->m_TextureShaderResource, ImVec2(100, 100));
+				} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(it.second)->textureId, ImVec2(100, 100));
 				}
 			}
 			ImGui::End();

@@ -4,6 +4,14 @@ namespace Hollow {
 	s_ptr<Texture> OGLTextureManager::create(const TEXTURE_DESC& desc)
 	{
 		OGLTexture* oglTexture = new OGLTexture(desc);
+		oglTexture->type = desc.type;
+		oglTexture->name = desc.name;
+		oglTexture->depth = desc.depth;
+		oglTexture->width = desc.width;
+		oglTexture->height = desc.height;
+		oglTexture->format = desc.format;
+		oglTexture->numMips = desc.numMips;
+		oglTexture->samples = desc.samples;
 
 		GLuint numFaces = desc.format == TextureType::TT_TEXTURE_CUBE ? 6 : desc.arraySlices;
 		oglTexture->textureTarget = OGLHelper::getTextureTarget(desc.type, desc.samples, numFaces);
@@ -22,24 +30,17 @@ namespace Hollow {
 		{
 		case TextureType::TT_TEXTURE1D:
 		{
-			if (numFaces <= 1)
-			{
+			if (numFaces <= 1) {
 				glTextureStorage1D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width);
-			}
-			else
-			{
+			} else {
 				glTextureStorage2D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, numFaces);
 			}
 		}
 		break;
-		case TextureType::TT_TEXTURE2D:
-		{
-			if (numFaces <= 1)
-			{
+		case TextureType::TT_TEXTURE2D: {
+			if (numFaces <= 1) {
 				glTextureStorage2D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height);
-			}
-			else
-			{
+			} else {
 				glTextureStorage3D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height, numFaces);
 			}
 		}
@@ -47,14 +48,10 @@ namespace Hollow {
 		case TextureType::TT_TEXTURE3D:
 			glTextureStorage3D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height, desc.depth);
 			break;
-		case TextureType::TT_TEXTURE_CUBE:
-		{
-			if (numFaces <= 6)
-			{
+		case TextureType::TT_TEXTURE_CUBE: {
+			if (numFaces <= 6) {
 				glTextureStorage2D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height);
-			}
-			else
-			{
+			} else {
 				glTextureStorage3D(oglTexture->textureId, numMips, oglTexture->texFormat, desc.width, desc.height, numFaces);
 			}
 		}

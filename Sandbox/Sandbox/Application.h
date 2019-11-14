@@ -30,6 +30,7 @@
 #include "FileSystemNotifier.h"
 #include "PhysicsDebugDraw.h"
 #include "Systems/CameraSystem.h"
+#include "TextureManager.h"
 
 class Appliaction
 {
@@ -59,6 +60,7 @@ public:
 
 		ProjectSettings::startUp<ProjectSettings>();
 		PhysicsSystem::startUp();
+		TextureManager::startUp();
 
 		camera.setProjectionValues(80.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100000.0f);
 
@@ -98,6 +100,7 @@ public:
 	{
 		Hollow::s_ptr<Hollow::Import::Model> planeMesh = Hollow::MeshManager::instance()
 			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
+		Hollow::s_ptr<Hollow::Texture> testTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/test.gif", 0);
 		/* Physics test */
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
@@ -114,21 +117,9 @@ public:
 			const Hollow::s_ptr<RenderableObject>& object = renderable->renderables[0];
 			object->material = 0;
 			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
-			
-			{
-				Hollow::s_ptr<Hollow::Import::Texture> diffuse = Hollow::FreeImgImporter::instance()
-					->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/test.gif");
+			material->diffuseTexture = testTexture;
+			material->materialData.hasDiffuseTexture = true;
 
-				Hollow::TEXTURE_DESC desc;
-				desc.width = diffuse->width;
-				desc.height = diffuse->height;
-				desc.format = diffuse->bpp == 32 ? Hollow::TextureFormat::TF_BGRA8 : Hollow::TextureFormat::TF_BGR8;
-				desc.type = Hollow::TextureType::TT_TEXTURE2D;
-
-				material->diffuseTexture = Hollow::TextureManager::instance()->create(desc);
-				material->diffuseTexture->update(diffuse->data.get());
-				material->materialData.hasDiffuseTexture = true;
-			}
 			renderable->materials[0] = material;
 
 			// Physics
@@ -151,22 +142,11 @@ public:
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
 			const Hollow::s_ptr<RenderableObject>& object = renderable->renderables[0];
 			object->material = 0;
+
 			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
+			material->diffuseTexture = testTexture;
+			material->materialData.hasDiffuseTexture = true;
 
-			{
-				Hollow::s_ptr<Hollow::Import::Texture> diffuse = Hollow::FreeImgImporter::instance()
-					->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/test.gif");
-
-				Hollow::TEXTURE_DESC desc;
-				desc.width = diffuse->width;
-				desc.height = diffuse->height;
-				desc.format = diffuse->bpp == 32 ? Hollow::TextureFormat::TF_BGRA8 : Hollow::TextureFormat::TF_BGR8;
-				desc.type = Hollow::TextureType::TT_TEXTURE2D;
-
-				material->diffuseTexture = Hollow::TextureManager::instance()->create(desc);
-				material->diffuseTexture->update(diffuse->data.get());
-				material->materialData.hasDiffuseTexture = true;
-			}
 			renderable->materials[0] = material;
 
 			// Physics
