@@ -11,6 +11,7 @@
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/PhysicsComponent.h"
+#include "Sandbox/Components/ParticleComponent.h"
 
 namespace GUI {
 	class HierarchyTab
@@ -42,6 +43,9 @@ namespace GUI {
 		int selectedShapeType;
 		int tempShapeType = 0;
 		const char* shapeTypesSelectables[5] = { "Box", "Sphere", "Plane", "Capsule", "AABB (not working)" };
+
+		Hollow::Vector3 particlePosition;
+		Hollow::Vector3 particleVelocity;
 	public:
 		HierarchyTab() = default;
 
@@ -354,6 +358,28 @@ namespace GUI {
 						if (ImGui::TreeNode(animation->rootJoint->name.c_str())) {
 							drawAnimationHierarchy(animation->rootJoint);
 							ImGui::TreePop();
+						}
+					}
+				}
+				if (selectedGameObject->hasComponent<ParticleComponent>()) {
+					if (ImGui::CollapsingHeader("Particle component")) {
+						ParticleComponent* particle = selectedGameObject->getComponent<ParticleComponent>();
+
+						if (ImGui::CollapsingHeader("Patricles")) {
+							for (auto& it : particle->particles) {
+								ImGui::Text(("Position: " + std::to_string(it->position.x) + " " + std::to_string(it->position.y) + " " + std::to_string(it->position.z)).c_str());
+								ImGui::Text(("Velocity: " + std::to_string(it->velocity.x) + " " + std::to_string(it->velocity.y) + " " + std::to_string(it->velocity.z)).c_str());
+								ImGui::Text("-----------------------------------------------------------------");
+							}
+						}
+
+						ImGui::DragFloat("Particle lifetime", &particle->lifetime);
+						ImGui::DragFloat("Particle max particles", &particle->maxParticles);
+						ImGui::DragFloat3("Particle position", (float*)&particlePosition);
+						ImGui::DragFloat3("Particle velocity", (float*)&particleVelocity);
+
+						if (ImGui::Button("Emit")) {
+							particle->emit(particlePosition, particleVelocity);
 						}
 					}
 				}

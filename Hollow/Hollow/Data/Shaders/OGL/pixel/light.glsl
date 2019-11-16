@@ -17,7 +17,7 @@ struct Light
 	vec3 position;		// 12
 	float constant;		// 16
 	vec3 direction;		// 28
-	float linearAttenuation;		// 32
+	float linearAttenuation; // 32
 	vec3 color;			// 44
 	float quadratic;	// 48
 	float cutoff;		// 52
@@ -96,12 +96,12 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos)
 {
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	vec3 lightDir = normalize(fragPos - light.position);
+	vec3 lightDir = normalize(light.position - fragPos);
 	float distance = length(fragPos - light.position);
 
 	if (distance < light.distance) {
 		float attenuation = 1.0 / (light.constant + light.linearAttenuation * distance + light.quadratic * (distance * distance));
-		color += vec4(light.color, 1.0f) * attenuation;
+		color += clamp(dot(normal, lightDir), 0.0, 1.0) * vec4(light.color, 1.0f) * attenuation;
 	}
 
 	return color;
@@ -113,18 +113,21 @@ void main()
 
 	vec3 position = texture(tex2, texCoords).rgb;
 	vec3 normal = texture(tex1, texCoords).rgb;
+	
 	vec4 diffuse = texture(tex0, texCoords);
 
 	vec4 shadowPos = vec4(position, 1.0f) * ShadowWVP;
 	//SampleShadowMapLinear(tex3, shadowPos);
 
 	for (int i = 0; i < numLights; i++) {
-		if (lights[i].type == 2) {
+		if (lights[i].type == lightTypeAmbient) {
+			diffuse += vec4(lights[i].color, 0.0f);
+		} else if (lights[i].type == lightTypeDiffuse) {
+			diffuse += clamp(dot(normal, normalize(lights[i].direction)) * vec4(lights[i].color, 1.0f), 0.0f, 1.0f);
+		} else if (lights[i].type == lightTypePoint) {
 			diffuse += CalcPointLight(lights[i], normal, position);
 		}
 	}
 
-	//diffuse += clamp(dot(normal, vec3(1.0f, 0.0f, 0.0f)) * vec4(0.0f, 0.5f, 0.0f, 1.0f), 0.0f, 1.0f);
-
-	FragColor = diffuse;
+	FragColor = vec4(normal, 1.0f);
 }

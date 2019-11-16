@@ -27,6 +27,7 @@
 #include "Sandbox/Profiler.h"
 #include "Sandbox/ShaderManager.h"
 #include "Sandbox/Systems/PhysicsSystem.h"
+#include "Sandbox/Components/ParticleComponent.h"
 #include <array>
 
 struct WVP
@@ -143,7 +144,6 @@ private:
 
 	Hollow::s_ptr<Hollow::RasterizerState> cullBack;
 	Hollow::s_ptr<Hollow::RasterizerState> cullFront;
-	Hollow::s_ptr<Hollow::RasterizerState> cullBackWF;
 	Hollow::s_ptr<Hollow::RasterizerState> cullNone;
 
 	Hollow::s_ptr<Hollow::SamplerState> sampler;
@@ -151,7 +151,6 @@ private:
 	Hollow::Material* defaultMaterial;
 
 	std::array<Hollow::Matrix4, 50> instanceGpuData;
-
 public:
 	RenderSystem(Hollow::RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -341,7 +340,7 @@ public:
 	void gBufferPass()
 	{
 		renderer->setDepthStencilState(less);
-		renderer->setRasterizerState(cullBackWF);
+		renderer->setRasterizerState(cullNone);
 		renderer->setRenderTarget(gBuffer);
 		renderer->setShaderPipeline(gBufferPipeline);
 
@@ -371,6 +370,102 @@ public:
 			renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
 		}
 
+		drawModels();
+		drawLights();
+		drawParticles();
+
+		//// Instanced drawing test
+		//renderer->setShaderPipeline(instanced);
+		//{
+		//	GameObject* entity = (GameObject*)Hollow::EntityManager::instance()->get(3);
+		//	RenderableComponent* renderable = entity->getComponent<RenderableComponent>();
+		//	TransformComponent* transform = entity->getComponent<TransformComponent>();
+
+		//	if (renderable->skinned && entity->hasComponent<AnimationComponent>()) {
+		//		AnimationComponent* animation = entity->getComponent<AnimationComponent>();
+		//		perModelData.hasAnimation = !animation->stoped;
+		//		if (!animation->stoped && animation->nodeInfo.size() > 0) {
+		//			boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
+		//			renderer->setGpuBuffer(boneInfo);
+		//		}
+		//	} else {
+		//		perModelData.hasAnimation = false;
+		//	}
+
+		//	Hollow::Matrix4 trs = Hollow::Matrix4::translation(transform->position)
+		//		* Hollow::Matrix4::rotation(Hollow::Quaternion(transform->rotation))
+		//		* Hollow::Matrix4::scaling(transform->scale);
+
+		//	perModelData.transform = trs;
+		//	perModel->update(&perModelData);
+		//	renderer->setGpuBuffer(perModel);
+
+		//	for (auto& object : renderable->renderables) {
+		//		if (renderable->materials.find(object->material) != renderable->materials.end()) {
+		//			const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
+		//			if (material->diffuseTexture != nullptr) {
+		//				renderer->setTexture(0, material->diffuseTexture);
+		//			} else {
+		//				renderer->unsetTexture(0);
+		//			}
+		//			materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
+		//			renderer->setGpuBuffer(materialConstantBuffer);
+		//		} else {
+		//			materialConstantBuffer->update(&defaultMaterial->materialData);
+		//			renderer->setGpuBuffer(materialConstantBuffer);
+		//		}
+
+		//		renderer->setVertexBuffer(object->vBuffer);
+		//		renderer->setIndexBuffer(object->iBuffer);
+		//		renderer->drawIndexedInstanced(object->iBuffer->mHardwareBuffer->getSize(), 50);
+		//	}
+		//}
+
+		renderer->setRasterizerState(cullBack);
+	}
+
+	void drawParticles()
+	{
+		perMeshData.worldTransform = Hollow::Matrix4::identity();
+		perMesh->update(&perMeshData);
+
+		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
+			if (entity.hasComponent<ParticleComponent>()) {
+				ParticleComponent* particle = entity.getComponent<ParticleComponent>();
+
+				for (auto& it : particle->particles) {
+					perModelData.transform = Hollow::Matrix4::translation(it->position);
+					perModel->update(&perModelData);
+					renderer->setGpuBuffer(perModel);
+
+					renderer->setVertexBuffer(lightVertexBuffer);
+					renderer->setIndexBuffer(lightIndexBuffer);
+					renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
+				}
+			}
+		}
+	}
+
+	void drawLights()
+	{
+		for (auto& entity : Hollow::EntityManager::instance()->container<Light>()) {
+			if (entity.hasComponent<LightComponent>()) {
+				LightComponent* lightComponent = entity.getComponent<LightComponent>();
+
+				perModelData.transform = Hollow::Matrix4::translation(lightComponent->lightData.position);
+				perModelData.hasAnimation = false;
+				perModel->update(&perModelData);
+				renderer->setGpuBuffer(perModel);
+
+				renderer->setVertexBuffer(lightVertexBuffer);
+				renderer->setIndexBuffer(lightIndexBuffer);
+				renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
+			}
+		}
+	}
+
+	void drawModels()
+	{
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<RenderableComponent>() && entity.hasComponent<TransformComponent>()) {
 				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
@@ -383,11 +478,12 @@ public:
 						boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
 						renderer->setGpuBuffer(boneInfo);
 					}
-				} else {
+				}
+				else {
 					perModelData.hasAnimation = false;
 				}
 
-				Hollow::Matrix4 trs = Hollow::Matrix4::translation(transform->position) 
+				Hollow::Matrix4 trs = Hollow::Matrix4::translation(transform->position)
 					* Hollow::Matrix4::rotation(Hollow::Quaternion(transform->rotation))
 					* Hollow::Matrix4::scaling(transform->scale);
 
@@ -401,12 +497,14 @@ public:
 							const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
 							if (material->diffuseTexture != nullptr) {
 								renderer->setTexture(0, material->diffuseTexture);
-							} else {
+							}
+							else {
 								renderer->unsetTexture(0);
 							}
 							materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
 							renderer->setGpuBuffer(materialConstantBuffer);
-						} else {
+						}
+						else {
 							materialConstantBuffer->update(&defaultMaterial->materialData);
 							renderer->setGpuBuffer(materialConstantBuffer);
 						}
@@ -416,95 +514,12 @@ public:
 						renderer->setIndexBuffer(object->iBuffer);
 						renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 					}
-				} else if (renderable->rootNode != nullptr) {
+				}
+				else if (renderable->rootNode != nullptr) {
 					drawNodeHierarchy(renderable->rootNode.get(), renderable);
 				}
 			}
 		}
-
-		for (auto& entity : Hollow::EntityManager::instance()->container<Light>()) {
-			if (entity.hasComponent<LightComponent>()) {
-				LightComponent* lightComponent = entity.getComponent<LightComponent>();
-
-				perModelData.transform = Hollow::Matrix4::transpose(Hollow::Matrix4::translation(lightComponent->lightData.position));
-				perModel->update(&perModelData);
-				renderer->setGpuBuffer(perModel);
-
-				renderer->setVertexBuffer(lightVertexBuffer);
-				renderer->setIndexBuffer(lightIndexBuffer);
-				renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
-			}
-		}
-
-		// Instanced drawing test
-		renderer->setShaderPipeline(instanced);
-		{
-			GameObject* entity = (GameObject*)Hollow::EntityManager::instance()->get(3);
-			RenderableComponent* renderable = entity->getComponent<RenderableComponent>();
-			TransformComponent* transform = entity->getComponent<TransformComponent>();
-
-			if (renderable->skinned && entity->hasComponent<AnimationComponent>()) {
-				AnimationComponent* animation = entity->getComponent<AnimationComponent>();
-				perModelData.hasAnimation = !animation->stoped;
-				if (!animation->stoped && animation->nodeInfo.size() > 0) {
-					boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
-					renderer->setGpuBuffer(boneInfo);
-				}
-			} else {
-				perModelData.hasAnimation = false;
-			}
-
-			Hollow::Matrix4 trs = Hollow::Matrix4::translation(transform->position)
-				* Hollow::Matrix4::rotation(Hollow::Quaternion(transform->rotation))
-				* Hollow::Matrix4::scaling(transform->scale);
-
-			perModelData.transform = trs;
-			perModel->update(&perModelData);
-			renderer->setGpuBuffer(perModel);
-
-			for (auto& object : renderable->renderables) {
-				if (renderable->materials.find(object->material) != renderable->materials.end()) {
-					const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
-					if (material->diffuseTexture != nullptr) {
-						renderer->setTexture(0, material->diffuseTexture);
-					} else {
-						renderer->unsetTexture(0);
-					}
-					materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
-					renderer->setGpuBuffer(materialConstantBuffer);
-				} else {
-					materialConstantBuffer->update(&defaultMaterial->materialData);
-					renderer->setGpuBuffer(materialConstantBuffer);
-				}
-
-				renderer->setVertexBuffer(object->vBuffer);
-				renderer->setIndexBuffer(object->iBuffer);
-				renderer->drawIndexedInstanced(object->iBuffer->mHardwareBuffer->getSize(), 10);
-			}
-		}
-
-		renderer->setInputLayout(terrainLayout);
-		renderer->setShaderPipeline(terrainPipeline);
-		for (auto& entity : Hollow::EntityManager::instance()->container<Terrain>()) {
-			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<TerrainData>()) {
-				TerrainData* data = entity.getComponent<TerrainData>();
-				TransformComponent* transform = entity.getComponent<TransformComponent>();
-
-				if (data->vBuffer != nullptr) {
-					perModelData.transform = Hollow::Matrix4::translation(transform->position)
-						* Hollow::Matrix4::rotation(Hollow::Quaternion(transform->rotation))
-						* Hollow::Matrix4::scaling(transform->scale);
-
-					perModel->update(&perModelData);
-					renderer->setGpuBuffer(perModel);
-					renderer->setTexture(0, data->tex);
-					renderer->setVertexBuffer(data->vBuffer);
-					renderer->draw(data->vBuffer->mHardwareBuffer->getSize());
-				}
-			}
-		}
-		renderer->setInputLayout(defaultLayout);
-		renderer->setRasterizerState(cullBack);
 	}
 
 	void drawNodeHierarchy(RenderableComponent::Node* node, RenderableComponent* renderable)
@@ -518,6 +533,11 @@ public:
 					renderer->setTexture(0, material->diffuseTexture);
 				} else {
 					renderer->unsetTexture(0);
+				}
+				if (material->normalTexture != nullptr) {
+					renderer->setTexture(1, material->normalTexture);
+				} else {
+					renderer->unsetTexture(1);
 				}
 				materialConstantBuffer->update(&renderable->materials[renderableObject->material]->materialData);
 				renderer->setGpuBuffer(materialConstantBuffer);
@@ -814,12 +834,6 @@ public:
 			Hollow::RASTERIZER_STATE_DESC desc;
 			desc.cullMode = Hollow::CullMode::CLM_FRONT;
 			cullFront = Hollow::RasterizerState::create(desc);
-		}
-		{
-			Hollow::RASTERIZER_STATE_DESC desc;
-			desc.cullMode = Hollow::CullMode::CLM_NONE;
-			desc.fillMode = Hollow::FillMode::FM_SOLID;
-			cullBackWF = Hollow::RasterizerState::create(desc);
 		}
 		{
 			Hollow::RASTERIZER_STATE_DESC desc;

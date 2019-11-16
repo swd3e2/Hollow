@@ -26,19 +26,25 @@ layout(std140, binding = 4) uniform MaterialData
 	float emmisiveFactor;
 	float pad;
 	bool hasDiffuseTexture;
-	bool hasNormalMap;
+	bool hasNormalTexture;
 	bool hasSpecularMap;
 };
 
-uniform sampler2D tex0; //0
+uniform sampler2D diffuseTexture; //0
+uniform sampler2D normalTexture;  //1
 
 void main()
 {
 	vec4 color;
 	if (hasDiffuseTexture) {
-		color = texture(tex0, fs_in.texCoord);
+		color = texture(diffuseTexture, fs_in.texCoord);
 	} else {
 		color = base_color;
+	}
+	if (hasNormalTexture) {
+		normal = texture(normalTexture, fs_in.texCoord);
+	} else {
+		normal = vec4(fs_in.normal, 1.0f);
 	}
 
 	if (color.a < 0.25) {
@@ -46,6 +52,5 @@ void main()
 	}
 
 	diffuse = color;
-	normal = vec4(fs_in.normal, 1.0f);
 	position = fs_in.position;
 }

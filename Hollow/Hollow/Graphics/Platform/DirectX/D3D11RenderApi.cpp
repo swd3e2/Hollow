@@ -136,11 +136,11 @@ namespace Hollow {
 		if (texture != nullptr && d3dTexture->m_TextureShaderResource != nullptr) {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
-			context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
+			//context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
 		} else {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
-			context->getDeviceContext()->CSGetUnorderedAccessViews(slot, uavs, pUAV);
+			//context->getDeviceContext()->CSGetUnorderedAccessViews(slot, uavs, pUAV);
 		}
 	}
 
@@ -324,8 +324,8 @@ namespace Hollow {
 		s_ptr<D3D11GPUBuffer> gpuBuffer = std::static_pointer_cast<D3D11GPUBuffer>(buffer);
 		context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 		context->getDeviceContext()->PSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		//context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		//context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 	}
 
 	void D3D11RenderApi::setViewport(int w0, int y0, int w, int y)

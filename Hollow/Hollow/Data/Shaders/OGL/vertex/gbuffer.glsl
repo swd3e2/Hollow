@@ -36,6 +36,11 @@ layout(std140, binding = 2) uniform PerObject
 	bool hasAnimation;
 };
 
+layout(std140, binding = 3) uniform WorldTransformations
+{
+	mat4 worldTransform;
+};
+
 layout(std140, binding = 6) uniform BoneTransformations
 {
 	mat4 boneInfo[200];
@@ -54,6 +59,8 @@ void main()
 
 		vs_out.position = vs_out.position * BoneTransform;
 		vs_out.normal = vs_out.normal * mat3(BoneTransform);
+	} else {
+		vs_out.position = vs_out.position * worldTransform;
 	}
 
 	vs_out.normal = normalize(vs_out.normal * mat3(transform));

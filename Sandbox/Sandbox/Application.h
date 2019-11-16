@@ -31,6 +31,7 @@
 #include "PhysicsDebugDraw.h"
 #include "Systems/CameraSystem.h"
 #include "TextureManager.h"
+#include "Systems/ParticleSystem.h"
 
 class Appliaction
 {
@@ -47,7 +48,8 @@ public:
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
 	CameraSystem* cameraSystem;
-	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	ParticleSystem* particleSystem;
+	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
 	const int width = 1920;
 	const int height = 1080;
 public:
@@ -73,12 +75,14 @@ public:
 		playerSystem = new PlayerSystem();
 		cameraSystem = new CameraSystem();
 		cameraSystem->setCamera(&camera);
+		particleSystem = new ParticleSystem();
 
 		Hollow::SystemManager::instance()->addSystem(renderPass);
 		Hollow::SystemManager::instance()->addSystem(animationSystem);
 		Hollow::SystemManager::instance()->addSystem(PhysicsSystem::instance());
 		Hollow::SystemManager::instance()->addSystem(playerSystem);
 		Hollow::SystemManager::instance()->addSystem(cameraSystem);
+		Hollow::SystemManager::instance()->addSystem(particleSystem);
 
 		gui->rendererTab.renderSystem = renderPass;
 
@@ -167,15 +171,16 @@ public:
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf");
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-			AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
+			//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
 			// Physics
 			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(), 1.0f);
 			physics->applyRotation = false;
-			physics->addAABBShape(mesh);
-			physics->shape->setLocalScaling(btVector3(0.05f, 0.05f, 0.05f));
+			//physics->addAABBShape(mesh);
+			physics->addBoxShape(Hollow::Vector3(0.6f, 1.3f, 1.5f));
+			//physics->shape->setLocalScaling(btVector3(0.05f, 0.05f, 0.05f));
 			physics->init();
 
 			physics->body->setContactProcessingThreshold(0.01);
@@ -185,7 +190,7 @@ public:
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(0.05f, 0.05f, 0.05f);
+			transform->scale = Hollow::Vector3(0.005f, 0.005f, 0.005f);
 
 			entity->addComponent<PlayerComponent>();
 		}
@@ -231,6 +236,12 @@ public:
 			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
+		}
+		{
+			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+			ParticleComponent* particleComponent = entity->addComponent<ParticleComponent>();
+			particleComponent->lifetime = 10.0f;
+			particleComponent->maxParticles = 10;
 		}
 	}
 

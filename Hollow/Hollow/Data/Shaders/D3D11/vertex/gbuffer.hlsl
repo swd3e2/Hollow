@@ -57,9 +57,7 @@ PixelShaderOutput main(VertexShaderInput input)
 
         output.position = mul(output.position, BoneTransform);
         output.normal = mul(output.normal, BoneTransform);
-    }
-    else
-    {
+    } else {
         output.position = mul(output.position, worldTransform);
     }
 

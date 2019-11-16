@@ -25,6 +25,7 @@
     <ClInclude Include="Sandbox\Components\AnimationComponent.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
+    <ClInclude Include="Sandbox\Components\ParticleComponent.h" />
     <ClInclude Include="Sandbox\Components\PhysicsComponent.h" />
     <ClInclude Include="Sandbox\Components\PlayerComponent.h" />
     <ClInclude Include="Sandbox\Components\SelectComponent.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Sandbox\Events.h" />
     <ClInclude Include="Sandbox\Events\FileChangeEvent.h" />
     <ClInclude Include="Sandbox\FileSystemNotifier.h" />
+    <ClInclude Include="Sandbox\Graphics\ParticleEmitter.h" />
     <ClInclude Include="Sandbox\Graphics\Shadow.h" />
     <ClInclude Include="Sandbox\Graphics\SkyMap.h" />
     <ClInclude Include="Sandbox\GUI\GUISystem.h" />
@@ -50,6 +52,7 @@
     <ClInclude Include="Sandbox\Systems\AnimationSystem.h" />
     <ClInclude Include="Sandbox\Systems\CameraSystem.h" />
     <ClInclude Include="Sandbox\Systems\CollisionSystem.h" />
+    <ClInclude Include="Sandbox\Systems\ParticleSystem.h" />
     <ClInclude Include="Sandbox\Systems\PhysicsSystem.h" />
     <ClInclude Include="Sandbox\Systems\PlayerSystem.h" />
     <ClInclude Include="Sandbox\Systems\RenderSystem.h" />

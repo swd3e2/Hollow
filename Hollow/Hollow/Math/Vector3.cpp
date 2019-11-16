@@ -51,13 +51,9 @@ namespace Hollow {
 		return Vector3(x / divisor, y / divisor, z / divisor);
 	}
 
-	Vector3& Vector3::operator*(const float val)
+	Vector3 Vector3::operator*(const float val)
 	{
-		x *= val;
-		y *= val;
-		z *= val;
-
-		return *this;
+		return Vector3(x * val, y * val, z * val);
 	}
 
 	Vector3 Vector3::cross(const Vector3& left, const Vector3& right)

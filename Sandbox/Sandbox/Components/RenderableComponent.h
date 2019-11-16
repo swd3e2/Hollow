@@ -94,6 +94,12 @@ public:
 					material->materialData.hasDiffuseTexture = true;
 				}
 			}
+			if (it.second.normalTexture.size()) {
+				material->normalTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.second.normalTexture, 5);
+				if (material->normalTexture != nullptr) {
+					material->materialData.hasNormalTexture = true;
+				}
+			}
 			materials[it.first] = material;
 		}
 	}

@@ -23,7 +23,7 @@ public:
 			if (entity.hasComponent<PlayerComponent>() && entity.hasComponent<PhysicsComponent>() && entity.hasComponent<TransformComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
-				AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+				
 
 				updated = false;
 
@@ -74,10 +74,14 @@ public:
 				physics->body->setLinearVelocity(moveVector);
 				physics->body->activate(true);
 
-				if (!updated) {
-					//animation->pause();
-				} else {
-					animation->play();
+				if (entity.hasComponent<AnimationComponent>()) {
+					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+					if (!updated) {
+						//animation->pause();
+					}
+					else {
+						animation->play();
+					}
 				}
 			}
 		}
