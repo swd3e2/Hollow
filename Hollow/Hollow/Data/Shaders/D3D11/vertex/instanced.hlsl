@@ -73,7 +73,6 @@ PixelShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID)
 
     output.position = mul(output.position, transform + instanceMatrix[instanceID]);
     output.hPos = output.position;
-    //output.hPos = mul(output.position, worldTransform);
 
     output.position = mul(output.hPos, WVP);
 

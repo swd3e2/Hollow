@@ -21,10 +21,10 @@ namespace Hollow {
 			if (FAILED(createShader(desc, shaderBlob, &shader->m_Shader))) {
 				HW_ERROR("Failed to create shader");
 			}
-			shaderBlob->Release();
 		} else {
 			HW_ERROR("Failed to compile shader");
 		}
+		SAFE_RELEASE(shaderBlob);
 
 		return s_ptr<Shader>(shader);
 	}
@@ -42,10 +42,10 @@ namespace Hollow {
 			if (FAILED(createShader(desc, shaderBlob, &std::static_pointer_cast<D3D11Shader>(shader)->m_Shader))) {
 				HW_ERROR("Failed to create shader");
 			}
-			shaderBlob->Release();
 		} else {
 			HW_ERROR("Failed to compile shader");
 		}
+		SAFE_RELEASE(shaderBlob);
 	}
 
 	s_ptr<ShaderPipeline> D3D11ShaderManager::create(const SHADER_PIPELINE_DESC& desc)
@@ -79,7 +79,7 @@ namespace Hollow {
 		};
 
 		HRESULT hr = D3DCompile(shaderCode.c_str(), shaderCode.size(), NULL, defines, NULL,
-			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+			desc.entryPoint.c_str(), getTarget(desc.type), D3DCOMPILE_ENABLE_STRICTNESS, // | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 			0, &shaderBlob, &errorBlob);
 
 		if (FAILED(hr)) {
@@ -100,25 +100,29 @@ namespace Hollow {
 
 	HRESULT D3D11ShaderManager::createShader(const SHADER_DESC& desc, ID3DBlob* blob, ID3D11DeviceChild** shaderPtr)
 	{
+		if (*shaderPtr != nullptr) {
+			(*shaderPtr)->Release();
+		}
+
 		switch (desc.type)
 		{
 		case ShaderType::ST_VERTEX: {
-			return m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11VertexShader**)(shaderPtr));
+			return m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11VertexShader**)shaderPtr);
 		}
 		case ShaderType::ST_PIXEL: {
-			return m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11PixelShader**)(shaderPtr));
+			return m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11PixelShader**)shaderPtr);
 		}
 		case ShaderType::ST_GEOMERTY: {
-			return m_Device->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11GeometryShader**)(shaderPtr));
+			return m_Device->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11GeometryShader**)shaderPtr);
 		}
 		case ShaderType::ST_HULL: {
-			return m_Device->CreateHullShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11HullShader**)(shaderPtr));
+			return m_Device->CreateHullShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11HullShader**)shaderPtr);
 		}
 		case ShaderType::ST_DOMAIN: {
-			return m_Device->CreateDomainShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11DomainShader**)(shaderPtr));
+			return m_Device->CreateDomainShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11DomainShader**)shaderPtr);
 		}
 		case ShaderType::ST_COMPUTE: {
-			return m_Device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11ComputeShader**)(shaderPtr));
+			return m_Device->CreateComputeShader(blob->GetBufferPointer(), blob->GetBufferSize(), NULL, (ID3D11ComputeShader**)shaderPtr);
 		}
 		}
 	}

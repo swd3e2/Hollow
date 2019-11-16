@@ -37,6 +37,7 @@ namespace Hollow {
 		FillMode fillMode;
 		CullMode cullMode;
 		s_ptr<OGLIndexBuffer> mCurrentIndexBuffer;
+		GLuint mOglCurrentTopology;
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();

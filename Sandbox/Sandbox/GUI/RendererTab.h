@@ -28,7 +28,7 @@ namespace GUI {
 
 			ImGui::Text(("Physical memory usage (Kb): " + std::to_string(Profiler::getMemoryUsage() / (1024))).c_str());
 
-			ImGui::Text("Main camera speed");
+			ImGui::Checkbox("Debug physics draw", &renderSystem->enableDebugPhysicsDraw);
 
 			ImGui::Text("GBuffer pass");
 			ImGui::SameLine();

@@ -61,6 +61,7 @@ public:
 		ProjectSettings::startUp<ProjectSettings>();
 		PhysicsSystem::startUp();
 		TextureManager::startUp();
+		ShaderManager::startUp();
 
 		camera.setProjectionValues(80.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100000.0f);
 

@@ -6,8 +6,9 @@
 #include <Hollow/Events/EventSystem.h>
 #include "Sandbox/Events/FileChangeEvent.h"
 #include "Hollow/Common/Log.h"
+#include "Hollow/Core/CModule.h"
 
-class ShaderManager : public Hollow::IEventListener
+class ShaderManager : public Hollow::CModule<ShaderManager>, public Hollow::IEventListener
 {
 public:
 	std::string baseShaderFolder;
