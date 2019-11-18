@@ -106,6 +106,30 @@ public:
 		Hollow::s_ptr<Hollow::Import::Model> planeMesh = Hollow::MeshManager::instance()
 			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
 		Hollow::s_ptr<Hollow::Texture> testTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/test.gif", 0);
+		Hollow::s_ptr<Hollow::Texture> brickwall = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall.jpg", 0);
+		Hollow::s_ptr<Hollow::Texture> brickwallNormal = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall_normal_obj.png", 0);
+
+		{
+			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+
+			TransformComponent* transform = entity->addComponent<TransformComponent>();
+			transform->scale = Hollow::Vector3(10.0f, 10.0f, 10.0f);
+			transform->position = Hollow::Vector3(0.0f, 25.0f, 0.0f);
+
+			Hollow::s_ptr<Hollow::Import::Model> cube = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/cube.gltf");
+			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(cube);
+
+			const Hollow::s_ptr<RenderableObject>& object = renderable->renderables[0];
+			object->material = 0;
+			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
+			material->diffuseTexture = brickwall;
+			material->materialData.hasDiffuseTexture = true;
+			material->normalTexture = brickwallNormal;
+			material->materialData.hasNormalTexture = true;
+
+			renderable->materials[0] = material;
+		}
 		/* Physics test */
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
@@ -190,7 +214,7 @@ public:
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(0.005f, 0.005f, 0.005f);
+			transform->scale = Hollow::Vector3(0.05f, 0.05f, 0.05f);
 
 			entity->addComponent<PlayerComponent>();
 		}

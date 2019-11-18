@@ -200,6 +200,7 @@
     <ClCompile Include="Hollow\Import\gltf\tinygltf.cpp" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
+    <ClCompile Include="Hollow\Math\Vector2.cpp" />
     <ClCompile Include="Hollow\Math\Vector3.cpp" />
     <ClCompile Include="Hollow\Math\Vector4.cpp" />
     <ClCompile Include="Hollow\Graphics\Platform\DirectX\D3D11ShaderManager.cpp" />

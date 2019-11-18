@@ -27,6 +27,7 @@ public:
 		std::string shaderFilePath = baseShaderFolder + changeEvent->filename;
 		if (shaders.find(shaderFilePath.c_str()) != shaders.end()) {
 			Hollow::ShaderManager::instance()->reload(shaders[shaderFilePath.c_str()]);
+			HW_INFO("Shader {} recompiled", shaderFilePath.c_str());
 		}
 	}
 

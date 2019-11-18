@@ -92,16 +92,38 @@ float SampleShadowMapLinear(sampler2D shadowMap, vec4 shadowMapCoords)
 	}*/
 }
 
+vec4 CalcDiffuseLight(Light light, vec3 normal, vec3 fragPos)
+{
+	vec4 result = clamp(dot(normal, normalize(light.direction)) * vec4(light.color, 1.0f), 0.0f, 1.0f);
+
+	vec3 toCameraVec = reflect(light.direction, normal);
+	vec3 cameraToPosVec = -normalize(cameraPosition - fragPos);
+	float dotRes = clamp(dot(toCameraVec, cameraToPosVec), 0.0, 1.0);
+
+	if (dotRes > 0.99f) {
+		result += vec4(1.0f, 1.0f, 1.0f, 0.0f);
+	}
+
+	return result;
+}
+
 vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos)
 {
 	vec4 color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	vec3 lightDir = normalize(light.position - fragPos);
-	float distance = length(fragPos - light.position);
+	float distance = length(light.position - fragPos);
+	vec3 toCameraVec = reflect(lightDir, normal);
+	vec3 cameraToPosVec = normalize(fragPos - cameraPosition);
 
 	if (distance < light.distance) {
 		float attenuation = 1.0 / (light.constant + light.linearAttenuation * distance + light.quadratic * (distance * distance));
-		color += clamp(dot(normal, lightDir), 0.0, 1.0) * vec4(light.color, 1.0f) * attenuation;
+		color += clamp(dot(normal, lightDir), 0.0, 1.0) * vec4(light.color, 0.0f) * attenuation;// *2.0f;
+		float result = clamp(dot(toCameraVec, cameraToPosVec), 0.0, 1.0);
+
+		if (result > 0.99f) {
+			color += vec4(1.0f, 1.0f, 1.0f, 0.0f) * pow(result, 1);
+		}
 	}
 
 	return color;
@@ -113,21 +135,23 @@ void main()
 
 	vec3 position = texture(tex2, texCoords).rgb;
 	vec3 normal = texture(tex1, texCoords).rgb;
+	normal = normalize(normal * 2.0f - 1.0f);
 	
 	vec4 diffuse = texture(tex0, texCoords);
 
-	vec4 shadowPos = vec4(position, 1.0f) * ShadowWVP;
+	//vec4 shadowPos = vec4(position, 1.0f) * ShadowWVP;
 	//SampleShadowMapLinear(tex3, shadowPos);
 
 	for (int i = 0; i < numLights; i++) {
 		if (lights[i].type == lightTypeAmbient) {
 			diffuse += vec4(lights[i].color, 0.0f);
 		} else if (lights[i].type == lightTypeDiffuse) {
-			diffuse += clamp(dot(normal, normalize(lights[i].direction)) * vec4(lights[i].color, 1.0f), 0.0f, 1.0f);
+			diffuse += CalcDiffuseLight(lights[i], normal, position);
 		} else if (lights[i].type == lightTypePoint) {
 			diffuse += CalcPointLight(lights[i], normal, position);
 		}
 	}
 
-	FragColor = vec4(normal, 1.0f);
+	//FragColor = vec4(normal, 1.0f);
+	FragColor = diffuse;
 }

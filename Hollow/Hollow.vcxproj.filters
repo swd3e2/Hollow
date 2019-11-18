@@ -605,5 +605,8 @@
     <ClCompile Include="Hollow\Graphics\SamplerState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hollow\Math\Vector2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

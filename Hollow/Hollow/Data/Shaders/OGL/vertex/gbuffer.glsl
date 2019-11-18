@@ -20,6 +20,8 @@ out VS_OUT
 	vec4 position;
 	vec3 normal;
 	vec2 texCoord;
+	vec3 tangent;
+	vec3 bitangent;
 } vs_out;
 
 layout(std140, binding = 0) uniform Matrices
@@ -63,9 +65,12 @@ void main()
 		vs_out.position = vs_out.position * worldTransform;
 	}
 
-	vs_out.normal = normalize(vs_out.normal * mat3(transform));
 	vs_out.texCoord = texCoord;
 	vs_out.position = vs_out.position * transform;
+
+	vs_out.normal = normalize(vs_out.normal * mat3(worldTransform) * mat3(transform));
+	vs_out.tangent = normalize(tangent * mat3(worldTransform) * mat3(transform));
+	vs_out.bitangent = normalize(bitangent * mat3(worldTransform) * mat3(transform));
 
 	gl_Position = vs_out.position * WVP;
 }

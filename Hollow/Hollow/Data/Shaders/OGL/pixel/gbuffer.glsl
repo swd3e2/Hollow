@@ -9,6 +9,8 @@ in VS_OUT
 	vec4 position;
 	vec3 normal;
 	vec2 texCoord;
+	vec3 tangent;
+	vec3 bitangent;
 } fs_in;
 
 layout(std140, binding = 2) uniform PerObject
@@ -16,6 +18,11 @@ layout(std140, binding = 2) uniform PerObject
 	mat4 transform;
 	vec3 color;
 	bool hasAnimation;
+};
+
+layout(std140, binding = 3) uniform WorldTransformations
+{
+	mat4 worldTransform;
 };
 
 layout(std140, binding = 4) uniform MaterialData
@@ -42,9 +49,23 @@ void main()
 		color = base_color;
 	}
 	if (hasNormalTexture) {
-		normal = texture(normalTexture, fs_in.texCoord);
+		mat3 tanToView = transpose(mat3(
+			fs_in.tangent, 
+			fs_in.bitangent, 
+			fs_in.normal
+		));
+
+		vec3 temp = normalize(texture(normalTexture, fs_in.texCoord).xyz * 2.0 - 1.0);
+		
+		temp = normalize(temp * tanToView);
+		normal = vec4(temp, 0.0f) * 0.5 + 0.5;
+		//normal = vec4(fs_in.normal, 1.0f) * 0.5 + 0.5;
+		//normal.z = -normal.z;
+	/*	normal.x = -normal.x;
+		normal.z = -normal.z;*/
 	} else {
-		normal = vec4(fs_in.normal, 1.0f);
+		
+		normal = vec4(fs_in.normal, 1.0f) * 0.5 + 0.5;
 	}
 
 	if (color.a < 0.25) {

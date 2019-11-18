@@ -37,6 +37,47 @@ namespace Hollow {
 
 		binary.close();
 
+		for (auto& it : model->meshes) {
+			for (int i = 0; i < it->indices.size(); i += 3) {
+				Vertex& first	= it->vertices[it->indices[i + 0]];
+				Vertex& second	= it->vertices[it->indices[i + 1]];
+				Vertex& third	= it->vertices[it->indices[i + 2]];
+
+				Vector3 edge1 = second.pos - first.pos;
+				Vector3 edge2 = third.pos - first.pos;
+
+				Vector2 uv1 = second.texCoord - first.texCoord;
+				Vector2 uv2 = third.texCoord - first.texCoord;
+
+				float f = 1.0f / uv1.x * uv2.y - uv2.x * uv1.y;
+
+				Vector3 tangent(
+					f * (uv2.y * edge1.x - uv1.y * edge2.x),
+					f * (uv2.y * edge1.y - uv1.y * edge2.y),
+					f * (uv2.y * edge1.z - uv1.y * edge2.z)
+				);
+
+				Vector3 bitangent(
+					f * (uv1.x * edge2.x - uv2.x * edge1.x),
+					f * (uv1.x * edge2.y - uv2.x * edge1.y),
+					f * (uv1.x * edge2.z - uv2.x * edge1.z)
+				);
+
+				first.tangent	+= tangent;
+				second.tangent	+= tangent;
+				third.tangent	+= tangent;
+
+				first.bitangent	 += bitangent;
+				second.bitangent += bitangent;
+				third.bitangent	 += bitangent;
+			}
+
+			for (auto& vertex : it->vertices) {
+				vertex.bitangent = Vector3::normalize(vertex.bitangent);
+				vertex.tangent = Vector3::normalize(vertex.tangent);
+			}
+		}
+
 		return s_ptr<Import::Model>(model);
 	}
 
