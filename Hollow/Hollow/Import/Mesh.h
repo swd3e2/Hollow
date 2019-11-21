@@ -76,6 +76,7 @@ namespace Hollow {
 		{
 			int id;
 			int material;
+			bool hasTangent = false;
 			std::string name;
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
@@ -83,6 +84,7 @@ namespace Hollow {
 
 		struct Model
 		{
+			std::string filename;
 			std::vector<s_ptr<Mesh>> meshes;
 			std::unordered_map<int, Material> materials;
 			// Animation data

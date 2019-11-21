@@ -14,6 +14,7 @@ namespace Hollow {
 		}
 
 		Import::Model* model = new Import::Model();
+		model->filename = filename;
 
 		std::string binaryFilePath = getBinaryFileFolder(filename) + gltfModel.buffers[0].uri;
 		std::ifstream binary(binaryFilePath, std::fstream::in | std::fstream::binary);
@@ -37,46 +38,7 @@ namespace Hollow {
 
 		binary.close();
 
-		for (auto& it : model->meshes) {
-			for (int i = 0; i < it->indices.size(); i += 3) {
-				Vertex& first	= it->vertices[it->indices[i + 0]];
-				Vertex& second	= it->vertices[it->indices[i + 1]];
-				Vertex& third	= it->vertices[it->indices[i + 2]];
-
-				Vector3 edge1 = second.pos - first.pos;
-				Vector3 edge2 = third.pos - first.pos;
-
-				Vector2 uv1 = second.texCoord - first.texCoord;
-				Vector2 uv2 = third.texCoord - first.texCoord;
-
-				float f = 1.0f / uv1.x * uv2.y - uv2.x * uv1.y;
-
-				Vector3 tangent(
-					f * (uv2.y * edge1.x - uv1.y * edge2.x),
-					f * (uv2.y * edge1.y - uv1.y * edge2.y),
-					f * (uv2.y * edge1.z - uv1.y * edge2.z)
-				);
-
-				Vector3 bitangent(
-					f * (uv1.x * edge2.x - uv2.x * edge1.x),
-					f * (uv1.x * edge2.y - uv2.x * edge1.y),
-					f * (uv1.x * edge2.z - uv2.x * edge1.z)
-				);
-
-				first.tangent	+= tangent;
-				second.tangent	+= tangent;
-				third.tangent	+= tangent;
-
-				first.bitangent	 += bitangent;
-				second.bitangent += bitangent;
-				third.bitangent	 += bitangent;
-			}
-
-			for (auto& vertex : it->vertices) {
-				vertex.bitangent = Vector3::normalize(vertex.bitangent);
-				vertex.tangent = Vector3::normalize(vertex.tangent);
-			}
-		}
+		calculateTangent(model);
 
 		return s_ptr<Import::Model>(model);
 	}
@@ -162,6 +124,16 @@ namespace Hollow {
 							for (int i = 0; i < accessor.count; i++) {
 								mesh->vertices[i].texCoord.x = data[i * 2];
 								mesh->vertices[i].texCoord.y = data[i * 2 + 1];
+							}
+							delete[] data;
+						} else if (attribute.first == "TANGENT") {
+							mesh->hasTangent = true;
+
+							float* data = new float[accessor.count * 4];
+							binary.read((char*)data, sizeof(float) * accessor.count * 4);
+
+							for (int i = 0; i < accessor.count; i++) {
+								mesh->vertices[i].tangent = Quaternion::toEuler(Quaternion(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
 							}
 							delete[] data;
 						}
@@ -388,6 +360,58 @@ namespace Hollow {
 				delete[] valueData;
 			}
 			model->animations.push_back(mAnimation);
+		}
+	}
+
+	void GLTFImporter::calculateTangent(Import::Model* model)
+	{
+		for (auto& it : model->meshes) {
+			if (it->hasTangent) {
+				for (int i = 0; i < it->indices.size(); i++) {
+					it->vertices[it->indices[i]].bitangent = Vector3::cross(it->vertices[it->indices[i]].normal, it->vertices[it->indices[i]].tangent);
+				}
+			} else {
+				for (int i = 0; i < it->indices.size(); i += 3) {
+					Vertex& first = it->vertices[it->indices[i + 0]];
+					Vertex& second = it->vertices[it->indices[i + 1]];
+					Vertex& third = it->vertices[it->indices[i + 2]];
+
+					Vector3 edge1 = second.pos - first.pos;
+					Vector3 edge2 = third.pos - first.pos;
+
+					Vector2 uv1 = second.texCoord - first.texCoord;
+					Vector2 uv2 = third.texCoord - first.texCoord;
+
+					float f = 1.0f / uv1.x * uv2.y - uv2.x * uv1.y;
+
+					Vector3 tangent(
+						f * (uv2.y * edge1.x - uv1.y * edge2.x),
+						f * (uv2.y * edge1.y - uv1.y * edge2.y),
+						f * (uv2.y * edge1.z - uv1.y * edge2.z)
+					);
+
+					Vector3 bitangent(
+						f * (uv1.x * edge2.x - uv2.x * edge1.x),
+						f * (uv1.x * edge2.y - uv2.x * edge1.y),
+						f * (uv1.x * edge2.z - uv2.x * edge1.z)
+					);
+
+					first.tangent += tangent;
+					second.tangent += tangent;
+					third.tangent += tangent;
+
+					first.bitangent += bitangent;
+					second.bitangent += bitangent;
+					third.bitangent += bitangent;
+				}
+			}
+
+			
+
+			for (auto& vertex : it->vertices) {
+				vertex.bitangent = Vector3::normalize(vertex.bitangent);
+				vertex.tangent = Vector3::normalize(vertex.tangent);
+			}
 		}
 	}
 

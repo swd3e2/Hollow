@@ -86,7 +86,7 @@ public:
 
 		gui->rendererTab.renderSystem = renderPass;
 
-		//ProjectSettings::instance()->load("C:\\dev\\Hollow Engine\\Project1\\Project1.json");
+		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
 
 		//Light* light = Hollow::EntityManager::instance()->create<Light>();
@@ -98,7 +98,7 @@ public:
 
 		PhysicsSystem::instance()->dynamicsWorld->setDebugDrawer(new PhysicsDebugDraw(renderer));
 
-		init();
+		//init();
 	}
 
 	void init()
@@ -107,7 +107,7 @@ public:
 			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
 		Hollow::s_ptr<Hollow::Texture> testTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/test.gif", 0);
 		Hollow::s_ptr<Hollow::Texture> brickwall = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall.jpg", 0);
-		Hollow::s_ptr<Hollow::Texture> brickwallNormal = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall_normal_obj.png", 0);
+		Hollow::s_ptr<Hollow::Texture> brickwallNormal = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall_normal.jpg", 0);
 
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
@@ -195,7 +195,7 @@ public:
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene.gltf");
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
 			//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
 
@@ -214,7 +214,7 @@ public:
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(0.05f, 0.05f, 0.05f);
+			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
 
 			entity->addComponent<PlayerComponent>();
 		}
@@ -222,7 +222,7 @@ public:
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/zeldaSkel_V001_004.gltf");
+				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf");
 			/*Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
 				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/art/scene.gltf");*/
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);

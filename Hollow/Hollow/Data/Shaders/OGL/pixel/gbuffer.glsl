@@ -60,7 +60,7 @@ void main()
 		temp = normalize(temp * tanToView);
 		normal = vec4(temp, 0.0f) * 0.5 + 0.5;
 		//normal = vec4(fs_in.normal, 1.0f) * 0.5 + 0.5;
-		//normal.z = -normal.z;
+		//normal = normalize(vec4(fs_in.tangent, 0.0f) * 2.0 - 1.0);
 	/*	normal.x = -normal.x;
 		normal.z = -normal.z;*/
 	} else {

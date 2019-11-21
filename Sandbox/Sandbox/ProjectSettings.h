@@ -159,7 +159,7 @@ public:
 				}
 			}
 
-			projectFolder = Hollow::Helper::trimToLastLineEntry(filename.c_str(), '\\');
+			projectFolder = Hollow::Helper::trimToLastLineEntry(filename.c_str(), '/');
 
 			isProjectLoaded = true;
 		};

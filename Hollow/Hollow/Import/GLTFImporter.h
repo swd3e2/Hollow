@@ -25,6 +25,8 @@ namespace Hollow {
 		int nodeCounter = 0;
 	public:
 		s_ptr<Import::Model> import(const char* filename);
+	private:
+		void calculateTangent(Import::Model* model);
 		void processHierarchy(s_ptr<Import::Node>& node, const tinygltf::Node& modelNode, Import::Model* model, const tinygltf::Model& gltfModel, std::vector<int>& meshesToLoad);
 		void processAnimations(Import::Model* lModel, tinygltf::Model& model, std::ifstream& file);
 		void processAnimationNode(s_ptr<Import::Joint>& node, const tinygltf::Node& modelNode, std::unordered_map<int, s_ptr<Import::Joint>>& joints, const tinygltf::Model& gltfModel);

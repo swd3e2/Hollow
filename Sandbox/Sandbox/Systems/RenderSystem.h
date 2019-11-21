@@ -72,6 +72,7 @@ public:
 	Hollow::s_ptr<Hollow::RenderTarget> main;
 	Hollow::s_ptr<Hollow::RenderTarget> gBuffer;
 	Hollow::s_ptr<Hollow::RenderTarget> picker;
+	Hollow::s_ptr<Hollow::RenderTarget> light;
 
 	int pickedID;
 	int culled = 0;
@@ -115,6 +116,7 @@ private:
 	Hollow::s_ptr<Hollow::ShaderPipeline> pickerPipeline;
 	Hollow::s_ptr<Hollow::ShaderPipeline> flatColor;
 	Hollow::s_ptr<Hollow::ShaderPipeline> instanced;
+	Hollow::s_ptr<Hollow::ShaderPipeline> samplingPipeline;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -222,6 +224,7 @@ public:
 	{
 		renderer->clearRenderTarget(0, (float*)ClearColor);
 		renderer->clearRenderTarget(gBuffer, ClearColor);
+		renderer->clearRenderTarget(light, ClearColor);
 		renderer->clearRenderTarget(shadow.renderTarget, ClearColor);
 		renderer->clearRenderTarget(picker, ClearColor);
 	}
@@ -264,7 +267,7 @@ public:
 			renderer->setTextureSampler(5, renderTargetSampler);
 
 			renderer->setRasterizerState(cullBack);
-			renderer->setRenderTarget(0);
+			renderer->setRenderTarget(light);
 			renderer->setTextureColorBuffer(0, gBuffer, 0);
 			renderer->setTextureColorBuffer(1, gBuffer, 1);
 			renderer->setTextureColorBuffer(2, gBuffer, 2);
@@ -288,7 +291,17 @@ public:
 			renderer->unsetTexture(3);
 			renderer->unsetTexture(5);
 		}
-
+		{
+			renderer->setRenderTarget(0);
+			renderer->setDepthStencilState(less);
+			renderer->setRasterizerState(cullNone);
+			renderer->setShaderPipeline(samplingPipeline);
+			renderer->setTextureColorBuffer(0, light, 0);
+			renderer->setVertexBuffer(quadVB);
+			renderer->setIndexBuffer(quadIB);
+			renderer->drawIndexed(6);
+			renderer->unsetTexture(0);
+		}
 		lightTime = timer.getMilisecondsElapsed();;
 
 		
@@ -478,8 +491,7 @@ public:
 						boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
 						renderer->setGpuBuffer(boneInfo);
 					}
-				}
-				else {
+				} else {
 					perModelData.hasAnimation = false;
 				}
 
@@ -730,6 +742,13 @@ public:
 
 			instanced = Hollow::ShaderPipeline::create(pipelineDesc);
 		}
+		{
+			Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+			pipelineDesc.vertexShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/sampling" + shaderExt, "main" });
+			pipelineDesc.pixelShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/sampling" + shaderExt, "main" });
+
+			samplingPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
+		}
 	}
 
 	void initGpuBuffers()
@@ -785,6 +804,14 @@ public:
 			desc.height = this->height;
 			desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
 			picker = Hollow::RenderTarget::create(desc);
+		}
+		{
+			Hollow::RENDER_TARGET_DESC desc;
+			desc.count = 1;
+			desc.width = this->width;
+			desc.height = this->height;
+			desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R8G8B8A8;
+			light = Hollow::RenderTarget::create(desc);
 		}
 		{
 			Hollow::RENDER_TARGET_DESC desc;

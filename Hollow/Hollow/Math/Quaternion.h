@@ -134,6 +134,30 @@ namespace Hollow {
 			}
 			return *this;
 		}
+
+		static Vector3 toEuler(const Quaternion& q)
+		{
+			Vector3 result;
+
+			// roll (x-axis rotation)
+			double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+			double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+			result.x = std::atan2(sinr_cosp, cosr_cosp);
+
+			// pitch (y-axis rotation)
+			double sinp = 2 * (q.w * q.y - q.z * q.x);
+			if (std::abs(sinp) >= 1)
+				result.y = std::copysign(Math::HALF_PI, sinp); // use 90 degrees if out of range
+			else
+				result.y = std::asin(sinp);
+
+			// yaw (z-axis rotation)
+			double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+			double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+			result.z = std::atan2(siny_cosp, cosy_cosp);
+
+			return result;
+		}
 	};
 }
 

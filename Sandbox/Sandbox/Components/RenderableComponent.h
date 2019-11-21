@@ -118,7 +118,7 @@ private:
 		node->rotation = iNode->rotation;
 		node->scale = iNode->scale;
 		node->translation = iNode->translation;
-		node->worldTransform = Hollow::Matrix4::transpose(iNode->transform * parentTransform);
+		node->worldTransform = iNode->transform * parentTransform;
 
 		nodes.push_back(node);
 
