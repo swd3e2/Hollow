@@ -19,7 +19,7 @@ namespace Hollow {
 		float emissiveFactor;
 		float pad;
 		int hasDiffuseTexture = 0;
-		int hasNormalMap = 0;
+		int hasNormalTexture = 0;
 		int hasSpecularMap = 0;
 
 		MaterialData()

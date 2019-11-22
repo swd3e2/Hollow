@@ -136,11 +136,11 @@ namespace Hollow {
 		if (texture != nullptr && d3dTexture->m_TextureShaderResource != nullptr) {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, &d3dTexture->m_TextureShaderResource);
-			context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
+			//context->getDeviceContext()->CSGetUnorderedAccessViews(0, 1, &d3dTexture->m_UnorderedAccessView);
 		} else {
 			context->getDeviceContext()->PSSetShaderResources(slot, 1, pSRV);
 			context->getDeviceContext()->DSSetShaderResources(slot, 1, pSRV);
-			context->getDeviceContext()->CSGetUnorderedAccessViews(slot, uavs, pUAV);
+			//context->getDeviceContext()->CSGetUnorderedAccessViews(slot, uavs, pUAV);
 		}
 	}
 
@@ -240,27 +240,42 @@ namespace Hollow {
 
 		const s_ptr<D3D11Shader>& vertexShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getVertexShader());
 		if (vertexShader != nullptr) {
-			context->getDeviceContext()->VSSetShader(static_cast<ID3D11VertexShader*>(vertexShader->getShader()), NULL, 0);
+			ID3D11VertexShader* d3dVertexShader = static_cast<ID3D11VertexShader*>(vertexShader->getShader());
+			if (d3dVertexShader != nullptr) {
+				context->getDeviceContext()->VSSetShader(d3dVertexShader, NULL, 0);
+			}
 		}
 
 		const s_ptr<D3D11Shader>& pixelShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getPixelShader());
 		if (pixelShader != nullptr) {
-			context->getDeviceContext()->PSSetShader(static_cast<ID3D11PixelShader*>(pixelShader->getShader()), NULL, 0);
+			ID3D11PixelShader* d3dPixelShader = static_cast<ID3D11PixelShader*>(pixelShader->getShader());
+			if (d3dPixelShader != nullptr) {
+				context->getDeviceContext()->PSSetShader(d3dPixelShader, NULL, 0);
+			}
 		}
 
 		const s_ptr<D3D11Shader>& geometryShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getGeometryShader());
 		if (geometryShader != nullptr) {
-			context->getDeviceContext()->GSSetShader(static_cast<ID3D11GeometryShader*>(geometryShader->getShader()), NULL, 0);
+			ID3D11GeometryShader* d3dGeometryShader = static_cast<ID3D11GeometryShader*>(geometryShader->getShader());
+			if (d3dGeometryShader != nullptr) {
+				context->getDeviceContext()->GSSetShader(d3dGeometryShader, NULL, 0);
+			}
 		}
 
 		const s_ptr<D3D11Shader>& hullShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getHullShader());
 		if (hullShader != nullptr) {
-			context->getDeviceContext()->HSSetShader(static_cast<ID3D11HullShader*>(hullShader->getShader()), NULL, 0);
+			ID3D11HullShader* d3dHullShader = static_cast<ID3D11HullShader*>(hullShader->getShader());
+			if (d3dHullShader != nullptr) {
+				context->getDeviceContext()->HSSetShader(d3dHullShader, NULL, 0);
+			}
 		}
 
 		const s_ptr<D3D11Shader>& domainShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getDomainShader());
 		if (domainShader != nullptr) {
-			context->getDeviceContext()->DSSetShader(static_cast<ID3D11DomainShader*>(domainShader->getShader()), NULL, 0);
+			ID3D11DomainShader* d3dDomainShader = static_cast<ID3D11DomainShader*>(domainShader->getShader());
+			if (d3dDomainShader != nullptr) {
+				context->getDeviceContext()->DSSetShader(d3dDomainShader, NULL, 0);
+			}
 		}
 	}
 
@@ -283,12 +298,14 @@ namespace Hollow {
 		}
 	}
 
-	void D3D11RenderApi::drawInstanced()
+	void D3D11RenderApi::drawInstanced(UINT count, UINT instanceCount)
 	{
+		context->getDeviceContext()->DrawInstanced(count, instanceCount, 0, 0);
 	}
 
-	void D3D11RenderApi::drawIndexedInstanced()
+	void D3D11RenderApi::drawIndexedInstanced(UINT count, UINT instanceCount)
 	{
+		context->getDeviceContext()->DrawIndexedInstanced(count, instanceCount, 0, 0, 0);
 	}
 
 	void D3D11RenderApi::setInputLayout(const s_ptr<InputLayout>& layout)
@@ -307,8 +324,8 @@ namespace Hollow {
 		s_ptr<D3D11GPUBuffer> gpuBuffer = std::static_pointer_cast<D3D11GPUBuffer>(buffer);
 		context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 		context->getDeviceContext()->PSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		//context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		//context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 	}
 
 	void D3D11RenderApi::setViewport(int w0, int y0, int w, int y)

@@ -2,31 +2,7 @@
   "GameObjects": [
     {
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Project1/Meshes/_scene.json"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "scale": [
-          0.10000000149011612,
-          0.10000000149011612,
-          0.10000000149011612
-        ],
-        "translation": [
-          100.0999984741211,
-          -4.099999904632568,
-          0.0
-        ]
-      },
-      "id": 0,
-      "name": "B2"
-    },
-    {
-      "RenderableComponent": {
-        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\Ball.obj"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/cube.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -40,304 +16,327 @@
           10.0
         ],
         "translation": [
-          -1.0,
-          -33.0,
+          0.0,
+          25.0,
           0.0
         ]
       },
-      "id": 1,
-      "name": "Ball"
+      "id": 0,
+      "name": ""
     },
     {
+      "PhysicsComponent": {
+        "boxSize": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 0.0,
+        "originalPosition": [
+          0.0,
+          -50.0,
+          0.0
+        ],
+        "planeNormal": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 2
+      },
+      "id": 1,
+      "name": ""
+    },
+    {
+      "PhysicsComponent": {
+        "boxSize": [
+          25.0,
+          0.0010000000474974513,
+          25.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 0.0,
+        "originalPosition": [
+          0.0,
+          -25.0,
+          0.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Project1/Meshes/tree.obj"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf"
       },
       "TransformComponent": {
         "rotation": [
           0.0,
-          0.0,
+          -0.0,
           0.0
         ],
         "scale": [
-          0.10000000149011612,
-          0.10000000149011612,
-          0.10000000149011612
+          25.0,
+          0.0,
+          25.0
         ],
         "translation": [
-          657.5,
-          11.5,
-          610.2000122070313
+          0.0,
+          -25.0,
+          0.0
         ]
       },
       "id": 2,
       "name": ""
     },
     {
-      "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\tree.gltf"
-      },
-      "TransformComponent": {
-        "rotation": [
-          -2.0999999046325684,
+      "PhysicsComponent": {
+        "boxSize": [
+          25.0,
+          0.0010000000474974513,
+          25.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 0.0,
+        "originalPosition": [
+          60.0,
+          -25.0,
+          0.0
+        ],
+        "planeNormal": [
+          0.0,
           0.0,
           0.0
         ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "RenderableComponent": {
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
         "scale": [
-          0.10000000149011612,
-          0.10000000149011612,
-          0.10000000149011612
+          25.0,
+          0.0,
+          25.0
         ],
         "translation": [
-          657.0,
-          531.0,
-          610.0
+          60.0,
+          -25.0,
+          0.0
         ]
       },
       "id": 3,
       "name": ""
     },
     {
-      "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Tiles_010.FBX"
-      },
-      "TransformComponent": {
-        "rotation": [
-          1.5670000314712524,
+      "PhysicsComponent": {
+        "boxSize": [
+          0.6000000238418579,
+          1.2999999523162842,
+          1.5
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 1.0,
+        "originalPosition": [
+          0.0,
           0.0,
           0.0
         ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "PlayerComponent": null,
+      "RenderableComponent": {
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          1.1948070095968433e-05,
+          0.0003563399950508028,
+          -1.179625655822747e-06
+        ],
         "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
+          1.0,
+          1.0,
+          1.0
         ],
         "translation": [
-          -36.900001525878906,
-          -207.3000030517578,
-          0.0
+          -2.599452495574951,
+          -23.699003219604492,
+          -0.07387331128120422
         ]
       },
       "id": 4,
-      "name": "Plane1"
+      "name": ""
     },
     {
+      "PhysicsComponent": {
+        "boxSize": [
+          1.5,
+          4.199999809265137,
+          1.5
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 50.0,
+        "originalPosition": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
       "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Stairs_01.FBX"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf"
       },
       "TransformComponent": {
         "rotation": [
-          -4.800000190734863,
-          3.119999885559082,
-          0.0
+          3.141591787338257,
+          0.30098921060562134,
+          -1.5707968473434448
         ],
         "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
+          4.699999809265137,
+          4.699999809265137,
+          4.699999809265137
         ],
         "translation": [
-          -36.29999923706055,
-          -206.3000030517578,
-          98.4000015258789
+          6.023425579071045,
+          -48.500003814697266,
+          1.7395089864730835
         ]
       },
       "id": 5,
-      "name": "Stairs"
+      "name": ""
     },
     {
+      "PhysicsComponent": {
+        "boxSize": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 1.0,
+        "originalPosition": [
+          3.0,
+          25.0,
+          0.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
       "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Tiles_08.FBX"
+        "filename": ""
       },
       "TransformComponent": {
         "rotation": [
-          1.5670000314712524,
-          1.5770000219345093,
-          0.0
+          3.441692797423457e-07,
+          1.0666752132237889e-05,
+          5.6225879063731554e-08
         ],
         "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
+          1.0,
+          1.0,
+          1.0
         ],
         "translation": [
-          162.5,
-          -206.89999389648438,
-          0.4000000059604645
+          2.9998714923858643,
+          -23.99900245666504,
+          3.6993203593738144e-06
         ]
       },
       "id": 6,
-      "name": "Plane2"
+      "name": ""
     },
     {
-      "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Tiles_04.FBX"
-      },
-      "TransformComponent": {
-        "rotation": [
-          1.5670000314712524,
+      "id": 7,
+      "name": ""
+    },
+    {
+      "PhysicsComponent": {
+        "boxSize": [
+          2.0,
+          10.0,
+          2.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "mass": 0.0,
+        "originalPosition": [
+          39.900001525878906,
+          -15.0,
+          14.199999809265137
+        ],
+        "planeNormal": [
+          0.0,
           0.0,
           0.0
         ],
-        "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
-        ],
-        "translation": [
-          -36.900001525878906,
-          -206.89999389648438,
-          -100.0
-        ]
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
       },
-      "id": 7,
-      "name": "Plane3"
-    },
-    {
       "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Tiles_06.FBX"
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\tree.gltf"
       },
       "TransformComponent": {
         "rotation": [
-          1.5670000314712524,
-          -3.135999917984009,
+          0.0,
+          -0.0,
           0.0
         ],
         "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
+          0.5,
+          0.5,
+          0.5
         ],
         "translation": [
-          161.39999389648438,
-          -206.60000610351563,
-          200.3000030517578
+          39.900001525878906,
+          -15.0,
+          14.199999809265137
         ]
       },
       "id": 8,
-      "name": "Plane4"
-    },
-    {
-      "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Tiles_08.FBX"
-      },
-      "TransformComponent": {
-        "rotation": [
-          1.5670000314712524,
-          1.5740000009536743,
-          0.0
-        ],
-        "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
-        ],
-        "translation": [
-          162.6999969482422,
-          -206.89999389648438,
-          -99.5999984741211
-        ]
-      },
-      "id": 9,
       "name": ""
-    },
-    {
-      "RenderableComponent": {
-        "filename": "C:\\Users\\wwwsa\\Desktop\\1222\\SM_Env_Railing_Pillar_01.FBX"
-      },
-      "TransformComponent": {
-        "rotation": [
-          1.5740000009536743,
-          1.5740000009536743,
-          0.0
-        ],
-        "scale": [
-          0.20000000298023224,
-          0.20000000298023224,
-          0.20000000298023224
-        ],
-        "translation": [
-          73.9000015258789,
-          -205.1999969482422,
-          113.0
-        ]
-      },
-      "id": 10,
-      "name": "Plane5"
-    },
-    {
-      "RenderableComponent": {
-        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "scale": [
-          1000.0,
-          1.0,
-          1000.0
-        ],
-        "translation": [
-          7.669779006391764e-05,
-          -31.0,
-          0.0001564349076943472
-        ]
-      },
-      "id": 11,
-      "name": ""
-    },
-    {
-      "RenderableComponent": {
-        "filename": "C:\\dev\\DirectXApp\\DirectXApp\\Data\\Models\\plane.obj"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "scale": [
-          1000.0,
-          1.0,
-          1000.0
-        ],
-        "translation": [
-          0.0008837860659696162,
-          -29.0,
-          0.00036796764470636845
-        ]
-      },
-      "id": 14,
-      "name": ""
-    }
-  ],
-  "Light": [
-    {
-      "LightComponent": {
-        "color": [
-          1.0,
-          0.0,
-          0.0
-        ],
-        "constant": 0.9399999976158142,
-        "cutoff": 0.0,
-        "direction": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "distance": 100.0,
-        "linear": 0.019999999552965164,
-        "position": [
-          0.0,
-          -189.8000030517578,
-          0.0
-        ],
-        "quadratic": 0.010999999940395355,
-        "type": 2
-      }
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",

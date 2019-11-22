@@ -29,6 +29,11 @@ layout(std140, binding = 2) uniform PerObject
 	bool hasAnimation;
 };
 
+layout(std140, binding = 3) uniform WorldTransformations
+{
+	mat4 worldTransform;
+};
+
 layout(std140, binding = 6) uniform BoneTransformations
 {
 	mat4 boneInfo[200];
@@ -37,13 +42,16 @@ layout(std140, binding = 6) uniform BoneTransformations
 void main()
 {
 	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0f);
+
 	if (hasAnimation) {
 		mat4 BoneTransform = boneInfo[boneIDs[0]] * weights[0];
-		BoneTransform += boneInfo[boneIDs[1]] * weights[1];
-		BoneTransform += boneInfo[boneIDs[2]] * weights[2];
-		BoneTransform += boneInfo[boneIDs[3]] * weights[3];
+		BoneTransform     += boneInfo[boneIDs[1]] * weights[1];
+		BoneTransform     += boneInfo[boneIDs[2]] * weights[2];
+		BoneTransform     += boneInfo[boneIDs[3]] * weights[3]; 
 
 		gl_Position = gl_Position * BoneTransform;
+	} else {
+		gl_Position = gl_Position * worldTransform;
 	}
 
 	gl_Position = gl_Position * transform;

@@ -69,23 +69,8 @@ namespace Hollow {
 			return *this;
 		}
 
-		static inline void interpolate(Quaternion& pOut, const Quaternion& pStart, const Quaternion& pEnd, float pFactor)
+		static inline Quaternion interpolate(const Quaternion& pStart, const Quaternion& pEnd, float pFactor)
 		{
-			/*
-			float a = 1.0 - t, b = t, d = pStart.x * pEnd.x + pStart.y * pEnd.y + pStart.z * pEnd.z + pStart.w * pEnd.w, c = fabsf(d);
-			if (c < 0.999) {
-				c = acosf(c);
-				b = 1 / sinf(c);
-				a = sinf(a * c) * b;
-				b *= sinf(t * c);
-				if (d < 0) b = -b;
-			}
-			
-			pOut.x = a * pStart.x + b * pEnd.x;
-			pOut.y = a * pStart.y + b * pEnd.y;
-			pOut.z = a * pStart.z + b * pEnd.z;
-			pOut.w = a * pStart.w + b * pEnd.w;
-			*/
 			// calc cosine theta
 			float cosom = pStart.x * pEnd.x + pStart.y * pEnd.y + pStart.z * pEnd.z + pStart.w * pEnd.w;
 
@@ -118,18 +103,29 @@ namespace Hollow {
 				sclq = pFactor;
 			}
 
-			pOut.x = sclp * pStart.x + sclq * end.x;
-			pOut.y = sclp * pStart.y + sclq * end.y;
-			pOut.z = sclp * pStart.z + sclq * end.z;
-			pOut.w = sclp * pStart.w + sclq * end.w;
+			return Quaternion(
+				sclp * pStart.x + sclq * end.x,
+				sclp * pStart.y + sclq * end.y,
+				sclp * pStart.z + sclq * end.z,
+				sclp * pStart.w + sclq * end.w
+			);
+		}
+
+		Quaternion& operator*(const float value)
+		{
+			x *= value;
+			y *= value;
+			z *= value;
+			w *= value;
+
+			return *this;
 		}
 
 		inline Quaternion& normalize()
 		{
 			// compute the magnitude and divide through it
 			const float mag = std::sqrt(x * x + y * y + z * z + w * w);
-			if (mag)
-			{
+			if (mag) {
 				const float invMag = static_cast<float>(1.0) / mag;
 				x *= invMag;
 				y *= invMag;
@@ -137,6 +133,30 @@ namespace Hollow {
 				w *= invMag;
 			}
 			return *this;
+		}
+
+		static Vector3 toEuler(const Quaternion& q)
+		{
+			Vector3 result;
+
+			// roll (x-axis rotation)
+			double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+			double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+			result.x = std::atan2(sinr_cosp, cosr_cosp);
+
+			// pitch (y-axis rotation)
+			double sinp = 2 * (q.w * q.y - q.z * q.x);
+			if (std::abs(sinp) >= 1)
+				result.y = std::copysign(Math::HALF_PI, sinp); // use 90 degrees if out of range
+			else
+				result.y = std::asin(sinp);
+
+			// yaw (z-axis rotation)
+			double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+			double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+			result.z = std::atan2(siny_cosp, cosy_cosp);
+
+			return result;
 		}
 	};
 }

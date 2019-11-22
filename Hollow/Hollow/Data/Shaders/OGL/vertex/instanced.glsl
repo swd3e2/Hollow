@@ -20,8 +20,6 @@ out VS_OUT
 	vec4 position;
 	vec3 normal;
 	vec2 texCoord;
-	vec3 tangent;
-	vec3 bitangent;
 } vs_out;
 
 layout(std140, binding = 0) uniform Matrices
@@ -38,14 +36,14 @@ layout(std140, binding = 2) uniform PerObject
 	bool hasAnimation;
 };
 
-layout(std140, binding = 3) uniform WorldTransformations
-{
-	mat4 worldTransform;
-};
-
 layout(std140, binding = 6) uniform BoneTransformations
 {
 	mat4 boneInfo[200];
+};
+
+layout(std140, binding = 7) uniform InstanceMatrices
+{
+	mat4 instanceMatrix[50];
 };
 
 void main()
@@ -55,22 +53,17 @@ void main()
 
 	if (hasAnimation) {
 		mat4 BoneTransform = boneInfo[boneIDs[0]] * weights[0];
-		BoneTransform     += boneInfo[boneIDs[1]] * weights[1];
-		BoneTransform     += boneInfo[boneIDs[2]] * weights[2];
-		BoneTransform     += boneInfo[boneIDs[3]] * weights[3];
+		BoneTransform += boneInfo[boneIDs[1]] * weights[1];
+		BoneTransform += boneInfo[boneIDs[2]] * weights[2];
+		BoneTransform += boneInfo[boneIDs[3]] * weights[3];
 
 		vs_out.position = vs_out.position * BoneTransform;
 		vs_out.normal = vs_out.normal * mat3(BoneTransform);
-	} else {
-		vs_out.position = vs_out.position * worldTransform;
 	}
 
+	vs_out.normal = normalize(vs_out.normal * mat3(transform));
 	vs_out.texCoord = texCoord;
-	vs_out.position = vs_out.position * transform;
-
-	vs_out.normal = normalize(vs_out.normal * mat3(worldTransform) * mat3(transform));
-	vs_out.tangent = normalize(tangent * mat3(worldTransform) * mat3(transform));
-	vs_out.bitangent = normalize(bitangent * mat3(worldTransform) * mat3(transform));
+	vs_out.position = vs_out.position * (transform + instanceMatrix[gl_InstanceID]);
 
 	gl_Position = vs_out.position * WVP;
 }

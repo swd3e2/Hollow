@@ -23,7 +23,7 @@ public:
 			if (entity.hasComponent<PlayerComponent>() && entity.hasComponent<PhysicsComponent>() && entity.hasComponent<TransformComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
-				AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+				
 
 				updated = false;
 
@@ -36,17 +36,17 @@ public:
 
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 					updated = true;
-					moveVector.setX(10.0f);
+					moveVector.setZ(10.0f);
 					transform->rotation.y = 0;
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
 					updated = true;
-					moveVector.setX(-10.0f);
+					moveVector.setZ(-10.0f);
 					transform->rotation.y = Hollow::Math::PI;
 				}
 				
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_A)) {
 					updated = true;
-					moveVector.setZ(10.0f);
+					moveVector.setX(-10.0f);
 
 					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 						transform->rotation.y -= Hollow::Math::PI / 4;
@@ -57,7 +57,7 @@ public:
 					}
 				} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_D)) {
 					updated = true;
-					moveVector.setZ(-10.0f);
+					moveVector.setX(10.0f);
 					if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_W)) {
 						transform->rotation.y += Hollow::Math::PI / 4;
 					} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_S)) {
@@ -70,13 +70,18 @@ public:
 				if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_SPACE)) {
 					moveVector.setY(10.0f);
 				}
+
 				physics->body->setLinearVelocity(moveVector);
 				physics->body->activate(true);
 
-				if (!updated) {
-					animation->pause();
-				} else {
-					animation->play();
+				if (entity.hasComponent<AnimationComponent>()) {
+					AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+					if (!updated) {
+						//animation->pause();
+					}
+					else {
+						animation->play();
+					}
 				}
 			}
 		}

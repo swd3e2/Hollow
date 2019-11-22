@@ -11,6 +11,7 @@
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/PhysicsComponent.h"
+#include "Sandbox/Components/ParticleComponent.h"
 
 namespace GUI {
 	class HierarchyTab
@@ -26,6 +27,25 @@ namespace GUI {
 		char buffer[100];
 		const char* lightTypeComboItems[4] = { "Ambient", "Diffuse", "Point", "Spot" };
 		const char* currentLightType = nullptr;
+
+		Hollow::Vector3 boxShapeSize;
+		float capsuleShapeRadius = 0.0f;
+		float capsuleShapeHeight = 0.0f;
+
+		float sphereShapeRadius = 0.0f;
+
+		Hollow::Vector3 planeShapeNormal;
+		float planeSize = 0.0f;
+
+		float mass = 0.0f;
+		Hollow::Vector3 position;
+		Hollow::Vector3 angularFactor;
+		int selectedShapeType;
+		int tempShapeType = 0;
+		const char* shapeTypesSelectables[5] = { "Box", "Sphere", "Plane", "Capsule", "AABB (not working)" };
+
+		Hollow::Vector3 particlePosition;
+		Hollow::Vector3 particleVelocity;
 	public:
 		HierarchyTab() = default;
 
@@ -74,6 +94,12 @@ namespace GUI {
 					selectedGameObject = &entity;
 					selectedTerrain = nullptr;
 					selectedLight = nullptr;
+					if (selectedGameObject->hasComponent<PhysicsComponent>()) {
+						PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+						tempShapeType = physics->type;
+					} else {
+						tempShapeType = 0;
+					}
 				}
 				
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
@@ -104,6 +130,15 @@ namespace GUI {
 					}
 					if (ImGui::Button("Selected")) {
 						entity.addComponent<SelectComponent>(true);
+						ImGui::CloseCurrentPopup();
+					}
+					if (ImGui::Button("Physics")) {
+						if (entity.hasComponent<TransformComponent>()) {
+							TransformComponent* transform = entity.getComponent<TransformComponent>();
+							entity.addComponent<PhysicsComponent>(transform->position, 0.0f);
+						} else {
+							entity.addComponent<PhysicsComponent>();
+						}
 						ImGui::CloseCurrentPopup();
 					}
 					if (ImGui::Button("Delete")) {
@@ -224,7 +259,10 @@ namespace GUI {
 						if (ImGui::Button("Load from file")) {
 							filename = Hollow::FileSystem::openFile("");
 							if (filename.size()) {
-								//DelayedTaskManager::instance()->add([&, renderableComponent]() { renderableComponent->load(filename); });
+								Hollow::DelayedTaskManager::instance()->add([&, renderableComponent]() { 
+									Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import(filename.c_str());
+									renderableComponent->load(model); 
+								});
 							}
 						}
 					}
@@ -233,29 +271,81 @@ namespace GUI {
 				if (selectedGameObject->hasComponent<TransformComponent>()) {
 					if (ImGui::CollapsingHeader("Transform component")) {
 						TransformComponent* component = selectedGameObject->getComponent<TransformComponent>();
-						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f, -10000.0f, 10000.0f)) {
-							if (selectedGameObject->hasComponent<PhysicsComponent>()) {
-								PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
-
-								btTransform origin;
-								physics->body->getMotionState()->getWorldTransform(origin);
-								btVector3& originVec = origin.getOrigin();
-								physics->body->activate(true);
-								physics->body->translate(btVector3(
-									component->position.x - originVec.getX(),
-									component->position.y - originVec.getY(),
-									component->position.z - originVec.getZ()
-								));
+						PhysicsComponent* physics = nullptr; 
+						if (selectedGameObject->getComponent<PhysicsComponent>()) {
+							physics = selectedGameObject->getComponent<PhysicsComponent>();
+						}
+						if (ImGui::DragFloat3("Position", (float*)& component->position, 0.1f)) {
+							if (physics != nullptr) {
+								physics->setPosition(component->position);
 							}
 						}
-						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f, -10000.0f, 10000.0f);
-						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f, -10000.0f, 10000.0f);
+						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f);
+						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f);
 					}
 				}
+				if (selectedGameObject->hasComponent<PhysicsComponent>()) {
+					if (ImGui::CollapsingHeader("Physics component")) {
+						PhysicsComponent* physics = selectedGameObject->getComponent<PhysicsComponent>();
+						ImGui::Checkbox("Apply rotation", &physics->applyRotation);
+
+						if (ImGui::BeginCombo("Animation", shapeTypesSelectables[tempShapeType])) {
+							for (int n = 0; n < 5; n++) {
+								bool is_selected = (tempShapeType == n);
+								if (ImGui::Selectable(shapeTypesSelectables[n], is_selected))
+									tempShapeType = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+							}
+							ImGui::EndCombo();
+						}
+						ImGui::DragFloat3("Shape origin position", (float*)&position, 0.1f);
+						ImGui::DragFloat3("Shape angular factor", (float*)&angularFactor, 0.1f);
+						ImGui::DragFloat("Shape mass (0 means static object)", &mass, 0.1f);
+
+						if (tempShapeType == PhysicsShapeType::PST_BOX) {
+							ImGui::DragFloat3("Box size", (float*)&boxShapeSize, 0.1f);
+						} else if (tempShapeType == PhysicsShapeType::PST_CAPSULE) {
+							ImGui::DragFloat("Capsule height", &capsuleShapeHeight, 0.1f);
+							ImGui::DragFloat("Capsule radius", &capsuleShapeRadius, 0.1f);
+						} else if (tempShapeType == PhysicsShapeType::PST_SPHERE) {
+							ImGui::DragFloat("Sphere radius", &sphereShapeRadius, 0.1f);
+						}
+
+						if (ImGui::Button("Add body")) {
+							physics->setPosition(position);
+							physics->setMass(mass);
+							switch (tempShapeType)
+							{
+								case PhysicsShapeType::PST_BOX:
+									physics->addBoxShape(boxShapeSize);
+									break;
+								case PhysicsShapeType::PST_SPHERE:
+									physics->addSphereShape(sphereShapeRadius);
+									break;
+								case PhysicsShapeType::PST_PLANE:
+									physics->addPlaneShape(planeShapeNormal, planeSize);
+									break;
+								case PhysicsShapeType::PST_CAPSULE:
+									physics->addCapsuleShape(capsuleShapeHeight, capsuleShapeRadius);
+									break;
+								case PhysicsShapeType::PST_AABB:
+									break;
+								default:
+								break;
+							}
+							physics->init();
+							physics->body->setAngularFactor(btVector3(angularFactor.x, angularFactor.y, angularFactor.z));
+							PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
+						}
+					}
+				}
+				
 				if (selectedGameObject->hasComponent<AnimationComponent>()) {
 					if (ImGui::CollapsingHeader("Animation component")) {
 						AnimationComponent* animation = selectedGameObject->getComponent<AnimationComponent>();
-
+						
+						ImGui::DragFloat("Blending factor", &animation->blendingFactor, 0.001f, 0.0f, 1.0f);
 						if (ImGui::BeginCombo("Animation", animation->animations[animation->currentAnimation]->name.c_str())) {
 							for (int n = 0; n < animation->animations.size(); n++) {
 								bool is_selected = (animation->animations[animation->currentAnimation] == animation->animations[n]);
@@ -283,6 +373,28 @@ namespace GUI {
 						}
 					}
 				}
+				if (selectedGameObject->hasComponent<ParticleComponent>()) {
+					if (ImGui::CollapsingHeader("Particle component")) {
+						ParticleComponent* particle = selectedGameObject->getComponent<ParticleComponent>();
+
+						if (ImGui::CollapsingHeader("Patricles")) {
+							for (auto& it : particle->particles) {
+								ImGui::Text(("Position: " + std::to_string(it->position.x) + " " + std::to_string(it->position.y) + " " + std::to_string(it->position.z)).c_str());
+								ImGui::Text(("Velocity: " + std::to_string(it->velocity.x) + " " + std::to_string(it->velocity.y) + " " + std::to_string(it->velocity.z)).c_str());
+								ImGui::Text("-----------------------------------------------------------------");
+							}
+						}
+
+						ImGui::DragFloat("Particle lifetime", &particle->lifetime);
+						ImGui::DragFloat("Particle max particles", &particle->maxParticles);
+						ImGui::DragFloat3("Particle position", (float*)&particlePosition);
+						ImGui::DragFloat3("Particle velocity", (float*)&particleVelocity);
+
+						if (ImGui::Button("Emit")) {
+							particle->emit(particlePosition, particleVelocity);
+						}
+					}
+				}
 			}
 			ImGui::End();
 
@@ -307,10 +419,11 @@ namespace GUI {
 				if (ImGui::Button("Change##diffuse_texture")) {
 					filename = Hollow::FileSystem::openFile("");
 					if (filename.size()) {
-						//TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
+						Hollow::DelayedTaskManager::instance()->add([&]() {
+							TextureManager::instance()->remove(selectedMaterial->diffuseTexture);
+						});
 						selectedMaterial->materialData.hasDiffuseTexture = true;
-						//selectedMaterial->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile("2.png");
-						//selectedMaterial->diffuseTexture = Hollow::TextureManager::instance()->createTextureFromFile(filename, false);
+						selectedMaterial->diffuseTexture = TextureManager::instance()->create2DTextureFromFile(filename, 2);
 					}
 				}
 
@@ -351,6 +464,18 @@ namespace GUI {
 						/*TextureManager::instance()->remove(selectedMaterial->specularTexture);
 						selectedMaterial->specularTexture = TextureManager::instance()->createTextureFromFile(filename, false);*/
 					}
+				}
+			}
+			ImGui::End();
+			ImGui::Begin("Textures");
+			int imgCounter = 0;
+			for (auto& it : TextureManager::instance()->textureList) {
+				if (++imgCounter % 3 != 0) ImGui::SameLine();
+
+				if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+					ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(it.second)->m_TextureShaderResource, ImVec2(100, 100));
+				} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(it.second)->textureId, ImVec2(100, 100));
 				}
 			}
 			ImGui::End();

@@ -6,7 +6,14 @@ namespace Hollow {
 	{
 		D3D11Texture* texture = new D3D11Texture(desc);
 		texture->type = desc.type;
-
+		texture->name = desc.name;
+		texture->depth = desc.depth;
+		texture->width = desc.width;
+		texture->height = desc.height;
+		texture->format = desc.format;
+		texture->numMips = desc.numMips;
+		texture->samples = desc.samples;
+		
 		UINT32 numFaces = desc.type == TextureType::TT_TEXTURE_CUBE ? 6 : 1 * (desc.arraySlices == 0 ? 1 : desc.arraySlices);
 		UINT32 numMips = desc.numMips + 1;
 

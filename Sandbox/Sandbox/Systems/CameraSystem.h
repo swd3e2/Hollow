@@ -10,7 +10,7 @@ private:
 	bool updated;
 
 	float bias = 0.000001f;
-	float cameraMoveSpeed = 0.024f;
+	float cameraMoveSpeed = 0.015f;
 	float cameraMouseMoveSpeed = 0.2f;
 public:
 	CameraSystem()

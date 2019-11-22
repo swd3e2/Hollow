@@ -7,7 +7,7 @@ namespace Hollow {
 	{
 	private:
 		friend class D3D11ShaderManager;
-		ID3D11DeviceChild* m_Shader;
+		ID3D11DeviceChild* m_Shader = nullptr;
 	public:
 		virtual void release() override
 		{

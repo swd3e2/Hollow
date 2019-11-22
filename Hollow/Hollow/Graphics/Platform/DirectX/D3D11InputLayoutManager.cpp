@@ -44,8 +44,7 @@ namespace Hollow {
 		for (int i = 0; i < desc.layout.size(); i++) {
 			if (i == 0) {
 				layout[i] = { desc.layout[i].name.c_str(), 0, D3D11Helper::getInputLayoutFormat(desc.layout[i].type), 0,							0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-			}
-			else {
+			} else {
 				layout[i] = { desc.layout[i].name.c_str(), 0, D3D11Helper::getInputLayoutFormat(desc.layout[i].type), 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 			}
 		}

@@ -25,12 +25,11 @@ namespace Hollow {
 		Vector3 operator/(const float divisor) const;
 		Vector3& invert();
 
-		Vector3& operator*(const float val);
+		Vector3 operator*(const float val);
 		static Vector3 cross(const Vector3& left, const Vector3& right);
 		static Vector3 normalize(const Vector3& vector);
-
+		static Vector3 interpolate(const Vector3& left, const Vector3& right, const float factor);
 		static float length(const Vector3& vec);
-
 		static float dot(const Vector3& left, const Vector3& right);
 
 		Vector3& operator+=(const Vector3& other);

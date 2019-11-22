@@ -19,6 +19,9 @@
 #include "Sandbox/Entities/Light.h"
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/PhysicsComponent.h"
+#include "Sandbox/Components/PlayerComponent.h"
+#include "Sandbox/Components/AnimationComponent.h"
+#include "Sandbox/Systems/PhysicsSystem.h"
 
 /**
  * Project settings class
@@ -84,17 +87,61 @@ public:
 				}
 
 				if (it.find("RenderableComponent") != it.end()) {
-					RenderableComponent* objRenderable = gameObject->addComponent<RenderableComponent>();
-					PhysicsComponent* objPhysics = gameObject->addComponent<PhysicsComponent>();
-					TransformComponent* transform = gameObject->getComponent<TransformComponent>();
-
 					Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import(it["RenderableComponent"]["filename"].get<std::string>().c_str());
-					if (model != nullptr) {
-						Hollow::Vector3 position = transform != nullptr ? transform->position : Hollow::Vector3();
+					RenderableComponent* objRenderable = gameObject->addComponent<RenderableComponent>(model);
 
-						objRenderable->load(model);
-						//objPhysics->load(model, position);
+					if (it.find("AnimationComponent") != it.end()) {
+						AnimationComponent* animation = gameObject->addComponent< AnimationComponent>(model);
 					}
+				}
+
+				if (it.find("PlayerComponent") != it.end()) {
+					gameObject->addComponent<PlayerComponent>();
+				}
+
+				if (it.find("PhysicsComponent") != it.end()) {
+					PhysicsComponent* physics = gameObject->addComponent<PhysicsComponent>(
+						Hollow::Vector3(
+							it["PhysicsComponent"]["originalPosition"][0].get<float>(),
+							it["PhysicsComponent"]["originalPosition"][1].get<float>(),
+							it["PhysicsComponent"]["originalPosition"][2].get<float>()
+						), it["PhysicsComponent"]["mass"].get<float>()
+					);
+
+					switch (it["PhysicsComponent"]["type"].get<int>())
+					{
+					case PhysicsShapeType::PST_BOX:
+						physics->addBoxShape(
+							Hollow::Vector3(
+								it["PhysicsComponent"]["boxSize"][0].get<float>(),
+								it["PhysicsComponent"]["boxSize"][1].get<float>(),
+								it["PhysicsComponent"]["boxSize"][2].get<float>()
+							)
+						);
+						break;
+					case PhysicsShapeType::PST_SPHERE:
+						physics->addSphereShape(it["PhysicsComponent"]["sphereRadius"].get<float>());
+						break;
+					case PhysicsShapeType::PST_PLANE:
+						physics->addPlaneShape(Hollow::Vector3(
+							it["PhysicsComponent"]["planeNormal"][0].get<float>(),
+							it["PhysicsComponent"]["planeNormal"][1].get<float>(),
+							it["PhysicsComponent"]["planeNormal"][2].get<float>()
+						), it["PhysicsComponent"]["planeSize"].get<float>());
+						break;
+					case PhysicsShapeType::PST_CAPSULE:
+						physics->addCapsuleShape(
+							it["PhysicsComponent"]["capsuleHeight"].get<float>(), 
+							it["PhysicsComponent"]["capsuleRadius"].get<float>()
+						);
+						break;
+					default:
+						break;
+					}
+
+					physics->init();
+
+					PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 				}
 			}
 
@@ -159,7 +206,7 @@ public:
 				}
 			}
 
-			projectFolder = Hollow::Helper::trimToLastLineEntry(filename.c_str(), '\\');
+			projectFolder = Hollow::Helper::trimToLastLineEntry(filename.c_str(), '/');
 
 			isProjectLoaded = true;
 		};
@@ -239,6 +286,31 @@ public:
 						{ "filename", it.getComponent<RenderableComponent>()->filename}
 					};
 				}
+
+				if (it.hasComponent<PlayerComponent>()) {
+					projectData["GameObjects"][counter]["PlayerComponent"] = {};
+				}
+
+				if (it.hasComponent<PhysicsComponent>()) {
+					PhysicsComponent* physics = it.getComponent<PhysicsComponent>();
+
+					projectData["GameObjects"][counter]["PhysicsComponent"] = {
+						{ "type", physics->type },
+						{ "boxSize", { physics->boxSize.x, physics->boxSize.y, physics->boxSize.z }},
+						{ "sphereRadius", physics->sphereRadius },
+						{ "planeNormal", { physics->planeNormal.x, physics->planeNormal.y, physics->planeNormal.z }},
+						{ "planeSize", physics->planeSize },
+						{ "capsuleHeight", physics->capsuleHeight },
+						{ "capsuleRadius", physics->capsuleRadius },
+						{ "originalPosition", { physics->originPosition.x, physics->originPosition.y, physics->originPosition.z }},
+						{ "mass", physics->mass }
+					};
+				}
+
+				if (it.hasComponent<PlayerComponent>()) {
+					projectData["GameObjects"][counter]["PlayerComponent"] = {};
+				}
+
 				counter++;
 			}
 

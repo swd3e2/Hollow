@@ -37,7 +37,8 @@ public:
 							animation->rootJoint,
 							Hollow::Matrix4::identity(),
 							animation->animations[animation->currentAnimation],
-							animation->nodeInfo
+							animation->nodeInfo,
+							animation
 						);
 						animation->currentFrame = 0.0f;
 					}
@@ -50,7 +51,7 @@ public:
 
 	virtual void PostUpdate(double dt) override {}
 
-	void animate(double time, const Hollow::s_ptr<Joint>& node, const Hollow::Matrix4& parentTransform, const Hollow::s_ptr<Animation>& animation, std::vector<Hollow::Matrix4>& container)
+	void animate(double time, const Hollow::s_ptr<Joint>& node, const Hollow::Matrix4& parentTransform, const Hollow::s_ptr<Animation>& animation, std::vector<Hollow::Matrix4>& container, AnimationComponent* animationComponent)
 	{
 		Hollow::Matrix4 localTransform = Hollow::Matrix4::identity();
 
@@ -83,6 +84,11 @@ public:
 				: closestRotation.second;
 			node->currentRotation = rotation;
 
+			
+			rotation = Hollow::Quaternion::interpolate(node->rotation, rotation, animationComponent->blendingFactor);
+			rotation.normalize();
+			translation = Hollow::Vector3::interpolate(node->translation, translation, animationComponent->blendingFactor);
+
 			localTransform = Hollow::Matrix4::rotation(rotation);
 			localTransform.r[0].w = translation.x;
 			localTransform.r[1].w = translation.y;
@@ -102,7 +108,7 @@ public:
 		}
 
 		for (auto& it : node->childs) {
-			animate(time, it, worldTransform, animation, container);
+			animate(time, it, worldTransform, animation, container, animationComponent);
 		}
 	}
 
@@ -194,14 +200,8 @@ public:
 
 		float deltaTime = (float)(next.first - prev.first);
 		float factor = (time - (float)prev.first) / deltaTime;
-		assert(factor >= 0.0f && factor <= 1.0f);
 
-		Hollow::Vector3 start = prev.second;
-		Hollow::Vector3 end = next.second;
-		Hollow::Vector3 delta = end - start;
-		Hollow::Vector3 out = start + (delta * factor);
-
-		return out;
+		return Hollow::Vector3::interpolate(prev.second, next.second, factor);
 	}
 
 	Hollow::Vector3 interpolateScaling(std::pair<double, Hollow::Vector3>& prev, std::pair<double, Hollow::Vector3>& next, double time)
@@ -212,14 +212,8 @@ public:
 
 		float deltaTime = (float)(next.first - prev.first);
 		float factor = (time - (float)prev.first) / deltaTime;
-		assert(factor >= 0.0f && factor <= 1.0f);
 
-		Hollow::Vector3 start = prev.second;
-		Hollow::Vector3 end = next.second;
-		Hollow::Vector3 delta = end - start;
-		Hollow::Vector3 out = start + (delta * factor);
-
-		return out;
+		return Hollow::Vector3::interpolate(prev.second, next.second, factor);
 	}
 
 	Hollow::Quaternion interpolateRotation(std::pair<double, Hollow::Quaternion>& prev, std::pair<double, Hollow::Quaternion>& next, double time)
@@ -230,10 +224,8 @@ public:
 
 		float deltaTime = (float)(next.first - prev.first);
 		float factor = (time - (float)prev.first) / deltaTime;
-		assert(factor >= 0.0f && factor <= 1.0f);
 
-		Hollow::Quaternion out;
-		Hollow::Quaternion::interpolate(out, prev.second, next.second, factor);
+		Hollow::Quaternion out = Hollow::Quaternion::interpolate(prev.second, next.second, factor);
 		out.normalize();
 
 		return out;

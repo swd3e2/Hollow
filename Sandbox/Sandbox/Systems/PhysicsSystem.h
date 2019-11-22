@@ -40,14 +40,26 @@ public:
 			if (entity.hasComponent<TransformComponent>() && entity.hasComponent<PhysicsComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
+				
+				if (physics->body == nullptr) {
+					continue;
+				}
+
 				btTransform tr;
-				physics->body->getMotionState()->getWorldTransform(tr);
-				btVector3& pos = tr.getOrigin(); 
-				btQuaternion rot = physics->body->getCenterOfMassTransform().getRotation();
+
+				if (physics->isDynamic) {
+					physics->body->getMotionState()->getWorldTransform(tr);
+				} else {
+					tr = physics->body->getWorldTransform();
+				}
+				
+				btVector3& pos = tr.getOrigin();
 
 				transform->position.x = pos.getX();
 				transform->position.y = pos.getY();
 				transform->position.z = pos.getZ();
+
+				btQuaternion rot = physics->body->getCenterOfMassTransform().getRotation();
 
 				if (physics->applyRotation) {
 					rot.getEulerZYX(transform->rotation.x, transform->rotation.y, transform->rotation.z);

@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include "Hollow/Graphics/TextureManager.h"
 #include "Hollow/Platform.h"
+#include "Sandbox/TextureManager.h"
 
 class RenderSystem;
 class HierarchyTab;
@@ -63,6 +64,8 @@ public:
 		if (model == nullptr) { 
 			return; 
 		}
+
+		filename = model->filename;
 		skinned = model->skinned;
 
 		processNodes(model);
@@ -87,31 +90,20 @@ public:
 			material->materialData.roughnessFactor = it.second.roughnessFactor;
 			material->materialData.emissiveFactor = it.second.emissiveFactor;
 
-			std::string diffuseTexture = it.second.diffuseTexture;
-			if (diffuseTexture.size()) {
-				material->materialData.hasDiffuseTexture = true;
-				std::string filepath = "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + diffuseTexture;
-
-				if (Hollow::FileSystem::exists(filepath)) {
-					Hollow::s_ptr<Hollow::Import::Texture> diffuse = Hollow::FreeImgImporter::instance()->import(filepath.c_str());
-
-					Hollow::TEXTURE_DESC desc;
-					desc.width = diffuse->width;
-					desc.height = diffuse->height;
-					desc.format = diffuse->bpp == 32 ? Hollow::TextureFormat::TF_BGRA8 : Hollow::TextureFormat::TF_BGR8;
-					desc.type = Hollow::TextureType::TT_TEXTURE2D;
-					desc.numMips = 5;
-
-					material->diffuseTexture = Hollow::TextureManager::instance()->create(desc);
-					material->diffuseTexture->update(diffuse->data.get());
-					material->diffuseTexture->generateMipMap();
-				} else {
-					HW_ERROR("Texture file not found, {}", filepath.c_str());
+			if (it.second.diffuseTexture.size()) {
+				material->diffuseTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.second.diffuseTexture, 5);
+				if (material->diffuseTexture != nullptr) {
+					material->materialData.hasDiffuseTexture = true;
+				}
+			}
+			if (it.second.normalTexture.size()) {
+				material->normalTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.second.normalTexture, 5);
+				if (material->normalTexture != nullptr) {
+					material->materialData.hasNormalTexture = true;
 				}
 			}
 			materials[it.first] = material;
 		}
-		if (0) {}
 	}
 private:
 	void processNodes(const Hollow::s_ptr<Hollow::Import::Model>& model)
@@ -128,7 +120,7 @@ private:
 		node->rotation = iNode->rotation;
 		node->scale = iNode->scale;
 		node->translation = iNode->translation;
-		node->worldTransform = Hollow::Matrix4::transpose(iNode->transform * parentTransform);
+		node->worldTransform = iNode->transform * parentTransform;
 
 		nodes.push_back(node);
 
