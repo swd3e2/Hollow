@@ -41,6 +41,10 @@ public:
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				PhysicsComponent* physics = entity.getComponent<PhysicsComponent>();
 				
+				if (physics->body == nullptr) {
+					continue;
+				}
+
 				btTransform tr;
 
 				if (physics->isDynamic) {

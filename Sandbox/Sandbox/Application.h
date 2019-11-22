@@ -194,6 +194,7 @@ public:
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
+
 			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
 				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
@@ -214,7 +215,7 @@ public:
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
 			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(100.0f, 100.0f, 100.0f);
+			transform->scale = Hollow::Vector3(1.0f, 1.0f, 1.0f);
 
 			entity->addComponent<PlayerComponent>();
 		}

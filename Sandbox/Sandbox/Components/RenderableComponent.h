@@ -64,6 +64,8 @@ public:
 		if (model == nullptr) { 
 			return; 
 		}
+
+		filename = model->filename;
 		skinned = model->skinned;
 
 		processNodes(model);

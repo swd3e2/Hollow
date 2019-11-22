@@ -22,6 +22,12 @@ public:
 	Hollow::s_ptr<btRigidBody> body;
 	PhysicsShapeType type;
 	Hollow::Vector3 originPosition;
+	Hollow::Vector3 boxSize;
+	Hollow::Vector3 planeNormal;
+	float capsuleHeight;
+	float capsuleRadius;
+	float planeSize;
+	float sphereRadius;
 	bool applyRotation = true;
 	bool isDynamic = false;
 	float mass = 0.0f;

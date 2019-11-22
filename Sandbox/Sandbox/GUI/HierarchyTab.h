@@ -132,6 +132,15 @@ namespace GUI {
 						entity.addComponent<SelectComponent>(true);
 						ImGui::CloseCurrentPopup();
 					}
+					if (ImGui::Button("Physics")) {
+						if (entity.hasComponent<TransformComponent>()) {
+							TransformComponent* transform = entity.getComponent<TransformComponent>();
+							entity.addComponent<PhysicsComponent>(transform->position, 0.0f);
+						} else {
+							entity.addComponent<PhysicsComponent>();
+						}
+						ImGui::CloseCurrentPopup();
+					}
 					if (ImGui::Button("Delete")) {
 						Hollow::DelayedTaskManager::instance()->add([&entity]() { Hollow::EntityManager::instance()->destroy(entity.getId()); });
 						ImGui::CloseCurrentPopup();
@@ -250,7 +259,10 @@ namespace GUI {
 						if (ImGui::Button("Load from file")) {
 							filename = Hollow::FileSystem::openFile("");
 							if (filename.size()) {
-								//DelayedTaskManager::instance()->add([&, renderableComponent]() { renderableComponent->load(filename); });
+								Hollow::DelayedTaskManager::instance()->add([&, renderableComponent]() { 
+									Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import(filename.c_str());
+									renderableComponent->load(model); 
+								});
 							}
 						}
 					}

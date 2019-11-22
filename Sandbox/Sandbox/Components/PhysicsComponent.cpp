@@ -15,24 +15,34 @@ PhysicsComponent::~PhysicsComponent()
 void PhysicsComponent::addBoxShape(const Hollow::Vector3& size)
 {
 	type = PhysicsShapeType::PST_BOX;
+	
+	boxSize = size;
 	shape = std::make_shared<btBoxShape>(btVector3(size.x, size.y, size.z));
 }
 
 void PhysicsComponent::addSphereShape(float radius)
 {
 	type = PhysicsShapeType::PST_SPHERE;
+
+	sphereRadius = radius;
 	shape = std::make_shared<btSphereShape>(radius);
 }
 
-void PhysicsComponent::addPlaneShape(const Hollow::Vector3& planeNormal, float size)
+void PhysicsComponent::addPlaneShape(const Hollow::Vector3& normal, float size)
 {
 	type = PhysicsShapeType::PST_PLANE;
+
+	planeNormal = normal;
+	planeSize = size;
 	shape = std::make_shared<btStaticPlaneShape>(btVector3(planeNormal.x, planeNormal.y, planeNormal.z), size);
 }
 
 void PhysicsComponent::addCapsuleShape(float height, float radius)
 {
 	type = PhysicsShapeType::PST_CAPSULE;
+
+	capsuleHeight = height;
+	capsuleRadius = radius;
 	shape = std::make_shared<btCapsuleShape>(radius, height);
 }
 
@@ -55,6 +65,12 @@ void PhysicsComponent::addAABBShape(const Hollow::s_ptr<Hollow::Import::Model>& 
 
 void PhysicsComponent::setPosition(const Hollow::Vector3& position)
 {
+	originPosition = position;
+
+	if (body == nullptr) {
+		return;
+	}
+
 	btTransform transform;
 	transform.setIdentity();
 
