@@ -27,9 +27,6 @@ public:
 class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
-	//friend class RenderSystem;
-	//friend class HierarchyTab;
-
 	struct Node
 	{
 		int renderableId = -1;

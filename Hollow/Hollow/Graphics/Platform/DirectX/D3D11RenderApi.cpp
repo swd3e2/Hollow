@@ -244,6 +244,8 @@ namespace Hollow {
 			if (d3dVertexShader != nullptr) {
 				context->getDeviceContext()->VSSetShader(d3dVertexShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->VSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& pixelShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getPixelShader());
@@ -252,6 +254,8 @@ namespace Hollow {
 			if (d3dPixelShader != nullptr) {
 				context->getDeviceContext()->PSSetShader(d3dPixelShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->PSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& geometryShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getGeometryShader());
@@ -260,6 +264,8 @@ namespace Hollow {
 			if (d3dGeometryShader != nullptr) {
 				context->getDeviceContext()->GSSetShader(d3dGeometryShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->GSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& hullShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getHullShader());
@@ -268,6 +274,8 @@ namespace Hollow {
 			if (d3dHullShader != nullptr) {
 				context->getDeviceContext()->HSSetShader(d3dHullShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->HSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& domainShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getDomainShader());
@@ -276,6 +284,8 @@ namespace Hollow {
 			if (d3dDomainShader != nullptr) {
 				context->getDeviceContext()->DSSetShader(d3dDomainShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->DSSetShader(nullptr, NULL, 0);
 		}
 	}
 
@@ -287,11 +297,20 @@ namespace Hollow {
 
 		switch (topology)
 		{
+		case PrimitiveTopology::PT_POINT:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+			break;
+		case PrimitiveTopology::PT_LINESTRIP:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+			break;
 		case PrimitiveTopology::PT_LINELIST:
 			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 			break;
 		case PrimitiveTopology::PT_TRIANGELIST:
 			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			break;
+		case PrimitiveTopology::PT_TRIANGESTRIP:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 			break;
 		default:
 			break;
@@ -324,8 +343,8 @@ namespace Hollow {
 		s_ptr<D3D11GPUBuffer> gpuBuffer = std::static_pointer_cast<D3D11GPUBuffer>(buffer);
 		context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 		context->getDeviceContext()->PSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		//context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		//context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 	}
 
 	void D3D11RenderApi::setViewport(int w0, int y0, int w, int y)

@@ -135,6 +135,18 @@ namespace Hollow {
 				}
 			}
 		} break;
+		case ShaderType::ST_GEOMERTY: {
+			shaderId = glCreateShaderProgramv(GL_GEOMETRY_SHADER, 1, &charShaderCode);
+			getError(shaderId);
+		} break;
+		case ShaderType::ST_HULL: {
+			shaderId = glCreateShaderProgramv(GL_TESS_CONTROL_SHADER, 1, &charShaderCode);
+			getError(shaderId);
+		} break;
+		case ShaderType::ST_DOMAIN: {
+			shaderId = glCreateShaderProgramv(GL_TESS_EVALUATION_SHADER, 1, &charShaderCode);
+			getError(shaderId);
+		} break;
 		}
 	}
 }

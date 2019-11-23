@@ -117,6 +117,7 @@ private:
 	Hollow::s_ptr<Hollow::ShaderPipeline> flatColor;
 	Hollow::s_ptr<Hollow::ShaderPipeline> instanced;
 	Hollow::s_ptr<Hollow::ShaderPipeline> samplingPipeline;
+	Hollow::s_ptr<Hollow::ShaderPipeline> geomtryShaderTest;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -143,6 +144,7 @@ private:
 
 	Hollow::s_ptr<Hollow::DepthStencil> less;
 	Hollow::s_ptr<Hollow::DepthStencil> greater;
+	Hollow::s_ptr<Hollow::DepthStencil> noDepth;
 
 	Hollow::s_ptr<Hollow::RasterizerState> cullBack;
 	Hollow::s_ptr<Hollow::RasterizerState> cullFront;
@@ -153,6 +155,8 @@ private:
 	Hollow::Material* defaultMaterial;
 
 	std::array<Hollow::Matrix4, 50> instanceGpuData;
+
+	Hollow::s_ptr<Hollow::VertexBuffer> geometryShaderTestBuffer;
 public:
 	RenderSystem(Hollow::RenderApi* renderer, int width, int height) :
 		renderer(renderer), width(width), height(height)
@@ -183,8 +187,8 @@ public:
 		}
 		{
 			std::vector<Hollow::Vertex> vertices;
-			vertices.push_back(Hollow::Vertex(0.0f, 10.0f, 0.0f, 0.0f, 0.0f));
-			vertices.push_back(Hollow::Vertex(0.0f, -10.0f, 0.0f, 0.0f, 1.0f));
+			vertices.push_back(Hollow::Vertex(0.0f, 10.0f, 0.0f));
+			vertices.push_back(Hollow::Vertex(0.0f, -10.0f, 0.0f));
 
 			Hollow::VERTEX_BUFFER_DESC desc;
 			desc.data = vertices.data();
@@ -193,6 +197,20 @@ public:
 			desc.isDynamic = true;
 
 			lineVB = Hollow::VertexBuffer::create(desc);
+		}
+		{
+			std::vector<Hollow::Vertex> vertices;
+			vertices.push_back(Hollow::Vertex( 0.5f,  0.5f, 0.0f));
+			vertices.push_back(Hollow::Vertex( 0.5f, -0.5f, 0.0f));
+			vertices.push_back(Hollow::Vertex(-0.5f,  0.5f, 0.0f));
+			vertices.push_back(Hollow::Vertex(-0.5f, -0.5f, 0.0f));
+
+			Hollow::VERTEX_BUFFER_DESC desc;
+			desc.data = vertices.data();
+			desc.size = vertices.size();
+			desc.stride = sizeof(Hollow::Vertex);
+
+			geometryShaderTestBuffer = Hollow::VertexBuffer::create(desc);
 		}
 		std::tie(lightVertexBuffer, lightIndexBuffer) = Hollow::getCube();
 
@@ -283,7 +301,7 @@ public:
 
 			renderer->setDepthStencilState(greater);
 			renderer->setRasterizerState(cullFront);
-			DrawSkyMap();
+			//DrawSkyMap();
 
 			renderer->unsetTexture(0);
 			renderer->unsetTexture(1);
@@ -352,9 +370,9 @@ public:
 
 	void gBufferPass()
 	{
-		renderer->setDepthStencilState(less);
 		renderer->setRasterizerState(cullNone);
 		renderer->setRenderTarget(gBuffer);
+		renderer->setDepthStencilState(noDepth);
 		renderer->setShaderPipeline(gBufferPipeline);
 
 		// Physics debug draw
@@ -383,56 +401,17 @@ public:
 			renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
 		}
 
+		renderer->setDepthStencilState(less);
+
 		drawModels();
 		drawLights();
 		drawParticles();
 
-		//// Instanced drawing test
-		//renderer->setShaderPipeline(instanced);
-		//{
-		//	GameObject* entity = (GameObject*)Hollow::EntityManager::instance()->get(3);
-		//	RenderableComponent* renderable = entity->getComponent<RenderableComponent>();
-		//	TransformComponent* transform = entity->getComponent<TransformComponent>();
-
-		//	if (renderable->skinned && entity->hasComponent<AnimationComponent>()) {
-		//		AnimationComponent* animation = entity->getComponent<AnimationComponent>();
-		//		perModelData.hasAnimation = !animation->stoped;
-		//		if (!animation->stoped && animation->nodeInfo.size() > 0) {
-		//			boneInfo->update(animation->nodeInfo.data(), sizeof(Hollow::Matrix4) * animation->nodeInfo.size());
-		//			renderer->setGpuBuffer(boneInfo);
-		//		}
-		//	} else {
-		//		perModelData.hasAnimation = false;
-		//	}
-
-		//	Hollow::Matrix4 trs = Hollow::Matrix4::translation(transform->position)
-		//		* Hollow::Matrix4::rotation(Hollow::Quaternion(transform->rotation))
-		//		* Hollow::Matrix4::scaling(transform->scale);
-
-		//	perModelData.transform = trs;
-		//	perModel->update(&perModelData);
-		//	renderer->setGpuBuffer(perModel);
-
-		//	for (auto& object : renderable->renderables) {
-		//		if (renderable->materials.find(object->material) != renderable->materials.end()) {
-		//			const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
-		//			if (material->diffuseTexture != nullptr) {
-		//				renderer->setTexture(0, material->diffuseTexture);
-		//			} else {
-		//				renderer->unsetTexture(0);
-		//			}
-		//			materialConstantBuffer->update(&renderable->materials[object->material]->materialData);
-		//			renderer->setGpuBuffer(materialConstantBuffer);
-		//		} else {
-		//			materialConstantBuffer->update(&defaultMaterial->materialData);
-		//			renderer->setGpuBuffer(materialConstantBuffer);
-		//		}
-
-		//		renderer->setVertexBuffer(object->vBuffer);
-		//		renderer->setIndexBuffer(object->iBuffer);
-		//		renderer->drawIndexedInstanced(object->iBuffer->mHardwareBuffer->getSize(), 50);
-		//	}
-		//}
+		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_POINT);
+		renderer->setShaderPipeline(geomtryShaderTest);
+		renderer->setVertexBuffer(geometryShaderTestBuffer);
+		renderer->draw(4);
+		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
 
 		renderer->setRasterizerState(cullBack);
 	}
@@ -465,14 +444,16 @@ public:
 			if (entity.hasComponent<LightComponent>()) {
 				LightComponent* lightComponent = entity.getComponent<LightComponent>();
 
-				perModelData.transform = Hollow::Matrix4::translation(lightComponent->lightData.position);
-				perModelData.hasAnimation = false;
-				perModel->update(&perModelData);
-				renderer->setGpuBuffer(perModel);
+				if (lightComponent->lightData.type == (int)LightType::POINT) {
+					perModelData.transform = Hollow::Matrix4::translation(lightComponent->lightData.position);
+					perModelData.hasAnimation = false;
+					perModel->update(&perModelData);
+					renderer->setGpuBuffer(perModel);
 
-				renderer->setVertexBuffer(lightVertexBuffer);
-				renderer->setIndexBuffer(lightIndexBuffer);
-				renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
+					renderer->setVertexBuffer(lightVertexBuffer);
+					renderer->setIndexBuffer(lightIndexBuffer);
+					renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
+				}
 			}
 		}
 	}
@@ -749,6 +730,14 @@ public:
 
 			samplingPipeline = Hollow::ShaderPipeline::create(pipelineDesc);
 		}
+		{
+			Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+			pipelineDesc.vertexShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/geomtryShaderTest" + shaderExt, "main" });
+			pipelineDesc.pixelShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/geomtryShaderTest" + shaderExt, "main" });
+			pipelineDesc.geometryShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_GEOMERTY, baseShaderPath + "geometry/geomtryShaderTest" + shaderExt, "main" });
+
+			geomtryShaderTest = Hollow::ShaderPipeline::create(pipelineDesc);
+		}
 	}
 
 	void initGpuBuffers()
@@ -848,6 +837,12 @@ public:
 
 			less = Hollow::DepthStencil::create(depthDesc);
 		}
+		{
+			Hollow::DEPTH_STENCIL_STATE_DESC depthDesc;
+			depthDesc.depthEnable = false;
+
+			noDepth = Hollow::DepthStencil::create(depthDesc);
+		}
 	}
 
 	void initRasterizerState()
@@ -876,6 +871,7 @@ public:
 			desc.magFilterMode = Hollow::FilterMode::FM_LINEAR;
 			desc.minFilterModel = Hollow::FilterMode::FM_LINEAR;
 			desc.mipFilterMode = Hollow::FilterMode::FM_POINT;
+			desc.maxAnisotropy = 16;
 
 			desc.comparisonFunction = Hollow::ComparisonFunction::CMP_NEVER;
 			sampler = Hollow::RenderStateManager::instance()->createSamplerState(desc);

@@ -139,6 +139,11 @@ public:
 						break;
 					}
 
+				/*	physics->setAngularFactor(Hollow::Vector3(
+						it["PhysicsComponent"]["angularFactor"][0].get<float>(),
+						it["PhysicsComponent"]["angularFactor"][1].get<float>(),
+						it["PhysicsComponent"]["angularFactor"][2].get<float>()
+					));*/
 					physics->init();
 
 					PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
@@ -198,7 +203,7 @@ public:
 					light->lightData.quadratic = it["LightComponent"]["quadratic"].get<float>();
 					light->lightData.cutoff = it["LightComponent"]["cutoff"].get<float>();
 					light->lightData.distance = it["LightComponent"]["distance"].get<float>();
-					light->lightData.type = it["LightComponent"]["type"].get<float>();
+					light->lightData.type = it["LightComponent"]["type"].get<int>();
 				}
 
 				if (it.find("TerrainData") != it.end()) {
@@ -303,7 +308,8 @@ public:
 						{ "capsuleHeight", physics->capsuleHeight },
 						{ "capsuleRadius", physics->capsuleRadius },
 						{ "originalPosition", { physics->originPosition.x, physics->originPosition.y, physics->originPosition.z }},
-						{ "mass", physics->mass }
+						{ "mass", physics->mass },
+						{ "angularFactor", { physics->angularFactor.x, physics->angularFactor.y, physics->angularFactor.z } }
 					};
 				}
 

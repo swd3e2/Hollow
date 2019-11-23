@@ -80,6 +80,12 @@ void PhysicsComponent::setPosition(const Hollow::Vector3& position)
 	body->activate(true);
 }
 
+void PhysicsComponent::setAngularFactor(const Hollow::Vector3& factor)
+{
+	angularFactor = factor;
+	body->setAngularFactor(btVector3(factor.x, factor.y, factor.z));
+}
+
 void PhysicsComponent::init()
 {
 	btTransform startTransform;

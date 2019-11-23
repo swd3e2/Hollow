@@ -49,7 +49,7 @@ public:
 	FileSystemNotifier fNotifier;
 	CameraSystem* cameraSystem;
 	ParticleSystem* particleSystem;
-	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
+	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
 	const int width = 1920;
 	const int height = 1080;
 public:
@@ -209,7 +209,7 @@ public:
 			physics->init();
 
 			physics->body->setContactProcessingThreshold(0.01);
-			physics->body->setAngularFactor(btVector3(0.0f, 0.0f, 0.0f));
+			physics->setAngularFactor(Hollow::Vector3(0.0f, 0.0f, 0.0f));
 
 			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 

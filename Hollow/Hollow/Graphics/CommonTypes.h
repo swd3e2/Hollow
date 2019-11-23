@@ -149,6 +149,7 @@ namespace Hollow {
 
 	enum PrimitiveTopology
 	{
+		PT_POINT,
 		PT_LINELIST,
 		PT_LINESTRIP,
 		PT_TRIANGELIST,
