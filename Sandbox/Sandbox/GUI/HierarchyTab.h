@@ -46,6 +46,7 @@ namespace GUI {
 
 		Hollow::Vector3 particlePosition;
 		Hollow::Vector3 particleVelocity;
+		Hollow::Vector3 shapeLocalScale;
 	public:
 		HierarchyTab() = default;
 
@@ -280,7 +281,11 @@ namespace GUI {
 								physics->setPosition(component->position);
 							}
 						}
-						ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.1f);
+						if (ImGui::DragFloat3("Rotation", (float*)&component->rotation, 0.01f)) {
+							if (physics != nullptr) {
+								physics->setRotation(component->rotation);
+							}
+						}
 						ImGui::DragFloat3("Scale", (float*)& component->scale, 0.1f);
 					}
 				}
@@ -337,6 +342,10 @@ namespace GUI {
 							physics->init();
 							physics->body->setAngularFactor(btVector3(angularFactor.x, angularFactor.y, angularFactor.z));
 							PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
+						}
+
+						if (ImGui::DragFloat3("Shape local scale", (float*)&shapeLocalScale, 0.1f)) {
+							physics->setLocalScale(shapeLocalScale);
 						}
 					}
 				}

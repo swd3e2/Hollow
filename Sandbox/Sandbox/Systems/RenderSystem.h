@@ -839,7 +839,9 @@ public:
 		}
 		{
 			Hollow::DEPTH_STENCIL_STATE_DESC depthDesc;
-			depthDesc.depthEnable = false;
+			depthDesc.depthEnable = true;
+			depthDesc.depthFunc = Hollow::ComparisonFunction::CMP_ALWAYS;
+
 
 			noDepth = Hollow::DepthStencil::create(depthDesc);
 		}
@@ -868,9 +870,9 @@ public:
 	{
 		{
 			Hollow::SAMPLER_STATE_DESC desc;
-			desc.magFilterMode = Hollow::FilterMode::FM_LINEAR;
-			desc.minFilterModel = Hollow::FilterMode::FM_LINEAR;
-			desc.mipFilterMode = Hollow::FilterMode::FM_POINT;
+			desc.magFilterMode = Hollow::FilterMode::FM_ANISOTROPIC;
+			desc.minFilterModel = Hollow::FilterMode::FM_ANISOTROPIC;
+			desc.mipFilterMode = Hollow::FilterMode::FM_ANISOTROPIC;
 			desc.maxAnisotropy = 16;
 
 			desc.comparisonFunction = Hollow::ComparisonFunction::CMP_NEVER;

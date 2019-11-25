@@ -312,8 +312,6 @@ namespace Hollow {
 		case PrimitiveTopology::PT_TRIANGESTRIP:
 			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 			break;
-		default:
-			break;
 		}
 	}
 

@@ -49,7 +49,7 @@ public:
 
 	virtual void draw3dText(const btVector3& location, const char* textString) override {}
 
-	virtual void setDebugMode(int debugMode) override {}
-
-	virtual int getDebugMode() const override { return 2; }
+	virtual void setDebugMode(int debugMode) override { }
+	
+	virtual int getDebugMode() const override { return DBG_DrawWireframe | DBG_DrawAabb; }
 };

@@ -56,16 +56,9 @@ void main()
 		));
 
 		vec3 temp = normalize(texture(normalTexture, fs_in.texCoord).xyz * 2.0 - 1.0);
-		
-		temp = normalize(temp * tanToView);
-		normal = vec4(temp, 0.0f) * 0.5 + 0.5;
-		//normal = vec4(fs_in.normal, 1.0f) * 0.5 + 0.5;
-		//normal = normalize(vec4(fs_in.tangent, 0.0f) * 2.0 - 1.0);
-	/*	normal.x = -normal.x;
-		normal.z = -normal.z;*/
+		normal = vec4(normalize(temp * tanToView), 0.0f) * 0.5 + 0.5;
 	} else {
-		
-		normal = vec4(fs_in.normal, 1.0f) * 0.5 + 0.5;
+		normal = vec4(fs_in.normal, 0.0f) * 0.5 + 0.5;
 	}
 
 	if (color.a < 0.25) {

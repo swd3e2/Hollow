@@ -14,6 +14,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 0.0,
         "originalPosition": [
           0.0,
@@ -46,6 +51,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 1.0,
         "originalPosition": [
           0.0,
@@ -67,9 +77,9 @@
       },
       "TransformComponent": {
         "rotation": [
-          -3.1415891647338867,
-          -0.9145536422729492,
-          3.1415908336639404
+          -1.0795754860737361e-05,
+          1.5707963705062866,
+          8.136698852467816e-07
         ],
         "scale": [
           1.0,
@@ -77,9 +87,9 @@
           1.0
         ],
         "translation": [
-          -2.3659186363220215,
-          -48.70000457763672,
-          0.15581008791923523
+          46.65780258178711,
+          8.750862121582031,
+          -15.085332870483398
         ]
       },
       "id": 1,
@@ -99,6 +109,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 50.0,
         "originalPosition": [
           0.0,
@@ -119,9 +134,9 @@
       },
       "TransformComponent": {
         "rotation": [
-          -1.5707967281341553,
-          2.384185791015625e-07,
-          2.7990312576293945
+          -1.5707975625991821,
+          5.960464477539063e-08,
+          1.3864326477050781
         ],
         "scale": [
           4.699999809265137,
@@ -129,9 +144,9 @@
           4.699999809265137
         ],
         "translation": [
-          4.732349872589111,
-          -48.50000762939453,
-          -1.9535964727401733
+          -3.556544065475464,
+          -48.500003814697266,
+          -11.786751747131348
         ]
       },
       "id": 2,
@@ -151,6 +166,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 1.0,
         "originalPosition": [
           3.0,
@@ -171,9 +191,9 @@
       },
       "TransformComponent": {
         "rotation": [
-          -3.1415882110595703,
-          1.4574601650238037,
-          5.04154922964517e-06
+          -3.141592502593994,
+          -0.277904212474823,
+          3.141591787338257
         ],
         "scale": [
           1.0,
@@ -181,9 +201,9 @@
           1.0
         ],
         "translation": [
-          63.26553726196289,
-          -49.00000762939453,
-          31.769556045532227
+          -1.7968802452087402,
+          -49.000003814697266,
+          -4.140457630157471
         ]
       },
       "id": 3,
@@ -207,6 +227,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 0.0,
         "originalPosition": [
           39.900001525878906,
@@ -259,6 +284,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 0.0,
         "originalPosition": [
           -38.20000076293945,
@@ -311,6 +341,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 0.0,
         "originalPosition": [
           38.400001525878906,
@@ -350,14 +385,47 @@
       "name": "box2"
     },
     {
+      "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "boxSize": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "localScale": [
+          47.0,
+          10.899999618530273,
+          10.899999618530273
+        ],
+        "mass": 0.0,
+        "originalPosition": [
+          23.75,
+          -10.899999618530273,
+          -17.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
       "RenderableComponent": {
         "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\block.gltf"
       },
       "TransformComponent": {
         "rotation": [
-          0.0,
-          0.0,
-          0.0
+          0.019999999552965164,
+          0.029999999329447746,
+          0.3199999928474426
         ],
         "scale": [
           2.0,
@@ -372,15 +440,96 @@
       },
       "id": 8,
       "name": "block"
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\treetest.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          33.79999923706055,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation": [
+          3.5999999046325684,
+          1.0,
+          -8.5
+        ]
+      },
+      "id": 9,
+      "name": ""
+    },
+    {
+      "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "boxSize": [
+          10.0,
+          10.0,
+          10.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mass": 0.0,
+        "originalPosition": [
+          0.0,
+          -12.100000381469727,
+          10.399999618530273
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\boxtest.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          10.0,
+          10.0,
+          10.0
+        ],
+        "translation": [
+          0.0,
+          -12.100000381469727,
+          10.399999618530273
+        ]
+      },
+      "id": 10,
+      "name": "boxtest"
     }
   ],
   "Light": [
     {
       "LightComponent": {
         "color": [
-          0.35934412479400635,
-          0.9789029359817505,
-          0.9553753137588501
+          0.7896170616149902,
+          0.8739510774612427,
+          0.9746835231781006
         ],
         "constant": 0.25,
         "cutoff": 9.999999747378752e-05,

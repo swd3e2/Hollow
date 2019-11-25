@@ -138,13 +138,20 @@ public:
 					default:
 						break;
 					}
+					
+					physics->setLocalScale(Hollow::Vector3(
+						it["PhysicsComponent"]["localScale"][0].get<float>(),
+						it["PhysicsComponent"]["localScale"][1].get<float>(),
+						it["PhysicsComponent"]["localScale"][2].get<float>()
+					));
 
-				/*	physics->setAngularFactor(Hollow::Vector3(
+					physics->init();
+
+					physics->setAngularFactor(Hollow::Vector3(
 						it["PhysicsComponent"]["angularFactor"][0].get<float>(),
 						it["PhysicsComponent"]["angularFactor"][1].get<float>(),
 						it["PhysicsComponent"]["angularFactor"][2].get<float>()
-					));*/
-					physics->init();
+					));
 
 					PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 				}
@@ -309,7 +316,8 @@ public:
 						{ "capsuleRadius", physics->capsuleRadius },
 						{ "originalPosition", { physics->originPosition.x, physics->originPosition.y, physics->originPosition.z }},
 						{ "mass", physics->mass },
-						{ "angularFactor", { physics->angularFactor.x, physics->angularFactor.y, physics->angularFactor.z } }
+						{ "angularFactor", { physics->angularFactor.x, physics->angularFactor.y, physics->angularFactor.z } },
+						{ "localScale", { physics->localScale.x, physics->localScale.y, physics->localScale.z } }
 					};
 				}
 
