@@ -143,7 +143,9 @@ namespace GUI {
 						ImGui::CloseCurrentPopup();
 					}
 					if (ImGui::Button("Delete")) {
-						Hollow::DelayedTaskManager::instance()->add([&entity]() { Hollow::EntityManager::instance()->destroy(entity.getId()); });
+						Hollow::DelayedTaskManager::instance()->add([&entity]() { 
+							Hollow::EntityManager::instance()->destroy(entity.getId()); 
+						});
 						ImGui::CloseCurrentPopup();
 					}
 					ImGui::EndPopup();
@@ -414,6 +416,7 @@ namespace GUI {
 				ImGui::DragFloat("Metallic", &selectedMaterial->materialData.metallicFactor, 0.001f, 0.0f, 1.0f);
 				ImGui::DragFloat("Emissive", &selectedMaterial->materialData.emissiveFactor, 0.001f, 0.0f, 1.0f);
 				ImGui::DragFloat("Roughness", &selectedMaterial->materialData.roughnessFactor, 0.001f, 0.0f, 1.0f);
+				ImGui::DragFloat("AO", &selectedMaterial->materialData.ao, 0.01f);
 
 				ImGui::Text("Diffuse texture");
 				if (selectedMaterial->diffuseTexture != nullptr) {

@@ -15,7 +15,7 @@ namespace Hollow {
 		friend class D3D11RenderStateManager;
 		ID3D11SamplerState* m_SamplerState;
 	public:
-		~D3D11SamplerState()
+		virtual ~D3D11SamplerState()
 		{
 			SAFE_RELEASE(m_SamplerState);
 		}

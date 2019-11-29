@@ -13,11 +13,6 @@ private:
 	float cameraMoveSpeed = 0.015f;
 	float cameraMouseMoveSpeed = 0.2f;
 public:
-	CameraSystem()
-	{
-
-	}
-
 	void setCamera(Hollow::Camera* camera)
 	{
 		mCamera = camera;
@@ -32,49 +27,47 @@ public:
 
 		if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_UP) == true) {
 			updated = true;
-			mCamera->m_Position += mCamera->forwardVec * dt * cameraMoveSpeed;
+			mCamera->m_Position += mCamera->forwardVec * (float)dt * cameraMoveSpeed;
 			mCamera->updateViewMatrix();
 		} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_DOWN) == true) {
 			updated = true;
-			mCamera->m_Position -= mCamera->forwardVec * dt * cameraMoveSpeed;
+			mCamera->m_Position -= mCamera->forwardVec * (float)dt * cameraMoveSpeed;
 			mCamera->updateViewMatrix();
 		}
 
 		if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_LEFT) == true) {
 			updated = true;
-			mCamera->m_Position -= mCamera->rightVec * dt * cameraMoveSpeed;
+			mCamera->m_Position -= mCamera->rightVec * (float)dt * cameraMoveSpeed;
 			mCamera->updateViewMatrix();
 		} else if (Hollow::InputManager::GetKeyboardKeyIsPressed(Hollow::eKeyCodes::KEY_RIGHT) == true) {
 			updated = true;
-			mCamera->m_Position += mCamera->rightVec * dt * cameraMoveSpeed;
+			mCamera->m_Position += mCamera->rightVec * (float)dt * cameraMoveSpeed;
 			mCamera->updateViewMatrix();
 		}
 
 		if (Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_RIGHT)) {
 			updated = true;
-			mCamera->m_Rotation.x -= Hollow::InputManager::my * 0.00045 * dt;
+			mCamera->m_Rotation.x -= (float)Hollow::InputManager::my * 0.00045f * (float)dt;
 			if (mCamera->m_Rotation.x > Hollow::Math::HALF_PI - bias) {
 				mCamera->m_Rotation.x = Hollow::Math::HALF_PI - bias;
 			} else if (mCamera->m_Rotation.x < -Hollow::Math::HALF_PI + bias) {
 				mCamera->m_Rotation.x = -Hollow::Math::HALF_PI + bias;
 			}
-			mCamera->m_Rotation.y -= Hollow::InputManager::mx * 0.00045 * dt;
+			mCamera->m_Rotation.y -= (float)Hollow::InputManager::mx * 0.00045f * (float)dt;
 			mCamera->updateViewMatrix();
 		}
 
 		if (Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_MIDDLE)) {
 			updated = true;
 			if (Hollow::InputManager::lastY < 0) {
-				mCamera->m_Position -= mCamera->upVec * dt * cameraMouseMoveSpeed;
-			}
-			else if (Hollow::InputManager::lastY > 0) {
-				mCamera->m_Position += mCamera->upVec * dt * cameraMouseMoveSpeed;
+				mCamera->m_Position -= mCamera->upVec * (float)dt * cameraMouseMoveSpeed;
+			} else if (Hollow::InputManager::lastY > 0) {
+				mCamera->m_Position += mCamera->upVec * (float)dt * cameraMouseMoveSpeed;
 			}
 			if (Hollow::InputManager::lastX > 0) {
-				mCamera->m_Position -= mCamera->rightVec * dt * cameraMouseMoveSpeed;
-			}
-			else if (Hollow::InputManager::lastX < 0) {
-				mCamera->m_Position += mCamera->rightVec * dt * cameraMouseMoveSpeed;
+				mCamera->m_Position -= mCamera->rightVec * (float)dt * cameraMouseMoveSpeed;
+			} else if (Hollow::InputManager::lastX < 0) {
+				mCamera->m_Position += mCamera->rightVec * (float)dt * cameraMouseMoveSpeed;
 			}
 			mCamera->updateViewMatrix();
 		}

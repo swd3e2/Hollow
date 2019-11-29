@@ -30,6 +30,7 @@ namespace Hollow {
 		std::string entryPoint;
 		ShaderPipeline* parent; // @todo: do we need smart ptr here?
 	public:
+		virtual ~Shader() {}
 		static s_ptr<Shader> create(const SHADER_DESC& desc);
 		virtual void release() = 0;
 	};

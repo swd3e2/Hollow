@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Hollow/Common/Log.h"
 #include "SamplerState.h"
 #include "RasterizerState.h"
 #include "BlendState.h"

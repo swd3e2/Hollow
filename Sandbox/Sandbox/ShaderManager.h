@@ -35,7 +35,7 @@ public:
 	{
 		Hollow::s_ptr<Hollow::Shader> shader = Hollow::Shader::create(desc);
 		if (desc.filename.size() > 0) {
-			shaders[desc.filename] = shader;
+			//shaders[desc.filename] = shader;
 		}
 		return shader;
 	}

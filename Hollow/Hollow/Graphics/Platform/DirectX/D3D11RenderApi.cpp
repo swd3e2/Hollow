@@ -38,6 +38,22 @@ namespace Hollow {
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
 		InputLayoutManager::shutdown();
+
+		SAFE_RELEASE(m_DepthStencilView);
+		SAFE_RELEASE(m_DepthStencilBuffer);
+		SAFE_RELEASE(m_BackBuffer);
+		SAFE_RELEASE(m_RenderTarget);
+		SAFE_RELEASE(m_DepthResourceView);
+
+		ID3D11DeviceContext* deviceContext = const_cast<ID3D11DeviceContext*>(context->getDeviceContext());
+		IDXGISwapChain* swapChain = const_cast<IDXGISwapChain*>(context->getSwapChain());
+		ID3D11Device* device = const_cast<ID3D11Device*>(context->getDevice());
+
+		deviceContext->ClearState();
+
+		SAFE_RELEASE(swapChain);
+		SAFE_RELEASE(deviceContext);
+		SAFE_RELEASE(device);
 	}
 
 	void D3D11RenderApi::onStartUp()
@@ -79,10 +95,8 @@ namespace Hollow {
 		context = new D3D11Context(device, deviceContext, swapChain);
 
 		// Render main target
-		ID3D11Texture2D* backBuffer = {};
-		swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& backBuffer);
-
-		hr = device->CreateRenderTargetView(backBuffer, NULL, &m_RenderTarget);
+		swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&m_BackBuffer);
+		hr = device->CreateRenderTargetView(m_BackBuffer, NULL, &m_RenderTarget);
 
 		//Depth stencil
 		D3D11_TEXTURE2D_DESC desc;
@@ -118,8 +132,6 @@ namespace Hollow {
 		deviceContext->RSSetViewports(1, &vp);
 
 		deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		blendState = new D3D11BlendState();
 
 		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();
 		TextureManager::startUp<D3D11TextureManager>();
@@ -183,7 +195,7 @@ namespace Hollow {
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
-			for (int i = 0; i < d3d11RenderTarget->count; i++) {
+			for (int i = 0; i < d3d11RenderTarget->getCount(); i++) {
 				context->getDeviceContext()->ClearRenderTargetView(d3d11RenderTarget->getRenderTaget()[i], color);
 			}
 			context->getDeviceContext()->ClearDepthStencilView(d3d11RenderTarget->getDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -197,7 +209,7 @@ namespace Hollow {
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
-			context->getDeviceContext()->OMSetRenderTargets(d3d11RenderTarget->count, d3d11RenderTarget->getRenderTaget(), d3d11RenderTarget->getDepthStencilView());
+			context->getDeviceContext()->OMSetRenderTargets(d3d11RenderTarget->getCount(), d3d11RenderTarget->getRenderTaget(), d3d11RenderTarget->getDepthStencilView());
 		} else {
 			context->getDeviceContext()->OMSetRenderTargets(3, nullRTV, NULL);
 			context->getDeviceContext()->OMSetRenderTargets(1, &this->m_RenderTarget, this->m_DepthStencilView);

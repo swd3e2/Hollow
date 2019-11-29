@@ -44,7 +44,7 @@ public:
 	Profiler profiler;
 	AnimationSystem* animationSystem;
 	GUISystem* gui;
-	RenderSystem* renderPass;
+	RenderSystem* renderSystem;
 	PlayerSystem* playerSystem;
 	FileSystemNotifier fNotifier;
 	CameraSystem* cameraSystem;
@@ -58,6 +58,7 @@ public:
 	{
 		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
 		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
+	
 		gui = new GUISystem(window, renderer);
 
 		ProjectSettings::startUp<ProjectSettings>();
@@ -66,10 +67,10 @@ public:
 		ShaderManager::startUp();
 
 		camera.setProjectionValues(80.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100000.0f);
-
-		renderPass = new RenderSystem(renderer, width, height);
-		renderPass->skyMap = new SkyMap();
-		renderPass->m_Camera = &camera;
+		
+		renderSystem = new RenderSystem(renderer, width, height);
+		renderSystem->m_Camera = &camera;
+		renderSystem->skyMap = new SkyMap();
 
 		animationSystem = new AnimationSystem();
 		playerSystem = new PlayerSystem();
@@ -77,20 +78,17 @@ public:
 		cameraSystem->setCamera(&camera);
 		particleSystem = new ParticleSystem();
 
-		Hollow::SystemManager::instance()->addSystem(renderPass);
+		Hollow::SystemManager::instance()->addSystem(renderSystem);
 		Hollow::SystemManager::instance()->addSystem(animationSystem);
 		Hollow::SystemManager::instance()->addSystem(PhysicsSystem::instance());
 		Hollow::SystemManager::instance()->addSystem(playerSystem);
 		Hollow::SystemManager::instance()->addSystem(cameraSystem);
 		Hollow::SystemManager::instance()->addSystem(particleSystem);
 
-		gui->rendererTab.renderSystem = renderPass;
+		gui->rendererTab.renderSystem = renderSystem;
 
 		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
-
-		//Light* light = Hollow::EntityManager::instance()->create<Light>();
-		//light->addComponent<LightComponent>();
 
 		Hollow::TaskManager::instance()->add([&]() {
 			fNotifier.run();

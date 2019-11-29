@@ -44,7 +44,7 @@ namespace Hollow {
 			addMutex.lock();
 			for (auto& event : events) {
 				if (event->time <= 0) {
-					const int eventId = event->getId();
+					const size_t eventId = event->getId();
 					if (eventListeners.find(eventId) != eventListeners.end()) {
 						for (auto& it : eventListeners[eventId]) {
 							it->invoke(event);

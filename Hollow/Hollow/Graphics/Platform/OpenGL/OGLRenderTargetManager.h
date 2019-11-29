@@ -6,7 +6,6 @@
 #include "Hollow/Graphics/RenderTargetManager.h"
 #include "OGLPrerequisites.h"
 #include "OGLRenderTarget.h"
-#include "Hollow/Common/Log.h"
 
 namespace Hollow {
 	class OGLRenderTargetManager : public RenderTargetManager

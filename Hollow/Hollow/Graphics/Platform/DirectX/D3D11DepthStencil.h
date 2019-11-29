@@ -10,10 +10,6 @@ namespace Hollow {
 	public:
 		ID3D11DepthStencilState* depthStencilState;
 	public:
-		D3D11DepthStencil() = default;
-		~D3D11DepthStencil()
-		{
-			SAFE_RELEASE(depthStencilState);
-		}
+		virtual ~D3D11DepthStencil() { SAFE_RELEASE(depthStencilState); }
 	};
 }

@@ -9,6 +9,7 @@ namespace Hollow {
 	private:
 		friend class D3D11ShaderManager;
 	public:
+		virtual ~D3D11ShaderPipeline() {}
 		virtual void setVertexShader(const s_ptr<Shader>& shader) override
 		{
 			if (shader != nullptr) {

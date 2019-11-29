@@ -25,6 +25,7 @@ namespace Hollow {
 		compileInternal(tempShaderId, desc);
 		if (!getError(tempShaderId)) {
 			s_ptr<OGLShader> oglShader = std::static_pointer_cast<OGLShader>(shader);
+			glDeleteProgram(oglShader->shaderId);
 			oglShader->shaderId = tempShaderId;
 			oglShader->parent->setShader(oglShader);
 		}

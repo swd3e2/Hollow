@@ -15,6 +15,7 @@ namespace Hollow {
 		GPUBuffer(UINT32 location, UINT32 size) :
 			mLocation(location), mSize(size)
 		{}
+		virtual ~GPUBuffer() {}
 
 		static s_ptr<GPUBuffer> create(UINT32 location, UINT32 size);
 		

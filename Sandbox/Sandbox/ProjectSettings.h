@@ -364,6 +364,7 @@ public:
 						{ "type", light->lightData.type },
 					};
 				}
+				counter++;
 			}
 
 			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());

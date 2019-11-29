@@ -23,6 +23,7 @@
     <ClInclude Include="Hollow\ECS\EntityManager.h" />
     <ClInclude Include="Hollow\ECS\IComponent.h" />
     <ClInclude Include="Hollow\ECS\IEntity.h" />
+    <ClInclude Include="Hollow\Events\DefaultEvents.h" />
     <ClInclude Include="Hollow\Graphics\BlendState.h" />
     <ClInclude Include="Hollow\Graphics\CommonTypes.h" />
     <ClInclude Include="Hollow\Graphics\DepthStencil.h" />
@@ -83,8 +84,6 @@
     <ClInclude Include="Hollow\Import\HollowModelImporter.h" />
     <ClInclude Include="Hollow\Import\Mesh.h" />
     <ClInclude Include="Hollow\Importer\MeshData.h" />
-    <ClInclude Include="Hollow\Events\ButtonPressedEvent.h" />
-    <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h" />
     <ClInclude Include="Hollow\Events\Event.h" />
     <ClInclude Include="Hollow\Events\EventDelegate.h" />
     <ClInclude Include="Hollow\Events\EventDispatcher.h" />
@@ -92,8 +91,6 @@
     <ClInclude Include="Hollow\Events\IEvent.h" />
     <ClInclude Include="Hollow\Events\IEventDelegate.h" />
     <ClInclude Include="Hollow\Events\IEventListener.h" />
-    <ClInclude Include="Hollow\Events\MouseMoveEvent.h" />
-    <ClInclude Include="Hollow\Events\WindowCreateEvent.h" />
     <ClInclude Include="Hollow\Import\Texture.h" />
     <ClInclude Include="Hollow\RenderApiManager.h" />
     <ClInclude Include="Hollow\Graphics\RenderTarget.h" />
@@ -198,6 +195,7 @@
     <ClCompile Include="Hollow\Import\FreeImgImporter.cpp" />
     <ClCompile Include="Hollow\Import\GLTFImporter.cpp" />
     <ClCompile Include="Hollow\Import\gltf\tinygltf.cpp" />
+    <ClCompile Include="Hollow\Import\HollowModelExporter.cpp" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
     <ClCompile Include="Hollow\Math\Vector2.cpp" />

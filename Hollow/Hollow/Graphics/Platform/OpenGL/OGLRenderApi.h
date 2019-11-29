@@ -5,8 +5,6 @@
 
 #include "OGLPrerequisites.h"
 #include "Hollow/Graphics/RenderApi.h"
-#include <iostream>
-#include "Hollow/Common/Log.h"
 #include "Hollow/Math/Matrix4.h"
 #include "Hollow/Graphics/Camera.h"
 #include "OGLHardwareBufferManager.h"

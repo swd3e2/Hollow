@@ -16,22 +16,10 @@ namespace Hollow {
 		int width;
 		int height;
 
-		D3D11SamplerState* m_SamplerStateWrap;
-		D3D11SamplerState* m_SamplerStateClamp;
-
 		ID3D11RenderTargetView* m_RenderTarget;
-		ID3D11Texture2D* m_BackBuffer;
-
 		ID3D11DepthStencilView* m_DepthStencilView;
 
-		ID3D11DepthStencilState* m_DepthStencilStateNever;
-		ID3D11DepthStencilState* m_DepthStencilStateLess;
-		ID3D11DepthStencilState* m_DepthStencilStateEqual;
-		ID3D11DepthStencilState* m_DepthStencilStateLequal;
-		ID3D11DepthStencilState* m_DepthStencilStateGreater;
-		ID3D11DepthStencilState* m_DepthStencilStateNotEqual;
-		ID3D11DepthStencilState* m_DepthStencilStateAlways;
-
+		ID3D11Texture2D* m_BackBuffer;
 		ID3D11Texture2D* m_DepthStencilBuffer;
 		ID3D11ShaderResourceView* m_DepthResourceView;
 
@@ -41,7 +29,6 @@ namespace Hollow {
 		ID3D11UnorderedAccessView* pUAV[1] = { NULL };
 		ID3D11RenderTargetView* nullRTV[3] = { NULL };
 
-		D3D11BlendState* blendState;
 		const UINT uavs = 0;
 		const UINT offset = 0;
 	public:

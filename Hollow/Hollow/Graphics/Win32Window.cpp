@@ -2,7 +2,7 @@
 
 namespace Hollow {
 	Win32Window::Win32Window(HINSTANCE hInst, int width, int height, WindowType type) :
-		hInst(hInst)
+		hInst(hInst), width(width), height(height)
 	{
 		// Creating window class
 		WNDCLASSEX windowClass = {};
@@ -30,7 +30,7 @@ namespace Hollow {
 		windowRect.bottom = height + windowRect.top;
 		AdjustWindowRect(&windowRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+		int styles = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME;
 
 		if (type == WindowType::Borderless) 
 		{
@@ -86,79 +86,88 @@ namespace Hollow {
 
 	LRESULT Win32Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
+		if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
+			return true;
+		}
+		
+		LRESULT result = 0;
+		switch (msg)
 		{
-			if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
-				return true;
-			}
-
-			LRESULT result = 0;
-			switch (msg)
+		case WM_INPUT:
+		{
+			UINT dataSize = 0;
+			GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
+			if (dataSize > 0)
 			{
-			case WM_INPUT:
-			{
-				UINT dataSize;
-				GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, NULL, &dataSize, sizeof(RAWINPUTHEADER));
-				if (dataSize > 0)
+				std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
+				if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize)
 				{
-					std::unique_ptr<BYTE[]> rawData = std::make_unique<BYTE[]>(dataSize);
-					if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawData.get(), &dataSize, sizeof(RAWINPUTHEADER)) == dataSize)
+					RAWINPUT* input = reinterpret_cast<RAWINPUT*>(rawData.get());
+					if (input->header.dwType == RIM_TYPEMOUSE)
 					{
-						RAWINPUT* input = reinterpret_cast<RAWINPUT*>(rawData.get());
-						if (input->header.dwType == RIM_TYPEMOUSE)
-						{
-							InputManager::mx = input->data.mouse.lLastX;
-							InputManager::my = input->data.mouse.lLastY;
-						}
+						InputManager::mx = input->data.mouse.lLastX;
+						InputManager::my = input->data.mouse.lLastY;
 					}
 				}
-			} break;
-			case WM_CLOSE:
-			{
-				setIsClosed(true);
-			} break;
-			case WM_KEYDOWN:
-			{
-				EventSystem::instance()->addEvent(new ButtonPressedEvent(static_cast<eKeyCodes>(wParam)));
-			} break;
-			case WM_KEYUP:
-			{
-				EventSystem::instance()->addEvent(new ButtonReleasedEvent(static_cast<eKeyCodes>(wParam)));
-			} break;
-			// Mouse events handling
-			case WM_LBUTTONDOWN:
-			{
-				InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_LEFT, true);
-			} break;
-			case WM_RBUTTONDOWN:
-			{
-				InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_RIGHT, true);
-			} break;
-			case WM_MBUTTONDOWN:
-			{
-				InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_MIDDLE, true);
-			} break;
-			case WM_LBUTTONUP:
-			{
-				InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_LEFT, false);
-			} break;
-			case WM_RBUTTONUP:
-			{
-				InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_RIGHT, false);
-			} break;
-			case WM_MBUTTONUP:
-			{
-				InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_MIDDLE, false);
-			} break;
-			case WM_MOUSEMOVE:
-			{
-				EventSystem::instance()->addEvent(new MouseMoveEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
-			} break;
-			default:
-				result = DefWindowProc(hWnd, msg, wParam, lParam);
-				break;
 			}
-			return result;
+		} break;
+		case WM_CLOSE:
+		{
+			setIsClosed(true);
+		} break;
+		case WM_KEYDOWN:
+		{
+			EventSystem::instance()->addEvent(new ButtonPressedEvent(static_cast<eKeyCodes>(wParam)));
+		} break;	
+		case WM_KEYUP:
+		{
+			EventSystem::instance()->addEvent(new ButtonReleasedEvent(static_cast<eKeyCodes>(wParam)));
+		} break;
+		// Mouse events handling
+		case WM_LBUTTONDOWN:
+		{
+			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_LEFT, true);
+		} break;
+		case WM_RBUTTONDOWN:
+		{
+			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_RIGHT, true);
+		} break;
+		case WM_MBUTTONDOWN:
+		{
+			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_MIDDLE, true);
+		} break;
+		case WM_LBUTTONUP:
+		{
+			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_LEFT, false);
+		} break;
+		case WM_RBUTTONUP:
+		{
+			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_RIGHT, false);
+		} break;
+		case WM_MBUTTONUP:
+		{
+			InputManager::SetMouseButtonActive(eMouseKeyCodes::MOUSE_MIDDLE, false);
+		} break;
+		case WM_MOUSEMOVE:
+		{
+			EventSystem::instance()->addEvent(new MouseMoveEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
+		} break;
+		case WM_SIZE:
+		{
+			if (wParam == SIZE_RESTORED) {
+				newWindowWidth = LOWORD(lParam);
+				newWindowHeight = HIWORD(lParam);
+				
+				if (newWindowWidth != width || newWindowHeight != height) {
+					hasResizeEvent = true;
+				}
+			}
+		} break;
+		default:
+			result = DefWindowProc(hWnd, msg, wParam, lParam);
+			break;
 		}
+		return result;
 	}
 
 	bool Win32Window::processMessage()
@@ -168,6 +177,12 @@ namespace Hollow {
 		{
 			TranslateMessage(&message);
 			DispatchMessage(&message);
+		}
+
+		if (hasResizeEvent) {
+			hasResizeEvent = false;
+			HW_INFO("WindowResizeEvent {} {}", newWindowWidth, newWindowHeight);
+			//EventSystem::instance()->addEvent(new WindowResizeEvent(newWindowWidth, newWindowHeight));
 		}
 		return true;
 	}

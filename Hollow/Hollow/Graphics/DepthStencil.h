@@ -39,6 +39,7 @@ namespace Hollow {
 	class DepthStencil
 	{
 	public:
+		virtual ~DepthStencil() {}
 		static s_ptr<DepthStencil> create(const DEPTH_STENCIL_STATE_DESC& desc);
 	};
 }

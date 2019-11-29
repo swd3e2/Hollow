@@ -57,18 +57,6 @@
     <ClInclude Include="Hollow\Events\IEventListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hollow\Events\WindowCreateEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Events\ButtonPressedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Events\ButtonReleasedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hollow\Events\MouseMoveEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Hollow\Math\Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -444,6 +432,9 @@
     <ClInclude Include="Hollow\Resources\MeshManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hollow\Events\DefaultEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Hollow\Common\Timer.cpp">
@@ -606,6 +597,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Hollow\Math\Vector2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hollow\Import\HollowModelExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,8 +11,6 @@
 #include "GL/glew.h"
 #endif
 
-#include "Hollow/Common/Log.h"
-
 namespace Hollow {
 	class OGLRenderApi;
 	class OGLHardwareBufferManager;

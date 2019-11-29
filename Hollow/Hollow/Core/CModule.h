@@ -51,6 +51,7 @@ namespace Hollow {
 
 			_instance = new T(std::forward(args)...);
 			_startedUp = true;
+			_shutdown = false;
 			_instance->onStartUp();
 		}
 
@@ -62,6 +63,7 @@ namespace Hollow {
 #endif
 			_instance = (T*)(new SubClass(std::forward<Args>(args)...));
 			_startedUp = true;
+			_shutdown = false;
 			_instance->onStartUp();
 		}
 
@@ -75,6 +77,7 @@ namespace Hollow {
 			}
 			_instance->onShutdown();
 			_shutdown = true;
+			_startedUp = false;
 			delete _instance;
 		}
 	protected:

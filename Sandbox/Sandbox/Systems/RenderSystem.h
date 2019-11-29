@@ -96,14 +96,13 @@ private:
 
 	Hollow::s_ptr<Hollow::GPUBuffer> shadowConstantBuffer;
 	Hollow::s_ptr<Hollow::GPUBuffer> m_WVPConstantBuffer;
-	Hollow::s_ptr<Hollow::GPUBuffer> m_WorldViewProjectionBuffer;
 	Hollow::s_ptr<Hollow::GPUBuffer> materialConstantBuffer;
 	Hollow::s_ptr<Hollow::GPUBuffer> lightInfoBuffer;
 	Hollow::s_ptr<Hollow::GPUBuffer> boneInfo;
 	Hollow::s_ptr<Hollow::GPUBuffer> instanceData;
-
 	Hollow::s_ptr<Hollow::GPUBuffer> perModel;
 	Hollow::s_ptr<Hollow::GPUBuffer> perMesh;
+
 	PerModel perModelData;
 	PerMesh perMeshData;
 
@@ -118,6 +117,7 @@ private:
 	Hollow::s_ptr<Hollow::ShaderPipeline> instanced;
 	Hollow::s_ptr<Hollow::ShaderPipeline> samplingPipeline;
 	Hollow::s_ptr<Hollow::ShaderPipeline> geomtryShaderTest;
+	Hollow::s_ptr<Hollow::ShaderPipeline> pbr;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -132,8 +132,8 @@ private:
 	const float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	const float ShadowClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-	Hollow::s_ptr<Hollow::VertexBuffer>		quadVB;
-	Hollow::s_ptr<Hollow::IndexBuffer>		quadIB;
+	Hollow::s_ptr<Hollow::VertexBuffer> quadVB;
+	Hollow::s_ptr<Hollow::IndexBuffer>	quadIB;
 
 	Hollow::Vector4 AABBplane[6];
 	Hollow::s_ptr<Hollow::VertexBuffer> lightVertexBuffer;
@@ -289,10 +289,11 @@ public:
 			renderer->setTextureColorBuffer(0, gBuffer, 0);
 			renderer->setTextureColorBuffer(1, gBuffer, 1);
 			renderer->setTextureColorBuffer(2, gBuffer, 2);
-			renderer->setTextureDepthBuffer(3, shadow.renderTarget);
+			renderer->setTextureColorBuffer(3, gBuffer, 3);
+			renderer->setTextureDepthBuffer(4, shadow.renderTarget);
 			renderer->setTextureDepthBuffer(5, gBuffer);
 
-			renderer->setShaderPipeline(lightPipeline);
+			renderer->setShaderPipeline(pbr);
 			updateLight();
 
 			renderer->setVertexBuffer(quadVB);
@@ -732,6 +733,13 @@ public:
 		}
 		{
 			Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+			pipelineDesc.vertexShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/pbr" + shaderExt, "main" });
+			pipelineDesc.pixelShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/pbr" + shaderExt, "main" });
+
+			pbr = Hollow::ShaderPipeline::create(pipelineDesc);
+		}
+		{
+			Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
 			pipelineDesc.vertexShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_VERTEX, baseShaderPath + "vertex/geomtryShaderTest" + shaderExt, "main" });
 			pipelineDesc.pixelShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_PIXEL, baseShaderPath + "pixel/geomtryShaderTest" + shaderExt, "main" });
 			pipelineDesc.geometryShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_GEOMERTY, baseShaderPath + "geometry/geomtryShaderTest" + shaderExt, "main" });
@@ -780,7 +788,7 @@ public:
 	{
 		{
 			Hollow::RENDER_TARGET_DESC desc;
-			desc.count = 3;
+			desc.count = 4;
 			desc.width = this->width;
 			desc.height = this->height;
 			desc.textureFormat = Hollow::RENDER_TARGET_TEXTURE_FORMAT::R32G32B32A32;
@@ -833,16 +841,7 @@ public:
 		{
 			Hollow::DEPTH_STENCIL_STATE_DESC depthDesc;
 			depthDesc.depthEnable = true;
-			depthDesc.depthFunc = Hollow::ComparisonFunction::CMP_LESS;
-
-			less = Hollow::DepthStencil::create(depthDesc);
-		}
-		{
-			Hollow::DEPTH_STENCIL_STATE_DESC depthDesc;
-			depthDesc.depthEnable = true;
 			depthDesc.depthFunc = Hollow::ComparisonFunction::CMP_ALWAYS;
-
-
 			noDepth = Hollow::DepthStencil::create(depthDesc);
 		}
 	}

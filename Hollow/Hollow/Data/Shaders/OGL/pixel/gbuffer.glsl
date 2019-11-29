@@ -3,6 +3,7 @@
 layout(location = 0) out vec4 diffuse;
 layout(location = 1) out vec4 normal;
 layout(location = 2) out vec4 position;
+layout(location = 3) out vec4 pbr;
 
 in VS_OUT
 {
@@ -31,7 +32,7 @@ layout(std140, binding = 4) uniform MaterialData
 	float metallicFactor;
 	float roughnessFactor;
 	float emmisiveFactor;
-	float pad;
+	float ao;
 	bool hasDiffuseTexture;
 	bool hasNormalTexture;
 	bool hasSpecularMap;
@@ -65,6 +66,7 @@ void main()
 		discard;
 	}
 
+	pbr = vec4(metallicFactor, roughnessFactor, emmisiveFactor, ao);
 	diffuse = color;
 	position = fs_in.position;
 }

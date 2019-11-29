@@ -16,7 +16,10 @@ namespace Hollow
 			HardwareBuffer(size, stride), m_Buffer(nullptr)
 		{}
 
-		virtual ~D3D11HardwareBuffer() { SAFE_RELEASE(m_Buffer); }
+		virtual ~D3D11HardwareBuffer() 
+		{ 
+			SAFE_RELEASE(m_Buffer);
+		}
 
 		virtual void update(void* data, const int size) override
 		{

@@ -10,7 +10,6 @@
 #include "Hollow/Input/InputManager.h"
 #include <DirectXMath.h>
 #include "Hollow/ECS/EntityManager.h"
-#include "Hollow/Common/Log.h"
 
 using namespace DirectX;
 
@@ -43,8 +42,8 @@ public:
 	MoveSystem(Hollow::Camera* camera = nullptr) :
 		camera(camera)
 	{
-		field.push_back({ XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(-FIELD_SIZE, 0, FIELD_SIZE, 0), XMFLOAT4(FIELD_SIZE, 0, FIELD_SIZE, 0) });
-		field.push_back({ XMFLOAT4(FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(FIELD_SIZE, 0, FIELD_SIZE, 0), XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0) });
+		//field.push_back({ XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(-FIELD_SIZE, 0, FIELD_SIZE, 0), XMFLOAT4(FIELD_SIZE, 0, FIELD_SIZE, 0) });
+		//field.push_back({ XMFLOAT4(FIELD_SIZE, 0, -FIELD_SIZE, 0), XMFLOAT4(FIELD_SIZE, 0, FIELD_SIZE, 0), XMFLOAT4(-FIELD_SIZE, 0, -FIELD_SIZE, 0) });
 	}
 
 	void GetMousePosition()

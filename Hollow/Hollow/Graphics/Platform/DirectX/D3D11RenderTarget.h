@@ -16,8 +16,8 @@ namespace Hollow {
 			RenderTarget(width, height, count)
 		{}
 
-		~D3D11RenderTarget() {
-			for (int i = 0; i < count; i++) {
+		virtual ~D3D11RenderTarget() {
+			for (int i = 0; i < getCount(); i++) {
 				SAFE_RELEASE(m_RenderTarget[i]);
 				SAFE_RELEASE(m_BackBuffer[i]);
 				SAFE_RELEASE(m_ShaderResourceView[i]);

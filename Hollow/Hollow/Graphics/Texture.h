@@ -6,7 +6,6 @@
 #include <memory>
 #include "Hollow/Platform.h"
 #include <string>
-#include "Hollow/Common/Log.h"
 #include "CommonTypes.h"
 
 namespace Hollow {

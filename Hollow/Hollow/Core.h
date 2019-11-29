@@ -16,6 +16,7 @@
 #include "Hollow/Core/DelayedTaskManager.h"
 #include "Common/Log.h"
 #include "Resources/MeshManager.h"
+#include "Common/Log.h"
 
 namespace Hollow {
 	/**

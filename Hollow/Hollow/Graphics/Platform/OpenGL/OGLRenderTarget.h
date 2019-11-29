@@ -17,6 +17,14 @@ namespace Hollow {
 		OGLRenderTarget(int width, int height, int count) :
 			RenderTarget(width, height, count), FBO(0)
 		{}
+
+		virtual ~OGLRenderTarget()
+		{
+			glDeleteTextures(getCount(), texture);
+			glDeleteTextures(1, &depth);
+			glDeleteFramebuffers(1, &FBO);
+		}
+
 		virtual Vector4 readPixel(int x, int y) override;
 	};
 }
