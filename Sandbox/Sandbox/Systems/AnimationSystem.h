@@ -4,6 +4,7 @@
 #include <Hollow/ECS/System.h>
 #include <Hollow/ECS/EntityManager.h>
 #include "Sandbox/Components/AnimationComponent.h"
+#include "Sandbox/Components/RenderableComponent.h"
 #include "Sandbox/Entities/GameObject.h"
 #include <tuple>
 #include <utility>
@@ -18,8 +19,9 @@ public:
 	{
 		Profiler::begin("Animation System: update()");
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
-			if (entity.hasComponent<AnimationComponent>()) {
+			if (entity.hasComponent<AnimationComponent>() && entity.hasComponent<RenderableComponent>()) {
 				AnimationComponent* animation = entity.getComponent<AnimationComponent>();
+				RenderableComponent* renderable = entity.getComponent<RenderableComponent>();
 
 				if (animation->shouldPlay) {
 					animation->currentAnimationTime += dt / 1000.0;
@@ -35,10 +37,10 @@ public:
 						animate(
 							animation->currentAnimationTime,
 							animation->rootJoint,
-							Hollow::Matrix4::identity(),
 							animation->animations[animation->currentAnimation],
 							animation->nodeInfo,
-							animation
+							animation,
+							renderable
 						);
 						animation->currentFrame = 0.0f;
 					}
@@ -51,12 +53,14 @@ public:
 
 	virtual void PostUpdate(double dt) override {}
 
-	void animate(double time, const Hollow::s_ptr<Joint>& node, const Hollow::Matrix4& parentTransform, const Hollow::s_ptr<Animation>& animation, std::vector<Hollow::Matrix4>& container, AnimationComponent* animationComponent)
+	void animate(double time, const int nodeId, const Hollow::s_ptr<AnimationComponent::Animation>& animation, std::vector<Hollow::Matrix4>& container, AnimationComponent* animationComponent, RenderableComponent* renderableComponent)
 	{
 		Hollow::Matrix4 localTransform = Hollow::Matrix4::identity();
 
+		const Hollow::s_ptr<RenderableComponent::Node>& node = renderableComponent->nodes[nodeId];
+
 		if (animation->data.find(node->id) != animation->data.end()) {
-			const Hollow::s_ptr<AnimationNodeData>& data = animation->data[node->id];
+			const Hollow::s_ptr<AnimationComponent::AnimationNodeData>& data = animation->data[node->id];
 
 			std::pair<double, Hollow::Vector3> closestScale;
 			std::pair<double, Hollow::Vector3> closestTranslation;
@@ -67,48 +71,35 @@ public:
 			std::pair<double, Hollow::Quaternion> nextClosestRotation;
 
 			std::tie(closestScale, closestTranslation, closestRotation, 
-				nextClosestScale, nextClosestTranslation, nextClosestRotation) = getClosest(time, data, node);
+				nextClosestScale, nextClosestTranslation, nextClosestRotation) = getClosest(time, data, node, animationComponent);
 
 			Hollow::Vector3 scaling = closestScale.first < nextClosestScale.first
 				? interpolateScaling(closestScale, nextClosestScale, time)
 				: closestScale.second;
-			node->currentScale = scaling;
+			node->transform.scale = scaling;
 
 			Hollow::Vector3 translation = closestTranslation.first < nextClosestTranslation.first
 				? interpolatePosition(closestTranslation, nextClosestTranslation, time)
 				: closestTranslation.second;
-			node->currentTranslation = translation;
+			node->transform.translation = translation;
 
 			Hollow::Quaternion rotation = closestRotation.first < nextClosestRotation.first
 				? interpolateRotation(closestRotation, nextClosestRotation, time)
 				: closestRotation.second;
-			node->currentRotation = rotation;
+			node->transform.rotation = rotation;
+			node->transform.hasChanged = true;
 
-			
-			rotation = Hollow::Quaternion::interpolate(node->rotation, rotation, animationComponent->blendingFactor);
-			rotation.normalize();
-			translation = Hollow::Vector3::interpolate(node->translation, translation, animationComponent->blendingFactor);
-
-			localTransform = Hollow::Matrix4::rotation(rotation);
-			localTransform.r[0].w = translation.x;
-			localTransform.r[1].w = translation.y;
-			localTransform.r[2].w = translation.z;
-		} else if (node->jointId != -1 && node->parent != nullptr) {
-			localTransform = Hollow::Matrix4::rotation(node->rotation);
-			localTransform.r[0].w = node->translation.x;
-			localTransform.r[1].w = node->translation.y;
-			localTransform.r[2].w = node->translation.z;
+			// rotation = Hollow::Quaternion::interpolate(node->rotation, rotation, animationComponent->blendingFactor);
+			// rotation.normalize();
+			// translation = Hollow::Vector3::interpolate(node->translation, translation, animationComponent->blendingFactor);
 		}
-			
-		Hollow::Matrix4 worldTransform = parentTransform * localTransform;
 
-		// If id of node is -1 means that node isn't used by any vertex so we can skip it
 		if (node->jointId != -1) {
-			container[node->jointId] = worldTransform * node->inverseBindMatrix;
+			container[node->jointId] = node->transform.worldTransform * animationComponent->inverseBindMatrices[node->jointId];
 		}
 
 		for (auto& it : node->childs) {
-			animate(time, it, worldTransform, animation, container, animationComponent);
+			animate(time, it, animation, container, animationComponent, renderableComponent);
 		}
 	}
 
@@ -120,7 +111,7 @@ public:
 		std::pair<double, Hollow::Vector3>, 
 		std::pair<double, Hollow::Vector3>, 
 		std::pair<double, Hollow::Quaternion>
-	> getClosest(const double time, const Hollow::s_ptr<AnimationNodeData>& data, const Hollow::s_ptr<Joint>& node)
+	> getClosest(const double time, const Hollow::s_ptr<AnimationComponent::AnimationNodeData>& data, const Hollow::s_ptr<RenderableComponent::Node>& node, AnimationComponent* animationComponent)
 	{
 		// Set all to zero so if we not found keyframe at 0 we could return at least something
 		std::pair<double, Hollow::Vector3> scale;
@@ -137,22 +128,22 @@ public:
 		if (data->positions.size() > 0) {
 			translation = std::make_pair(data->positions.begin()->first, data->positions.begin()->second);
 		} else {
-			translation = std::make_pair(0.0f, node->translation);
+			translation = std::make_pair(0.0f, node->transform.translation);
 		}
 		std::pair<double, Hollow::Quaternion> rotation;
 		std::pair<double, Hollow::Quaternion> nextRotation;
 		if (data->rotations.size() > 0) {
 			rotation = std::make_pair(data->rotations.begin()->first, data->rotations.begin()->second);
 		} else {
-			rotation = std::make_pair(0.0f, node->rotation);
+			rotation = std::make_pair(0.0f, node->transform.rotation);
 		}
 
-		for (int i = node->currentScaleIndex; i < data->scale.size(); i++) {
+		for (int i = animationComponent->animationIndices[node->jointId].scaleIndex; i < data->scale.size(); i++) {
 			std::pair<double, Hollow::Vector3>& scale = data->scale[i];
 
 			if (scale.first < time) {
 				scale = std::make_pair(scale.first, scale.second);
-				node->currentScaleIndex = i;
+				animationComponent->animationIndices[node->jointId].scaleIndex = i;
 				if (i + 1 < data->scale.size()) {
 					nextScale = std::make_pair(data->scale[i + 1].first, data->scale[i + 1].second);
 				}
@@ -161,12 +152,12 @@ public:
 			}
 		}
 
-		for (int i = node->currentTranslationIndex; i < data->positions.size(); i++) {
+		for (int i = animationComponent->animationIndices[node->jointId].translationIndex; i < data->positions.size(); i++) {
 			std::pair<double, Hollow::Vector3>& position = data->positions[i];
 			
 			if (position.first < time) {
 				translation = std::make_pair(position.first, position.second);
-				node->currentTranslationIndex = i;
+				animationComponent->animationIndices[node->jointId].translationIndex = i;
 				if (i + 1 < data->positions.size()) {
 					nextTranslation = std::make_pair(data->positions[i + 1].first, data->positions[i + 1].second);
 				}
@@ -175,12 +166,12 @@ public:
 			}
 		}
 
-		for (int i = node->currentRotationIndex; i < data->rotations.size(); i++) {
+		for (int i = animationComponent->animationIndices[node->jointId].rotationIndex; i < data->rotations.size(); i++) {
 			std::pair<double, Hollow::Quaternion>& tRotation = data->rotations[i];
 
 			if (tRotation.first < time) {
 				rotation = std::make_pair(tRotation.first, tRotation.second);
-				node->currentRotationIndex = i;
+				animationComponent->animationIndices[node->jointId].rotationIndex = i;
 				if (i + 1 < data->rotations.size()) {
 					nextRotation = std::make_pair(data->rotations[i + 1].first, data->rotations[i + 1].second);
 				}

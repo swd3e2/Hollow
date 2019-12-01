@@ -14,30 +14,16 @@
 
 namespace Hollow {
 	namespace Import {
-		struct BaseNode 
+		struct Node 
 		{
 			int id;
 			int jointId;
+			int meshId = -1;
 			std::string name;
 			Vector3 translation;
-			Vector3 scale;
+			Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 			Quaternion rotation;
-			Matrix4 transform;
-		};
-
-		struct Joint : public BaseNode
-		{
-			Matrix4 localTransform;
-			Matrix4 inverseBindMatrix;
-			std::vector<Joint*> childs;
-		};
-
-		struct Node : public BaseNode
-		{
-			int meshId = -1;
-			bool skinned;
-			bool hasMatrix = false;
-			std::vector<Node*> childs;
+			std::vector<int> childs;
 		};
 
 		struct AnimationData
@@ -56,12 +42,7 @@ namespace Hollow {
 
 		struct Material
 		{
-			std::string diffuseTexture;
-			std::string normalTexture;
-			std::string specularTexture;
-			std::string roughnesTexture;
-			std::string emisiveTexture;
-			std::string occlusionTexture;
+			int id;
 
 			std::string name;
 			Vector4 baseColorFactor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -69,7 +50,12 @@ namespace Hollow {
 			float roughnessFactor = 0.0f;
 			float emissiveFactor = 0.0f;
 
-			int id;
+			std::string diffuseTexture;
+			std::string normalTexture;
+			std::string specularTexture;
+			std::string roughnesTexture;
+			std::string emisiveTexture;
+			std::string occlusionTexture;
 		};
 
 		struct Mesh
@@ -88,13 +74,14 @@ namespace Hollow {
 			std::vector<s_ptr<Mesh>> meshes;
 			std::vector<Material> materials;
 			// Animation data
-			std::unordered_map<int, s_ptr<Joint>> joints;
+			std::vector<int> joints;
 			std::vector<s_ptr<Animation>> animations;
-			s_ptr<Joint> rootJoint;
-			// Node hierarchy data
-			std::unordered_map<int, s_ptr<Node>> nodes;
-			s_ptr<Node> rootNode;
+			std::vector<Matrix4> inverseBindMatrices;
+			int rootJoint;
 			bool skinned = false;
+			// Node hierarchy data
+			int rootNode;
+			std::vector<s_ptr<Node>> nodes;
 			// A - left near down, B - right far up
 			Vector3 A = Vector3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 			Vector3 B = Vector3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());

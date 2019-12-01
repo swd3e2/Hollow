@@ -32,6 +32,7 @@
 #include "Systems/CameraSystem.h"
 #include "TextureManager.h"
 #include "Systems/ParticleSystem.h"
+#include "Systems/NodeUpdateSystem.h"
 
 class Appliaction
 {
@@ -49,6 +50,7 @@ public:
 	Hollow::s_ptr<FileSystemNotifier> fNotifier;
 	Hollow::s_ptr<CameraSystem> cameraSystem;
 	Hollow::s_ptr<ParticleSystem> particleSystem;
+	Hollow::s_ptr<NodeUpdateSystem> nodeUpdateSystem;
 	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
 	int width;
 	int height;
@@ -76,6 +78,7 @@ public:
 		cameraSystem = std::make_shared<CameraSystem>();
 		cameraSystem->setCamera(&camera);
 		particleSystem = std::make_shared<ParticleSystem>();
+		nodeUpdateSystem = std::make_shared<NodeUpdateSystem>();
 
 		Hollow::SystemManager::instance()->addSystem(renderSystem.get());
 		Hollow::SystemManager::instance()->addSystem(animationSystem.get());
@@ -83,6 +86,7 @@ public:
 		Hollow::SystemManager::instance()->addSystem(playerSystem.get());
 		Hollow::SystemManager::instance()->addSystem(cameraSystem.get());
 		Hollow::SystemManager::instance()->addSystem(particleSystem.get());
+		Hollow::SystemManager::instance()->addSystem(nodeUpdateSystem.get());
 
 		gui->rendererTab.renderSystem = renderSystem.get();
 

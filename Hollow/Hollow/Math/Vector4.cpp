@@ -71,6 +71,11 @@ namespace Hollow {
 		return left.x * right.x + left.y * right.y + left.z * right.z;
 	}
 
+	float Vector4::length(const Vector4& vec)
+	{
+		return sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+	}
+
 	Vector4 Vector4::operator+(const Vector4& other)
 	{
 		return Vector4(x + other.x, y + other.y, z + other.z, 1.0f);
@@ -97,7 +102,7 @@ namespace Hollow {
 
 	Vector4 Vector4::normalize(const Vector4& vector)
 	{
-		float length = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+		float length = Vector4::length(vector);
 		return Vector4(vector.x / length, vector.y / length, vector.z / length, vector.w);
 	}
 

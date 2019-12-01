@@ -34,6 +34,7 @@ namespace Hollow {
 		static Vector4 cross(const Vector4& left, const Vector4& right);
 
 		static float dot(const Vector4& left, const Vector4& right);
+		static float length(const Vector4& vec);
 
 		Vector4 operator+(const Vector4& other);
 		void operator+=(const Vector4& other);

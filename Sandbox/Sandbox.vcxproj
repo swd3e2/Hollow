@@ -25,6 +25,7 @@
     <ClInclude Include="Sandbox\Components\AnimationComponent.h" />
     <ClInclude Include="Sandbox\Components\CollisionComponent.h" />
     <ClInclude Include="Sandbox\Components\MoveComponent.h" />
+    <ClInclude Include="Sandbox\Systems\NodeUpdateSystem.h" />
     <ClInclude Include="Sandbox\Components\ParticleComponent.h" />
     <ClInclude Include="Sandbox\Components\PhysicsComponent.h" />
     <ClInclude Include="Sandbox\Components\PlayerComponent.h" />

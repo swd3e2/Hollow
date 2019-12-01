@@ -520,21 +520,23 @@ public:
 						renderer->setIndexBuffer(object->iBuffer);
 						renderer->drawIndexed(object->iBuffer->mHardwareBuffer->getSize());
 					}
-				}
-				else if (renderable->rootNode != nullptr) {
-					drawNodeHierarchy(renderable->rootNode.get(), renderable);
+				} else if (renderable->rootNode != -1) {
+					drawNodeHierarchy(renderable->rootNode, renderable);
 				}
 			}
 		}
 	}
 
-	void drawNodeHierarchy(RenderableComponent::Node* node, RenderableComponent* renderable)
+	void drawNodeHierarchy(const int nodeId, RenderableComponent* renderable)
 	{
-		if (node->renderableId != -1 && node->renderableId < renderable->renderables.size()) {
-			const Hollow::s_ptr<RenderableObject>& renderableObject = renderable->renderables[node->renderableId];
+		if (renderable->nodes.size() <= nodeId) return;
 
-			if (renderable->materials.size() > renderableObject->material) {
-				const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[renderableObject->material];
+		const Hollow::s_ptr<RenderableComponent::Node>& node = renderable->nodes[nodeId];
+		if (node->mesh != -1 && node->mesh < renderable->renderables.size()) {
+			const Hollow::s_ptr<RenderableComponent::Mesh>& mesh = renderable->renderables[node->mesh];
+
+			if (renderable->materials.size() > mesh->material) {
+				const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[mesh->material];
 				if (material->diffuseTexture != nullptr) {
 					renderer->setTexture(0, material->diffuseTexture);
 				} else {
@@ -545,20 +547,20 @@ public:
 				} else {
 					renderer->unsetTexture(1);
 				}
-				materialConstantBuffer->update(&renderable->materials[renderableObject->material]->materialData);
+				materialConstantBuffer->update(&renderable->materials[mesh->material]->materialData);
 				renderer->setGpuBuffer(materialConstantBuffer);
 			} else {
 				materialConstantBuffer->update(&defaultMaterial->materialData);
 				renderer->setGpuBuffer(materialConstantBuffer);
 			}
 
-			perMeshData.worldTransform = node->worldTransform;
+			perMeshData.worldTransform = node->transform.worldTransform;
 			perMesh->update(&perMeshData);
 			renderer->setGpuBuffer(perMesh);
 
-			renderer->setVertexBuffer(renderableObject->vBuffer);
-			renderer->setIndexBuffer(renderableObject->iBuffer);
-			renderer->drawIndexed(renderableObject->iBuffer->mHardwareBuffer->getSize());
+			renderer->setVertexBuffer(mesh->vBuffer);
+			renderer->setIndexBuffer(mesh->iBuffer);
+			renderer->drawIndexed(mesh->iBuffer->mHardwareBuffer->getSize());
 		}
 
 		for (auto& it : node->childs) {
