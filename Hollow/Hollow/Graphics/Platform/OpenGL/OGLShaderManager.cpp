@@ -25,6 +25,7 @@ namespace Hollow {
 		compileInternal(tempShaderId, desc);
 		if (!getError(tempShaderId)) {
 			s_ptr<OGLShader> oglShader = std::static_pointer_cast<OGLShader>(shader);
+			glDeleteProgram(oglShader->shaderId);
 			oglShader->shaderId = tempShaderId;
 			oglShader->parent->setShader(oglShader);
 		}
@@ -134,6 +135,18 @@ namespace Hollow {
 					glProgramUniform1i(shaderId, glGetUniformLocation(shaderId, it.first.c_str()), it.second);
 				}
 			}
+		} break;
+		case ShaderType::ST_GEOMERTY: {
+			shaderId = glCreateShaderProgramv(GL_GEOMETRY_SHADER, 1, &charShaderCode);
+			getError(shaderId);
+		} break;
+		case ShaderType::ST_HULL: {
+			shaderId = glCreateShaderProgramv(GL_TESS_CONTROL_SHADER, 1, &charShaderCode);
+			getError(shaderId);
+		} break;
+		case ShaderType::ST_DOMAIN: {
+			shaderId = glCreateShaderProgramv(GL_TESS_EVALUATION_SHADER, 1, &charShaderCode);
+			getError(shaderId);
 		} break;
 		}
 	}

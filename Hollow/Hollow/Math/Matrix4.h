@@ -13,6 +13,8 @@ namespace Hollow {
 	class alignas (sizeof(__m256)) Matrix4
 	{
 	public:
+		enum Type { N, F };
+	public:
 		Vector4 r[4];
 	public:
 		Matrix4() = default;
@@ -53,13 +55,10 @@ namespace Hollow {
 		static Matrix4 lookAt(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upVector);
 
 		static Matrix4 inverse(const Matrix4& mat);
-	private:
-		inline void swap(float& first, float& second)
-		{
-			float temp = first;
-			first = second;
-			second = temp;
-		}
+
+		static const Vector3 getScaling(const Matrix4& mat);
+		static const Vector3 getTranslation(const Matrix4& mat);
+		static const Quaternion getRotation(const Matrix4& mat);
 	};
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat);

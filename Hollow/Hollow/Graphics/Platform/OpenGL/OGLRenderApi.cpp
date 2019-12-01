@@ -18,12 +18,13 @@ namespace Hollow {
 
 	OGLRenderApi::~OGLRenderApi()
 	{
-		HardwareBufferManager::shutdown();
-		TextureManager::shutdown();
-		ShaderManager::shutdown();
-		GPUBufferManager::shutdown();
-		RenderTargetManager::shutdown();
+		RenderStateManager::shutdown();
 		InputLayoutManager::shutdown();
+		RenderTargetManager::shutdown();
+		GPUBufferManager::shutdown();
+		ShaderManager::shutdown();
+		TextureManager::shutdown();
+		HardwareBufferManager::shutdown();
 	}
 
 	void OGLRenderApi::setIndexBuffer(const s_ptr<IndexBuffer>& buffer)

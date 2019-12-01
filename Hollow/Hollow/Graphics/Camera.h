@@ -4,11 +4,8 @@
 #define HW_CAMERA_H
 
 #include "Hollow/Math/Matrix4.h"
-#include "Hollow/Math/Vector4.h"
 #include "Hollow/Math/Vector3.h"
-#include "Hollow/Input/InputManager.h"
-#include "Hollow/Math/EAngle.h"
-#include "Hollow/Common/Log.h"
+#include "Hollow/Math/Math.h"
 
 namespace Hollow {
 	class Camera

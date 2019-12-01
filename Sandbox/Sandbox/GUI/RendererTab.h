@@ -26,7 +26,7 @@ namespace GUI {
 				renderSystem->lineVB->update(vertices.data(), sizeof(Hollow::Vertex) * 2);
 			}
 
-			ImGui::Text(("Physical memory usage (Kb): " + std::to_string(Profiler::getMemoryUsage() / (1024))).c_str());
+			ImGui::Text(("Physical memory usage (Kb): " + std::to_string(Profiler::getMemoryUsage() / 1024)).c_str());
 
 			ImGui::Checkbox("Debug physics draw", &renderSystem->enableDebugPhysicsDraw);
 

@@ -31,9 +31,7 @@ namespace Hollow {
 	class SamplerState
 	{
 	public:
-		SamplerState() = default;
-		~SamplerState() {}
-
+		virtual ~SamplerState() {}
 		static s_ptr<SamplerState> create(const SAMPLER_STATE_DESC& desc);
 	};
 }

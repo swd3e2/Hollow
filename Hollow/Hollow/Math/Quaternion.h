@@ -45,10 +45,6 @@ namespace Hollow {
 			x(other.x), y(other.y), z(other.z), w(other.w)
 		{}
 
-		Quaternion(Quaternion&& other) noexcept :
-			x(other.x), y(other.y), z(other.z), w(other.w)
-		{}
-
 		Quaternion& operator=(const Quaternion& other)
 		{
 			x = other.x;

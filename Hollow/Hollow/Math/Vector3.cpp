@@ -67,7 +67,7 @@ namespace Hollow {
 
 	Vector3 Vector3::normalize(const Vector3& vector)
 	{
-		float length = sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+		float length = Vector3::length(vector);
 		return Vector3(vector.x / length, vector.y / length, vector.z / length);
 	}
 
@@ -100,7 +100,7 @@ namespace Hollow {
 
 	float Vector3::length(const Vector3& vec)
 	{
-		return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+		return sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 	}
 
 	Vector3 Vector3::interpolate(const Vector3& from, const Vector3& to, const float factor)

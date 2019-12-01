@@ -151,12 +151,12 @@ namespace Hollow {
 
 	Matrix4& Matrix4::transpose()
 	{
-		swap(r[0].y, r[1].x);
-		swap(r[0].z, r[2].x);
-		swap(r[0].w, r[3].x);
-		swap(r[1].z, r[2].y);
-		swap(r[1].w, r[3].y);
-		swap(r[2].w, r[3].z);
+		std::swap(r[0].y, r[1].x);
+		std::swap(r[0].z, r[2].x);
+		std::swap(r[0].w, r[3].x);
+		std::swap(r[1].z, r[2].y);
+		std::swap(r[1].w, r[3].y);
+		std::swap(r[2].w, r[3].z);
 
 		return *this;
 	}
@@ -400,6 +400,55 @@ namespace Hollow {
 		}
 
 		return Matrix4(temp, 16);
+	}
+
+	const Vector3 Matrix4::getScaling(const Matrix4& mat)
+	{
+		float sx = Hollow::Vector3::length(Hollow::Vector3(mat.r[0].x, mat.r[1].x, mat.r[2].x));
+		float sy = Hollow::Vector3::length(Hollow::Vector3(mat.r[0].y, mat.r[1].y, mat.r[2].y));
+		float sz = Hollow::Vector3::length(Hollow::Vector3(mat.r[0].z, mat.r[1].z, mat.r[2].z));
+
+		return Vector3(sx, sy, sz);
+	}
+
+	const Vector3 Matrix4::getTranslation(const Matrix4& mat)
+	{
+		return Vector3(mat.r[0].w, mat.r[1].w, mat.r[2].w);
+	}
+
+	const Quaternion Matrix4::getRotation(const Matrix4& mat)
+	{
+		float tr = mat.r[0].x + mat.r[0].y + mat.r[0].z;
+
+		float qw, qx, qy, qz;
+
+		if (tr > 0) { 
+		  float S = sqrt(tr + 1.0) * 2; // S=4*qw 
+		  qw = 0.25 * S;
+		  qx = (mat.r[2].y - mat.r[1].z) / S;
+		  qy = (mat.r[0].z - mat.r[2].x) / S;
+		  qz = (mat.r[1].x - mat.r[0].y) / S;
+		} else if (mat.r[0].x > mat.r[1].y && mat.r[0].x > mat.r[2].z) { 
+		  float S = sqrt(1.0 + mat.r[0].x - mat.r[1].y - mat.r[2].z) * 2; // S=4*qx 
+		  qw = (mat.r[2].y - mat.r[1].z) / S;
+		  qx = 0.25 * S;
+		  qy = (mat.r[0].y + mat.r[1].x) / S; 
+		  qz = (mat.r[0].z + mat.r[2].x) / S; 
+		} else if (mat.r[1].y > mat.r[2].z) { 
+		  float S = sqrt(1.0 + mat.r[1].y - mat.r[0].x - mat.r[2].z) * 2; // S=4*qy
+		  qw = (mat.r[0].z - mat.r[2].x) / S;
+		  qx = (mat.r[0].y + mat.r[1].x) / S; 
+		  qy = 0.25 * S;
+		  qz = (mat.r[1].z + mat.r[2].y) / S; 
+		} else { 
+		  float S = sqrt(1.0 + mat.r[2].z - mat.r[0].x - mat.r[1].y) * 2; // S=4*qz
+		  qw = (mat.r[1].x - mat.r[0].y) / S;
+		  qx = (mat.r[0].z + mat.r[2].x) / S;
+		  qy = (mat.r[1].z + mat.r[2].y) / S;
+		  qz = 0.25 * S;
+		}
+
+		return Quaternion(qx, qy, qz, qw);
 	}
 
 	Vector4 operator*(const Vector4& vec, const Matrix4& mat)

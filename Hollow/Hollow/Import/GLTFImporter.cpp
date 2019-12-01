@@ -26,14 +26,12 @@ namespace Hollow {
 		}
 
 		tinygltf::Node& modelRootNode = gltfModel.nodes[gltfModel.scenes[0].nodes[0]];
-		std::vector<int> meshesToLoad;
-		model->rootNode = std::make_shared<Import::Node>();
-		model->rootNode->id = 0;
-		model->rootNode->jointId = -1;
-
-		processHierarchy(model->rootNode, modelRootNode, model, gltfModel, meshesToLoad);
+		model->rootNode = 0;// gltfModel.scenes[0].nodes[0];
+		
+		processHierarchy(model, gltfModel);
 		processSkin(model, gltfModel, binary);
-		processMeshes(model, gltfModel, binary, meshesToLoad);
+		processMaterials(model, gltfModel);
+		processMeshes(model, gltfModel, binary);
 		processAnimations(model, gltfModel, binary);
 
 		binary.close();
@@ -43,12 +41,10 @@ namespace Hollow {
 		return s_ptr<Import::Model>(model);
 	}
 
-	void GLTFImporter::processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary, std::vector<int>& meshesToLoad)
+	void GLTFImporter::processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary)
 	{
 		for (int i = 0; i < gltfModel.meshes.size(); i++) {
 			const tinygltf::Mesh& gltfMesh = gltfModel.meshes[i];
-
-			if (std::find(meshesToLoad.begin(), meshesToLoad.end(), i) == meshesToLoad.end()) continue;
 
 			for (auto& primitive : gltfMesh.primitives) {
 				s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
@@ -178,79 +174,72 @@ namespace Hollow {
 				}
 
 				model->meshes.push_back(mesh);
+			}
+		}
+	}
 
-				if (primitive.material != -1) {
-					const tinygltf::Material& gltfMaterial = gltfModel.materials[primitive.material];
+	void GLTFImporter::processMaterials(Import::Model* model, const tinygltf::Model& gltfModel)
+	{
+		for (int i = 0; i < gltfModel.materials.size(); i++) {
+			const tinygltf::Material& gltfMaterial = gltfModel.materials[i];
 
-					if (model->materials.find(primitive.material) == model->materials.end()) {
-						Import::Material material;
+			Import::Material material;
 
-						material.id = primitive.material;
-						material.name = gltfMaterial.name;
+			material.id = i;
+			material.name = gltfMaterial.name;
 
-						for (auto& value : gltfMaterial.values) {
-							if (value.first == "baseColorTexture") {
-								material.diffuseTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-							}
-							else if (value.first == "metallicRoughnessTexture") {
-								material.roughnesTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-							}
-							else if (value.first == "metallicFactor") {
-								material.metallicFactor = value.second.number_value;
-							}
-							else if (value.first == "roughnessFactor") {
-								material.roughnessFactor = value.second.number_value;
-							}
-							else if (value.first == "baseColorFactor") {
-								material.baseColorFactor = Vector4(
-									value.second.number_array[0],
-									value.second.number_array[1],
-									value.second.number_array[2],
-									value.second.number_array[3]
-								);
+			for (auto& value : gltfMaterial.values) {
+				if (value.first == "baseColorTexture") {
+					material.diffuseTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+				} else if (value.first == "metallicRoughnessTexture") {
+					material.roughnesTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+				} else if (value.first == "metallicFactor") {
+					material.metallicFactor = value.second.number_value;
+				} else if (value.first == "roughnessFactor") {
+					material.roughnessFactor = value.second.number_value;
+				} else if (value.first == "baseColorFactor") {
+					material.baseColorFactor = Vector4(
+						value.second.number_array[0],
+						value.second.number_array[1],
+						value.second.number_array[2],
+						value.second.number_array[3]
+					);
+				}
+			}
+
+			for (auto& value : gltfMaterial.additionalValues) {
+				if (value.first == "emisiveTexture") {
+					material.emisiveTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+				} else if (value.first == "normalTexture") {
+					material.normalTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+				} else if (value.first == "occlusionTexture") {
+					material.occlusionTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
+				} else if (value.first == "emissiveFactor") {
+					material.emissiveFactor = value.second.number_value;
+				}
+			}
+
+			for (auto& it : gltfMaterial.extensions) {
+				std::vector<std::string> keys = it.second.Keys();
+				for (std::string& key : keys) {
+					auto& value = it.second.Get(key);
+					if (value.IsObject()) {
+						std::vector<std::string> innerKeys = value.Keys();
+						for (std::string& innerKey : innerKeys) {
+							if (key == "diffuseTexture" && innerKey == "index") {
+								tinygltf::Value index = value.Get(innerKey);
+								int val = index.Get<int>();
+								material.diffuseTexture = gltfModel.images[gltfModel.textures[val].source].uri;
+							} else if (key == "specularGlossinessTexture" && innerKey == "index") {
+								tinygltf::Value index = value.Get(innerKey);
+								int val = index.Get<int>();
+								material.specularTexture = gltfModel.images[gltfModel.textures[val].source].uri;
 							}
 						}
-
-						for (auto& value : gltfMaterial.additionalValues) {
-							if (value.first == "emisiveTexture") {
-								material.emisiveTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-							}
-							else if (value.first == "normalTexture") {
-								material.normalTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-							}
-							else if (value.first == "occlusionTexture") {
-								material.occlusionTexture = gltfModel.images[gltfModel.textures[value.second.TextureIndex()].source].uri;
-							}
-							else if (value.first == "emissiveFactor") {
-								material.emissiveFactor = value.second.number_value;
-							}
-						}
-
-						for (auto& it : gltfMaterial.extensions) {
-							std::vector<std::string> keys = it.second.Keys();
-							for (std::string& key : keys) {
-								auto& value = it.second.Get(key);
-								if (value.IsObject()) {
-									std::vector<std::string> innerKeys = value.Keys();
-									for (std::string& innerKey : innerKeys) {
-										if (key == "diffuseTexture" && innerKey == "index") {
-											tinygltf::Value index = value.Get(innerKey);
-											int val = index.Get<int>();
-											material.diffuseTexture = gltfModel.images[gltfModel.textures[val].source].uri;
-										}
-										else if (key == "specularGlossinessTexture" && innerKey == "index") {
-											tinygltf::Value index = value.Get(innerKey);
-											int val = index.Get<int>();
-											material.specularTexture = gltfModel.images[gltfModel.textures[val].source].uri;
-										}
-									}
-								}
-							}
-						}
-						model->materials[material.id] = material;
 					}
 				}
 			}
+			model->materials.push_back(material);
 		}
 	}
 
@@ -259,12 +248,6 @@ namespace Hollow {
 		if (gltfModel.skins.size() > 0) {
 			model->skinned = true;
 
-			const tinygltf::Node& rootNode = gltfModel.nodes[gltfModel.skins[0].skeleton];
-			
-			model->rootJoint = std::make_shared<Import::Joint>();
-			model->rootJoint->id = gltfModel.skins[0].skeleton;
-			model->rootJoint->jointId = getJointByNode(gltfModel.skins[0].skeleton, gltfModel);
-
 			const tinygltf::Accessor& accessor = gltfModel.accessors[gltfModel.skins[0].inverseBindMatrices];
 			const tinygltf::BufferView& bufferView = gltfModel.bufferViews[accessor.bufferView];
 			binary.seekg(bufferView.byteOffset + accessor.byteOffset, std::fstream::beg);
@@ -272,29 +255,14 @@ namespace Hollow {
 			Matrix4* matrixData = new Matrix4[gltfModel.skins[0].joints.size()];
 			binary.read((char*)matrixData, sizeof(Matrix4) * accessor.count);
 
-			processAnimationNode(model->rootJoint, rootNode, model->joints, gltfModel);
+			model->rootJoint = gltfModel.skins[0].skeleton;
+			model->joints = gltfModel.skins[0].joints;
 
 			for (int i = 0; i < gltfModel.skins[0].joints.size(); i++) {
-				model->joints[gltfModel.skins[0].joints[i]]->inverseBindMatrix = matrixData[i].transpose();
+				model->inverseBindMatrices.push_back(matrixData[i].transpose());
 			}
 
 			delete[] matrixData;
-		}
-	}
-
-	void GLTFImporter::processAnimationNode(s_ptr<Import::Joint>& joint, const tinygltf::Node& modelNode, std::unordered_map<int, s_ptr<Import::Joint>>& joints, const tinygltf::Model& gltfModel)
-	{
-		joint->name = modelNode.name;
-		getTransformMatrix(modelNode, joint);
-		joints[joint->id] = joint;
-
-		for (int childId : modelNode.children) {
-			s_ptr<Import::Joint> childJoint = std::make_shared<Import::Joint>();
-			childJoint->id = childId;
-			childJoint->jointId = getJointByNode(childId, gltfModel);
-
-			joint->childs.push_back(childJoint.get());
-			processAnimationNode(childJoint, gltfModel.nodes[childId], joints, gltfModel);
 		}
 	}
 
@@ -416,27 +384,23 @@ namespace Hollow {
 	}
 
 	/**
-	 * Creates hierarchy of nodes and get's their transformations
+	 * Creates hierarchy of nodes
 	 */
-	void GLTFImporter::processHierarchy(s_ptr<Import::Node>& node, const tinygltf::Node& modelNode, Import::Model* model, const tinygltf::Model& gltfModel, std::vector<int>& meshesToLoad)
+	void GLTFImporter::processHierarchy(Import::Model* model, const tinygltf::Model& gltfModel)
 	{
-		node->name = modelNode.name.size() ? modelNode.name : ("Node " + std::to_string(nodeCounter++));
-		node->meshId = modelNode.mesh;
-		getTransformMatrix(modelNode, node);
+		for (int i = 0; i < gltfModel.nodes.size(); i++) {
+			const tinygltf::Node& gltfNode = gltfModel.nodes[i];
+			s_ptr<Import::Node> node = std::make_shared<Import::Node>();
 
-		if (modelNode.mesh >= 0) {
-			meshesToLoad.push_back(modelNode.mesh);
-		}
-
-		for (int childId : modelNode.children) {
-			s_ptr<Import::Node> childNode = std::make_shared<Import::Node>();
-			childNode->id = childId;
-			childNode->jointId = getJointByNode(childId, gltfModel);
-
-			node->childs.push_back(childNode.get());
-			model->nodes[childId] = childNode;
-
-			processHierarchy(childNode, gltfModel.nodes[childId], model, gltfModel, meshesToLoad);
+			node->id = i;
+			node->jointId = getJointByNode(node->id, gltfModel);
+			node->meshId = gltfNode.mesh;
+			node->childs = gltfNode.children;
+			
+			node->name = gltfNode.name.size() > 0 ? gltfNode.name : ("Node " + std::to_string(nodeCounter++));
+			
+			model->nodes.push_back(node);
+			getTransformMatrix(gltfNode, node);
 		}
 	}
 
@@ -495,39 +459,46 @@ namespace Hollow {
 		return -1;
 	}
 
-	void GLTFImporter::getTransformMatrix(const tinygltf::Node& modelNode, const s_ptr<Import::BaseNode>& node)
+	void GLTFImporter::getTransformMatrix(const tinygltf::Node& modelNode, const s_ptr<Import::Node>& node)
 	{
-		Matrix4 transform = Matrix4::identity();
-
 		if (modelNode.matrix.data()) {
-			transform = Matrix4(modelNode.matrix[0],  modelNode.matrix[1],  modelNode.matrix[2],  modelNode.matrix[3],
-								modelNode.matrix[4],  modelNode.matrix[5],  modelNode.matrix[6],  modelNode.matrix[7],
-								modelNode.matrix[8],  modelNode.matrix[9],  modelNode.matrix[10], modelNode.matrix[11],
-								modelNode.matrix[12], modelNode.matrix[13], modelNode.matrix[14], modelNode.matrix[15]).transpose();
-		} else {
-			Matrix4 rotation = Matrix4::identity();
-			Matrix4 scale = Matrix4::identity();
-			Matrix4 translation = Matrix4::identity();
+			Matrix4 transform = Matrix4(modelNode.matrix[0],  modelNode.matrix[1],  modelNode.matrix[2],  modelNode.matrix[3],
+										modelNode.matrix[4],  modelNode.matrix[5],  modelNode.matrix[6],  modelNode.matrix[7],
+										modelNode.matrix[8],  modelNode.matrix[9],  modelNode.matrix[10], modelNode.matrix[11],
+										modelNode.matrix[12], modelNode.matrix[13], modelNode.matrix[14], modelNode.matrix[15]).transpose();
 
+			node->translation = Matrix4::getTranslation(transform);
+
+			transform.r[0].w = 0.0f;
+			transform.r[1].w = 0.0f;
+			transform.r[2].w = 0.0f;
+
+			node->scale = Matrix4::getScaling(transform);
+
+			transform.r[0].x /= node->scale.x;
+			transform.r[1].x /= node->scale.x;
+			transform.r[2].x /= node->scale.x;
+
+			transform.r[0].y /= node->scale.y;
+			transform.r[1].y /= node->scale.y;
+			transform.r[2].y /= node->scale.y;
+
+			transform.r[0].z /= node->scale.z;
+			transform.r[1].z /= node->scale.z;
+			transform.r[2].z /= node->scale.z;
+
+			node->rotation = Matrix4::getRotation(transform);
+		} else {
 			if (modelNode.translation.size() > 0) {
 				node->translation = Vector3(modelNode.translation[0], modelNode.translation[1], modelNode.translation[2]);
-				translation = Matrix4::translation(node->translation);
 			}
-
 			if (modelNode.rotation.size() > 0) {
 				node->rotation = Quaternion(modelNode.rotation[0], modelNode.rotation[1], modelNode.rotation[2], modelNode.rotation[3]);
-				rotation = Matrix4::rotation(node->rotation);
 			}
-
 			if (modelNode.scale.size() > 0) {
 				node->scale = Vector3(modelNode.scale[0], modelNode.scale[1], modelNode.scale[2]);
-				scale = Matrix4::scaling(node->scale);
 			}
-
-			transform = translation * rotation * scale;
 		}
-
-		node->transform =  transform;
 	}
 
 	bool GLTFImporter::hasMesh(const tinygltf::Node& node, const tinygltf::Model& model)

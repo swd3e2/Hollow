@@ -5,6 +5,7 @@
 
 #include "Hollow/Graphics/Shader.h"
 #include "OGLPrerequisites.h"
+
 #define DEFAULT_SHADER_ID -1
 
 namespace Hollow {
@@ -14,7 +15,7 @@ namespace Hollow {
 		GLuint shaderId;
 		GLuint prevShaderId;
 	public:
-		~OGLShader()
+		virtual ~OGLShader()
 		{
 			release();
 		}

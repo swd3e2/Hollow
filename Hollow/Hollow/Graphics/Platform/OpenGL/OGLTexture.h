@@ -6,7 +6,6 @@
 #include "Hollow/Graphics/Texture.h"
 #include "OGLPrerequisites.h"
 #include "OGLHelper.h"
-#include "Hollow/Common/Log.h"
 
 namespace Hollow {
 	class OGLTexture : public Texture
@@ -19,6 +18,11 @@ namespace Hollow {
 		OGLTexture(const TEXTURE_DESC& desc) : 
 			Texture(desc), textureId(0) 
 		{}
+
+		virtual ~OGLTexture()
+		{
+			glDeleteTextures(1, &textureId);
+		}
 
 		virtual void update(void* data) override
 		{
@@ -55,11 +59,6 @@ namespace Hollow {
 		virtual void generateMipMap() override
 		{
 			glGenerateTextureMipmap(textureId);
-		}
-
-		virtual ~OGLTexture()
-		{
-			glDeleteTextures(1, &textureId);
 		}
 	};
 }

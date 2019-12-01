@@ -21,17 +21,19 @@ namespace Hollow {
 	private:
 		int width;
 		int height;
-	public:
 		int count;
 	public:
 		RenderTarget(int width, int height, int count) :
 			width(width), height(height), count(count)
 		{}
 
+		virtual ~RenderTarget() {}
+
 		static s_ptr<RenderTarget> create(RENDER_TARGET_DESC desc);
 
-		int getWidth() const { return width; }
-		int getHeight() const { return height; }
+		inline int getWidth() const { return width; }
+		inline int getHeight() const { return height; }
+		inline int getCount() const { return count; }
 		virtual Vector4 readPixel(int x, int y) = 0;
 	};
 }

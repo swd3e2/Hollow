@@ -17,25 +17,23 @@ namespace Hollow {
 	public:
 		OGLHardwareBuffer(size_t size, size_t stride) : HardwareBuffer(size, stride) {}
 
-		virtual void update(void* data, const int size) override
-		{
-			glNamedBufferSubData(mVbo, 0, size, data);
-		}
-
 		virtual ~OGLHardwareBuffer()
 		{
 			glDeleteBuffers(1, &mVbo);
 			glDeleteVertexArrays(1, &mVao);
 		}
+
+		virtual void update(void* data, const int size) override
+		{
+			glNamedBufferSubData(mVbo, 0, size, data);
+		}
 	};
 
 	class OGLIndexBuffer : public IndexBuffer
 	{
-
 	};
 
 	class OGLVertexBuffer : public VertexBuffer
 	{
-
 	};
 }

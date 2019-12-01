@@ -13,7 +13,7 @@ namespace Hollow {
 		friend class D3D11RenderStateManager;
 		ID3D11RasterizerState* m_RasterizerState;
 	public:
-		~D3D11RasterizerState()
+		virtual ~D3D11RasterizerState()
 		{
 			SAFE_RELEASE(m_RasterizerState);
 		}

@@ -18,6 +18,7 @@ namespace Hollow {
 	class RasterizerState
 	{
 	public:
+		virtual ~RasterizerState() {}
 		static s_ptr<RasterizerState> create(const RASTERIZER_STATE_DESC& desc);
 	};
 }

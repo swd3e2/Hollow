@@ -5,7 +5,6 @@
 
 #include "Hollow/Graphics/GPUBuffer.h"
 #include "D3D11Prerequisites.h"
-#include "Hollow/Common/Log.h"
 
 namespace Hollow {
 	class D3D11GPUBuffer : public GPUBuffer
@@ -16,6 +15,8 @@ namespace Hollow {
 		D3D11GPUBuffer(unsigned int location, unsigned int size) :
 			GPUBuffer(location, size)
 		{}
+		
+		virtual ~D3D11GPUBuffer() { SAFE_RELEASE(m_Buffer); }
 
 		virtual void update(void* data, unsigned int size = 0) override;
 	};

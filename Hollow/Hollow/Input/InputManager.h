@@ -11,14 +11,9 @@
 #include "DirectXMath.h"
 #include "Hollow/Events/IEventListener.h"
 #include "Hollow/Events/EventSystem.h"
-#include "Hollow/Events/ButtonPressedEvent.h"
-#include "Hollow/Events/ButtonReleasedEvent.h"
-#include "Hollow/Events/WindowCreateEvent.h"
-#include "Hollow/Events/MouseMoveEvent.h"
+#include "Hollow/Events/DefaultEvents.h"
 #include "Hollow/Core/CModule.h"
 #include <vector>
-#define FIELD_SIZE 10000
-#include "Hollow/Common/Log.h"
 
 using namespace DirectX;
 

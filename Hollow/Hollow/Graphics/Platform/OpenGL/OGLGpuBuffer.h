@@ -16,6 +16,11 @@ namespace Hollow {
 			GPUBuffer(location, size)
 		{}
 
+		virtual ~OGLGpuBuffer() 
+		{
+			glDeleteBuffers(1, &UBO);
+		}
+
 		virtual void update(void* data, unsigned int size = 0) override
 		{
 			glBindBuffer(GL_UNIFORM_BUFFER, UBO);

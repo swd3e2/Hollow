@@ -8,5 +8,7 @@ namespace Hollow {
 	{
 	public:
 		ID3D11InputLayout* m_InputLayout;
+	public:
+		virtual ~D3D11InputLayout() { SAFE_RELEASE(m_InputLayout); }
 	};
 }

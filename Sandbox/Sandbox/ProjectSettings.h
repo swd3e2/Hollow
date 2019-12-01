@@ -138,8 +138,20 @@ public:
 					default:
 						break;
 					}
+					
+					physics->setLocalScale(Hollow::Vector3(
+						it["PhysicsComponent"]["localScale"][0].get<float>(),
+						it["PhysicsComponent"]["localScale"][1].get<float>(),
+						it["PhysicsComponent"]["localScale"][2].get<float>()
+					));
 
 					physics->init();
+
+					physics->setAngularFactor(Hollow::Vector3(
+						it["PhysicsComponent"]["angularFactor"][0].get<float>(),
+						it["PhysicsComponent"]["angularFactor"][1].get<float>(),
+						it["PhysicsComponent"]["angularFactor"][2].get<float>()
+					));
 
 					PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 				}
@@ -198,7 +210,7 @@ public:
 					light->lightData.quadratic = it["LightComponent"]["quadratic"].get<float>();
 					light->lightData.cutoff = it["LightComponent"]["cutoff"].get<float>();
 					light->lightData.distance = it["LightComponent"]["distance"].get<float>();
-					light->lightData.type = it["LightComponent"]["type"].get<float>();
+					light->lightData.type = it["LightComponent"]["type"].get<int>();
 				}
 
 				if (it.find("TerrainData") != it.end()) {
@@ -303,12 +315,18 @@ public:
 						{ "capsuleHeight", physics->capsuleHeight },
 						{ "capsuleRadius", physics->capsuleRadius },
 						{ "originalPosition", { physics->originPosition.x, physics->originPosition.y, physics->originPosition.z }},
-						{ "mass", physics->mass }
+						{ "mass", physics->mass },
+						{ "angularFactor", { physics->angularFactor.x, physics->angularFactor.y, physics->angularFactor.z } },
+						{ "localScale", { physics->localScale.x, physics->localScale.y, physics->localScale.z } }
 					};
 				}
 
 				if (it.hasComponent<PlayerComponent>()) {
 					projectData["GameObjects"][counter]["PlayerComponent"] = {};
+				}
+
+				if (it.hasComponent<AnimationComponent>()) {
+					projectData["GameObjects"][counter]["AnimationComponent"] = {};
 				}
 
 				counter++;
@@ -350,6 +368,7 @@ public:
 						{ "type", light->lightData.type },
 					};
 				}
+				counter++;
 			}
 
 			Hollow::FileSystem::writeToFile(projectFileName, projectData.dump(2).c_str());

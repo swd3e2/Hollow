@@ -6,7 +6,6 @@
 #include "Hollow/Graphics/ShaderManager.h"
 #include "OGLShader.h"
 #include "OGLShaderPipeline.h"
-#include "Hollow/Common/Log.h"
 #include <unordered_map>
 
 namespace Hollow {

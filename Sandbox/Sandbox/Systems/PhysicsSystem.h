@@ -62,7 +62,7 @@ public:
 				btQuaternion rot = physics->body->getCenterOfMassTransform().getRotation();
 
 				if (physics->applyRotation) {
-					rot.getEulerZYX(transform->rotation.x, transform->rotation.y, transform->rotation.z);
+					transform->rotationQ = Hollow::Quaternion(rot.getX(), rot.getY(), rot.getZ(), rot.getW());
 				}
 			}
 		}

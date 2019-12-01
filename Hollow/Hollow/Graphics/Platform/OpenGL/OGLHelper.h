@@ -360,6 +360,8 @@ namespace Hollow {
 		{
 			switch (topology)
 			{
+			case PrimitiveTopology::PT_POINT:
+				return GL_POINTS;
 			case PrimitiveTopology::PT_LINELIST:
 				return GL_LINES;
 			case PrimitiveTopology::PT_LINESTRIP:

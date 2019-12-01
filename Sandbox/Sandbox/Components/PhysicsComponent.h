@@ -24,6 +24,9 @@ public:
 	Hollow::Vector3 originPosition;
 	Hollow::Vector3 boxSize;
 	Hollow::Vector3 planeNormal;
+	Hollow::Vector3 localScale = Hollow::Vector3(1.0f, 1.0f, 1.0f);
+	Hollow::Vector3 angularFactor = Hollow::Vector3(1.0f, 1.0f, 1.0f);
+	float contactingThreshold;
 	float capsuleHeight;
 	float capsuleRadius;
 	float planeSize;
@@ -41,6 +44,9 @@ public:
 	void addPlaneShape(const Hollow::Vector3& planeNormal, float size);
 	void addCapsuleShape(float height, float radius);
 	void setPosition(const Hollow::Vector3& position);
+	void setRotation(const Hollow::Vector3 rotation);
+	void setLocalScale(const Hollow::Vector3& scale);
+	void setAngularFactor(const Hollow::Vector3& factor);
 	inline void setOriginPosition(const Hollow::Vector3& position) { this->originPosition = position; }
 	inline void setMass(const float mass) { this->mass = mass; }
 	void init();

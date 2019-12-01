@@ -10,5 +10,10 @@ namespace Hollow {
 		friend class OGLRenderApi;
 		size_t size;
 		GLuint vao;
+	public:
+		virtual ~OGLInputLayout()
+		{
+			glDeleteBuffers(1, &vao);
+		}
 	};
 }

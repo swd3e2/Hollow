@@ -32,6 +32,7 @@
 #include "Systems/CameraSystem.h"
 #include "TextureManager.h"
 #include "Systems/ParticleSystem.h"
+#include "Systems/NodeUpdateSystem.h"
 
 class Appliaction
 {
@@ -42,23 +43,24 @@ public:
 	Hollow::Camera camera;
 
 	Profiler profiler;
-	AnimationSystem* animationSystem;
-	GUISystem* gui;
-	RenderSystem* renderPass;
-	PlayerSystem* playerSystem;
-	FileSystemNotifier fNotifier;
-	CameraSystem* cameraSystem;
-	ParticleSystem* particleSystem;
-	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
-	const int width = 1920;
-	const int height = 1080;
+	Hollow::s_ptr<AnimationSystem> animationSystem;
+	Hollow::s_ptr<GUISystem> gui;
+	Hollow::s_ptr<RenderSystem> renderSystem;
+	Hollow::s_ptr<PlayerSystem> playerSystem;
+	Hollow::s_ptr<FileSystemNotifier> fNotifier;
+	Hollow::s_ptr<CameraSystem> cameraSystem;
+	Hollow::s_ptr<ParticleSystem> particleSystem;
+	Hollow::s_ptr<NodeUpdateSystem> nodeUpdateSystem;
+	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	int width;
+	int height;
 public:
-	Appliaction() :
-		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
+	Appliaction()
 	{
-		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
-		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
-		gui = new GUISystem(window, renderer);
+		initSettings();
+
+		gui = std::make_shared<GUISystem>(window, renderer);
+		fNotifier = std::make_shared<FileSystemNotifier>("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders");
 
 		ProjectSettings::startUp<ProjectSettings>();
 		PhysicsSystem::startUp();
@@ -66,34 +68,33 @@ public:
 		ShaderManager::startUp();
 
 		camera.setProjectionValues(80.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100000.0f);
+		
+		renderSystem = std::make_shared<RenderSystem>(renderer, width, height);
+		renderSystem->m_Camera = &camera;
+		renderSystem->skyMap = new SkyMap();
 
-		renderPass = new RenderSystem(renderer, width, height);
-		renderPass->skyMap = new SkyMap();
-		renderPass->m_Camera = &camera;
-
-		animationSystem = new AnimationSystem();
-		playerSystem = new PlayerSystem();
-		cameraSystem = new CameraSystem();
+		animationSystem = std::make_shared<AnimationSystem>();
+		playerSystem = std::make_shared<PlayerSystem>();
+		cameraSystem = std::make_shared<CameraSystem>();
 		cameraSystem->setCamera(&camera);
-		particleSystem = new ParticleSystem();
+		particleSystem = std::make_shared<ParticleSystem>();
+		nodeUpdateSystem = std::make_shared<NodeUpdateSystem>();
 
-		Hollow::SystemManager::instance()->addSystem(renderPass);
-		Hollow::SystemManager::instance()->addSystem(animationSystem);
+		Hollow::SystemManager::instance()->addSystem(renderSystem.get());
+		Hollow::SystemManager::instance()->addSystem(animationSystem.get());
 		Hollow::SystemManager::instance()->addSystem(PhysicsSystem::instance());
-		Hollow::SystemManager::instance()->addSystem(playerSystem);
-		Hollow::SystemManager::instance()->addSystem(cameraSystem);
-		Hollow::SystemManager::instance()->addSystem(particleSystem);
+		Hollow::SystemManager::instance()->addSystem(playerSystem.get());
+		Hollow::SystemManager::instance()->addSystem(cameraSystem.get());
+		Hollow::SystemManager::instance()->addSystem(particleSystem.get());
+		Hollow::SystemManager::instance()->addSystem(nodeUpdateSystem.get());
 
-		gui->rendererTab.renderSystem = renderPass;
+		gui->rendererTab.renderSystem = renderSystem.get();
 
 		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
 
-		//Light* light = Hollow::EntityManager::instance()->create<Light>();
-		//light->addComponent<LightComponent>();
-
 		Hollow::TaskManager::instance()->add([&]() {
-			fNotifier.run();
+			fNotifier->run();
 		});
 
 		PhysicsSystem::instance()->dynamicsWorld->setDebugDrawer(new PhysicsDebugDraw(renderer));
@@ -101,60 +102,52 @@ public:
 		//init();
 	}
 
+	~Appliaction()
+	{
+		Hollow::RenderApi::shutdown();
+		Hollow::Window::shutdown();
+	}
+
+	void initSettings()
+	{
+		if (!Hollow::FileSystem::exists("settings.json")) {
+			Hollow::FileSystem::writeToFile("settings.json", "{ \"renderer\": { \"type\": 1 }, \"window\": { \"type\": 1, \"os\": \"win32\", \"width\": 1920, \"height\": 1080 } }");
+		}
+		//Hollow::FileSystem::writeToFile("settings.json", "{ renderer: { type: 1 }, window: { type: 1, height: 1920, width: 1080 } }");
+		auto settings = nlohmann::json::parse(Hollow::FileSystem::getFileContent("settings.json"));
+
+		Hollow::RendererType rendererType = settings["renderer"]["type"].get<Hollow::RendererType>();
+		Hollow::WindowType windowType = settings["window"]["type"].get<Hollow::WindowType>();
+
+		width = settings["window"]["width"].get<int>();
+		height = settings["window"]["height"].get<int>();
+
+		if (settings["window"]["os"].get<std::string>() == "win32") {
+			if (rendererType == Hollow::RendererType::OpenGL) {
+				window = Hollow::OGLWin32Window::startUp<Hollow::OGLWin32Window>(GetModuleHandle(NULL), width, height, windowType);
+				renderer = Hollow::RenderApi::startUp<Hollow::OGLRenderApi>(width, height);
+			}
+			else if (rendererType == Hollow::RendererType::DirectX) {
+				window = Hollow::D3D11Win32Window::startUp<Hollow::D3D11Win32Window>(GetModuleHandle(NULL), width, height, windowType);
+				renderer = Hollow::RenderApi::startUp<Hollow::D3D11RenderApi>(width, height);
+			}
+		}
+	}
+
 	void init()
 	{
-		Hollow::s_ptr<Hollow::Import::Model> planeMesh = Hollow::MeshManager::instance()
-			->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf");
-		Hollow::s_ptr<Hollow::Texture> testTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/test.gif", 0);
-		Hollow::s_ptr<Hollow::Texture> brickwall = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall.jpg", 0);
-		Hollow::s_ptr<Hollow::Texture> brickwallNormal = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/brickwall_normal.jpg", 0);
-
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->scale = Hollow::Vector3(10.0f, 10.0f, 10.0f);
-			transform->position = Hollow::Vector3(0.0f, 25.0f, 0.0f);
-
-			Hollow::s_ptr<Hollow::Import::Model> cube = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/cube.gltf");
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(cube);
-
-			const Hollow::s_ptr<RenderableObject>& object = renderable->renderables[0];
-			object->material = 0;
-			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
-			material->diffuseTexture = brickwall;
-			material->materialData.hasDiffuseTexture = true;
-			material->normalTexture = brickwallNormal;
-			material->materialData.hasNormalTexture = true;
-
-			renderable->materials[0] = material;
-		}
-		/* Physics test */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(0.0f, -50.0f, 0.0f), 0);
-			physics->addPlaneShape(Hollow::Vector3(0.0f, 1.0f, 0.0f), 0);
-			physics->init();
-			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
-		}
 		/* PLANE 1 */
 		{
+			Hollow::s_ptr<Hollow::Import::Model> planeMesh = Hollow::MeshManager::instance()
+				->import("C:/dev/Hollow Engine/Project1/Meshes/block.gltf");
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 			// Render
 			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
-			const Hollow::s_ptr<RenderableObject>& object = renderable->renderables[0];
-			object->material = 0;
-			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
-			material->diffuseTexture = testTexture;
-			material->materialData.hasDiffuseTexture = true;
-
-			renderable->materials[0] = material;
-
 			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(0.0f, -25.0f, 0.0f), 0.0f);
+			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(0.0f, 25.0f, 0.0f), 0.0f);
 
-			physics->addBoxShape(Hollow::Vector3(25.0f, 0.001f, 25.0f));
+			physics->addAABBShape(planeMesh);
+			//physics->shape->setLocalScaling(btVector3(2.0f, 2.0f, 2.0f));
 			physics->init();
 
 			physics->body->setFriction(1);
@@ -162,105 +155,7 @@ public:
 			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
 
 			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->scale = Hollow::Vector3(25.0f, 0.0f, 25.0f);
-		}
-		/* PLANE 2 */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(planeMesh);
-			const Hollow::s_ptr<RenderableObject>& object = renderable->renderables[0];
-			object->material = 0;
-
-			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
-			material->diffuseTexture = testTexture;
-			material->materialData.hasDiffuseTexture = true;
-
-			renderable->materials[0] = material;
-
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(60.0f, -25.0f, 0.0f));
-			physics->addBoxShape(Hollow::Vector3(25.0f, 0.001f, 25.0f));
-			physics->init();
-
-			/*physics->body->setFriction(1);
-			physics->body->setRestitution(0);*/
-			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
-
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->scale = Hollow::Vector3(25.0f, 0.0f, 25.0f);
-		}
-		/* FOX */
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-
-			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf");
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-			//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(), 1.0f);
-			physics->applyRotation = false;
-			//physics->addAABBShape(mesh);
-			physics->addBoxShape(Hollow::Vector3(0.6f, 1.3f, 1.5f));
-			//physics->shape->setLocalScaling(btVector3(0.05f, 0.05f, 0.05f));
-			physics->init();
-
-			physics->body->setContactProcessingThreshold(0.01);
-			physics->body->setAngularFactor(btVector3(0.0f, 0.0f, 0.0f));
-
-			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
-
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = Hollow::Vector3(0.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(1.0f, 1.0f, 1.0f);
-
-			entity->addComponent<PlayerComponent>();
-		}
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf");
-			/*Hollow::s_ptr<Hollow::Import::Model> mesh = Hollow::MeshManager::instance()
-				->import("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/art/scene.gltf");*/
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>(mesh);
-			//AnimationComponent* animation = entity->addComponent<AnimationComponent>(mesh);
-
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(0.0f, 0.0f, 0.0f), 50.0f);
-			//physics->load(mesh, Hollow::Vector3(20.0f, 0.0f, 0.0f), 0.0f);
-			physics->addBoxShape(Hollow::Vector3(1.5f, 4.2, 1.5f));
-			physics->init();
-			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
-
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
-			transform->position = Hollow::Vector3(20.0f, 0.0f, 0.0f);
-			transform->scale = Hollow::Vector3(4.7f, 4.7f, 4.7f);
-		}
-		{
-			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
-			// Render
-			RenderableComponent* renderable = entity->addComponent<RenderableComponent>();
-
-			Hollow::s_ptr<RenderableObject> renderableObject = std::make_shared<RenderableObject>();
-			std::tie(renderableObject->vBuffer, renderableObject->iBuffer) = Hollow::getCube();
-			renderableObject->material = 0;
-			renderable->renderables.push_back(renderableObject);
-
-			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
-			material->materialData.color = Hollow::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-			renderable->materials[0] = material;
-
-			// Physics
-			PhysicsComponent* physics = entity->addComponent<PhysicsComponent>(Hollow::Vector3(3.0f, 25.0f, 0.0f), 1.0f);
-			physics->addBoxShape(Hollow::Vector3(1.f, 1.f, 1.f));
-			physics->init();
-			PhysicsSystem::instance()->dynamicsWorld->addRigidBody(physics->body.get());
-
-			TransformComponent* transform = entity->addComponent<TransformComponent>();
+			//transform->scale = Hollow::Vector3(2.0f, 2.0f, 2.0f);
 		}
 		{
 			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();

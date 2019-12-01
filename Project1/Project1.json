@@ -1,31 +1,12 @@
 {
   "GameObjects": [
     {
-      "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/cube.gltf"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "scale": [
-          10.0,
-          10.0,
-          10.0
-        ],
-        "translation": [
-          0.0,
-          25.0,
-          0.0
-        ]
-      },
-      "id": 0,
-      "name": ""
-    },
-    {
       "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "boxSize": [
           0.0,
           0.0,
@@ -33,6 +14,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 0.0,
         "originalPosition": [
           0.0,
@@ -48,105 +34,16 @@
         "sphereRadius": 0.0,
         "type": 2
       },
-      "id": 1,
-      "name": ""
+      "id": 0,
+      "name": "ground"
     },
     {
       "PhysicsComponent": {
-        "boxSize": [
-          25.0,
-          0.0010000000474974513,
-          25.0
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
         ],
-        "capsuleHeight": 0.0,
-        "capsuleRadius": 0.0,
-        "mass": 0.0,
-        "originalPosition": [
-          0.0,
-          -25.0,
-          0.0
-        ],
-        "planeNormal": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "planeSize": 0.0,
-        "sphereRadius": 0.0,
-        "type": 0
-      },
-      "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          -0.0,
-          0.0
-        ],
-        "scale": [
-          25.0,
-          0.0,
-          25.0
-        ],
-        "translation": [
-          0.0,
-          -25.0,
-          0.0
-        ]
-      },
-      "id": 2,
-      "name": ""
-    },
-    {
-      "PhysicsComponent": {
-        "boxSize": [
-          25.0,
-          0.0010000000474974513,
-          25.0
-        ],
-        "capsuleHeight": 0.0,
-        "capsuleRadius": 0.0,
-        "mass": 0.0,
-        "originalPosition": [
-          60.0,
-          -25.0,
-          0.0
-        ],
-        "planeNormal": [
-          0.0,
-          0.0,
-          0.0
-        ],
-        "planeSize": 0.0,
-        "sphereRadius": 0.0,
-        "type": 0
-      },
-      "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/untitled.gltf"
-      },
-      "TransformComponent": {
-        "rotation": [
-          0.0,
-          -0.0,
-          0.0
-        ],
-        "scale": [
-          25.0,
-          0.0,
-          25.0
-        ],
-        "translation": [
-          60.0,
-          -25.0,
-          0.0
-        ]
-      },
-      "id": 3,
-      "name": ""
-    },
-    {
-      "PhysicsComponent": {
         "boxSize": [
           0.6000000238418579,
           1.2999999523162842,
@@ -154,6 +51,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 1.0,
         "originalPosition": [
           0.0,
@@ -170,31 +72,37 @@
         "type": 0
       },
       "PlayerComponent": null,
+      "AnimationComponent": null,
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/foxbackup.gltf"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf"
       },
       "TransformComponent": {
         "rotation": [
-          1.1948070095968433e-05,
-          0.0003563399950508028,
-          -1.179625655822747e-06
+          -1.0795754860737361e-05,
+          3.1415927410125732,
+          8.136698852467816e-07
         ],
         "scale": [
+          0.029999999329447746,
+          0.029999999329447746,
+          0.029999999329447746
+        ],
+        "translation": [
+          0.1382564902305603,
+          -1.5000001192092896,
+          3.3777713775634766
+        ]
+      },
+      "id": 1,
+      "name": "fox"
+    },
+    {
+      "PhysicsComponent": {
+        "angularFactor": [
           1.0,
           1.0,
           1.0
         ],
-        "translation": [
-          -2.599452495574951,
-          -23.699003219604492,
-          -0.07387331128120422
-        ]
-      },
-      "id": 4,
-      "name": ""
-    },
-    {
-      "PhysicsComponent": {
         "boxSize": [
           1.5,
           4.199999809265137,
@@ -202,6 +110,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 50.0,
         "originalPosition": [
           0.0,
@@ -222,9 +135,9 @@
       },
       "TransformComponent": {
         "rotation": [
-          3.141591787338257,
-          0.30098921060562134,
-          -1.5707968473434448
+          -1.5707975625991821,
+          5.960464477539063e-08,
+          1.3864326477050781
         ],
         "scale": [
           4.699999809265137,
@@ -232,16 +145,21 @@
           4.699999809265137
         ],
         "translation": [
-          6.023425579071045,
+          -3.556544065475464,
           -48.500003814697266,
-          1.7395089864730835
+          -11.786751747131348
         ]
       },
-      "id": 5,
-      "name": ""
+      "id": 2,
+      "name": "zelda"
     },
     {
       "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "boxSize": [
           1.0,
           1.0,
@@ -249,6 +167,11 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 1.0,
         "originalPosition": [
           3.0,
@@ -269,9 +192,9 @@
       },
       "TransformComponent": {
         "rotation": [
-          3.441692797423457e-07,
-          1.0666752132237889e-05,
-          5.6225879063731554e-08
+          -3.141592502593994,
+          -0.277904212474823,
+          3.141591787338257
         ],
         "scale": [
           1.0,
@@ -279,20 +202,25 @@
           1.0
         ],
         "translation": [
-          2.9998714923858643,
-          -23.99900245666504,
-          3.6993203593738144e-06
+          -1.7397186756134033,
+          -49.00000762939453,
+          -4.020269393920898
         ]
       },
-      "id": 6,
+      "id": 3,
       "name": ""
     },
     {
-      "id": 7,
+      "id": 4,
       "name": ""
     },
     {
       "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "boxSize": [
           2.0,
           10.0,
@@ -300,10 +228,15 @@
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
         "mass": 0.0,
         "originalPosition": [
           39.900001525878906,
-          -15.0,
+          -3.200000047683716,
           14.199999809265137
         ],
         "planeNormal": [
@@ -331,12 +264,366 @@
         ],
         "translation": [
           39.900001525878906,
-          -15.0,
+          -3.200000047683716,
           14.199999809265137
         ]
       },
+      "id": 5,
+      "name": "tree"
+    },
+    {
+      "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "boxSize": [
+          15.0,
+          15.0,
+          15.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mass": 0.0,
+        "originalPosition": [
+          -38.20000076293945,
+          -15.0,
+          0.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          15.0,
+          15.0,
+          15.0
+        ],
+        "translation": [
+          -38.20000076293945,
+          -15.0,
+          0.0
+        ]
+      },
+      "id": 6,
+      "name": "box1"
+    },
+    {
+      "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "boxSize": [
+          15.0,
+          15.0,
+          15.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mass": 0.0,
+        "originalPosition": [
+          38.400001525878906,
+          -18.0,
+          9.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          15.0,
+          15.0,
+          15.0
+        ],
+        "translation": [
+          38.400001525878906,
+          -18.0,
+          9.0
+        ]
+      },
+      "id": 7,
+      "name": "box2"
+    },
+    {
+      "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "boxSize": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "localScale": [
+          47.0,
+          10.899999618530273,
+          10.899999618530273
+        ],
+        "mass": 0.0,
+        "originalPosition": [
+          23.75,
+          -10.899999618530273,
+          -17.0
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\block.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.019999999552965164,
+          0.029999999329447746,
+          0.3199999928474426
+        ],
+        "scale": [
+          2.0,
+          2.0,
+          2.0
+        ],
+        "translation": [
+          23.75,
+          -10.899999618530273,
+          -17.0
+        ]
+      },
       "id": 8,
+      "name": "block"
+    },
+    {
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\treetest.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          33.79999923706055,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation": [
+          3.5999999046325684,
+          1.0,
+          -8.5
+        ]
+      },
+      "id": 9,
       "name": ""
+    },
+    {
+      "PhysicsComponent": {
+        "angularFactor": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "boxSize": [
+          10.0,
+          10.0,
+          10.0
+        ],
+        "capsuleHeight": 0.0,
+        "capsuleRadius": 0.0,
+        "localScale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mass": 0.0,
+        "originalPosition": [
+          0.0,
+          -12.100000381469727,
+          10.399999618530273
+        ],
+        "planeNormal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "planeSize": 0.0,
+        "sphereRadius": 0.0,
+        "type": 0
+      },
+      "RenderableComponent": {
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\boxtest.gltf"
+      },
+      "TransformComponent": {
+        "rotation": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "scale": [
+          10.0,
+          10.0,
+          10.0
+        ],
+        "translation": [
+          0.0,
+          -12.100000381469727,
+          10.399999618530273
+        ]
+      },
+      "id": 10,
+      "name": "boxtest"
+    }
+  ],
+  "Light": [
+    {
+      "LightComponent": {
+        "color": [
+          0.15453577041625977,
+          1.0,
+          0.03375530242919922
+        ],
+        "constant": 0.0,
+        "cutoff": 0.0,
+        "direction": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "distance": 0.0,
+        "linear": 0.0,
+        "position": [
+          32.0,
+          0.0,
+          5.699999809265137
+        ],
+        "quadratic": 0.0,
+        "type": 2
+      }
+    },
+    {
+      "LightComponent": {
+        "color": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "constant": 0.0,
+        "cutoff": 0.0,
+        "direction": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "distance": 0.0,
+        "linear": 0.0,
+        "position": [
+          0.0,
+          -0.20000000298023224,
+          9.899999618530273
+        ],
+        "quadratic": 0.0,
+        "type": 2
+      }
+    },
+    {
+      "LightComponent": {
+        "color": [
+          0.0,
+          0.32922816276550293,
+          1.0
+        ],
+        "constant": 0.0,
+        "cutoff": 0.0,
+        "direction": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "distance": 0.0,
+        "linear": 0.0,
+        "position": [
+          -37.099998474121094,
+          1.899999976158142,
+          1.399999976158142
+        ],
+        "quadratic": 0.0,
+        "type": 2
+      }
+    },
+    {
+      "LightComponent": {
+        "color": [
+          1.0,
+          0.008438825607299805,
+          0.9887323975563049
+        ],
+        "constant": 0.0,
+        "cutoff": 0.0,
+        "direction": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "distance": 0.0,
+        "linear": 0.0,
+        "position": [
+          0.0,
+          -5.0,
+          -15.399999618530273
+        ],
+        "quadratic": 0.0,
+        "type": 2
+      }
     }
   ],
   "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",

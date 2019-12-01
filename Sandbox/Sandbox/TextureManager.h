@@ -17,6 +17,7 @@ public:
 
 		if (Hollow::FileSystem::exists(filepath)) {
 			if (textureList.find(filepath) != textureList.end()) {
+				HW_INFO("Texture manager: texture found {}", filepath);
 				return textureList[filepath];
 			}
 
@@ -43,6 +44,7 @@ public:
 			}
 
 			textureList[filepath] = texture;
+			HW_INFO("Texture manager: texture added to list {}", filepath);
 
 			return texture;
 		} else {

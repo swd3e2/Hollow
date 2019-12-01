@@ -4,52 +4,39 @@
 #include "Hollow/Platform.h"
 #include "Hollow/Import/Mesh.h"
 
-struct Joint
-{
-	int id;
-	int jointId;
-	std::string name;
-	std::vector<Hollow::s_ptr<Joint>> childs;
-	Hollow::s_ptr<Joint> parent;
-	Hollow::Matrix4 inverseBindMatrix;
-	Hollow::Matrix4 localTransform;
-	Hollow::Quaternion rotation;
-	Hollow::Vector3 translation;
-	Hollow::Vector3 scale;
-
-	Hollow::Quaternion currentRotation;
-	Hollow::Vector3 currentTranslation;
-	Hollow::Vector3 currentScale;
-
-	double currentRotationIndex = 0;
-	double currentTranslationIndex = 0;
-	double currentScaleIndex = 0;
-};
-
-struct AnimationNodeData
-{
-	std::vector<std::pair<double, Hollow::Quaternion>> rotations;
-	std::vector<std::pair<double, Hollow::Vector3>> positions;
-	std::vector<std::pair<double, Hollow::Vector3>> scale;
-};
-
-struct Animation
-{
-	std::map<int, Hollow::s_ptr<AnimationNodeData>> data;
-	std::string name;
-	double duration = 0.0;
-};
-
 class AnimationComponent : public Hollow::Component<AnimationComponent>
 {
 public:
+	struct AnimationIndex 
+	{
+		double rotationIndex = 0;
+		double translationIndex = 0;
+		double scaleIndex = 0;
+	};
+	struct AnimationNodeData
+	{
+		std::vector<std::pair<double, Hollow::Quaternion>> rotations;
+		std::vector<std::pair<double, Hollow::Vector3>> positions;
+		std::vector<std::pair<double, Hollow::Vector3>> scale;
+	};
+
+	struct Animation
+	{
+		std::map<int, Hollow::s_ptr<AnimationNodeData>> data;
+		std::string name;
+		double duration = 0.0;
+	};
+public:
+	std::vector<AnimationIndex> animationIndices;
+	std::vector<Hollow::Matrix4> inverseBindMatrices;
+	/* Joint ids in node list */
+	std::vector<int> joints;
+	/* Blending factor between two selected animations */
 	float blendingFactor = 1.0f;
-	/* List of nodes */
-	std::unordered_map<int, Hollow::s_ptr<Joint>> nodes;
 	/* List of animations */
 	std::vector<Hollow::s_ptr<Animation>> animations;
 	/* Root animation node */
-	Hollow::s_ptr<Joint> rootJoint;
+	int rootJoint;
 	/* Current animation time */
 	double currentAnimationTime = 0.0;
 	/* Selected animation index */
@@ -67,22 +54,12 @@ public:
 public:
 	AnimationComponent(const Hollow::s_ptr<Hollow::Import::Model>& mesh)
 	{
-		if (mesh == nullptr || mesh->rootNode == nullptr) {
+		if (mesh->rootJoint == -1) {
 			return;
 		}
 
-		rootJoint = std::make_shared<Joint>();
-		rootJoint->id = mesh->rootJoint->id;
-		rootJoint->jointId = mesh->rootJoint->jointId;
-		rootJoint->name = mesh->rootJoint->name;
-		rootJoint->localTransform = mesh->rootJoint->localTransform;
-		rootJoint->inverseBindMatrix = mesh->rootJoint->inverseBindMatrix;
-
-		rootJoint->rotation = mesh->rootJoint->rotation;
-		rootJoint->translation = mesh->rootJoint->translation;
-		rootJoint->scale = mesh->rootJoint->scale;
-
-		parseNodes(rootJoint, mesh->rootJoint.get());
+		rootJoint = mesh->rootJoint;
+		inverseBindMatrices = mesh->inverseBindMatrices;
 
 		for (auto& importAnimation : mesh->animations) {
 			Hollow::s_ptr<Animation> animation = std::make_shared<Animation>();
@@ -107,7 +84,8 @@ public:
 			animations.push_back(animation);
 		}
 
-		nodeInfo.resize(nodes.size() + 1);
+		nodeInfo.resize(mesh->joints.size());
+		animationIndices.resize(mesh->joints.size());
 	}
 
 	void pause()
@@ -138,31 +116,8 @@ public:
 
 	void resetAllNodeTRSIndices()
 	{
-		for (auto& it : nodes) {
-			it.second->currentRotationIndex = it.second->currentScaleIndex = it.second->currentTranslationIndex = 0;
-		}
-	}
-private:
-	void parseNodes(const Hollow::s_ptr<Joint>& parentNode, Hollow::Import::Joint* joint)
-	{
-		for (auto& it : joint->childs) {
-			Hollow::s_ptr<Joint> childNode = std::make_shared<Joint>();
-			childNode->id = it->id;
-			childNode->jointId = it->jointId;
-			childNode->localTransform = it->localTransform;
-			childNode->inverseBindMatrix = it->inverseBindMatrix;
-			childNode->name = it->name;
-
-			childNode->rotation = it->rotation;
-			childNode->translation = it->translation;
-			childNode->scale = it->scale;
-
-			childNode->parent = parentNode;
-
-			parentNode->childs.push_back(childNode);
-			nodes[childNode->id] = childNode;
-
-			parseNodes(childNode, it);
+		for (auto& it : animationIndices) {
+			it.rotationIndex = it.scaleIndex = it.translationIndex = 0;
 		}
 	}
 };

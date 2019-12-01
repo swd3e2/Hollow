@@ -20,7 +20,7 @@ namespace Hollow {
 		static bool _shutdown;
 	protected:
 		CModule() = default;
-		virtual ~CModule() = default;
+		virtual ~CModule() { shutdown(); }
 
 		CModule(const CModule&) = delete;
 		CModule(CModule&&) = delete;
@@ -43,7 +43,7 @@ namespace Hollow {
 		}
 
 		template<typename ...ARGS>
-		static void startUp(ARGS&& ...args)
+		static T* startUp(ARGS&& ...args)
 		{
 #ifdef _DEBUG
 			HW_INFO("Starting up {}", typeid(T).name());
@@ -51,18 +51,23 @@ namespace Hollow {
 
 			_instance = new T(std::forward(args)...);
 			_startedUp = true;
+			_shutdown = false;
 			_instance->onStartUp();
+			return _instance;
 		}
 
 		template<class SubClass, typename ...Args>
-		static void startUp(Args&& ...args)
+		static T* startUp(Args&& ...args)
 		{
 #ifdef _DEBUG
 			HW_INFO("Starting up {}", typeid(SubClass).name());
 #endif
 			_instance = (T*)(new SubClass(std::forward<Args>(args)...));
 			_startedUp = true;
+			_shutdown = false;
 			_instance->onStartUp();
+
+			return _instance;
 		}
 
 		static void shutdown()
@@ -75,6 +80,7 @@ namespace Hollow {
 			}
 			_instance->onShutdown();
 			_shutdown = true;
+			_startedUp = false;
 			delete _instance;
 		}
 	protected:

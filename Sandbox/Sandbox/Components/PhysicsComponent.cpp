@@ -80,6 +80,42 @@ void PhysicsComponent::setPosition(const Hollow::Vector3& position)
 	body->activate(true);
 }
 
+void PhysicsComponent::setRotation(const Hollow::Vector3 rotation)
+{
+	if (body == nullptr) {
+		return;
+	}
+
+	btTransform transform;
+	btQuaternion rotationQ;
+	rotationQ.setEulerZYX(rotation.z, rotation.y, rotation.x);
+
+	if (isDynamic) {
+		body->getMotionState()->getWorldTransform(transform);
+	} else {
+		transform = body->getWorldTransform();
+	}
+
+	transform.setRotation(rotationQ);
+	
+	body->setCenterOfMassTransform(transform);
+	body->activate(true);
+}
+
+void PhysicsComponent::setLocalScale(const Hollow::Vector3& scale)
+{
+	localScale = scale;
+	if (shape != nullptr) {
+		shape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
+	}
+}
+
+void PhysicsComponent::setAngularFactor(const Hollow::Vector3& factor)
+{
+	angularFactor = factor;
+	body->setAngularFactor(btVector3(factor.x, factor.y, factor.z));
+}
+
 void PhysicsComponent::init()
 {
 	btTransform startTransform;

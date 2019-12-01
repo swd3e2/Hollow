@@ -38,6 +38,22 @@ namespace Hollow {
 		GPUBufferManager::shutdown();
 		RenderTargetManager::shutdown();
 		InputLayoutManager::shutdown();
+
+		SAFE_RELEASE(m_DepthStencilView);
+		SAFE_RELEASE(m_DepthStencilBuffer);
+		SAFE_RELEASE(m_BackBuffer);
+		SAFE_RELEASE(m_RenderTarget);
+		SAFE_RELEASE(m_DepthResourceView);
+
+		ID3D11DeviceContext* deviceContext = const_cast<ID3D11DeviceContext*>(context->getDeviceContext());
+		IDXGISwapChain* swapChain = const_cast<IDXGISwapChain*>(context->getSwapChain());
+		ID3D11Device* device = const_cast<ID3D11Device*>(context->getDevice());
+
+		deviceContext->ClearState();
+
+		SAFE_RELEASE(swapChain);
+		SAFE_RELEASE(deviceContext);
+		SAFE_RELEASE(device);
 	}
 
 	void D3D11RenderApi::onStartUp()
@@ -79,10 +95,8 @@ namespace Hollow {
 		context = new D3D11Context(device, deviceContext, swapChain);
 
 		// Render main target
-		ID3D11Texture2D* backBuffer = {};
-		swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& backBuffer);
-
-		hr = device->CreateRenderTargetView(backBuffer, NULL, &m_RenderTarget);
+		swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&m_BackBuffer);
+		hr = device->CreateRenderTargetView(m_BackBuffer, NULL, &m_RenderTarget);
 
 		//Depth stencil
 		D3D11_TEXTURE2D_DESC desc;
@@ -118,8 +132,6 @@ namespace Hollow {
 		deviceContext->RSSetViewports(1, &vp);
 
 		deviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		blendState = new D3D11BlendState();
 
 		HardwareBufferManager::startUp<D3D11HardwareBufferManager>();
 		TextureManager::startUp<D3D11TextureManager>();
@@ -183,7 +195,7 @@ namespace Hollow {
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
-			for (int i = 0; i < d3d11RenderTarget->count; i++) {
+			for (int i = 0; i < d3d11RenderTarget->getCount(); i++) {
 				context->getDeviceContext()->ClearRenderTargetView(d3d11RenderTarget->getRenderTaget()[i], color);
 			}
 			context->getDeviceContext()->ClearDepthStencilView(d3d11RenderTarget->getDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -197,7 +209,7 @@ namespace Hollow {
 	{
 		if (renderTarget != nullptr) {
 			D3D11RenderTarget* d3d11RenderTarget = std::static_pointer_cast<D3D11RenderTarget>(renderTarget).get();
-			context->getDeviceContext()->OMSetRenderTargets(d3d11RenderTarget->count, d3d11RenderTarget->getRenderTaget(), d3d11RenderTarget->getDepthStencilView());
+			context->getDeviceContext()->OMSetRenderTargets(d3d11RenderTarget->getCount(), d3d11RenderTarget->getRenderTaget(), d3d11RenderTarget->getDepthStencilView());
 		} else {
 			context->getDeviceContext()->OMSetRenderTargets(3, nullRTV, NULL);
 			context->getDeviceContext()->OMSetRenderTargets(1, &this->m_RenderTarget, this->m_DepthStencilView);
@@ -244,6 +256,8 @@ namespace Hollow {
 			if (d3dVertexShader != nullptr) {
 				context->getDeviceContext()->VSSetShader(d3dVertexShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->VSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& pixelShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getPixelShader());
@@ -252,6 +266,8 @@ namespace Hollow {
 			if (d3dPixelShader != nullptr) {
 				context->getDeviceContext()->PSSetShader(d3dPixelShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->PSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& geometryShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getGeometryShader());
@@ -260,6 +276,8 @@ namespace Hollow {
 			if (d3dGeometryShader != nullptr) {
 				context->getDeviceContext()->GSSetShader(d3dGeometryShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->GSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& hullShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getHullShader());
@@ -268,6 +286,8 @@ namespace Hollow {
 			if (d3dHullShader != nullptr) {
 				context->getDeviceContext()->HSSetShader(d3dHullShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->HSSetShader(nullptr, NULL, 0);
 		}
 
 		const s_ptr<D3D11Shader>& domainShader = std::static_pointer_cast<D3D11Shader>(d3dPipeline->getDomainShader());
@@ -276,6 +296,8 @@ namespace Hollow {
 			if (d3dDomainShader != nullptr) {
 				context->getDeviceContext()->DSSetShader(d3dDomainShader, NULL, 0);
 			}
+		} else {
+			context->getDeviceContext()->DSSetShader(nullptr, NULL, 0);
 		}
 	}
 
@@ -287,13 +309,20 @@ namespace Hollow {
 
 		switch (topology)
 		{
+		case PrimitiveTopology::PT_POINT:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
+			break;
+		case PrimitiveTopology::PT_LINESTRIP:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+			break;
 		case PrimitiveTopology::PT_LINELIST:
 			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 			break;
 		case PrimitiveTopology::PT_TRIANGELIST:
 			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			break;
-		default:
+		case PrimitiveTopology::PT_TRIANGESTRIP:
+			context->getDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 			break;
 		}
 	}
@@ -324,8 +353,8 @@ namespace Hollow {
 		s_ptr<D3D11GPUBuffer> gpuBuffer = std::static_pointer_cast<D3D11GPUBuffer>(buffer);
 		context->getDeviceContext()->VSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 		context->getDeviceContext()->PSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		//context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
-		//context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		context->getDeviceContext()->HSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
+		context->getDeviceContext()->DSSetConstantBuffers(gpuBuffer->getLocation(), 1, &gpuBuffer->m_Buffer);
 	}
 
 	void D3D11RenderApi::setViewport(int w0, int y0, int w, int y)

@@ -24,7 +24,7 @@ namespace Hollow {
 		InputManager::shutdown();
 		EventSystem::shutdown();
 		DelayedTaskManager::shutdown();
-		/* @todo: check fix error */
+		/* @todo: fix error */
 		//TaskManager::shutdown();
 		FreeImgImporter::shutdown();
 		MeshManager::shutdown();

@@ -20,6 +20,7 @@ namespace Hollow {
 		samplerDesc.MaxLOD = desc.maxLOD;
 		samplerDesc.MipLODBias = desc.mipLODBias;
 		samplerDesc.Filter = D3D11Helper::getFilteringMode(desc.minFilterModel, desc.magFilterMode, desc.mipFilterMode, desc.comparisonFunction != ComparisonFunction::CMP_NEVER);
+		samplerDesc.MaxAnisotropy = desc.maxAnisotropy;
 
 		if (FAILED(device->CreateSamplerState(&samplerDesc, &samplerState->m_SamplerState))) {
 			HW_ERROR("Failed to create sampler state");

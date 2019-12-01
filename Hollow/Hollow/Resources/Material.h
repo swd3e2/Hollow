@@ -17,7 +17,7 @@ namespace Hollow {
 		float metallicFactor;
 		float roughnessFactor;
 		float emissiveFactor;
-		float pad;
+		float ao;
 		int hasDiffuseTexture = 0;
 		int hasNormalTexture = 0;
 		int hasSpecularMap = 0;
@@ -41,6 +41,11 @@ namespace Hollow {
 		s_ptr<Texture> roughnesTexture;
 		s_ptr<Texture> emisiveTexture;
 		s_ptr<Texture> occlusionTexture;
+	public:
+		~Material()
+		{
+			if (0) {}
+		}
 	};
 }
 

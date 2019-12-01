@@ -10,12 +10,12 @@ namespace Hollow {
 	template<class T>
 	class Event : public IEvent
 	{
-	private:
+	private:	
 		static const eventId id;
 	public:
 		Event() = default;
 
-		virtual eventId getId() override { return id; }
+		virtual inline eventId getId() override { return id; }
 		static eventId staticGetId() { return id; }
 	};
 

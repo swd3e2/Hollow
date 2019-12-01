@@ -90,6 +90,7 @@ namespace Hollow {
 	private:
 		size_t stride;
 	public:
+		virtual ~InputLayout() {}
 		static s_ptr<InputLayout> create(const INPUT_LAYOUT_DESC& desc);
 		size_t getStride() const { return stride; }
 	};
