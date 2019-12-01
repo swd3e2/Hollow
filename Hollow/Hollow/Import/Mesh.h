@@ -86,7 +86,7 @@ namespace Hollow {
 		{
 			std::string filename;
 			std::vector<s_ptr<Mesh>> meshes;
-			std::unordered_map<int, Material> materials;
+			std::vector<Material> materials;
 			// Animation data
 			std::unordered_map<int, s_ptr<Joint>> joints;
 			std::vector<s_ptr<Animation>> animations;

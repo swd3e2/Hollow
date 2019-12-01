@@ -12,16 +12,17 @@
 #include "Sandbox/Components/LightComponent.h"
 #include "Sandbox/Components/PhysicsComponent.h"
 #include "Sandbox/Components/ParticleComponent.h"
+#include "Hollow/Import/HollowModelExporter.h"
 
 namespace GUI {
 	class HierarchyTab
 	{
 	public:
-		GameObject* selectedGameObject;
-		Terrain* selectedTerrain;
-		Light* selectedLight;
-		RenderableObject* selectedRenderable;
-		Hollow::Material* selectedMaterial;
+		GameObject* selectedGameObject = nullptr;
+		Terrain* selectedTerrain = nullptr;
+		Light* selectedLight = nullptr;
+		RenderableObject* selectedRenderable = nullptr;
+		Hollow::Material* selectedMaterial = nullptr;
 		std::string filename;
 		bool openEntityCreationPopup = false;
 		char buffer[100];
@@ -241,6 +242,10 @@ namespace GUI {
 				}
 				if (selectedGameObject->hasComponent<RenderableComponent>()) {
 					if (ImGui::CollapsingHeader("Renderable component")) {
+						if (ImGui::Button("Export")) {
+
+						}
+
 						RenderableComponent* renderableComponent = selectedGameObject->getComponent<RenderableComponent>();
 						std::vector<Hollow::s_ptr<RenderableObject>>& renderables = renderableComponent->renderables;
 						ImGui::Text("Meshed");

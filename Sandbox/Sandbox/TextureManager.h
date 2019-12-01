@@ -43,7 +43,7 @@ public:
 				texture->generateMipMap();
 			}
 
-			//textureList[filepath] = texture;
+			textureList[filepath] = texture;
 			HW_INFO("Texture manager: texture added to list {}", filepath);
 
 			return texture;

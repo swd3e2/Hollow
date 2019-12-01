@@ -181,8 +181,7 @@ namespace Hollow {
 
 		if (hasResizeEvent) {
 			hasResizeEvent = false;
-			HW_INFO("WindowResizeEvent {} {}", newWindowWidth, newWindowHeight);
-			//EventSystem::instance()->addEvent(new WindowResizeEvent(newWindowWidth, newWindowHeight));
+			EventSystem::instance()->addEvent(new WindowResizeEvent(newWindowWidth, newWindowHeight));
 		}
 		return true;
 	}

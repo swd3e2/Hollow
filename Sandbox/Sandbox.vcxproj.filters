@@ -43,6 +43,7 @@
     <ClInclude Include="Sandbox\Graphics\ParticleEmitter.h" />
     <ClInclude Include="Sandbox\Systems\ParticleSystem.h" />
     <ClInclude Include="Sandbox\Components\ParticleComponent.h" />
+    <ClInclude Include="Sandbox\ExportHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sandbox\Resources\Meshes\Monster0.bin" />

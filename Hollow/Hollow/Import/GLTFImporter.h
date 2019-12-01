@@ -28,10 +28,12 @@ namespace Hollow {
 	private:
 		void calculateTangent(Import::Model* model);
 		void processHierarchy(s_ptr<Import::Node>& node, const tinygltf::Node& modelNode, Import::Model* model, const tinygltf::Model& gltfModel, std::vector<int>& meshesToLoad);
+		void processJointHierarchy(s_ptr<Import::Node>& node, const tinygltf::Node& modelNode, Import::Model* model, const tinygltf::Model& gltfModel);
 		void processAnimations(Import::Model* lModel, tinygltf::Model& model, std::ifstream& file);
 		void processAnimationNode(s_ptr<Import::Joint>& node, const tinygltf::Node& modelNode, std::unordered_map<int, s_ptr<Import::Joint>>& joints, const tinygltf::Model& gltfModel);
 		void processSkin(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary);
 		void processMeshes(Import::Model* model, const tinygltf::Model& gltfModel, std::ifstream& binary, std::vector<int>& meshesToLoad);
+		void processMaterials(Import::Model* model, const tinygltf::Model& gltfModel);
 		int getSkinByMesh(int mesh, const tinygltf::Node& node, const tinygltf::Model& model);
 		std::string getBinaryFileFolder(std::string gltfFilePath);
 		int getJointByNode(int nodeId, const tinygltf::Model& gltfModel);

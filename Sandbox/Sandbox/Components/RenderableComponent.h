@@ -44,7 +44,7 @@ public:
 	Hollow::s_ptr<Node> rootNode;
 
 	std::vector<Hollow::s_ptr<RenderableObject>> renderables;
-	std::unordered_map<unsigned int, Hollow::s_ptr<Hollow::Material>> materials;
+	std::vector<Hollow::s_ptr<Hollow::Material>> materials;
 	Hollow::Vector3 A, B; // A - left near down, B - right far up
 	std::string filename;
 	bool skinned = false;
@@ -80,26 +80,26 @@ public:
 
 		for (auto& it : model->materials) {
 			Hollow::s_ptr<Hollow::Material> material = std::make_shared<Hollow::Material>();
-			material->name = it.second.name;
-			material->materialData.color = it.second.baseColorFactor;
+			material->name = it.name;
+			material->materialData.color = it.baseColorFactor;
 
-			material->materialData.metallicFactor = it.second.metallicFactor;
-			material->materialData.roughnessFactor = it.second.roughnessFactor;
-			material->materialData.emissiveFactor = it.second.emissiveFactor;
+			material->materialData.metallicFactor = it.metallicFactor;
+			material->materialData.roughnessFactor = it.roughnessFactor;
+			material->materialData.emissiveFactor = it.emissiveFactor;
 
-			if (it.second.diffuseTexture.size()) {
-				material->diffuseTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.second.diffuseTexture, 5);
+			if (it.diffuseTexture.size()) {
+				material->diffuseTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.diffuseTexture, 5);
 				if (material->diffuseTexture != nullptr) {
 					material->materialData.hasDiffuseTexture = true;
 				}
 			}
-			if (it.second.normalTexture.size()) {
-				material->normalTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.second.normalTexture, 5);
+			if (it.normalTexture.size()) {
+				material->normalTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.normalTexture, 5);
 				if (material->normalTexture != nullptr) {
 					material->materialData.hasNormalTexture = true;
 				}
 			}
-			materials[it.first] = material;
+			materials.push_back(material);
 		}
 	}
 private:

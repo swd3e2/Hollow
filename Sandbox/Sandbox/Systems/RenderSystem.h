@@ -28,6 +28,8 @@
 #include "Sandbox/ShaderManager.h"
 #include "Sandbox/Systems/PhysicsSystem.h"
 #include "Sandbox/Components/ParticleComponent.h"
+#include "Hollow/Events/EventSystem.h"
+#include "Hollow/Events/DefaultEvents.h"
 #include <array>
 
 struct WVP
@@ -63,7 +65,7 @@ struct LightInfo
 	int numLights;
 };
 
-class RenderSystem : public Hollow::System<RenderSystem>
+class RenderSystem : public Hollow::System<RenderSystem>, public Hollow::IEventListener
 {
 public:
 	Shadow shadow;
@@ -236,6 +238,16 @@ public:
 		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
 
 		timer.start();
+
+		Hollow::EventSystem::instance()->addEventListener(this, &RenderSystem::onWindowResize, Hollow::WindowResizeEvent::staticGetId());
+	}
+
+	void onWindowResize(Hollow::IEvent* event)
+	{
+		Hollow::WindowResizeEvent windowResizeEvent = *(Hollow::WindowResizeEvent*)event;
+		Hollow::DelayedTaskManager::instance()->add([&, windowResizeEvent]() {
+			renderer->setViewport(0, 0, windowResizeEvent.width, windowResizeEvent.height);
+		});
 	}
 
 	virtual void PreUpdate(double dt)
@@ -293,7 +305,7 @@ public:
 			renderer->setTextureDepthBuffer(4, shadow.renderTarget);
 			renderer->setTextureDepthBuffer(5, gBuffer);
 
-			renderer->setShaderPipeline(pbr);
+			renderer->setShaderPipeline(lightPipeline);
 			updateLight();
 
 			renderer->setVertexBuffer(quadVB);
@@ -487,7 +499,7 @@ public:
 
 				if (false) {
 					for (auto& object : renderable->renderables) {
-						if (renderable->materials.find(object->material) != renderable->materials.end()) {
+						if (renderable->materials.size() > object->material) {
 							const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[object->material];
 							if (material->diffuseTexture != nullptr) {
 								renderer->setTexture(0, material->diffuseTexture);
@@ -521,7 +533,7 @@ public:
 		if (node->renderableId != -1 && node->renderableId < renderable->renderables.size()) {
 			const Hollow::s_ptr<RenderableObject>& renderableObject = renderable->renderables[node->renderableId];
 
-			if (renderable->materials.find(renderableObject->material) != renderable->materials.end()) {
+			if (renderable->materials.size() > renderableObject->material) {
 				const Hollow::s_ptr<Hollow::Material>& material = renderable->materials[renderableObject->material];
 				if (material->diffuseTexture != nullptr) {
 					renderer->setTexture(0, material->diffuseTexture);

@@ -599,7 +599,7 @@
     <ClCompile Include="Hollow\Math\Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hollow\Import\HollowModelExporter.cpp">
+    <ClCompile Include="Hollow\Import\HollowModelExporter.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

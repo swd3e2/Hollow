@@ -136,15 +136,15 @@ namespace Hollow {
 
 	enum RendererType 
 	{
-		None,
-		OpenGL,
-		DirectX
+		None = 0,
+		OpenGL = 1,
+		DirectX = 2
 	};
 
 	enum WindowType
 	{
-		Bordered,
-		Borderless
+		Bordered = 0,
+		Borderless = 1
 	};
 
 	enum PrimitiveTopology

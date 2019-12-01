@@ -154,14 +154,10 @@ namespace Hollow {
 			return CopyFile(filepath.c_str(), dst.c_str(), false);
 		}
 
-		static bool exists(const std::string& name) {
-			if (FILE * file = fopen(name.c_str(), "r")) {
-				fclose(file);
-				return true;
-			}
-			else {
-				return false;
-			}
+		static bool exists(const std::string& name) 
+		{
+			std::ifstream f(name.c_str());
+			return f.good();
 		}
 	private:
 		std::vector<std::string> m_PathHistory;

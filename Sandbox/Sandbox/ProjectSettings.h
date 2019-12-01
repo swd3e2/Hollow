@@ -325,6 +325,10 @@ public:
 					projectData["GameObjects"][counter]["PlayerComponent"] = {};
 				}
 
+				if (it.hasComponent<AnimationComponent>()) {
+					projectData["GameObjects"][counter]["AnimationComponent"] = {};
+				}
+
 				counter++;
 			}
 

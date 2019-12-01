@@ -42,24 +42,23 @@ public:
 	Hollow::Camera camera;
 
 	Profiler profiler;
-	AnimationSystem* animationSystem;
-	GUISystem* gui;
-	RenderSystem* renderSystem;
-	PlayerSystem* playerSystem;
-	FileSystemNotifier fNotifier;
-	CameraSystem* cameraSystem;
-	ParticleSystem* particleSystem;
-	const Hollow::RendererType rendererType = Hollow::RendererType::OpenGL;
-	const int width = 1920;
-	const int height = 1080;
+	Hollow::s_ptr<AnimationSystem> animationSystem;
+	Hollow::s_ptr<GUISystem> gui;
+	Hollow::s_ptr<RenderSystem> renderSystem;
+	Hollow::s_ptr<PlayerSystem> playerSystem;
+	Hollow::s_ptr<FileSystemNotifier> fNotifier;
+	Hollow::s_ptr<CameraSystem> cameraSystem;
+	Hollow::s_ptr<ParticleSystem> particleSystem;
+	const Hollow::RendererType rendererType = Hollow::RendererType::DirectX;
+	int width;
+	int height;
 public:
-	Appliaction() :
-		fNotifier("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders")
+	Appliaction()
 	{
-		window = Hollow::WindowManager::create(rendererType, width, height, Hollow::WindowType::Bordered);
-		renderer = Hollow::RenderApiManager::create(rendererType, width, height);
-	
-		gui = new GUISystem(window, renderer);
+		initSettings();
+
+		gui = std::make_shared<GUISystem>(window, renderer);
+		fNotifier = std::make_shared<FileSystemNotifier>("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders");
 
 		ProjectSettings::startUp<ProjectSettings>();
 		PhysicsSystem::startUp();
@@ -68,35 +67,67 @@ public:
 
 		camera.setProjectionValues(80.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100000.0f);
 		
-		renderSystem = new RenderSystem(renderer, width, height);
+		renderSystem = std::make_shared<RenderSystem>(renderer, width, height);
 		renderSystem->m_Camera = &camera;
 		renderSystem->skyMap = new SkyMap();
 
-		animationSystem = new AnimationSystem();
-		playerSystem = new PlayerSystem();
-		cameraSystem = new CameraSystem();
+		animationSystem = std::make_shared<AnimationSystem>();
+		playerSystem = std::make_shared<PlayerSystem>();
+		cameraSystem = std::make_shared<CameraSystem>();
 		cameraSystem->setCamera(&camera);
-		particleSystem = new ParticleSystem();
+		particleSystem = std::make_shared<ParticleSystem>();
 
-		Hollow::SystemManager::instance()->addSystem(renderSystem);
-		Hollow::SystemManager::instance()->addSystem(animationSystem);
+		Hollow::SystemManager::instance()->addSystem(renderSystem.get());
+		Hollow::SystemManager::instance()->addSystem(animationSystem.get());
 		Hollow::SystemManager::instance()->addSystem(PhysicsSystem::instance());
-		Hollow::SystemManager::instance()->addSystem(playerSystem);
-		Hollow::SystemManager::instance()->addSystem(cameraSystem);
-		Hollow::SystemManager::instance()->addSystem(particleSystem);
+		Hollow::SystemManager::instance()->addSystem(playerSystem.get());
+		Hollow::SystemManager::instance()->addSystem(cameraSystem.get());
+		Hollow::SystemManager::instance()->addSystem(particleSystem.get());
 
-		gui->rendererTab.renderSystem = renderSystem;
+		gui->rendererTab.renderSystem = renderSystem.get();
 
 		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
 
 		Hollow::TaskManager::instance()->add([&]() {
-			fNotifier.run();
+			fNotifier->run();
 		});
 
 		PhysicsSystem::instance()->dynamicsWorld->setDebugDrawer(new PhysicsDebugDraw(renderer));
 
 		//init();
+	}
+
+	~Appliaction()
+	{
+		Hollow::RenderApi::shutdown();
+		Hollow::Window::shutdown();
+	}
+
+	void initSettings()
+	{
+		if (!Hollow::FileSystem::exists("settings.json")) {
+			Hollow::FileSystem::writeToFile("settings.json", "{ \"renderer\": { \"type\": 1 }, \"window\": { \"type\": 1, \"os\": \"win32\", \"width\": 1920, \"height\": 1080 } }");
+		}
+		//Hollow::FileSystem::writeToFile("settings.json", "{ renderer: { type: 1 }, window: { type: 1, height: 1920, width: 1080 } }");
+		auto settings = nlohmann::json::parse(Hollow::FileSystem::getFileContent("settings.json"));
+
+		Hollow::RendererType rendererType = settings["renderer"]["type"].get<Hollow::RendererType>();
+		Hollow::WindowType windowType = settings["window"]["type"].get<Hollow::WindowType>();
+
+		width = settings["window"]["width"].get<int>();
+		height = settings["window"]["height"].get<int>();
+
+		if (settings["window"]["os"].get<std::string>() == "win32") {
+			if (rendererType == Hollow::RendererType::OpenGL) {
+				window = Hollow::OGLWin32Window::startUp<Hollow::OGLWin32Window>(GetModuleHandle(NULL), width, height, windowType);
+				renderer = Hollow::RenderApi::startUp<Hollow::OGLRenderApi>(width, height);
+			}
+			else if (rendererType == Hollow::RendererType::DirectX) {
+				window = Hollow::D3D11Win32Window::startUp<Hollow::D3D11Win32Window>(GetModuleHandle(NULL), width, height, windowType);
+				renderer = Hollow::RenderApi::startUp<Hollow::D3D11RenderApi>(width, height);
+			}
+		}
 	}
 
 	void init()

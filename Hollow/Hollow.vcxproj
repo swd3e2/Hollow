@@ -195,7 +195,7 @@
     <ClCompile Include="Hollow\Import\FreeImgImporter.cpp" />
     <ClCompile Include="Hollow\Import\GLTFImporter.cpp" />
     <ClCompile Include="Hollow\Import\gltf\tinygltf.cpp" />
-    <ClCompile Include="Hollow\Import\HollowModelExporter.cpp" />
+    <ClCompile Include="Hollow\Import\HollowModelExporter.h" />
     <ClCompile Include="Hollow\Math\Matrix3.h" />
     <ClCompile Include="Hollow\Math\Matrix4.cpp" />
     <ClCompile Include="Hollow\Math\Vector2.cpp" />
