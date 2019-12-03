@@ -11,7 +11,7 @@ public:
 		using namespace Hollow;
 		s_ptr<Export::Model> model = std::make_shared<Export::Model>();
 
-		model->rootJoint = imodel->rootNode;
+		model->rootJoint = imodel->rootJoint;
 		model->rootNode = imodel->rootNode;
 		model->joints = imodel->joints;
 		model->inverseBindMatrices = imodel->inverseBindMatrices;

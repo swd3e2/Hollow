@@ -31,10 +31,11 @@ namespace Hollow {
 			model->rootNode = j["RootNode"].get<int>();
 			if (j.find("Skin") != j.end()) {
 				model->rootJoint = j["Skin"]["rootJoint"].get<int>();
+				model->joints = j["Skin"]["joints"].get<std::vector<int>>();
 			}
 
 			std::ifstream file(binFilename, std::ios::binary);
-			file.is_open();
+			bool isopen = file.is_open();
 			for (int i = 0; i < j["Meshes"].size(); i++) {
 				s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
 				mesh->material = j["Meshes"][i]["material"].get<int>();

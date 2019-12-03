@@ -105,7 +105,7 @@ namespace Hollow {
 			};
 
 			data["Data"] = {
-				{ "filename", filename },
+				{ "filename", binaryFilename },
 				{ "size", 0 }
 			};
 
@@ -152,7 +152,7 @@ namespace Hollow {
 					{ "emissive_texture", material.emisiveTexture },
 					{ "normal_texture", material.normalTexture },
 					{ "occlusion_texture", material.occlusionTexture },
-					{ "roughness_texture", material.roughness },
+					{ "roughness_texture", material.roughnesTexture },
 					{ "specular_texture", material.specularTexture }
 				};
 

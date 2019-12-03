@@ -92,7 +92,7 @@ public:
 
 		gui->rendererTab.renderSystem = renderSystem.get();
 
-		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
+//		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
 
 		Hollow::TaskManager::instance()->add([&]() {

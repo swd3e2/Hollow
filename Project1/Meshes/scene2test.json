@@ -1,6 +1,6 @@
 {
   "Data": {
-    "filename": "C:/dev/Hollow Engine/Project1/Meshes/scene2test.json",
+    "filename": "C:/dev/Hollow Engine/Project1/Meshes/scene2test..bin",
     "size": 0
   },
   "Materials": [
@@ -18,7 +18,7 @@
       "normal_texture": "",
       "occlusion_texture": "",
       "roughness": 0.9644262790679932,
-      "roughness_texture": 0.9644262790679932,
+      "roughness_texture": "",
       "specular_texture": ""
     },
     {
@@ -35,7 +35,7 @@
       "normal_texture": "",
       "occlusion_texture": "",
       "roughness": 0.9325463175773621,
-      "roughness_texture": 0.9325463175773621,
+      "roughness_texture": "",
       "specular_texture": ""
     }
   ],
@@ -1982,6 +1982,6 @@
       74,
       75
     ],
-    "rootJoint": 0
+    "rootJoint": 6
   }
 }
