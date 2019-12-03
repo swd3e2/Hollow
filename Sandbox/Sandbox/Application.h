@@ -33,6 +33,8 @@
 #include "TextureManager.h"
 #include "Systems/ParticleSystem.h"
 #include "Systems/NodeUpdateSystem.h"
+#include "ExportHelper.h"
+#include "Hollow/Import/HollowModelExporter.h"
 
 class Appliaction
 {
@@ -99,6 +101,13 @@ public:
 
 		PhysicsSystem::instance()->dynamicsWorld->setDebugDrawer(new PhysicsDebugDraw(renderer));
 
+		Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2.gltf");
+		Hollow::s_ptr<Hollow::Export::Model> exModel = ExportHelper::make(model);
+		Hollow::HollowModelExporter::startUp();
+		Hollow::HollowModelExporter::instance()->export2("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json", exModel);
+
+		Hollow::s_ptr<Hollow::Import::Model> hwModel = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json");
+		if (0) {}
 		//init();
 	}
 

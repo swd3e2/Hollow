@@ -390,7 +390,6 @@ namespace GUI {
 								ImGui::TreePop();
 							}
 						}
-						
 					}
 				}
 				if (selectedGameObject->hasComponent<ParticleComponent>()) {

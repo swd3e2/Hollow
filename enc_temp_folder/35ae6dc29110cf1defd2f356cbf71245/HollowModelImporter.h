@@ -34,7 +34,7 @@ namespace Hollow {
 			}
 
 			std::ifstream file(binFilename, std::ios::binary);
-			file.is_open();
+
 			for (int i = 0; i < j["Meshes"].size(); i++) {
 				s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
 				mesh->material = j["Meshes"][i]["material"].get<int>();

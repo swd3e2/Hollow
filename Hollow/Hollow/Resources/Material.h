@@ -35,11 +35,20 @@ namespace Hollow {
 
 		MaterialData materialData;
 
+		std::string diffuseTextureFilename;
+		std::string normalTextureFilename;
+		std::string specularTextureFilename;
+		std::string roughnessTextureFilename;
+		std::string emissiveTextureFilename;
+		std::string metallicTextureFilename;
+		std::string occlusionTextureFilename;
+
 		s_ptr<Texture> diffuseTexture;
 		s_ptr<Texture> normalTexture;
 		s_ptr<Texture> specularTexture;
 		s_ptr<Texture> roughnesTexture;
 		s_ptr<Texture> emisiveTexture;
+		s_ptr<Texture> metallicTexture;
 		s_ptr<Texture> occlusionTexture;
 	public:
 		~Material()
