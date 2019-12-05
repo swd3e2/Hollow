@@ -27,14 +27,19 @@ namespace Hollow {
 			if (fileFolder.size()) {
 				folder = fileFolder;
 			}
+			std::ifstream file(binFilename, std::ios::binary);
 
 			model->rootNode = j["RootNode"].get<int>();
 			if (j.find("Skin") != j.end()) {
+				model->skinned = true;
 				model->rootJoint = j["Skin"]["rootJoint"].get<int>();
 				model->joints = j["Skin"]["joints"].get<std::vector<int>>();
+				Matrix4* matrixData = new Matrix4[model->joints.size()];
+				file.seekg(j["Skin"]["inverseBindMatrices"].get<size_t>(), std::fstream::beg);
+				file.read((char*)matrixData, sizeof(Matrix4) * model->joints.size());
+				model->inverseBindMatrices = std::vector<Matrix4>(matrixData, matrixData + model->joints.size());
 			}
 
-			std::ifstream file(binFilename, std::ios::binary);
 			bool isopen = file.is_open();
 			for (int i = 0; i < j["Meshes"].size(); i++) {
 				s_ptr<Import::Mesh> mesh = std::make_shared<Import::Mesh>();
@@ -61,6 +66,7 @@ namespace Hollow {
 			for (int i = 0; i < j["Nodes"].size(); i++) {
 				s_ptr<Import::Node> node = std::make_shared<Import::Node>();
 				node->id = i;
+				node->name = j["Nodes"][i]["name"].get<std::string>();
 				node->meshId = j["Nodes"][i]["mesh"].get<int>();
 				node->jointId = j["Nodes"][i]["joint"].get<int>();
 				node->rotation = Quaternion(j["Nodes"][i]["rotation"][0].get<float>(), j["Nodes"][i]["rotation"][1].get<float>(), j["Nodes"][i]["rotation"][2].get<float>(), j["Nodes"][i]["rotation"][3].get<float>());
@@ -69,6 +75,86 @@ namespace Hollow {
 				node->childs = j["Nodes"][i]["childs"].get<std::vector<int>>();
 
 				model->nodes.push_back(node);
+			}
+
+			for (int i = 0; i < j["Animations"].size(); i++) {
+				s_ptr<Import::Animation> animation = std::make_shared<Import::Animation>();
+				animation->name = j["Animations"][i]["name"].get<std::string>();
+				animation->duration = j["Animations"][i]["duration"].get<double>();
+
+				for (auto& it : j["Animations"][i]["data"]) {
+					s_ptr<Import::AnimationData> animationData = std::make_shared<Import::AnimationData>();
+					const int nodeId = it["node"].get<int>();
+
+					// Handling rotations
+					{
+						const int size = it["rotations_size"].get<int>();
+
+						if (size > 0) {
+							double* times = new double[size];
+							file.seekg(it["rotations_time_pos"].get<int>(), std::fstream::beg);
+							file.read((char*)times, sizeof(double) * size);
+
+							Quaternion* values = new Quaternion[size];
+							file.seekg(it["rotations_value_pos"].get<int>(), std::fstream::beg);
+							file.read((char*)values, sizeof(float) * 4 * size);
+
+							for (int i = 0; i < size; i++) {
+								animationData->rotations[times[i]] = values[i];
+							}
+
+							delete[] times;
+							delete[] values;
+						}
+					}
+
+					// Handling scale
+					{
+						const int size = it["scale_size"].get<int>();
+
+						if (size > 0) {
+							double* times = new double[size];
+							file.seekg(it["scale_time_pos"].get<int>(), std::fstream::beg);
+							file.read((char*)times, sizeof(double) * size);
+
+							Vector3* values = new Vector3[size];
+							file.seekg(it["scale_value_pos"].get<int>(), std::fstream::beg);
+							file.read((char*)values, sizeof(float) * 3 * size);
+
+							for (int i = 0; i < size; i++) {
+								animationData->scale[times[i]] = values[i];
+							}
+
+							delete[] times;
+							delete[] values;
+						}
+					}
+
+					// Handling translations
+					{
+						const int size = it["translation_size"].get<int>();
+
+						if (size > 0) {
+							double* times = new double[size];
+							file.seekg(it["translation_time_pos"].get<int>(), std::fstream::beg);
+							file.read((char*)times, sizeof(double) * size);
+
+							Vector3* values = new Vector3[size];
+							file.seekg(it["translation_value_pos"].get<int>(), std::fstream::beg);
+							file.read((char*)values, sizeof(float) * 3 * size);
+
+							for (int i = 0; i < size; i++) {
+								animationData->positions[times[i]] = values[i];
+							}
+
+							delete[] times;
+							delete[] values;
+						}
+					}
+
+					animation->data[nodeId] = animationData;
+				}
+				model->animations.push_back(animation);
 			}
 
 			file.close();

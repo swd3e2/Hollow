@@ -107,6 +107,11 @@ public:
 		Hollow::HollowModelExporter::instance()->export2("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json", exModel);
 
 		Hollow::s_ptr<Hollow::Import::Model> hwModel = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json");
+		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(hwModel);
+		TransformComponent* transform = entity->addComponent<TransformComponent>();
+		entity->addComponent<AnimationComponent>(hwModel);
+
 		if (0) {}
 		//init();
 	}

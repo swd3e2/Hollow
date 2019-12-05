@@ -13,6 +13,7 @@ public:
 		double translationIndex = 0;
 		double scaleIndex = 0;
 	};
+
 	struct AnimationNodeData
 	{
 		std::vector<std::pair<double, Hollow::Quaternion>> rotations;
