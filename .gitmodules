@@ -7,3 +7,9 @@
 [submodule "Hollow/vendor/bullet"]
 	path = Hollow/vendor/bullet
 	url = https://github.com/bulletphysics/bullet3.git
+[submodule "Hollow/vendor/ImGui"]
+	path = Hollow/vendor/ImGui
+	url = https://github.com/ocornut/imgui
+[submodule "Hollow/vendor/ImGuizmo"]
+	path = Hollow/vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo
