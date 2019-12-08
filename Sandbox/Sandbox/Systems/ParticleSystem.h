@@ -9,8 +9,6 @@
 class ParticleSystem : public Hollow::System<ParticleSystem>
 {
 public:
-
-public:
 	virtual void PreUpdate(double dt) override
 	{
 	}
@@ -27,11 +25,16 @@ public:
 
 				while (it != particleComponent->particles.end()) {
 					ParticleComponent::Particle* particle = *it;
-					particle->position += particle->velocity * delta;
-					HW_INFO("{} {} {}", particle->position.x, particle->position.y, particle->position.z);
 
+					particle->position += particle->velocity * delta;
 					particle->position.y -= 0.1 * delta;
 					particle->elapsed += delta;
+					particle->offsetUpdateTime += delta;
+
+					if (particle->offsetUpdateTime > particleComponent->timeToUpdate) {
+						particle->offsetUpdateTime = 0.0;
+						particle->currentOffset = (particle->currentOffset + 1) % (particleComponent->maxOffsets * particleComponent->maxOffsets);
+					}
 
 					if (particle->elapsed > particleComponent->lifetime) {
 						particleComponent->particles.erase(it++);

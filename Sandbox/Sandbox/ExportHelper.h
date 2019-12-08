@@ -61,7 +61,8 @@ public:
 		for (auto& it : imodel->meshes) {
 			s_ptr<Export::Mesh> mesh = std::make_shared<Export::Mesh>();
 			mesh->id = it->id;
-			
+			mesh->material = it->material;
+
 			for (int j = 0; j < it->vertices.size(); j++) {
 				mesh->vertices.push_back(it->vertices[j]);
 			}

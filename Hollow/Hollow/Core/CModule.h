@@ -20,7 +20,7 @@ namespace Hollow {
 		static bool _shutdown;
 	protected:
 		CModule() = default;
-		virtual ~CModule() { shutdown(); }
+		virtual ~CModule() { if (!isShutdown()) shutdown(); }
 
 		CModule(const CModule&) = delete;
 		CModule(CModule&&) = delete;

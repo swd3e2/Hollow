@@ -18,6 +18,10 @@ namespace Hollow {
 
 	OGLRenderApi::~OGLRenderApi()
 	{
+	}
+
+	void OGLRenderApi::onShutdown()
+	{
 		RenderStateManager::shutdown();
 		InputLayoutManager::shutdown();
 		RenderTargetManager::shutdown();

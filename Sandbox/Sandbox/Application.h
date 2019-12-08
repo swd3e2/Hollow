@@ -35,6 +35,7 @@
 #include "Systems/NodeUpdateSystem.h"
 #include "ExportHelper.h"
 #include "Hollow/Import/HollowModelExporter.h"
+#include "Hollow/Math/Random.h"
 
 class Appliaction
 {
@@ -92,7 +93,7 @@ public:
 
 		gui->rendererTab.renderSystem = renderSystem.get();
 
-//		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
+		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
 
 		Hollow::TaskManager::instance()->add([&]() {
@@ -101,23 +102,36 @@ public:
 
 		PhysicsSystem::instance()->dynamicsWorld->setDebugDrawer(new PhysicsDebugDraw(renderer));
 
-		Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2.gltf");
+		{
+			GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
+			ParticleComponent* particleComponent = entity->addComponent<ParticleComponent>();
+			particleComponent->lifetime = 10.0f;
+			particleComponent->maxParticles = 10;
+			particleComponent->maxOffsets = 8;
+			particleComponent->texCoords = Hollow::Vector2(0.125f, 0.125f);
+
+			particleComponent->texture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Project1/Textures/explosion.png", 0);
+		}
+
+		/*Hollow::s_ptr<Hollow::Import::Model> model = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2.gltf");
 		Hollow::s_ptr<Hollow::Export::Model> exModel = ExportHelper::make(model);
 		Hollow::HollowModelExporter::startUp();
-		Hollow::HollowModelExporter::instance()->export2("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json", exModel);
+		Hollow::HollowModelExporter::instance()->export2("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json", exModel);*/
 
-		Hollow::s_ptr<Hollow::Import::Model> hwModel = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json");
+	/*	Hollow::s_ptr<Hollow::Import::Model> hwModel = Hollow::MeshManager::instance()->import("C:/dev/Hollow Engine/Project1/Meshes/scene2test.json");
 		GameObject* entity = Hollow::EntityManager::instance()->create<GameObject>();
 		RenderableComponent* renderable = entity->addComponent<RenderableComponent>(hwModel);
 		TransformComponent* transform = entity->addComponent<TransformComponent>();
-		entity->addComponent<AnimationComponent>(hwModel);
+		entity->addComponent<AnimationComponent>(hwModel);*/
 
-		if (0) {}
 		//init();
 	}
 
 	~Appliaction()
 	{
+		gui->shutdown();
+		Hollow::ComponentManager::instance()->clear();
+		Hollow::EntityManager::instance()->clear();
 		Hollow::RenderApi::shutdown();
 		Hollow::Window::shutdown();
 	}

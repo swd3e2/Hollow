@@ -7,19 +7,19 @@
 #include "IAllocator.h"
 
 namespace Hollow {
-	/*
- * Allocator that manages memory for objects with same size
- */
+	/**
+	 * Allocator which manages memory for objects with same size
+	 */
 	class PoolAllocator : public IAllocator
 	{
 	public:
-		/* Pointer to next free chunk of memory */
+		/** Pointer to next free chunk of memory */
 		void** pointer;
-		/* Size of object */
+		/** Size of object */
 		unsigned int objectSize;
-		/* Count of objects */
+		/** Count of objects */
 		unsigned int count;
-		/* Alignment of object */
+		/** Alignment of object */
 		unsigned int alignment;
 	public:
 		PoolAllocator(unsigned int count, unsigned int objectSize, unsigned int alignment) :
@@ -42,7 +42,7 @@ namespace Hollow {
 			_aligned_free(this->memory);
 		}
 
-		/*
+		/**
 		 * Returns memory address for next object
 		 */
 		void* allocate()
@@ -59,7 +59,7 @@ namespace Hollow {
 			return mem;
 		}
 
-		/*
+		/**
 		 * Deallocates memory by given address
 		 * todo: create check that memory is in valid memory range
 		 * todo: maybe fill memory with 0
@@ -72,7 +72,7 @@ namespace Hollow {
 			this->pointer = (void**)mem;
 		}
 
-		/*
+		/**
 		 * Frees all memory
 		 */
 		void clear()

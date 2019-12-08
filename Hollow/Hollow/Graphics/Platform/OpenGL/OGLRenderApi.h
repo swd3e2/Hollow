@@ -39,7 +39,7 @@ namespace Hollow {
 	public:
 		OGLRenderApi(int width, int height);
 		~OGLRenderApi();
-
+		virtual void onShutdown() override;
 		virtual void setIndexBuffer(const s_ptr<IndexBuffer>& indexBuffer) override;
 		virtual void setVertexBuffer(const s_ptr<VertexBuffer>& vertexBuffer) override;
 		virtual void setTexture(UINT, const s_ptr<Texture>& texture) override;

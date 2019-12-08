@@ -32,6 +32,7 @@ namespace Hollow {
 
 	D3D11RenderApi::~D3D11RenderApi()
 	{
+		RenderStateManager::shutdown();
 		HardwareBufferManager::shutdown();
 		TextureManager::shutdown();
 		ShaderManager::shutdown();

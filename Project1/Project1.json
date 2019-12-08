@@ -38,6 +38,7 @@
       "name": "ground"
     },
     {
+      "AnimationComponent": null,
       "PhysicsComponent": {
         "angularFactor": [
           1.0,
@@ -72,9 +73,8 @@
         "type": 0
       },
       "PlayerComponent": null,
-      "AnimationComponent": null,
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf"
+        "filename": "C:/dev/Hollow Engine/Project1/Meshes/scene2test.json"
       },
       "TransformComponent": {
         "rotation": [
@@ -88,9 +88,9 @@
           0.029999999329447746
         ],
         "translation": [
-          0.1382564902305603,
-          -1.5000001192092896,
-          3.3777713775634766
+          -2.0523300170898438,
+          -1.0702183246612549,
+          -0.39861026406288147
         ]
       },
       "id": 1,
@@ -145,9 +145,9 @@
           4.699999809265137
         ],
         "translation": [
-          -3.556544065475464,
-          -48.500003814697266,
-          -11.786751747131348
+          -3.3686623573303223,
+          -48.54057312011719,
+          -11.516387939453125
         ]
       },
       "id": 2,
@@ -202,9 +202,9 @@
           1.0
         ],
         "translation": [
-          -1.7397186756134033,
-          -49.00000762939453,
-          -4.020269393920898
+          1.2600587606430054,
+          -45.65484619140625,
+          -2.885004997253418
         ]
       },
       "id": 3,

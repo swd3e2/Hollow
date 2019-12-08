@@ -147,6 +147,14 @@ public:
 
 					physics->init();
 
+					if (it.find("TransformComponent") != it.end()) {
+						physics->setRotation(Hollow::Vector3(
+							it["TransformComponent"]["rotation"][0].get<float>(),
+							it["TransformComponent"]["rotation"][1].get<float>(),
+							it["TransformComponent"]["rotation"][2].get<float>()
+						));
+					}
+
 					physics->setAngularFactor(Hollow::Vector3(
 						it["PhysicsComponent"]["angularFactor"][0].get<float>(),
 						it["PhysicsComponent"]["angularFactor"][1].get<float>(),

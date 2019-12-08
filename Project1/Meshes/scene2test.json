@@ -3106,7 +3106,7 @@
     {
       "indices_offset": 1352056,
       "indices_size": 84816,
-      "material": 0,
+      "material": 1,
       "vertices_offset": 1691320,
       "vertices_size": 15901
     }
