@@ -420,11 +420,11 @@ public:
 		drawLights();
 		drawParticles();
 
-		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_POINT);
+	/*	renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_POINT);
 		renderer->setShaderPipeline(geomtryShaderTest);
 		renderer->setVertexBuffer(geometryShaderTestBuffer);
 		renderer->draw(4);
-		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
+		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);*/
 
 		renderer->setRasterizerState(cullBack);
 	}
@@ -675,11 +675,11 @@ public:
 		std::string baseShaderPath;
 		std::string shaderExt;
 		if (renderer->getRendererType() == Hollow::RendererType::DirectX) {
-			baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/";
+			baseShaderPath = "E:/Hollow/Hollow/Hollow/Data/Shaders/D3D11/";
 			shaderExt = ".hlsl";
 		}
 		else {
-			baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
+			baseShaderPath = "E:/Hollow/Hollow/Hollow/Data/Shaders/OGL/";
 			shaderExt = ".glsl";
 		}
 		{

@@ -10,7 +10,7 @@
 #include <utility>
 
 namespace Hollow {
-	/* Base class for all core main engine systems */
+	/* Base class for all core engine systems */
 	template <typename T>
 	class CModule
 	{
@@ -20,7 +20,7 @@ namespace Hollow {
 		static bool _shutdown;
 	protected:
 		CModule() = default;
-		virtual ~CModule() { shutdown(); }
+		virtual ~CModule() { if (!isShutdown) shutdown(); }
 
 		CModule(const CModule&) = delete;
 		CModule(CModule&&) = delete;

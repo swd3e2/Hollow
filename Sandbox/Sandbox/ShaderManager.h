@@ -16,7 +16,7 @@ public:
 public:
 	ShaderManager()
 	{
-		baseShaderFolder = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/";
+		baseShaderFolder = "E:/Hollow/Hollow/Hollow/Data/Shaders/";
 		Hollow::EventSystem::instance()->addEventListener(this, &ShaderManager::update, FileChangeEvent::staticGetId());
 	}
 

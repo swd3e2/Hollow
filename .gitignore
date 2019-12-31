@@ -9,9 +9,10 @@ Hollow/Debug
 Hollow/x64
 !.gitignore
 Sandbox/imgui.ini
-Hollow/vendor/lib/debug/assimp.lib
+Hollow/vendor/*
 Sandbox/vendor/*
 Test/Hollow.lib
 Test/mesh1.bin
 Test/scene.bin
 /matrixbckp.cpp
+/Project1/Textures

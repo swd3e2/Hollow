@@ -98,13 +98,13 @@ public:
 			material->materialData.emissiveFactor = it.emissiveFactor;
 
 			if (it.diffuseTexture.size()) {
-				material->diffuseTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.diffuseTexture, 5);
+				material->diffuseTexture = TextureManager::instance()->create2DTextureFromFile("E:/Hollow/Sandbox/Sandbox/Resources/Textures/" + it.diffuseTexture, 5);
 				if (material->diffuseTexture != nullptr) {
 					material->materialData.hasDiffuseTexture = true;
 				}
 			}
 			if (it.normalTexture.size()) {
-				material->normalTexture = TextureManager::instance()->create2DTextureFromFile("C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Textures/" + it.normalTexture, 5);
+				material->normalTexture = TextureManager::instance()->create2DTextureFromFile("E:/Hollow/Sandbox/Sandbox/Resources/Textures/" + it.normalTexture, 5);
 				if (material->normalTexture != nullptr) {
 					material->materialData.hasNormalTexture = true;
 				}
