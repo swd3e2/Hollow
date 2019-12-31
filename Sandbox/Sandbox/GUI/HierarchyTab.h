@@ -13,6 +13,7 @@
 #include "Sandbox/Components/PhysicsComponent.h"
 #include "Sandbox/Components/ParticleComponent.h"
 #include "Hollow/Import/HollowModelExporter.h"
+#include "Hollow/Graphics/GUI/ImGui/Bezier.h"
 
 namespace GUI {
 	class HierarchyTab
@@ -46,6 +47,7 @@ namespace GUI {
 		const char* shapeTypesSelectables[5] = { "Box", "Sphere", "Plane", "Capsule", "AABB (not working)" };
 
 		Hollow::Vector3 particlePosition;
+		Hollow::Vector3 particleScale = Hollow::Vector3(1.0f, 1.0f, 1.0f);
 		Hollow::Vector3 particleVelocity;
 		Hollow::Vector3 shapeLocalScale;
 	public:
@@ -390,7 +392,6 @@ namespace GUI {
 								ImGui::TreePop();
 							}
 						}
-						
 					}
 				}
 				if (selectedGameObject->hasComponent<ParticleComponent>()) {
@@ -405,13 +406,38 @@ namespace GUI {
 							}
 						}
 
+						ImGui::ShowBezierDemo();
+						ImGui::DragFloat("Particle time to udpate", &particle->timeToUpdate, 0.001f);
+						ImGui::DragInt("Particle max offset", &particle->maxOffsets);
+						ImGui::DragInt("Particle current offset", &particle->currentOffset);
+						ImGui::DragFloat2("Particle tex coords", (float*)&particle->texCoords, 0.001f);
 						ImGui::DragFloat("Particle lifetime", &particle->lifetime);
-						ImGui::DragFloat("Particle max particles", &particle->maxParticles);
+						ImGui::DragInt("Particle max particles", &particle->maxParticles);
+						ImGui::DragFloat3("Particle scale", (float*)&particleScale);
 						ImGui::DragFloat3("Particle position", (float*)&particlePosition);
 						ImGui::DragFloat3("Particle velocity", (float*)&particleVelocity);
 
+						ImGui::Text("Particle texture");
+						if (particle->texture != nullptr) {
+							if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+								ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(particle->texture)->m_TextureShaderResource, ImVec2(100, 100));
+							} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+								ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(particle->texture)->textureId, ImVec2(100, 100));
+							}
+
+							ImGui::SameLine();
+						}
+						
+						if (ImGui::Button("Change##particle_texture")) {
+							filename = Hollow::FileSystem::openFile("");
+							if (filename.size()) {
+								//TextureManager::instance()->remove(selectedMaterial->normalTexture);
+								particle->texture = TextureManager::instance()->create2DTextureFromFile(filename, 0);
+							}
+						}
+
 						if (ImGui::Button("Emit")) {
-							particle->emit(particlePosition, particleVelocity);
+							particle->emit(particlePosition, particleVelocity, particleScale);
 						}
 					}
 				}
@@ -452,8 +478,7 @@ namespace GUI {
 				if (selectedMaterial->normalTexture != nullptr) {
 					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 						ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(selectedMaterial->normalTexture)->m_TextureShaderResource, ImVec2(100, 100));
-					}
-					else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+					} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 						ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(selectedMaterial->normalTexture)->textureId, ImVec2(100, 100));
 					}
 
@@ -491,12 +516,15 @@ namespace GUI {
 			ImGui::Begin("Textures");
 			int imgCounter = 0;
 			for (auto& it : TextureManager::instance()->textureList) {
-				if (++imgCounter % 3 != 0) ImGui::SameLine();
+				if (it.second.lock()) {
+					if (++imgCounter % 3 != 0) ImGui::SameLine();
 
-				if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
-					ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(it.second)->m_TextureShaderResource, ImVec2(100, 100));
-				} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
-					ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(it.second)->textureId, ImVec2(100, 100));
+					if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
+						ImGui::Image(std::static_pointer_cast<Hollow::D3D11Texture>(it.second.lock())->m_TextureShaderResource, ImVec2(100, 100));
+					}
+					else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+						ImGui::Image((void*)std::static_pointer_cast<Hollow::OGLTexture>(it.second.lock())->textureId, ImVec2(100, 100));
+					}
 				}
 			}
 			ImGui::End();

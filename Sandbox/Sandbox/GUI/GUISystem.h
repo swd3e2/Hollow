@@ -60,9 +60,15 @@ public:
 
 	~GUISystem()
 	{
+		
+	}
+
+	void shutdown()
+	{
 		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplDX11_Shutdown();
-		} else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
+		}
+		else if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::OpenGL) {
 			ImGui_ImplOpenGL3_Shutdown();
 		}
 		ImGui_ImplWin32_Shutdown();

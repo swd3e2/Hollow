@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29411.108
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hollow", "Hollow\Hollow.vcxproj", "{7A539AFC-8BB5-4385-B38B-862BB095EDF6}"
 EndProject
@@ -37,7 +37,6 @@ Global
 		{28739997-F122-4C32-9988-00344C38357F}.Debug|x86.ActiveCfg = Debug|Win32
 		{28739997-F122-4C32-9988-00344C38357F}.Debug|x86.Build.0 = Debug|Win32
 		{28739997-F122-4C32-9988-00344C38357F}.Release|x64.ActiveCfg = Release|x64
-		{28739997-F122-4C32-9988-00344C38357F}.Release|x64.Build.0 = Release|x64
 		{28739997-F122-4C32-9988-00344C38357F}.Release|x86.ActiveCfg = Release|Win32
 		{28739997-F122-4C32-9988-00344C38357F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection

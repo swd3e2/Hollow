@@ -16,9 +16,17 @@
 class RenderSystem;
 class HierarchyTab;
 
+/**
+ * Component handles all information required for rendering object on screen.
+ * It contains meshes and node hierarchy
+ */
 class RenderableComponent : public Hollow::Component<RenderableComponent>
 {
 public:
+	/**
+	 * Struct contains all information about current node transform,
+	 * used in NodeUpdateSystem and in AnimationSystem
+	 */
 	struct Transform
 	{
 		Hollow::Vector3 translation;
@@ -28,34 +36,48 @@ public:
 		bool hasChanged = true;
 	};
 
+	/**
+	 * Represent of signle drawable object
+	 */
 	struct Mesh 
 	{
 	public:
+		/** Mesh id */
 		int id;
+		/** Material id from component */
 		int material;
+		/** Vertex buffer */
 		Hollow::s_ptr<Hollow::IndexBuffer> iBuffer;
+		/** Index buffer */
 		Hollow::s_ptr<Hollow::VertexBuffer> vBuffer;
 	};
 
 	struct Node
 	{
 		int id;
-		int parentId = -1;
 		int jointId = -1;
 		int mesh = -1;
 
 		std::string name;
+		/** Current transform, could be updated in NodeUpdateSystem */
 		Transform transform;
+		/** Childs */
 		std::vector<int> childs;
 	};
 public:
+	/** List of nodes */
 	std::vector<Hollow::s_ptr<Node>> nodes;
+	/** Index of root node */
 	int rootNode;
-
+	/** List of renderable objects */
 	std::vector<Hollow::s_ptr<Mesh>> renderables;
+	/** Materials */
 	std::vector<Hollow::s_ptr<Hollow::Material>> materials;
+	/** AABB data for culling test */
 	Hollow::Vector3 A, B; // A - left near down, B - right far up
+	/** Filename, need for saving component in ProjectSettings */
 	std::string filename;
+	/** Is model skinned, used in RenderSystem */
 	bool skinned = false;
 public:
 	RenderableComponent() = default;
@@ -65,6 +87,11 @@ public:
 		load(model);
 	}
 
+	/**
+	 * Creates meshes and node hierarchy from imported file
+	 * 
+	 * @param model Imported model 
+	 */
 	void load(const Hollow::s_ptr<Hollow::Import::Model>& model)
 	{
 		if (model == nullptr) { 
@@ -75,7 +102,21 @@ public:
 		filename = model->filename;
 		skinned = model->skinned;
 
-		processNodes(model);
+		for (int i = 0; i < model->nodes.size(); i++) {
+			Hollow::s_ptr<Node> node = std::make_shared<Node>();
+			node->id = model->nodes[i]->id;
+			node->jointId = model->nodes[i]->jointId;
+			node->mesh = model->nodes[i]->meshId;
+			node->name = model->nodes[i]->name;
+			
+			node->childs = model->nodes[i]->childs;
+
+			node->transform.rotation = model->nodes[i]->rotation;
+			node->transform.scale = model->nodes[i]->scale;
+			node->transform.translation = model->nodes[i]->translation;
+
+			nodes.push_back(node);
+		}
 
 		for (int i = 0; i < model->meshes.size(); i++) {
 			Hollow::s_ptr<Mesh> renderable = std::make_shared<Mesh>();
@@ -110,25 +151,6 @@ public:
 				}
 			}
 			materials.push_back(material);
-		}
-	}
-private:
-	void processNodes(const Hollow::s_ptr<Hollow::Import::Model>& model)
-	{
-		for (int i = 0; i < model->nodes.size(); i++) {
-			Hollow::s_ptr<Node> node = std::make_shared<Node>();
-			node->id = model->nodes[i]->id;
-			node->jointId = model->nodes[i]->jointId;
-			node->mesh = model->nodes[i]->meshId;
-			node->name = model->nodes[i]->name;
-			
-			node->childs = model->nodes[i]->childs;
-
-			node->transform.rotation = model->nodes[i]->rotation;
-			node->transform.scale = model->nodes[i]->scale;
-			node->transform.translation = model->nodes[i]->translation;
-
-			nodes.push_back(node);
 		}
 	}
 };

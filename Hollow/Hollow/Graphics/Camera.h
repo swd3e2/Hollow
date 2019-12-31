@@ -19,8 +19,21 @@ namespace Hollow {
 		const Matrix4& getViewMatrix() const { return m_ViewMatrix; }
 		const Matrix4& getProjectionMatrix() const { return m_ProjectionMatrix; }
 
-		const Vector4& getPosition() const { return m_Position; }
-		const Vector4& getRotation() const { return m_Rotation; }
+		inline const Vector4& getPosition() const { return m_Position; }
+
+		inline void setPosition(const Vector3& position) 
+		{ 
+			m_Position = Hollow::Vector4(position.x, position.y, position.z, 1.0f);
+			updateViewMatrix();
+		}
+
+		inline const Vector4& getRotation() const { return m_Rotation; }
+
+		inline void setRotation(const Vector3& rotation) 
+		{ 
+			m_Rotation = rotation; 
+			updateViewMatrix();
+		}
 
 		Vector3 getPositionVec3() const { return Vector3(m_Position.x, m_Position.y, m_Position.z); }
 		Vector3 getRotationVec3() const { return Vector3(m_Rotation.x, m_Rotation.y, m_Rotation.z); }

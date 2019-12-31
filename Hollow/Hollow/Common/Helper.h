@@ -16,7 +16,7 @@ namespace Hollow {
 			std::wstring result(size, 0);
 
 			size_t outSize;
-			mbstowcs_s(&outSize, result.data(), size, string, size - 1);
+			mbstowcs_s(&outSize, (wchar_t*)result.data(), size, string, size - 1);
 
 			return result;
 		}
@@ -33,7 +33,7 @@ namespace Hollow {
 			std::string result(size, 0);
 
 			size_t outSize;
-			wcstombs_s(&outSize, result.data(), size, string, size - 1);
+			wcstombs_s(&outSize, (char*)result.data(), size, string, size - 1);
 
 			return result;
 		}

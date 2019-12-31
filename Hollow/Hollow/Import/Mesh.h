@@ -20,9 +20,11 @@ namespace Hollow {
 			int jointId;
 			int meshId = -1;
 			std::string name;
+
 			Vector3 translation;
 			Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 			Quaternion rotation;
+
 			std::vector<int> childs;
 		};
 

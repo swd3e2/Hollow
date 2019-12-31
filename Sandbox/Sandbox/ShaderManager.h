@@ -12,7 +12,7 @@ class ShaderManager : public Hollow::CModule<ShaderManager>, public Hollow::IEve
 {
 public:
 	std::string baseShaderFolder;
-	std::unordered_map<std::string, Hollow::s_ptr<Hollow::Shader>> shaders;
+	std::unordered_map<std::string, Hollow::w_ptr<Hollow::Shader>> shaders;
 public:
 	ShaderManager()
 	{
@@ -26,7 +26,7 @@ public:
 
 		std::string shaderFilePath = baseShaderFolder + changeEvent->filename;
 		if (shaders.find(shaderFilePath.c_str()) != shaders.end()) {
-			Hollow::ShaderManager::instance()->reload(shaders[shaderFilePath.c_str()]);
+			Hollow::ShaderManager::instance()->reload(shaders[shaderFilePath.c_str()].lock());
 			HW_INFO("Shader {} recompiled", shaderFilePath.c_str());
 		}
 	}

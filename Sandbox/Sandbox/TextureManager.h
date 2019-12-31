@@ -9,16 +9,16 @@
 class TextureManager : public Hollow::CModule<TextureManager>
 {
 public:
-	std::unordered_map<std::string, Hollow::s_ptr<Hollow::Texture>> textureList;
+	std::unordered_map<std::string, Hollow::w_ptr<Hollow::Texture>> textureList;
 public:
 	Hollow::s_ptr<Hollow::Texture> create2DTextureFromFile(std::string filepath, int numMips = 0)
 	{
 		std::replace(filepath.begin(), filepath.end(), '\\', '/');
 
 		if (Hollow::FileSystem::exists(filepath)) {
-			if (textureList.find(filepath) != textureList.end()) {
+			if (textureList.find(filepath) != textureList.end() && textureList[filepath].lock()) {
 				HW_INFO("Texture manager: texture found {}", filepath);
-				return textureList[filepath];
+				return textureList[filepath].lock();
 			}
 
 			Hollow::s_ptr<Hollow::Import::Texture> textureData = Hollow::FreeImgImporter::instance()->import(filepath.c_str());

@@ -31,13 +31,17 @@ public:
 	{
 		std::string filename = Hollow::Helper::toString(pNotify->FileName, pNotify->FileNameLength / 2);
 		std::replace(filename.begin(), filename.end(), '\\', '/');
-		std::string extension = filename.substr(filename.size() - 5, filename.size());
 
-		bool validExtension = std::find(fileExtensions.begin(), fileExtensions.end(), extension.c_str()) != fileExtensions.end();
-		bool notChanged = std::find(changedFiles.begin(), changedFiles.end(), filename) == changedFiles.end();
+		// Some trash can come here (temp files and etc) so we need to check does file even have an extension
+		if (filename.size() > 5) {
+			std::string extension = filename.substr(filename.size() - 5, filename.size());
 
-		if (validExtension && notChanged) {
-			changedFiles.push_back(filename);
+			bool validExtension = std::find(fileExtensions.begin(), fileExtensions.end(), extension.c_str()) != fileExtensions.end();
+			bool notChanged = std::find(changedFiles.begin(), changedFiles.end(), filename) == changedFiles.end();
+
+			if (validExtension && notChanged) {
+				changedFiles.push_back(filename);
+			}
 		}
 	}
 

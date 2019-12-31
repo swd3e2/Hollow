@@ -37,6 +37,8 @@ struct WVP
 	Hollow::Matrix4 WVP;
 	Hollow::Vector3 cameraPosition;
 	Hollow::Vector3 cameraViewDirection;
+	Hollow::Matrix4 ViewMatrix;
+	Hollow::Matrix4 ProjectionMatrix;
 };
 
 struct PerModel
@@ -65,6 +67,13 @@ struct LightInfo
 	int numLights;
 };
 
+struct ParticleData
+{
+	int maxOffset;
+	int currentOffset;
+	Hollow::Vector2 texCoords;
+};
+
 class RenderSystem : public Hollow::System<RenderSystem>, public Hollow::IEventListener
 {
 public:
@@ -87,6 +96,7 @@ public:
 	bool enableDebugPhysicsDraw = false;
 private:
 	Hollow::RenderApi* renderer;
+	const std::string defaultShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
 private:
 	Hollow::Timer timer;
 	WVP m_wvp;
@@ -104,9 +114,11 @@ private:
 	Hollow::s_ptr<Hollow::GPUBuffer> instanceData;
 	Hollow::s_ptr<Hollow::GPUBuffer> perModel;
 	Hollow::s_ptr<Hollow::GPUBuffer> perMesh;
+	Hollow::s_ptr<Hollow::GPUBuffer> particleDataConstantBuffer;
 
 	PerModel perModelData;
 	PerMesh perMeshData;
+	ParticleData particleData;
 
 	Hollow::s_ptr<Hollow::ShaderPipeline> gBufferPipeline;
 	Hollow::s_ptr<Hollow::ShaderPipeline> depthPipeline;
@@ -120,6 +132,7 @@ private:
 	Hollow::s_ptr<Hollow::ShaderPipeline> samplingPipeline;
 	Hollow::s_ptr<Hollow::ShaderPipeline> geomtryShaderTest;
 	Hollow::s_ptr<Hollow::ShaderPipeline> pbr;
+	Hollow::s_ptr<Hollow::ShaderPipeline> particlePipeline;
 
 	int pointLightsNum = 0;
 	int directionalLightNum = 0;
@@ -140,6 +153,7 @@ private:
 	Hollow::Vector4 AABBplane[6];
 	Hollow::s_ptr<Hollow::VertexBuffer> lightVertexBuffer;
 	Hollow::s_ptr<Hollow::IndexBuffer> lightIndexBuffer;
+
 	Hollow::Material lightMaterial;
 	LightInfo lightInfo;
 	Hollow::Matrix4 viewProjection;
@@ -356,6 +370,9 @@ public:
 	void updateWVP(Hollow::Camera* camera)
 	{
 		m_wvp.WVP = camera->getProjectionMatrix() * camera->getViewMatrix();
+		m_wvp.ViewMatrix = camera->getViewMatrix();
+		m_wvp.ProjectionMatrix = camera->getProjectionMatrix();
+
 		m_wvp.cameraPosition = camera->getPositionVec3();
 		m_wvp.cameraViewDirection = camera->getRotationVec3();
 		m_WVPConstantBuffer->update(&m_wvp);
@@ -420,11 +437,11 @@ public:
 		drawLights();
 		drawParticles();
 
-		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_POINT);
-		renderer->setShaderPipeline(geomtryShaderTest);
-		renderer->setVertexBuffer(geometryShaderTestBuffer);
-		renderer->draw(4);
-		renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
+		//renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_POINT);
+		//renderer->setShaderPipeline(geomtryShaderTest);
+		//renderer->setVertexBuffer(geometryShaderTestBuffer);
+		//renderer->draw(4);
+		//renderer->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
 
 		renderer->setRasterizerState(cullBack);
 	}
@@ -434,17 +451,28 @@ public:
 		perMeshData.worldTransform = Hollow::Matrix4::identity();
 		perMesh->update(&perMeshData);
 
+		renderer->setShaderPipeline(particlePipeline);
+
 		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
 			if (entity.hasComponent<ParticleComponent>()) {
 				ParticleComponent* particle = entity.getComponent<ParticleComponent>();
+				renderer->setTexture(0, particle->texture);
 
 				for (auto& it : particle->particles) {
-					perModelData.transform = Hollow::Matrix4::translation(it->position);
+					perModelData.transform = Hollow::Matrix4::translation(it->position) 
+						* Hollow::Matrix4::scaling(it->scale);
 					perModel->update(&perModelData);
+
+					particleData.currentOffset = it->currentOffset;
+					particleData.maxOffset = particle->maxOffsets;
+					particleData.texCoords = particle->texCoords;
+					particleDataConstantBuffer->update(&particleData);
+					renderer->setGpuBuffer(particleDataConstantBuffer);
+
 					renderer->setGpuBuffer(perModel);
 
-					renderer->setVertexBuffer(lightVertexBuffer);
-					renderer->setIndexBuffer(lightIndexBuffer);
+					renderer->setVertexBuffer(quadVB);
+					renderer->setIndexBuffer(quadIB);
 					renderer->drawIndexed(lightIndexBuffer->mHardwareBuffer->getSize());
 				}
 			}
@@ -677,8 +705,7 @@ public:
 		if (renderer->getRendererType() == Hollow::RendererType::DirectX) {
 			baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/";
 			shaderExt = ".hlsl";
-		}
-		else {
+		} else {
 			baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
 			shaderExt = ".glsl";
 		}
@@ -760,6 +787,13 @@ public:
 
 			geomtryShaderTest = Hollow::ShaderPipeline::create(pipelineDesc);
 		}
+		{
+			Hollow::SHADER_PIPELINE_DESC pipelineDesc = { 0 };
+			pipelineDesc.vertexShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_VERTEX, defaultShaderPath + "particleVs" + shaderExt, "main" });
+			pipelineDesc.pixelShader = ShaderManager::instance()->create({ Hollow::ShaderType::ST_PIXEL, defaultShaderPath + "particlePS" + shaderExt, "main" });
+
+			particlePipeline = Hollow::ShaderPipeline::create(pipelineDesc);
+		}
 	}
 
 	void initGpuBuffers()
@@ -772,6 +806,7 @@ public:
 		lightInfoBuffer = Hollow::GPUBuffer::create(5, sizeof(LightInfo));
 		boneInfo = Hollow::GPUBuffer::create(6, sizeof(Hollow::Matrix4) * 200);
 		instanceData = Hollow::GPUBuffer::create(7, sizeof(Hollow::Matrix4) * 50);
+		particleDataConstantBuffer = Hollow::GPUBuffer::create(3, sizeof(ParticleData));
 	}
 
 	void initInputLayout()
