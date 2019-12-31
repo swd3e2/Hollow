@@ -38,7 +38,6 @@
       "name": "ground"
     },
     {
-      "AnimationComponent": null,
       "PhysicsComponent": {
         "angularFactor": [
           1.0,
@@ -73,13 +72,14 @@
         "type": 0
       },
       "PlayerComponent": null,
+      "AnimationComponent": null,
       "RenderableComponent": {
-        "filename": "E:/Hollow/Sandbox/Sandbox/Resources/Meshes/scene2.gltf"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/scene2.gltf"
       },
       "TransformComponent": {
         "rotation": [
           -1.0795754860737361e-05,
-          0.0,
+          3.1415927410125732,
           8.136698852467816e-07
         ],
         "scale": [
@@ -88,9 +88,9 @@
           0.029999999329447746
         ],
         "translation": [
-          -10.077455520629883,
-          -8.600000381469727,
-          81.01363372802734
+          0.1382564902305603,
+          -1.5000001192092896,
+          3.3777713775634766
         ]
       },
       "id": 1,
@@ -131,7 +131,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "E:/Hollow/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf"
+        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -147,7 +147,7 @@
         "translation": [
           -3.556544065475464,
           -48.500003814697266,
-          -11.786752700805664
+          -11.786751747131348
         ]
       },
       "id": 2,
@@ -204,7 +204,7 @@
         "translation": [
           -1.7397186756134033,
           -49.00000762939453,
-          -4.02026891708374
+          -4.020269393920898
         ]
       },
       "id": 3,
@@ -249,7 +249,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "E:\\Hollow\\Project1\\Meshes\\tree.gltf"
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\tree.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -306,7 +306,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -363,7 +363,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -420,7 +420,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Meshes\\block.gltf"
+        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\block.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -444,7 +444,7 @@
     },
     {
       "RenderableComponent": {
-        "filename": "E:\\Hollow\\Project1\\Meshes\\treetest.gltf"
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\treetest.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -474,9 +474,9 @@
           1.0
         ],
         "boxSize": [
-          50.0,
-          2.0,
-          50.0
+          10.0,
+          10.0,
+          10.0
         ],
         "capsuleHeight": 0.0,
         "capsuleRadius": 0.0,
@@ -488,8 +488,8 @@
         "mass": 0.0,
         "originalPosition": [
           0.0,
-          -11.199999809265137,
-          98.5999984741211
+          -12.100000381469727,
+          10.399999618530273
         ],
         "planeNormal": [
           0.0,
@@ -501,23 +501,23 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "E:\\Hollow\\Project1\\Meshes\\boxtest.gltf"
+        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\boxtest.gltf"
       },
       "TransformComponent": {
         "rotation": [
           0.0,
-          0.0,
+          -0.0,
           0.0
         ],
         "scale": [
-          50.0,
-          2.0,
-          50.0
+          10.0,
+          10.0,
+          10.0
         ],
         "translation": [
           0.0,
-          -11.199999809265137,
-          98.5999984741211
+          -12.100000381469727,
+          10.399999618530273
         ]
       },
       "id": 10,
@@ -626,6 +626,6 @@
       }
     }
   ],
-  "MeshesFolder": "E:/Hollow/Project1/Meshes",
-  "TexturesFolder": "E:/Hollow/Project1/Textures"
+  "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
+  "TexturesFolder": "C:/dev/Hollow Engine/Project1/Textures"
 }

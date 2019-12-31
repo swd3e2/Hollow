@@ -279,8 +279,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "E:\Hollow\bin\Debug-x64\Hollow\Hollow.lib" "E:\Hollow\Sandbox\vendor\lib\debug"
-copy "E:\Hollow\bin\Debug-x64\Hollow\Hollow.lib" "E:\Hollow\Test"</Command>
+      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"
+copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Test"</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;Bullet3Collision_Debug.lib;Bullet3Common_Debug.lib;Bullet3Dynamics_Debug.lib;Bullet3Geometry_Debug.lib;LinearMath_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>

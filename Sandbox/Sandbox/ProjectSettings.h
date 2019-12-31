@@ -100,23 +100,13 @@ public:
 				}
 
 				if (it.find("PhysicsComponent") != it.end()) {
-					Hollow::Vector3 originPosition;
-
-					if (it.find("TransformComponent") != it.end()) {
-						originPosition = Hollow::Vector3(
-							it["TransformComponent"]["translation"][0].get<float>(),
-							it["TransformComponent"]["translation"][1].get<float>(),
-							it["TransformComponent"]["translation"][2].get<float>()
-						);
-					} else {
-						originPosition = Hollow::Vector3(
+					PhysicsComponent* physics = gameObject->addComponent<PhysicsComponent>(
+						Hollow::Vector3(
 							it["PhysicsComponent"]["originalPosition"][0].get<float>(),
 							it["PhysicsComponent"]["originalPosition"][1].get<float>(),
 							it["PhysicsComponent"]["originalPosition"][2].get<float>()
-						);
-					}
-
-					PhysicsComponent* physics = gameObject->addComponent<PhysicsComponent>(originPosition, it["PhysicsComponent"]["mass"].get<float>());
+						), it["PhysicsComponent"]["mass"].get<float>()
+					);
 
 					switch (it["PhysicsComponent"]["type"].get<int>())
 					{

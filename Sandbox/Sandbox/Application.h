@@ -60,7 +60,7 @@ public:
 		initSettings();
 
 		gui = std::make_shared<GUISystem>(window, renderer);
-		fNotifier = std::make_shared<FileSystemNotifier>("E:/Hollow/Hollow/Hollow/Data/Shaders");
+		fNotifier = std::make_shared<FileSystemNotifier>("C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders");
 
 		ProjectSettings::startUp<ProjectSettings>();
 		PhysicsSystem::startUp();
@@ -90,7 +90,7 @@ public:
 
 		gui->rendererTab.renderSystem = renderSystem.get();
 
-		ProjectSettings::instance()->load("E:/Hollow/Project1/Project1.json");
+		ProjectSettings::instance()->load("C:/dev/Hollow Engine/Project1/Project1.json");
 		Hollow::DelayedTaskManager::instance()->update();
 
 		Hollow::TaskManager::instance()->add([&]() {

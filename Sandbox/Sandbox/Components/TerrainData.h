@@ -57,12 +57,12 @@ public:
 			desc->width = 1025;
 			desc->height = 1025;
 			desc->pitch = 4;
-			FILE* file = fopen("E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Textures\\heightmap.r16", "rb");
+			FILE* file = fopen("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\heightmap.r16", "rb");
 			data = new unsigned short[desc->width * desc->height];
 			fread(data, sizeof(unsigned short), desc->width * desc->height, file);
 		}
 		
-		Hollow::s_ptr<Hollow::Import::Texture> texData = Hollow::FreeImgImporter::instance()->import("E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp");
+		Hollow::s_ptr<Hollow::Import::Texture> texData = Hollow::FreeImgImporter::instance()->import("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Textures\\colormap.bmp");
 		colorData = (unsigned char*)texData->data.get();
 
 		std::vector<TerrainVertex> vertices;
