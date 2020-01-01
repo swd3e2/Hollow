@@ -6,6 +6,7 @@
 #include <cmath>
 #include "Math.h"
 #include "Vector4.h"
+#include "Vector3.h"
 #include "Quaternion.h"
 #include "immintrin.h"
 
@@ -33,12 +34,12 @@ namespace Hollow {
 		static Matrix4 transpose(const Matrix4& matrix);
 
 		static Matrix4 translation(float x, float y, float z);
-		static Matrix4 translation(const Vector4& vec);
+		static Matrix4 translation(const Vector3& vec);
 
 		static Matrix4 scaling(float x, float y, float z);
-		static Matrix4 scaling(const Vector4& vec);
+		static Matrix4 scaling(const Vector3& vec);
 
-		static Matrix4 rotation(const Vector4& vec);
+		static Matrix4 rotation(const Vector3& vec);
 		static Matrix4 rotation(float x, float y, float z);
 		static Matrix4 rotation(const Quaternion& quat);
 

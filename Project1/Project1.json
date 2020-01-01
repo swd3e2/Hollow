@@ -74,7 +74,7 @@
       },
       "PlayerComponent": null,
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Project1/Meshes/scene2test.json"
+        "filename": "E:/Hollow/Project1/Meshes/scene2test.json"
       },
       "TransformComponent": {
         "rotation": [
@@ -131,7 +131,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "C:/dev/Hollow Engine/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf"
+        "filename": "E:/Hollow/Sandbox/Sandbox/Resources/Meshes/zelda/zeldaSkel_V001_004.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -249,7 +249,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\tree.gltf"
+        "filename": "E:\\Hollow\\Project1\\Meshes\\tree.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -306,7 +306,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
+        "filename": "E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -363,7 +363,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
+        "filename": "E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Meshes\\onemorebox.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -420,7 +420,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Meshes\\block.gltf"
+        "filename": "E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Meshes\\block.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -444,7 +444,7 @@
     },
     {
       "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\treetest.gltf"
+        "filename": "E:\\Hollow\\Project1\\Meshes\\treetest.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -501,7 +501,7 @@
         "type": 0
       },
       "RenderableComponent": {
-        "filename": "C:\\dev\\Hollow Engine\\Project1\\Meshes\\boxtest.gltf"
+        "filename": "E:\\Hollow\\Project1\\Meshes\\boxtest.gltf"
       },
       "TransformComponent": {
         "rotation": [
@@ -626,6 +626,6 @@
       }
     }
   ],
-  "MeshesFolder": "C:/dev/Hollow Engine/Project1/Meshes",
-  "TexturesFolder": "C:/dev/Hollow Engine/Project1/Textures"
+  "MeshesFolder": "E:/Hollow/Project1/Meshes",
+  "TexturesFolder": "E:/Hollow/Project1/Textures"
 }

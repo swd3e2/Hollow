@@ -275,14 +275,15 @@
       <AssemblerOutput>All</AssemblerOutput>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnablePREfast>false</EnablePREfast>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dsound.lib;dxguid.lib;winmm.lib;FreeImage.lib;assimp-vc140-mtd.lib;IrrXMLd.lib;zlibstatic.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\debug"
-copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Game\vendor\lib\debug"</Command>
+      <Command>copy "E:\Hollow\bin\Debug-x64\Hollow\Hollow.lib" "E:\Hollow\Sandbox\vendor\lib\debug"
+copy "E:\Hollow\bin\Debug-x64\Hollow\Hollow.lib" "E:\Hollow\Game\vendor\lib\debug"</Command>
     </PostBuildEvent>
     <Lib>
       <AdditionalDependencies>FreeImageLib.lib;glew32s.lib;Bullet3Collision_Debug.lib;Bullet3Common_Debug.lib;Bullet3Dynamics_Debug.lib;Bullet3Geometry_Debug.lib;LinearMath_Debug.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -301,6 +302,7 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engin
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLEW;FREEIMAGE_LIB;_CRT_SECURE_NO_WARNINGS;TINYGLTF_NO_EXTERNAL_IMAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnablePREfast>false</EnablePREfast>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -313,8 +315,8 @@ copy "C:\dev\Hollow Engine\bin\Debug-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engin
       <AdditionalLibraryDirectories>$(SolutionDir)Hollow\vendor\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Sandbox\vendor\lib\release"
-copy "C:\dev\Hollow Engine\bin\Release-x64\Hollow\Hollow.lib" "C:\dev\Hollow Engine\Game\vendor\lib\release"</Command>
+      <Command>copy "E:\Hollow\bin\Release-x64\Hollow\Hollow.lib" "E:\Hollow\Sandbox\vendor\lib\release"
+copy "E:\Hollow\bin\Release-x64\Hollow\Hollow.lib" "E:\Hollow\Game\vendor\lib\release"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

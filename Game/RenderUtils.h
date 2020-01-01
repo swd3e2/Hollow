@@ -18,3 +18,8 @@ struct WorldViewProjectionData
 	Hollow::Matrix4 ViewMatrix;
 	Hollow::Matrix4 ProjectionMatrix;
 };
+
+struct RenderData
+{
+	Hollow::Matrix4 transformMatrix;
+};

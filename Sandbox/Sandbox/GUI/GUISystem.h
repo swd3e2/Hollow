@@ -42,7 +42,7 @@ public:
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
 
-		ImFont* pFont = io.Fonts->AddFontFromFileTTF("C:\\dev\\Hollow Engine\\Sandbox\\Sandbox\\Resources\\Roboto-Medium.ttf", 16.0f);
+		ImFont* pFont = io.Fonts->AddFontFromFileTTF("E:\\Hollow\\Sandbox\\Sandbox\\Resources\\Roboto-Medium.ttf", 16.0f);
 
 		if (Hollow::RenderApi::instance()->getRendererType() == Hollow::RendererType::DirectX) {
 			ImGui_ImplWin32_Init(static_cast<Hollow::D3D11Win32Window*>(window)->getHWND());

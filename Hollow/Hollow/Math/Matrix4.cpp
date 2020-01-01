@@ -69,7 +69,7 @@ namespace Hollow {
 					   0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	Matrix4 Matrix4::translation(const Vector4& vec)
+	Matrix4 Matrix4::translation(const Vector3& vec)
 	{
 		return Matrix4(1.0f, 0.0f, 0.0f, vec.x,
 					   0.0f, 1.0f, 0.0f, vec.y,
@@ -85,7 +85,7 @@ namespace Hollow {
 			           0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	Matrix4 Matrix4::scaling(const Vector4& vec)
+	Matrix4 Matrix4::scaling(const Vector3& vec)
 	{
 		return Matrix4(vec.x, 0.0f,  0.0f,  0.0f,
 			           0.0f,  vec.y, 0.0f,  0.0f,
@@ -93,7 +93,7 @@ namespace Hollow {
 			           0.0f,  0.0f,  0.0f,  1.0f);
 	}
 
-	Matrix4 Matrix4::rotation(const Vector4& vec)
+	Matrix4 Matrix4::rotation(const Vector3& vec)
 	{
 		return rotationX(vec.x) * rotationY(vec.y) * rotationZ(vec.z);
 	}

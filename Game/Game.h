@@ -3,6 +3,9 @@
 #include <Hollow/Core.h>
 #include "RenderSystem.h"
 #include "CameraSystem.h"
+#include "GameObject.h"
+#include "RenderComponent.h"
+#include "PlayerComponent.h"
 
 class Game
 {
@@ -34,6 +37,23 @@ public:
 
 		Hollow::SystemManager::instance()->addSystem(renderSystem.get());
 		Hollow::SystemManager::instance()->addSystem(cameraSystem.get());
+
+		GameObject* gameObject = Hollow::EntityManager::instance()->create<GameObject>();
+		gameObject->addComponent<PlayerComponent>();
+		gameObject->addComponent<TransformComponent>();
+		{
+			RenderComponent* renderComponent = gameObject->addComponent<RenderComponent>();
+
+			Vertex vertices[] = {
+				Vertex({  0.0f,  3.5f, 0.0f }, { 1.0f, 0.0f }),
+				Vertex({  1.0f,  0.0f, 0.0f }, { 1.0f, 1.0f }),
+				Vertex({ -1.0f,  0.0f, 0.0f }, { 0.0f, 0.0f }),
+			};
+			renderComponent->vertexBuffer = Hollow::VertexBuffer::create({ vertices, 3, sizeof(Vertex) });
+
+			unsigned int indices[] = { 0, 1, 2 };
+			renderComponent->indexBuffer = Hollow::IndexBuffer::create({ indices, 3, Hollow::IndexFormat::IFT_UINT });
+		}
 	}
 
 	~Game()

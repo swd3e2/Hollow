@@ -96,7 +96,7 @@ public:
 	bool enableDebugPhysicsDraw = false;
 private:
 	Hollow::RenderApi* renderer;
-	const std::string defaultShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
+	const std::string defaultShaderPath = "E:/Hollow/Hollow/Hollow/Data/Shaders/OGL/";
 private:
 	Hollow::Timer timer;
 	WVP m_wvp;
@@ -703,10 +703,10 @@ public:
 		std::string baseShaderPath;
 		std::string shaderExt;
 		if (renderer->getRendererType() == Hollow::RendererType::DirectX) {
-			baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/D3D11/";
+			baseShaderPath = "E:/Hollow/Hollow/Hollow/Data/Shaders/D3D11/";
 			shaderExt = ".hlsl";
 		} else {
-			baseShaderPath = "C:/dev/Hollow Engine/Hollow/Hollow/Data/Shaders/OGL/";
+			baseShaderPath = "E:/Hollow/Hollow/Hollow/Data/Shaders/OGL/";
 			shaderExt = ".glsl";
 		}
 		{

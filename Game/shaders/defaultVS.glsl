@@ -20,8 +20,13 @@ layout(std140, binding = 0) uniform WorldViewProjection
     mat4 ProjectionMatrix;
 };
 
+layout(std140, binding = 1) uniform RenderData
+{
+    mat4 transformMatrix;
+};
+
 void main()
 {
     vout.texCoord = texCoord;
-    gl_Position = vec4(position, 1.0f) * ViewMatrix * ProjectionMatrix;
+    gl_Position = vec4(position, 1.0f) * transformMatrix * ViewMatrix * ProjectionMatrix;
 }
