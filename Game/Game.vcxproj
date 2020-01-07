@@ -137,6 +137,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="BulletComponent.h" />
+    <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
@@ -145,6 +148,7 @@
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="RenderUtils.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

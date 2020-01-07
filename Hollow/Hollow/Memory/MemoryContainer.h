@@ -66,8 +66,11 @@ namespace Hollow {
 				return currentChunk == other.currentChunk && currentObject == other.currentObject;
 			};
 
-			inline bool operator!=(const iterator& other) const { 
-				return currentChunk != other.currentChunk && currentObject != other.currentObject;
+			inline bool operator!=(const iterator& other) const {
+				if (currentChunk != other.currentChunk) {
+					return true;
+				}
+				return currentObject != other.currentObject;
 			};
 
 			inline T& operator*() const { return *(*currentObject); }

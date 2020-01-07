@@ -50,6 +50,7 @@ namespace Hollow {
 		Rid[0].hwndTarget = 0;
 
 		RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
+		//ShowCursor(false);
 	}
 
 	Win32Window::~Win32Window()

@@ -8,7 +8,7 @@ struct Vertex
 	Hollow::Vector3 position;
 	Hollow::Vector2 texCoord;
 
-	Vertex(Hollow::Vector3 position, Hollow::Vector2 texCoord) : 
+	Vertex(Hollow::Vector3 position, Hollow::Vector2 texCoord) :
 		position(position), texCoord(texCoord)
 	{}
 };
@@ -22,4 +22,5 @@ struct WorldViewProjectionData
 struct RenderData
 {
 	Hollow::Matrix4 transformMatrix;
+	int hasAmbientTexture;
 };

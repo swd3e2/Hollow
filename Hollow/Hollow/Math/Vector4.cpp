@@ -81,11 +81,13 @@ namespace Hollow {
 		return Vector4(x + other.x, y + other.y, z + other.z, 1.0f);
 	}
 
-	void Vector4::operator+=(const Vector4& other)
+	Vector4 Vector4::operator+=(const Vector4& other)
 	{
 		x = x + other.x;
 		y = y + other.y;
 		z = z + other.z;
+
+		return *this;
 	}
 
 	Vector4 Vector4::operator-(const Vector4& other) const
@@ -93,11 +95,13 @@ namespace Hollow {
 		return Vector4(x - other.x, y - other.y, z - other.z, 1.0f);
 	}
 
-	void Vector4::operator-=(const Vector4& other)
+	Vector4 Vector4::operator-=(const Vector4& other)
 	{
 		x = x - other.x;
 		y = y - other.y;
 		z = z - other.z;
+
+		return *this;
 	}
 
 	Vector4 Vector4::normalize(const Vector4& vector)
@@ -109,5 +113,20 @@ namespace Hollow {
 	Vector4 Vector4::negate(const Vector4& vector)
 	{
 		return Vector4(-vector.x, -vector.y, -vector.z, -vector.w);
+	}
+
+	Vector4 Vector4::operator/(const float val)
+	{
+		return Vector4(x / val, y / val, z / val, w / val);
+	}
+
+	Vector4 Vector4::operator/=(const float val)
+	{
+		x /= val;
+		y /= val;
+		z /= val;
+		w /= val;
+
+		return *this;
 	}
 }

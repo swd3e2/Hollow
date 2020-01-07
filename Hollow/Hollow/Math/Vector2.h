@@ -3,6 +3,8 @@
 #ifndef HW_VECTOR_2_H
 #define HW_VECTOR_2_H
 
+#include <math.h>
+
 namespace Hollow {
 	class Vector2
 	{
@@ -20,6 +22,8 @@ namespace Hollow {
 
 		const Vector2 operator-(const Vector2& other) const;
 		const Vector2 operator+(const Vector2& other) const;
+
+		static Vector2 normalize(const Vector2& vec);
 	};
 }
 

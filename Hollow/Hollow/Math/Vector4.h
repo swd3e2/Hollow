@@ -30,6 +30,9 @@ namespace Hollow {
 		Vector4 operator*(const double val);
 		float operator*(const Vector4& other);
 
+		Vector4 operator/(const float val);
+		Vector4 operator/=(const float val);
+
 		Vector4 cross(const Vector4& other);
 		static Vector4 cross(const Vector4& left, const Vector4& right);
 
@@ -37,10 +40,10 @@ namespace Hollow {
 		static float length(const Vector4& vec);
 
 		Vector4 operator+(const Vector4& other);
-		void operator+=(const Vector4& other);
+		Vector4 operator+=(const Vector4& other);
 
 		Vector4 operator-(const Vector4& other) const;
-		void operator-=(const Vector4& other);
+		Vector4 operator-=(const Vector4& other);
 		
 		operator __m128*() const
 		{
