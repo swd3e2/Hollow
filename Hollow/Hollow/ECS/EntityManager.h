@@ -95,8 +95,7 @@ namespace Hollow {
 			size_t entityTypeId = T::staticGetTypeId();
 
 			// Trying to find container, if found - just return it
-			if (entityContainers.find(entityTypeId) != entityContainers.end())
-			{
+			if (entityContainers.find(entityTypeId) != entityContainers.end()) {
 				return (EntityContainer<T>*)(entityContainers[entityTypeId]);
 			}
 			// if not - need to create one

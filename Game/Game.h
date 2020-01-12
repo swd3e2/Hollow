@@ -36,7 +36,7 @@ public:
 
 		//camera.setProjectionValues(80.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 10000.0f);
 
-		float zoom = 16.0f;
+		float zoom = 32.0f;
 		float aspectRatio = 1920.0f / 1080.0f * zoom;
 		camera.setOrthoValues(aspectRatio, -aspectRatio, zoom, -zoom, -1.0f, 1.0f);
 		camera.setPosition(Hollow::Vector3(0.0f, 0.0f, -1.0f));
@@ -57,7 +57,7 @@ public:
 		{
 			RenderComponent* renderComponent = gameObject->addComponent<RenderComponent>();
 
-			Vertex vertices[] = {
+			/*Vertex vertices[] = {
 				Vertex({  1.0f,  1.0f, 0.0f }, { 1.0f, 0.0f }),
 				Vertex({  1.0f, -1.0f, 0.0f }, { 1.0f, 1.0f }),
 				Vertex({ -1.0f,  1.0f, 0.0f }, { 0.0f, 0.0f }),
@@ -66,9 +66,19 @@ public:
 			renderComponent->vertexBuffer = Hollow::VertexBuffer::create({ vertices, 4, sizeof(Vertex) });
 
 			unsigned int indices[] = { 0, 1, 2, 2, 1, 3 };
-			renderComponent->indexBuffer = Hollow::IndexBuffer::create({ indices, 6, Hollow::IndexFormat::IFT_UINT });
+			renderComponent->indexBuffer = Hollow::IndexBuffer::create({ indices, 6, Hollow::IndexFormat::IFT_UINT });*/
 
-			renderComponent->texture = TextureManager::instance()->create2DTextureFromFile("E:/Hollow/Game/testt.png");
+			//renderComponent->texture = TextureManager::instance()->create2DTextureFromFile("E:/Hollow/Game/testt.png");
+			
+			Vertex vertices[] = {
+				Vertex({  0.0f,  3.5f, 0.0f }, { 1.0f, 0.0f }),
+				Vertex({  1.0f,  0.0f, 0.0f }, { 1.0f, 1.0f }),
+				Vertex({ -1.0f,  0.0f, 0.0f }, { 0.0f, 0.0f })
+			};
+			renderComponent->vertexBuffer = Hollow::VertexBuffer::create({ vertices, 3, sizeof(Vertex) });
+
+			unsigned int indices[] = { 0, 1, 2 };
+			renderComponent->indexBuffer = Hollow::IndexBuffer::create({ indices, 3, Hollow::IndexFormat::IFT_UINT });
 		}
 	}
 

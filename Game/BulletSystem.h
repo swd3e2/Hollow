@@ -9,7 +9,7 @@
 #include "Bullet.h"
 #include "BulletComponent.h"
 #include <Hollow/Core/DelayedTaskManager.h>
-#include "GameObject.h"
+#include "Bullet.h"
 
 class BulletSystem : public Hollow::System<BulletSystem>
 {
@@ -18,7 +18,7 @@ public:
 
 	virtual void Update(double dt) override
 	{
-		for (auto& entity : Hollow::EntityManager::instance()->container<GameObject>()) {
+		for (auto& entity : Hollow::EntityManager::instance()->container<Bullet>()) {
 			if (entity.hasComponent<BulletComponent>() && entity.hasComponent<TransformComponent>()) {
 				TransformComponent* transform = entity.getComponent<TransformComponent>();
 				BulletComponent* bullet = entity.getComponent<BulletComponent>();
@@ -26,8 +26,8 @@ public:
 				transform->position.x += bullet->velocity.x * dt / 1000.0;
 				transform->position.y += bullet->velocity.y * dt / 1000.0;
 
-				if (transform->position.x > 10.0f || transform->position.x < -10.0f 
-					|| transform->position.y > 10.0f || transform->position.y < -10.0f) {
+				if (transform->position.x > 100.0f || transform->position.x < -100.0f 
+					|| transform->position.y > 100.0f || transform->position.y < -100.0f) {
 					Hollow::DelayedTaskManager::instance()->add([&](){
 						Hollow::EntityManager::instance()->destroy(entity.getId());
 					});

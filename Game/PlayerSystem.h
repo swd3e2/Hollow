@@ -78,7 +78,7 @@ public:
 
 				if (Hollow::InputManager::GetMouseButtonIsPressed(Hollow::eMouseKeyCodes::MOUSE_LEFT) && canShoot) {
 					Hollow::DelayedTaskManager::instance()->add([&, transform, rotation]() {
-						GameObject* bullet = Hollow::EntityManager::instance()->create<GameObject>();
+						Bullet* bullet = Hollow::EntityManager::instance()->create<Bullet>();
 						BulletComponent* bulletComponent = bullet->addComponent<BulletComponent>();
 						TransformComponent* transformComponent = bullet->addComponent<TransformComponent>();
 						RenderComponent* renderComponent = bullet->addComponent<RenderComponent>();
@@ -94,9 +94,10 @@ public:
 						unsigned int indices[] = { 0, 1, 2, 2, 1, 3 };
 						renderComponent->indexBuffer = Hollow::IndexBuffer::create({ indices, 6, Hollow::IndexFormat::IFT_UINT });
 
+						transformComponent->rotation = transform->rotation;
 						transformComponent->position = transform->position;
-						bulletComponent->velocity.x = -rotation.x * 10.0f;
-						bulletComponent->velocity.y = -rotation.y * 10.0f;
+						bulletComponent->velocity.x = -rotation.x * 20.0f;
+						bulletComponent->velocity.y = -rotation.y * 20.0f;
 
 						Hollow::Log::instance()->debug("velocity x {} y {}", bulletComponent->velocity.x, bulletComponent->velocity.y);
 

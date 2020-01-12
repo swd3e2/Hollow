@@ -15,6 +15,10 @@ namespace Hollow {
 	class MemoryContainer
 	{
 	public:
+		class MemoryChunk;
+
+		std::list<MemoryChunk*> chunks;
+
 		class MemoryChunk
 		{
 		public:
@@ -40,13 +44,17 @@ namespace Hollow {
 
 			typename std::list<T*>::iterator currentObject;
 		public:
-			iterator(typename std::list<MemoryChunk*>::iterator begin, typename std::list<MemoryChunk*>::iterator end)
+			iterator(typename std::list<MemoryChunk*>::iterator begin, typename std::list<MemoryChunk*>::iterator end, bool bothNotValid = true)
 				: currentChunk(begin), end(end)
 			{
-				if (begin != end) {
-					currentObject = (*currentChunk)->objects.begin();
+				if (bothNotValid) {
+					currentChunk = end;
 				} else {
-					currentObject = (*std::prev(end))->objects.end();
+					if (begin != end) {
+						currentObject = (*currentChunk)->objects.begin();
+					} else if (!bothNotValid) {
+						currentObject = (*std::prev(end))->objects.end();
+					}
 				}
 			}
 
@@ -77,11 +85,8 @@ namespace Hollow {
 			inline T* operator->() const { return *currentObject; }
 		};
 	public:
-		std::list<MemoryChunk*> chunks;
-	public:
 		MemoryContainer()
 		{
-			chunks.push_back(new MemoryChunk(new PoolAllocator(DEFAULT_CAPACITY, sizeof(T), alignof(T))));
 		}
 
 		~MemoryContainer()
@@ -128,8 +133,8 @@ namespace Hollow {
 			}
 		}
 
-		iterator begin() { return iterator(chunks.begin(), chunks.end()); }
-		iterator end() { return iterator(chunks.end(), chunks.end()); }
+		iterator begin() { return iterator(chunks.begin(), chunks.end(), chunks.size() == 0); }
+		iterator end() { return iterator(chunks.end(), chunks.end(), chunks.size() == 0); }
 	};
 }
 

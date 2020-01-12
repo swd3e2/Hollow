@@ -8,6 +8,7 @@
 #include "RenderComponent.h"
 #include "TransformComponent.h"
 #include "PlayerComponent.h"
+#include "Bullet.h"
 #include <iostream>
 
 std::ostream& operator<<(std::ostream& cout, const Hollow::Matrix4& mat)
@@ -168,6 +169,26 @@ public:
 				renderApi->draw(2);
 
 				renderApi->setPrimitiveTopology(Hollow::PrimitiveTopology::PT_TRIANGELIST);
+			}
+		}
+
+		for (auto& entity : Hollow::EntityManager::instance()->container<Bullet>()) {
+			if (entity.hasComponent<RenderComponent>() && entity.hasComponent<TransformComponent>()) {
+				RenderComponent* render = entity.getComponent<RenderComponent>();
+				TransformComponent* transform = entity.getComponent<TransformComponent>();
+
+				transform->screenPos = transform->position * camera->getViewMatrix() * camera->getProjectionMatrix();
+				transform->screenPos.y = -transform->screenPos.y;
+				
+				renderData.hasAmbientTexture = false;
+				renderData.transformMatrix = Hollow::Matrix4::translation(transform->position) * Hollow::Matrix4::rotation(transform->rotation);
+				renderGBuffer->update(&renderData);
+				renderApi->setGpuBuffer(renderGBuffer);
+
+				renderApi->setVertexBuffer(render->vertexBuffer);
+				renderApi->setIndexBuffer(render->indexBuffer);
+
+				renderApi->drawIndexed(render->indexBuffer->mHardwareBuffer->getSize());
 			}
 		}
 	}
