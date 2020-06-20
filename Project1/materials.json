@@ -1,0 +1,38 @@
+{
+    "materials" : [
+        {
+            "base_color": [
+              0.33333298563957214,
+              0.12452899664640427,
+              0.10101500153541565,
+              1.0
+            ],
+            "diffuse_texture": "",
+            "emissive_texture": "",
+            "metallic": 0.0,
+            "name": "Beta_Joints_MAT",
+            "normal_texture": "",
+            "occlusion_texture": "",
+            "roughness": 0.9644262790679932,
+            "roughness_texture": "",
+            "specular_texture": ""
+          },
+          {
+            "base_color": [
+              0.8370000123977661,
+              0.30230799317359924,
+              0.26365500688552856,
+              1.0
+            ],
+            "diffuse_texture": "",
+            "emissive_texture": "",
+            "metallic": 0.0,
+            "name": "asdf1Beta_HighLimbsGeoSG2",
+            "normal_texture": "",
+            "occlusion_texture": "",
+            "roughness": 0.9325463175773621,
+            "roughness_texture": "",
+            "specular_texture": ""
+          }
+    ]
+}

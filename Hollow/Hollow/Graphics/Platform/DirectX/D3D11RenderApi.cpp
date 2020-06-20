@@ -18,7 +18,7 @@
 #include "D3D11InputLayoutManager.h"
 #include "D3D11Win32Window.h"
 
-namespace Hollow {
+namespace Hollow {	
 	D3D11RenderApi::D3D11RenderApi(int width, int height)
 		: width(width), height(height)
 	{

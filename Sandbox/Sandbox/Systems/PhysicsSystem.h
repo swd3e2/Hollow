@@ -17,8 +17,7 @@ public:
 	Hollow::s_ptr<btCollisionDispatcher> dispatcher;
 	Hollow::s_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
 public:
-	PhysicsSystem()
-	{
+	PhysicsSystem() {
 		collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
 		///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
 		dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
@@ -31,8 +30,7 @@ public:
 		dynamicsWorld->setGravity(btVector3(0, -10.0f, 0));
 	}
 
-	virtual void Update(double dt) override
-	{
+	virtual void Update(double dt) override {
 		Profiler::begin("PhysicsSystem update(): ");
 		dynamicsWorld->stepSimulation(dt / 1000.0);
 

@@ -8,8 +8,7 @@
 #include "D3D11RenderStateManager.h"
 
 namespace Hollow {
-	class D3D11RenderApi : public RenderApi
-	{
+	class D3D11RenderApi : public RenderApi {
 	private:
 		D3D11Context* context;
 

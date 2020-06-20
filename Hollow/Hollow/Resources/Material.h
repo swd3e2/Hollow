@@ -10,8 +10,7 @@
 #include "Hollow/Platform.h"
 
 namespace Hollow {
-	struct MaterialData
-	{
+	struct MaterialData {
 		Vector4 color;
 		// constant illumination color
 		float metallicFactor;

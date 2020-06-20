@@ -26,7 +26,9 @@ public:
 		const Hollow::s_ptr<RenderableComponent::Node>& node = renderable->nodes[nodeId];
 
 		if (node->transform.hasChanged == true) {
-			Hollow::Matrix4 localTransform = Hollow::Matrix4::translation(node->transform.translation) * Hollow::Matrix4::rotation(node->transform.rotation) * Hollow::Matrix4::scaling(node->transform.scale);
+			Hollow::Matrix4 localTransform = Hollow::Matrix4::translation(node->transform.translation) 
+				* Hollow::Matrix4::rotation(node->transform.rotation) 
+				* Hollow::Matrix4::scaling(node->transform.scale);
 			node->transform.worldTransform = parentTransform * localTransform;
 			node->transform.hasChanged = false;
 		}

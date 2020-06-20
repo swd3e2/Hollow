@@ -36,8 +36,7 @@ namespace Hollow {
 			0, &shaderBlob, &errorBlob);
 
 		ID3D11VertexShader* vertexTempShader;
-		device->CreateVertexShader(shaderBlob->GetBufferPointer(),
-			shaderBlob->GetBufferSize(), NULL, &vertexTempShader);
+		device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, &vertexTempShader);
 
 		D3D11_INPUT_ELEMENT_DESC* layout = new D3D11_INPUT_ELEMENT_DESC[desc.layout.size()];
 
