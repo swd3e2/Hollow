@@ -13,3 +13,6 @@
 [submodule "Hollow/vendor/ImGuizmo"]
 	path = Hollow/vendor/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
+[submodule "Hollow/vendor/entt"]
+	path = Hollow/vendor/entt
+	url = https://github.com/skypjack/entt
